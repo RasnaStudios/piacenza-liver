@@ -1,0 +1,27 @@
+.legend {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  color: rgba(196, 168, 118, 0.6);
+  font-family: Georgia, serif;
+  font-size: 11px;
+  line-height: 1.3;
+  pointer-events: none;
+  user-select: none;
+  z-index: 100;
+}
+
+.legend .copyright {
+  margin-bottom: 8px;
+}
+
+.legend .copyright div:first-child {
+  font-weight: 500;
+  color: rgba(196, 168, 118, 0.7);
+}
+
+.legend .controls {
+  color: rgba(196, 168, 118, 0.5);
+  font-size: 10px;
+  font-style: italic;
+} 
