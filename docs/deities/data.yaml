@@ -1,0 +1,337 @@
+- section_number: 1
+  iscription_in_etruscan: tin/cil/en
+  deity_name: Tinia
+  roman_equivalent: Jupiter
+  greek_equivalent: Zeus
+  section_type: sky
+  short_description: Supreme sky deity in Etruscan pantheon.
+  long_description: >
+    Tinia, the supreme sky god of the Etruscans, is often identified with the Roman Jupiter
+    and the Greek Zeus. As the chief deity, Tinia holds dominion over the celestial domain,
+    thunder, and divine will. The positioning of Tinia's name in the most prominent section
+    of the liver model aligns with his overarching authority within the pantheon. His dual
+    inscription (also found in sections 2 and 3) may emphasize different epithets or ritual aspects,
+    possibly regional or functional variants. Tinia's role also connects directly to the
+    ordering of time through celestial phenomena, as suggested by his association with
+    solstitial and equinoctial markers and his presence in cosmological frameworks such
+    as the Templum solare. Tinia's frequent presence on Etruscan artifacts underscores his
+    importance in civic and cultic religious structures, particularly in defining sacred space
+    and hierarchical celestial order in haruspicy.
+  divination_meaning: Represents favorable signs from the upper heavens; linked to authority and cosmic order.
+  hepatoscopy: Located in the outermost ring; associated with the timing of important astronomical events.
+  ritual_associations: Linked with rites of state and solar calendrical festivals.
+  archaeological_notes: Found in sector 1 of the outer ring on the Piacenza Liver; matches other appearances of Tinia in Etruscan votive artifacts.
+
+- section_number: 2
+  iscription_in_etruscan: tin/θvf
+  same_as_section: 1
+
+- section_number: 3
+  iscription_in_etruscan: tins/θne
+  same_as_section: 1
+
+- section_number: 4
+  iscription_in_etruscan: uni/mae
+  deity_name: Uni
+  roman_equivalent: Juno
+  greek_equivalent: Hera
+  section_type: sky
+  short_description: Principal goddess and consort of Tinia.
+  long_description: >
+    Uni, often aligned with the Roman Juno and the Greek Hera, is the consort of Tinia
+    and presides over marriage, fertility, and social harmony. In Etruscan religion,
+    Uni also held a strong civic role, often appearing in triads alongside Tinia and Menrva.
+    Her inclusion in the celestial regions of the Piacenza liver model marks her high
+    position in the divine hierarchy. The epithet /mae possibly indicates a maternal or
+    generative attribute. The identification of Uni in this context reinforces the symbolic
+    complementarity of male and female divine forces in Etruscan cosmology.
+  divination_meaning: Omens related to protection of the community, fertility, and civic stability.
+  archaeological_notes: Associated with inscriptions in sanctuaries and votive deposits, especially in Volsinii and Gravisca.
+
+- section_number: 5
+  iscription_in_etruscan: tec/vm
+  deity_name: Tecvm
+  section_type: infernal
+  short_description: Possibly an underworld deity.
+  long_description: >
+    The deity Tecvm is attested only on the Piacenza Liver and has not been securely identified
+    in other Etruscan sources. Its position among other deities of the infernal sphere suggests
+    a chthonic role, possibly connected with ancestral or liminal functions in the cosmological
+    mapping. The obscure nature of this name reflects the stratified, possibly localized pantheon
+    preserved in ritual instruments.
+  archaeological_notes: Only known occurrence on the Piacenza Liver.
+
+- section_number: 6
+  iscription_in_etruscan: lvsl
+  deity_name: Lusal
+  section_type: sky
+  short_description: Possibly a celestial deity.
+  long_description: >
+    Lusal appears in several inscriptions, possibly connected to celestial or luminous forces.
+    Some scholars propose a link to the Indo-European root *leuk-, suggesting brightness.
+    The position in the outer ring may support a reading connected with solar or astral observation.
+  archaeological_notes: Attested also in votive contexts near Chiusi.
+
+- section_number: 7
+  iscription_in_etruscan: neθ
+  deity_name: Neθuns
+  roman_equivalent: Neptune
+  greek_equivalent: Poseidon
+  section_type: aquatic
+  short_description: Etruscan god of water and the sea.
+  long_description: >
+    Neθuns, appearing here as neθ, is the Etruscan god of fresh water, springs, and possibly the sea.
+    He later corresponds to Neptune in the Roman pantheon and Poseidon in the Greek.
+    While his marine functions were emphasized in Roman religion, Etruscan tradition appears to
+    root him more firmly in sources of fresh and sacred water. His presence in the liver model
+    suggests consultation of watery omens, perhaps linked with rainfall or purification rites.
+  divination_meaning: Omens related to water, rain, floods, or purification.
+  archaeological_notes: Inscriptions found in Tarquinia and on votive altars.
+
+- section_number: 8
+  iscription_in_etruscan: caθa
+  deity_name: Catha
+  section_type: celestial
+  short_description: Liminal solar or lunar deity.
+  long_description: >
+    Catha is a mysterious figure in the Etruscan pantheon often interpreted as a solar or lunar
+    deity associated with liminal phases like dawn or dusk. Frequently paired with Śuri in depictions
+    and inscriptions, Catha symbolizes transitional illumination—important in divinatory contexts
+    for signaling change or thresholds. Her name is attested on votive inscriptions and possibly linked
+    to funerary rites involving solar journeys.
+  divination_meaning: Sign of transitions, thresholds, or changes in cycle.
+  archaeological_notes: Mentioned in votive texts from Pyrgi and associated with solar cult contexts.
+
+- section_number: 9
+  iscription_in_etruscan: lvsl
+  same_as_section: 6
+
+- section_number: 10
+  iscription_in_etruscan: leθam
+  deity_name: Leθam
+  section_type: infernal
+  short_description: Possibly an ancestral or underworld spirit.
+  long_description: >
+    Leθam is otherwise unattested in known Etruscan texts, but its placement within the infernal
+    quadrant of the liver model suggests a connection with the chthonic realm or spirits of the dead.
+    Its proximity to more defined underworld figures supports a hypothesis of ancestral invocation.
+  archaeological_notes: Known only from this liver inscription.
+
+- section_number: 11
+  iscription_in_etruscan: fuflunsl
+  deity_name: Fufluns
+  roman_equivalent: Bacchus
+  greek_equivalent: Dionysus
+  section_type: chthonic/vital
+  short_description: God of vegetation, rebirth, and ecstatic rites.
+  long_description: >
+    Fufluns is the Etruscan equivalent of Dionysus, though his attributes also include rebirth,
+    healing, and vegetation. His cult appears associated with vital force and regenerative power,
+    including chthonic dimensions like return from death or fertility of the earth. He appears
+    frequently in funerary art and mirrors, often shown youthful and crowned in ivy.
+  divination_meaning: Omens of renewal, fertility, or ecstatic transformation.
+  archaeological_notes: Widely represented in tomb paintings, bronze mirrors, and votive gifts.
+- id: 12
+  iscription_in_etruscan: tluscv
+  deity_name: Tluscv
+  section_type: MONDO SOTTERRANEO
+  short_description: Probabilmente ninfe, forse legate al culto delle acque
+
+- id: 13
+  iscription_in_etruscan: cels
+  deity_name: Cels / Cilens
+  section_type: MONDO SOTTERRANEO
+  short_description: Dio della notte
+
+- id: 14
+  iscription_in_etruscan: cvlalp
+  deity_name: Cvlalp
+  section_type: MONDO SOTTERRANEO
+  short_description: Non specificato nel pannello
+
+- id: 15
+  iscription_in_etruscan: vetisl
+  deity_name: Vetis / Velχ
+  section_type: MONDO SOTTERRANEO
+  short_description: Forse una versione etrusca di Apollo infero
+  roman_equivalent: Apollo
+  greek_equivalent: Apollo
+
+- id: 16
+  iscription_in_etruscan: cilensl
+  deity_name: Cilens / Nocturnus
+  section_type: MONDO SOTTERRANEO
+  short_description: Dio della notte
+  roman_equivalent: Nocturnus
+
+- id: 17
+  iscription_in_etruscan: pul
+  deity_name: Phu / Phlu
+  section_type: MONDO SOTTERRANEO
+  short_description: Porta o entità benevola dell’oltretomba
+
+- id: 18
+  iscription_in_etruscan: leθn
+  deity_name: Letham
+  section_type: TERRA
+  short_description: Forse un tipo di genio o spirito locale
+
+- id: 19
+  iscription_in_etruscan: la/sl
+  deity_name: Lasl / Lasa
+  section_type: TERRA
+  short_description: Non specificato nel pannello
+
+- id: 20
+  iscription_in_etruscan: tins/θvf
+  deity_name: Tinśθvf (Tinia? / Tin-Thuftha)
+  section_type: CIELO
+  short_description: Triade attorniata da Thuftha, dea del fato
+  deity_note: Thufltha/Fortuna, dea del fato
+
+
+- id: 21
+  iscription_in_etruscan: θufl/θas
+  deity_name: Thufltha
+  section_type: CIELO
+  short_description: Dea del fato, guaritrice e dispensatrice di oracoli
+  roman_equivalent: Fortuna
+
+- id: 22
+  iscription_in_etruscan: tinsθ/neθ
+  deity_name: Tinθ / Nethuns
+  section_type: CIELO
+  short_description: Divinità atmosferica, nella casa di Tinia
+  roman_equivalent: Nettuno
+  greek_equivalent: Poseidone
+
+- id: 23
+  iscription_in_etruscan: caθa
+  deity_name: Catha
+  section_type: CIELO
+  short_description: Dea del Sole
+
+- id: 24
+  iscription_in_etruscan: fuf/lus
+  deity_name: Fufluns
+  section_type: TERRA
+  short_description: Dio del vino, dell’ebbrezza e della vegetazione
+  roman_equivalent: Liber
+  greek_equivalent: Dioniso
+
+- id: 25
+  iscription_in_etruscan: tvnθ
+  deity_name: Tvnθ
+  section_type: TERRA
+  short_description: Non specificato nel pannello
+
+- id: 26
+  iscription_in_etruscan: marisl/laθ
+  deity_name: Laran
+  section_type: CITTADELLA
+  short_description: Dio della guerra e del fuoco, rappresentazione della potenza generatrice
+  roman_equivalent: Marte
+  greek_equivalent: Ares
+
+- id: 27
+  iscription_in_etruscan: leta
+  deity_name: Letun
+  section_type: CITTADELLA
+  short_description: Spirito guida legato al culto locale o genio tutelare
+
+- id: 28
+  iscription_in_etruscan: neθ
+  deity_name: Nethuns
+  section_type: CITTADELLA
+  short_description: Divinità delle acque marine e delle fonti
+  roman_equivalent: Nettuno
+  greek_equivalent: Poseidone
+
+- id: 29
+  iscription_in_etruscan: herc
+  deity_name: Hercle
+  section_type: CITTADELLA
+  short_description: Semidio protettore, legato a rituali di forza
+  roman_equivalent: Ercole
+  greek_equivalent: Eracle
+
+- id: 30
+  iscription_in_etruscan: mar
+  deity_name: Maris
+  section_type: CITTADELLA
+  short_description: Giovane dio figlio di Hercle e uni
+
+- id: 31
+  iscription_in_etruscan: selva
+  deity_name: Selvans
+  section_type: PARS HOSTILIS
+  short_description: Dio dei confini e della selva
+  roman_equivalent: Silvanus
+
+- id: 32
+  iscription_in_etruscan: leθa
+  deity_name: Lethams
+  section_type: PARS HOSTILIS
+  short_description: Spiriti o geni locali
+
+- id: 33
+  iscription_in_etruscan: tlusc
+  deity_name: Tlusc
+  section_type: PARS HOSTILIS
+  short_description: Non specificato nel pannello
+
+- id: 34
+  iscription_in_etruscan: lvsl/velϰ
+  deity_name: Lusal / Velχ
+  section_type: PARS HOSTILIS
+  short_description: Forse legato al mondo infero, non specificato
+
+- id: 35
+  iscription_in_etruscan: satr/es
+  deity_name: Satre
+  section_type: PARS HOSTILIS
+  short_description: Entità oscura associata a forze ctonie
+
+- id: 36
+  iscription_in_etruscan: cilen
+  deity_name: Cilens
+  section_type: PARS HOSTILIS
+  short_description: Dio della notte (ripetizione dell'iscrizione 13 in posizione speculare)
+
+- id: 37
+  iscription_in_etruscan: leθam
+  deity_name: Letham
+  section_type: PARS HOSTILIS
+  short_description: Spiriti o geni locali
+
+- id: 38
+  iscription_in_etruscan: metlvmθ
+  deity_name: Methlum
+  section_type: PARS HOSTILIS
+  short_description: Nome non divino, possibile indicazione toponomastica o politica
+
+- id: 39
+  iscription_in_etruscan: mar
+  deity_name: Maris
+  section_type: PARS HOSTILIS
+  short_description: Giovane dio figlio di Hercle e Uni
+
+- id: 40
+  iscription_in_etruscan: tlusc
+  deity_name: Tlusc
+  section_type: PARS HOSTILIS
+  short_description: Non specificato nel pannello
+
+- id: 41
+  iscription_in_etruscan: tivs
+  deity_name: Tivs
+  section_type: RETRO
+  short_description: Lobo sinistro, associato alla Luna
+  roman_equivalent: Luna
+
+- id: 42
+  iscription_in_etruscan: usils
+  deity_name: Usils
+  section_type: RETRO
+  short_description: Lobo destro, associato al Sole
+  roman_equivalent: Sol
