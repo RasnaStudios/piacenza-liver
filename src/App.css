@@ -141,92 +141,240 @@ body, html {
   right: 20px;
   width: 400px;
   max-height: 85vh;
-  background: rgba(26, 22, 17, 0.95);
-  border: 1px solid #8b6541;
-  border-radius: 8px;
-  color: #c9a876;
+  
+  /* Beautiful gradient background with maximum opacity for readability */
+  background: linear-gradient(
+    135deg,
+    rgba(20, 16, 12, 1.0) 0%,
+    rgba(32, 26, 20, 1.0) 25%,
+    rgba(44, 36, 28, 1.0) 50%,
+    rgba(58, 48, 38, 1.0) 75%,
+    rgba(70, 58, 46, 1.0) 100%
+  );
+  
+  /* Subtle pattern overlay */
+  background-image: 
+    radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(139, 101, 65, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 50% 10%, rgba(201, 168, 118, 0.03) 0%, transparent 50%);
+  
+  /* Remove outer border as requested */
+  border: none;
+  
+  border-radius: 16px;
+  color: #f4e6d3;
   opacity: 0;
   transform: translateX(100%);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
   overflow-y: auto;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(20px) saturate(180%);
+  
+  /* Enhanced shadow with multiple layers */
+  box-shadow: 
+    0 16px 48px rgba(0, 0, 0, 0.8),
+    0 8px 24px rgba(139, 101, 65, 0.2),
+    0 2px 8px rgba(212, 175, 55, 0.1),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+  
   z-index: 1000; /* Ensure panel is above everything */
 }
 
 .info-panel.visible {
   opacity: 1;
   transform: translateX(0);
+  animation: panelSlideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Panel slide-in animation */
+@keyframes panelSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+    filter: blur(5px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(20%) scale(0.98);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #8b6541;
-  background: rgba(26, 22, 17, 0.8);
+  padding: 24px;
+  border-bottom: 2px solid rgba(139, 101, 65, 0.3);
+  
+  /* Elegant header gradient with maximum opacity */
+  background: linear-gradient(
+    135deg,
+    rgba(32, 26, 20, 1.0) 0%,
+    rgba(48, 40, 32, 1.0) 50%,
+    rgba(64, 54, 44, 1.0) 100%
+  );
+  
+  /* Subtle inner glow */
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.1),
+    inset 0 -1px 2px rgba(0, 0, 0, 0.2);
+  
+  border-radius: 16px 16px 0 0;
 }
 
 .deity-names h2 {
   margin: 0;
-  color: #c9a876;
-  font-size: 1.6em;
-  font-weight: 600;
-  letter-spacing: 1px;
+  
+  /* Beautiful bronze gradient text */
+  background: linear-gradient(
+    135deg,
+    #f4e6d3 0%,
+    #e6d4b7 20%,
+    #d4af37 40%,
+    #f0d67c 60%,
+    #e6d4b7 80%,
+    #f4e6d3 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  font-size: 1.8em;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  font-family: 'Cinzel', 'Times New Roman', serif;
 }
 
 .deity-names h3 {
-  margin: 4px 0 0 0;
-  color: #8b6541;
-  font-size: 1em;
+  margin: 6px 0 0 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1em;
   font-style: italic;
-  font-weight: normal;
+  font-weight: 500;
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.8),
+    0 0 6px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.5px;
 }
 
 .etruscan-inscription {
-  margin-top: 8px;
-  font-size: 12px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  border: 1px solid rgba(139, 101, 65, 0.3);
+  font-size: 13px;
 }
 
 .etruscan-label {
-  color: #8b6541;
-  margin-right: 6px;
+  color: rgba(255, 255, 255, 0.85);
+  margin-right: 8px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 500;
+  text-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 0 4px rgba(0, 0, 0, 0.5);
 }
 
 .etruscan-text {
   font-family: 'Noto Sans Old Italic', 'Aegean', serif;
-  color: #d4af37;
+  
+  /* Golden Etruscan text gradient */
+  background: linear-gradient(
+    45deg,
+    #d4af37 0%,
+    #f0d67c 25%,
+    #ffed4e 50%,
+    #f0d67c 75%,
+    #d4af37 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
   direction: rtl;
   unicode-bidi: embed;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  letter-spacing: 1px;
 }
 
 .panel-header button {
-  background: none;
-  border: 1px solid rgba(139, 101, 65, 0.4);
-  color: #8b6541;
-  font-size: 18px;
+  background: linear-gradient(
+    135deg,
+    rgba(139, 101, 65, 0.1) 0%,
+    rgba(101, 73, 45, 0.1) 100%
+  );
+  border: 2px solid rgba(139, 101, 65, 0.4);
+  color: #c9a876;
+  font-size: 20px;
   cursor: pointer;
-  padding: 8px;
-  width: 36px;
-  height: 36px;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 4px;
-  transition: all 0.3s ease;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  font-weight: 600;
 }
 
 .panel-header button:hover {
-  background: rgba(139, 101, 65, 0.2);
-  color: #c9a876;
-  border-color: rgba(139, 101, 65, 0.6);
+  background: linear-gradient(
+    135deg,
+    rgba(139, 101, 65, 0.3) 0%,
+    rgba(212, 175, 55, 0.2) 50%,
+    rgba(101, 73, 45, 0.3) 100%
+  );
+  color: #f4e6d3;
+  border-color: rgba(212, 175, 55, 0.8);
+  transform: scale(1.05);
+  box-shadow: 
+    0 4px 16px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(212, 175, 55, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.panel-header button:active {
+  transform: scale(0.95);
 }
 
 .panel-content {
-  padding: 20px;
+  padding: 24px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.25) 50%,
+    rgba(0, 0, 0, 0.2) 100%
+  );
+  position: relative;
+}
+
+/* Add subtle text background for better readability */
+.panel-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  border-radius: 0 0 16px 16px;
 }
 
 .loading {
@@ -256,25 +404,79 @@ body, html {
 .symbols-section h3,
 .location-section h3,
 .archaeological-section h3 {
-  font-size: 14px;
-  font-weight: 600;
-  color: #c9a876;
-  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  
+  /* Elegant bronze gradient for headings */
+  background: linear-gradient(
+    90deg,
+    #c9a876 0%,
+    #d4af37 50%,
+    #c9a876 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  margin-bottom: 12px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  border-bottom: 1px solid rgba(139, 101, 65, 0.3);
-  padding-bottom: 4px;
+  letter-spacing: 1.2px;
+  font-family: 'Cinzel', 'Times New Roman', serif;
+  
+  /* Enhanced border with gradient */
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(139, 101, 65, 0.5) 20%,
+    rgba(212, 175, 55, 0.8) 50%,
+    rgba(139, 101, 65, 0.5) 80%,
+    transparent 100%
+  ) 1;
+  
+  padding-bottom: 6px;
+  position: relative;
+}
+
+/* Add subtle glow effect */
+.description-section h3::after,
+.divination-section h3::after,
+.historical-section h3::after,
+.hepatoscopy-section h3::after,
+.ritual-section h3::after,
+.symbols-section h3::after,
+.location-section h3::after,
+.archaeological-section h3::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.4) 50%,
+    transparent 100%
+  );
+  filter: blur(1px);
 }
 
 .description-section p,
 .historical-section p,
 .location-section p,
 .archaeological-section p {
-  font-size: 13px;
-  line-height: 1.6;
-  color: #8b6541;
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.95);
   margin: 0;
   text-align: justify;
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.8),
+    0 0 8px rgba(0, 0, 0, 0.6);
+  font-weight: 400;
+  letter-spacing: 0.3px;
 }
 
 /* Lists */
@@ -291,23 +493,31 @@ body, html {
 .ritual-section li,
 .symbols-section li,
 .hepatoscopy-subsection li {
-  font-size: 12px;
-  color: #8b6541;
-  margin-bottom: 6px;
-  padding-left: 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 8px;
+  padding-left: 20px;
   position: relative;
-  line-height: 1.4;
+  line-height: 1.5;
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.8),
+    0 0 6px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.2px;
 }
 
 .divination-section li:before,
 .ritual-section li:before,
 .symbols-section li:before,
 .hepatoscopy-subsection li:before {
-  content: "•";
-  color: #c9a876;
+  content: "◆";
+  color: #d4af37;
   position: absolute;
   left: 0;
   font-weight: bold;
+  font-size: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  text-shadow: 0 0 6px rgba(212, 175, 55, 0.6);
 }
 
 /* Hepatoscopy subsections */
@@ -316,10 +526,16 @@ body, html {
 }
 
 .hepatoscopy-subsection h4 {
-  font-size: 12px;
-  color: #c9a876;
-  margin-bottom: 6px;
+  font-size: 13px;
+  color: #d4af37;
+  margin-bottom: 8px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.8),
+    0 0 8px rgba(0, 0, 0, 0.6),
+    0 0 4px rgba(212, 175, 55, 0.3);
 }
 
 /* Hover tooltip */
@@ -339,38 +555,114 @@ body, html {
   z-index: 1000; /* Ensure tooltip is above everything */
 }
 
-/* Scrollbar styling */
+/* Enhanced scrollbar styling */
 .info-panel::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .info-panel::-webkit-scrollbar-track {
-  background: rgba(26, 22, 17, 0.5);
-  border-radius: 3px;
+  background: linear-gradient(
+    to bottom,
+    rgba(20, 16, 12, 0.3) 0%,
+    rgba(32, 26, 20, 0.3) 100%
+  );
+  border-radius: 4px;
+  margin: 8px 0;
 }
 
 .info-panel::-webkit-scrollbar-thumb {
-  background: rgba(139, 101, 65, 0.4);
-  border-radius: 3px;
+  background: linear-gradient(
+    to bottom,
+    rgba(212, 175, 55, 0.6) 0%,
+    rgba(139, 101, 65, 0.6) 50%,
+    rgba(101, 73, 45, 0.6) 100%
+  );
+  border-radius: 4px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  box-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 
 .info-panel::-webkit-scrollbar-thumb:hover {
-  background: rgba(139, 101, 65, 0.6);
+  background: linear-gradient(
+    to bottom,
+    rgba(212, 175, 55, 0.8) 0%,
+    rgba(139, 101, 65, 0.8) 50%,
+    rgba(101, 73, 45, 0.8) 100%
+  );
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 
+    0 3px 6px rgba(0, 0, 0, 0.4),
+    0 1px 3px rgba(212, 175, 55, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
+  /* Ensure full viewport usage on mobile */
+  body, html {
+    height: 100vh;
+    height: -webkit-fill-available; /* iOS Safari fix */
+    overflow: hidden;
+    -webkit-overflow-scrolling: none;
+  }
+  
+  .piacenza-liver-app {
+    height: 100vh;
+    height: -webkit-fill-available; /* iOS Safari fix */
+  }
+  
+  .scene-container {
+    height: 100vh;
+    height: -webkit-fill-available; /* iOS Safari fix */
+  }
+  
+  .three-container {
+    height: 100vh;
+    height: -webkit-fill-available; /* iOS Safari fix */
+    /* Prevent zoom on mobile */
+    touch-action: pan-x pan-y;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Mobile-optimized title */
+  .three-container::before {
+    font-size: clamp(24px, 8vw, 48px);
+    top: 5%;
+    letter-spacing: 3px;
+  }
+  
   .info-panel {
     width: 90vw;
     left: 5vw;
     right: 5vw;
     max-height: 70vh;
+    top: 10px;
   }
   
   .hover-tooltip {
-    top: 10px;
+    display: none; /* Hide hover tooltips on mobile */
+  }
+  
+  .legend {
+    bottom: 10px;
     left: 10px;
-    font-size: 12px;
+    font-size: 10px;
+  }
+}
+
+/* Mobile landscape specific */
+@media (max-width: 768px) and (orientation: landscape) {
+  .three-container::before {
+    font-size: clamp(20px, 6vw, 36px);
+    top: 3%;
+  }
+  
+  .info-panel {
+    max-height: 85vh;
   }
 }
 
@@ -386,4 +678,47 @@ body, html {
   pointer-events: none;
   user-select: none;
   z-index: 1000; /* Ensure legend is above everything */
+}
+
+/* WebGL Error Display */
+.webgl-error {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(26, 22, 17, 0.95);
+  border: 2px solid #8b6541;
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  color: #c9a876;
+  font-family: Georgia, serif;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+  z-index: 2000;
+}
+
+.webgl-error h3 {
+  color: #d4af37;
+  margin: 0 0 15px 0;
+  font-size: 1.4em;
+  font-weight: 600;
+}
+
+.webgl-error p {
+  margin: 10px 0;
+  line-height: 1.5;
+  color: #c9a876;
+}
+
+.webgl-error ul {
+  text-align: left;
+  margin: 15px 0;
+  padding-left: 20px;
+}
+
+.webgl-error li {
+  margin: 5px 0;
+  color: #8b6541;
 }
