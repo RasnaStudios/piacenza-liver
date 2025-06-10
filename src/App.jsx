@@ -39,6 +39,10 @@ function PiacenzaLiverScene() {
   
   // Title hiding timeout
   const titleTimeoutRef = useRef(null)
+  
+  // Zoom detection refs
+  const initialCameraDistance = useRef(null)
+  const hasZoomedRef = useRef(false)
 
   // Optimized callback handlers
   const handleMarkerHover = useCallback((section) => {
@@ -47,6 +51,10 @@ function PiacenzaLiverScene() {
 
   const handleMarkerClick = useCallback((inscription) => {
     setSelectedInscription(inscription)
+    
+    // Hide title when panel opens
+    setHasInteracted(true)
+    hasZoomedRef.current = true
     
     // Focus camera on the selected deity using the text marker's orientation for optimal positioning
     // Pass isPanelOpen=true since panel will be open after selection
@@ -73,15 +81,19 @@ function PiacenzaLiverScene() {
       cameraControllerRef.current.resetToDefault(800)
     }
     
-    // Reset title visibility (same as double-click)
+    // Reset title visibility and zoom state (same as double-click)
     setHasInteracted(false)
     setIsInteracting(false)
+    hasZoomedRef.current = false
+    if (cameraRef.current) {
+      initialCameraDistance.current = cameraRef.current.position.length()
+    }
   }, [])
 
   // Handle camera interaction for title visibility
   const handleInteractionStart = useCallback(() => {
     setIsInteracting(true)
-    setHasInteracted(true) // Mark as interacted permanently
+    // Don't set hasInteracted here - only on zoom
     if (titleTimeoutRef.current) {
       clearTimeout(titleTimeoutRef.current)
     }
@@ -95,6 +107,24 @@ function PiacenzaLiverScene() {
     titleTimeoutRef.current = setTimeout(() => {
       setIsInteracting(false)
     }, 2000)
+  }, [])
+
+  // Check for zoom and hide title if user zoomed in
+  const checkForZoom = useCallback((camera) => {
+    if (initialCameraDistance.current === null) {
+      // Store initial distance
+      initialCameraDistance.current = camera.position.length()
+      return
+    }
+
+    const currentDistance = camera.position.length()
+    const initialDistance = initialCameraDistance.current
+    
+    // If user has zoomed in significantly (closer to the liver) and hasn't already marked as zoomed
+    if (currentDistance < initialDistance * 0.8 && !hasZoomedRef.current) {
+      hasZoomedRef.current = true
+      setHasInteracted(true) // Hide title permanently only on zoom
+    }
   }, [])
 
   // Update container class based on interaction state
@@ -161,6 +191,19 @@ function PiacenzaLiverScene() {
     controls.maxDistance = 10
     controlsRef.current = controls
 
+    // Store initial camera distance after setup
+    initialCameraDistance.current = camera.position.length()
+
+    // Add wheel event listener for immediate zoom detection
+    const handleWheel = (event) => {
+      // Mark as zoomed immediately when user starts scrolling (zooming)
+      if (!hasZoomedRef.current) {
+        hasZoomedRef.current = true
+        setHasInteracted(true)
+      }
+    }
+    renderer.domElement.addEventListener('wheel', handleWheel, { passive: true })
+
     // Add interaction detection for title hiding
     controls.addEventListener('start', handleInteractionStart)
     controls.addEventListener('end', handleInteractionEnd)
@@ -185,9 +228,11 @@ function PiacenzaLiverScene() {
       // Use camera controller for smooth animation back to default
       cameraController.resetToDefault(800)
       
-      // Reset title visibility
+      // Reset title visibility and zoom state
       setHasInteracted(false)
       setIsInteracting(false)
+      hasZoomedRef.current = false
+      initialCameraDistance.current = camera.position.length()
       
       // Close any open panel
       setSelectedInscription(null)
@@ -216,6 +261,9 @@ function PiacenzaLiverScene() {
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate)
       controls.update()
+      
+      // Check for zoom changes
+      checkForZoom(camera)
       
       // Update marker visibility based on camera position
       if (deityMarkers) {
@@ -246,13 +294,14 @@ function PiacenzaLiverScene() {
       // Remove event listeners
       window.removeEventListener('resize', handleResize)
       renderer.domElement.removeEventListener('dblclick', handleDoubleClick)
+      renderer.domElement.removeEventListener('wheel', handleWheel)
       
       // Remove renderer from DOM
       if (container.contains(renderer.domElement)) {
-      container.removeChild(renderer.domElement)
+        container.removeChild(renderer.domElement)
       }
     }
-  }, [handleMarkerHover, handleMarkerClick, handleBackgroundClick])
+  }, [handleMarkerHover, handleMarkerClick, handleBackgroundClick, checkForZoom])
 
   return (
     <div className="piacenza-liver-app">
