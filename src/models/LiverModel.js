@@ -28,7 +28,7 @@ export class LiverModel {
     return this.mesh
   }
 
-  // Create aged bronze material with oxidation effects
+  // Create aged bronze material with oxidation patches
   createAgedBronzeMaterial() {
     // Create base bronze texture with oxidation patches
     const canvas = document.createElement('canvas')

@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 
 export class DeityMarkers {
-  constructor(scene, liverSections, liverModel) {
+  constructor(scene, liverInscriptions, liverModel) {
     this.scene = scene
-    this.liverSections = liverSections
+    this.liverInscriptions = liverInscriptions
     this.liverModel = liverModel
     this.markers = []
     this.hoveredMarker = null
@@ -16,8 +16,8 @@ export class DeityMarkers {
 
   // Create simple text markers using plane geometry
   createMarkers() {
-    this.liverSections.forEach((section) => {
-      const marker = this.createTextPlane(section)
+    this.liverInscriptions.forEach((inscription) => {
+      const marker = this.createTextPlane(inscription)
       if (marker) {
         this.markers.push(marker)
       }
@@ -30,7 +30,7 @@ export class DeityMarkers {
   }
 
   // Create a text plane marker
-  createTextPlane(section) {
+  createTextPlane(inscription) {
     // Create canvas for text texture
     const canvas = document.createElement('canvas')
     const context = canvas.getContext('2d')
@@ -51,8 +51,8 @@ export class DeityMarkers {
     context.textBaseline = 'middle'
     context.direction = 'rtl' // Right-to-left text direction
     
-    // Process text
-    const text = this.processEtruscanText(section.name)
+    // Use the Etruscan text directly from the inscription
+    const text = inscription.etruscanText
     
     // Draw text
     context.strokeText(text, canvas.width / 2, canvas.height / 2)
@@ -79,11 +79,11 @@ export class DeityMarkers {
     // Create mesh
     const mesh = new THREE.Mesh(geometry, material)
     
-    // Store section data
+    // Store inscription data
     mesh.userData = {
       type: 'deity-marker', // Important for interaction detection
-      section: section,
-      sectionId: section.id,
+      inscription: inscription,
+      sectionId: inscription.id,
       originalOpacity: 0.9,
       surfaceNormal: null,
       surfacePoint: null,
@@ -108,16 +108,16 @@ export class DeityMarkers {
     const liverMesh = this.liverModel.getMesh()
     
     this.markers.forEach((marker, index) => {
-      const section = this.liverSections[index]
+      const inscription = this.liverInscriptions[index]
       
-      // Determine if this inscription should be on the bottom
-      const isUnderside = section.name === '𐌖𐌔𐌉𐌋𐌔' || section.name === '𐌕𐌉𐌅𐌔'
+      // Determine if this inscription should be on the bottom (retro group)
+      const isUnderside = inscription.groupId === 'retro'
       
       let rayOrigin, rayDirection
       
       if (isUnderside) {
         // For underside inscriptions - raycast from below to find bottom surface
-        rayOrigin = section.position.clone()
+        rayOrigin = inscription.position.clone()
         rayOrigin.y = -2 // Start from below the liver
         rayDirection = new THREE.Vector3(0, 1, 0) // Raycast upward
         
@@ -140,10 +140,10 @@ export class DeityMarkers {
           marker.userData.surfacePoint = surfacePoint
           marker.userData.isUnderside = true
           
-          console.log(`Positioned ${section.name} on bottom surface at:`, surfacePoint)
+          console.log(`Positioned ${inscription.etruscanText} on bottom surface at:`, surfacePoint)
         } else {
           // Fallback positioning below liver
-          const basePosition = section.position.clone()
+          const basePosition = inscription.position.clone()
           basePosition.y = -0.25
           marker.position.copy(basePosition)
           marker.rotation.x = Math.PI
@@ -151,11 +151,11 @@ export class DeityMarkers {
           marker.userData.isUnderside = true
           marker.userData.surfacePoint = basePosition
           
-          console.log(`Fallback positioned ${section.name} below liver at:`, basePosition)
+          console.log(`Fallback positioned ${inscription.etruscanText} below liver at:`, basePosition)
         }
       } else {
         // For top surface inscriptions
-        rayOrigin = section.position.clone()
+        rayOrigin = inscription.position.clone()
         rayOrigin.y += 2
         rayDirection = new THREE.Vector3(0, -1, 0)
         
@@ -179,68 +179,12 @@ export class DeityMarkers {
           marker.userData.isUnderside = false
         } else {
           // Fallback positioning
-          marker.position.copy(section.position)
+          marker.position.copy(inscription.position)
         }
       }
       
-      console.log(`Positioned ${section.name} at:`, marker.position)
+      console.log(`Positioned ${inscription.etruscanText} at:`, marker.position)
     })
-  }
-
-  // Map modern names to authentic Etruscan inscriptions (right-to-left)
-  getEtruscanInscription(modernName) {
-    const etruscanMap = {
-      'tin/cil/en': '𐌍𐌄𐌋𐌉𐌂 / 𐌍𐌉𐌕', // reversed
-      'tin/θvf': '𐌅𐌖𐌚 / 𐌍𐌉𐌕', // reversed
-      'tins/θne': '𐌄𐌍𐌚 / 𐌔𐌍𐌉𐌕', // reversed
-      'uni/mae': '𐌄𐌀𐌌 / 𐌉𐌍𐌖', // reversed
-      'tec/vm': '𐌌𐌖 / 𐌂𐌄𐌕', // reversed
-      'lvsl': '𐌋𐌔𐌖𐌋', // reversed
-      'neθ': '𐌚𐌄𐌍', // reversed
-      'caθ': '𐌚𐌀𐌂', // reversed
-      'fuflu/ns': '𐌔𐌍 / 𐌖𐌋𐌅𐌖𐌅', // reversed
-      'selva': '𐌀𐌅𐌋𐌄𐌔', // reversed
-      'leθns': '𐌔𐌍𐌚𐌄𐌋', // reversed
-      'tluscv': '𐌖𐌂𐌔𐌖𐌋𐌕', // reversed
-      'cels': '𐌔𐌋𐌄𐌂', // reversed
-      'cvlalp': '𐌐𐌋𐌀𐌋𐌖𐌂', // reversed
-      'vetisl': '𐌋𐌔𐌉𐌕𐌄𐌅', // reversed
-      'cilensl': '𐌋𐌔𐌍𐌄𐌋𐌉𐌂', // reversed
-      'pul': '𐌋𐌖𐌐', // reversed
-      'leθn': '𐌍𐌚𐌄𐌋', // reversed
-      'la/sl': '𐌋𐌔 / 𐌀𐌋', // reversed
-      'tins/θvf': '𐌅𐌖𐌚 / 𐌔𐌍𐌉𐌕', // reversed
-      'θufl/θas': '𐌔𐌀𐌚 / 𐌋𐌅𐌖𐌚', // reversed
-      'tinsθ/neθ': '𐌚𐌄𐌍 / 𐌚𐌔𐌍𐌉𐌕', // reversed
-      'caθa': '𐌀𐌚𐌀𐌂', // reversed
-      'fuf/lus': '𐌔𐌖𐌋 / 𐌋𐌅𐌖𐌅', // reversed
-      'tvnθ': '𐌚𐌍𐌖𐌕', // reversed
-      'marisl/laθ': '𐌚𐌀𐌋 / 𐌋𐌔𐌉𐌓𐌀𐌌', // reversed
-      'leta': '𐌀𐌕𐌄𐌋', // reversed
-      'neθ': '𐌚𐌄𐌍', // reversed
-      'herc': '𐌂𐌓𐌄𐌇', // reversed
-      'mar': '𐌓𐌀𐌌', // reversed
-      'selva': '𐌀𐌅𐌋𐌄𐌔', // reversed
-      'leθa': '𐌀𐌚𐌄𐌋', // reversed
-      'tlusc': '𐌂𐌔𐌖𐌋𐌕', // reversed
-      'lvsl/velϰ': '𐌒𐌋𐌄𐌅 / 𐌋𐌔𐌖𐌋', // reversed
-      'satr/es': '𐌔𐌄 / 𐌓𐌕𐌀𐌔', // reversed
-      'cilen': '𐌍𐌄𐌋𐌉𐌂', // reversed
-      'leθam': '𐌌𐌀𐌚𐌄𐌋', // reversed
-      'metlvmθ': '𐌚𐌌𐌖𐌋𐌕𐌄𐌌', // reversed
-      'mar': '𐌓𐌀𐌌', // reversed
-      'tlusc': '𐌂𐌔𐌖𐌋𐌕', // reversed
-      'tivs': '𐌔𐌅𐌉𐌕', // reversed
-      'usils': '𐌔𐌋𐌉𐌔𐌖' // reversed
-    }
-    
-    return etruscanMap[modernName] || modernName
-  }
-
-  // Process Etruscan text
-  processEtruscanText(text) {
-    if (!text) return ''
-    return this.getEtruscanInscription(text)
   }
 
   // Update marker visibility
@@ -276,7 +220,7 @@ export class DeityMarkers {
       // Redraw text with brighter color
       const context = marker.userData.context
       const canvas = marker.userData.canvas
-      const section = marker.userData.section
+      const inscription = marker.userData.inscription
       
       context.clearRect(0, 0, canvas.width, canvas.height)
       context.font = 'bold 32px "Noto Sans Old Italic", "Aegean", serif'
@@ -287,7 +231,7 @@ export class DeityMarkers {
       context.textBaseline = 'middle'
       context.direction = 'rtl' // Right-to-left text direction
       
-      const text = this.processEtruscanText(section.name)
+      const text = inscription.etruscanText
       context.strokeText(text, canvas.width / 2, canvas.height / 2)
       context.fillText(text, canvas.width / 2, canvas.height / 2)
       
@@ -304,7 +248,7 @@ export class DeityMarkers {
       // Redraw text with normal color
       const context = marker.userData.context
       const canvas = marker.userData.canvas
-      const section = marker.userData.section
+      const inscription = marker.userData.inscription
       
       context.clearRect(0, 0, canvas.width, canvas.height)
       context.font = 'bold 32px "Noto Sans Old Italic", "Aegean", serif'
@@ -315,7 +259,7 @@ export class DeityMarkers {
       context.textBaseline = 'middle'
       context.direction = 'rtl' // Right-to-left text direction
       
-      const text = this.processEtruscanText(section.name)
+      const text = inscription.etruscanText
       context.strokeText(text, canvas.width / 2, canvas.height / 2)
       context.fillText(text, canvas.width / 2, canvas.height / 2)
       
@@ -329,9 +273,9 @@ export class DeityMarkers {
     return this.markers.find(marker => marker.userData.sectionId === sectionId)
   }
 
-  // Get section from marker
+  // Get inscription from marker
   getSectionFromMarker(marker) {
-    return marker?.userData?.section
+    return marker?.userData?.inscription
   }
 
   // Get marker from intersection
@@ -349,7 +293,7 @@ export class DeityMarkers {
         if (marker.material.map) marker.material.map.dispose()
         marker.material.dispose()
       }
-      this.scene.remove(marker)
+      if (marker.parent) marker.parent.remove(marker)
     })
     
     this.markers = []

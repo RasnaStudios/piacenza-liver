@@ -3,7 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 // Modular imports
-import { liverSections } from './data/liverData'
+import { liverInscriptions } from './data/liverData'
 import { CameraController } from './controllers/CameraController'
 import { InteractionHandler } from './controllers/InteractionHandler'
 import { LiverModel } from './models/LiverModel'
@@ -16,7 +16,7 @@ import './App.css'
 
 function PiacenzaLiverScene() {
   // State management
-  const [selectedSection, setSelectedSection] = useState(null)
+  const [selectedInscription, setSelectedInscription] = useState(null)
   const [hoveredSection, setHoveredSection] = useState(null)
   const [isInteracting, setIsInteracting] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
@@ -45,19 +45,19 @@ function PiacenzaLiverScene() {
     setHoveredSection(section)
   }, [])
 
-  const handleMarkerClick = useCallback((section) => {
-    setSelectedSection(section)
+  const handleMarkerClick = useCallback((inscription) => {
+    setSelectedInscription(inscription)
     
     // Focus camera on the selected deity using the text marker's orientation for optimal positioning
     // Pass isPanelOpen=true since panel will be open after selection
     if (cameraControllerRef.current && deityMarkersRef.current) {
-      const marker = deityMarkersRef.current.getMarkerBySection(section.id)
-      cameraControllerRef.current.focusOn(section.position, 600, marker, true) // Panel will be open
+      const marker = deityMarkersRef.current.getMarkerBySection(inscription.id)
+      cameraControllerRef.current.focusOn(inscription.position, 600, marker, true) // Panel will be open
     }
   }, [])
 
   const handleBackgroundClick = useCallback(() => {
-    setSelectedSection(null)
+    setSelectedInscription(null)
     
     // Return camera to manual position
     if (cameraControllerRef.current) {
@@ -66,12 +66,16 @@ function PiacenzaLiverScene() {
   }, [])
 
   const handlePanelClose = useCallback(() => {
-    setSelectedSection(null)
+    setSelectedInscription(null)
     
-    // Center liver in full screen when panel closes
+    // Use camera controller for smooth animation back to default (same as double-click)
     if (cameraControllerRef.current) {
-      cameraControllerRef.current.centerLiver()
+      cameraControllerRef.current.resetToDefault(800)
     }
+    
+    // Reset title visibility (same as double-click)
+    setHasInteracted(false)
+    setIsInteracting(false)
   }, [])
 
   // Handle camera interaction for title visibility
@@ -127,8 +131,8 @@ function PiacenzaLiverScene() {
     // Camera setup
     const camera = new THREE.PerspectiveCamera(
       60, 
-      container.clientWidth / container.clientHeight, 
-      0.1, 
+      container.clientWidth / container.clientHeight,
+      0.1,
       1000
     )
     camera.position.set(0, 2, 3)
@@ -156,7 +160,7 @@ function PiacenzaLiverScene() {
     controls.minDistance = 1
     controls.maxDistance = 10
     controlsRef.current = controls
-    
+
     // Add interaction detection for title hiding
     controls.addEventListener('start', handleInteractionStart)
     controls.addEventListener('end', handleInteractionEnd)
@@ -169,7 +173,7 @@ function PiacenzaLiverScene() {
     liverModelRef.current = liverModel
 
     // Pass liver model to markers for surface positioning
-    const deityMarkers = new DeityMarkers(scene, liverSections, liverModel)
+    const deityMarkers = new DeityMarkers(scene, liverInscriptions, liverModel)
     deityMarkersRef.current = deityMarkers
 
     // Initialize controllers
@@ -186,7 +190,7 @@ function PiacenzaLiverScene() {
       setIsInteracting(false)
       
       // Close any open panel
-      setSelectedSection(null)
+      setSelectedInscription(null)
     }
     
     renderer.domElement.addEventListener('dblclick', handleDoubleClick)
@@ -245,7 +249,7 @@ function PiacenzaLiverScene() {
       
       // Remove renderer from DOM
       if (container.contains(renderer.domElement)) {
-        container.removeChild(renderer.domElement)
+      container.removeChild(renderer.domElement)
       }
     }
   }, [handleMarkerHover, handleMarkerClick, handleBackgroundClick])
@@ -257,13 +261,13 @@ function PiacenzaLiverScene() {
         
         {/* Modular UI components */}
         <DeityPanel 
-          selectedSection={selectedSection} 
+          selectedInscription={selectedInscription} 
           onClose={handlePanelClose} 
         />
         
         <HoverTooltip 
-          hoveredSection={hoveredSection && !selectedSection ? hoveredSection : null} 
-        />
+          hoveredSection={hoveredSection && !selectedInscription ? hoveredSection : null} 
+      />
         
         <Legend />
       </div>

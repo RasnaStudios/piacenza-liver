@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
-import { loadDeityContent } from '../utils/deityLoader'
+import { liverGods, liverGroups } from '../data/liverData'
 import './HoverTooltip.css'
 
 export function HoverTooltip({ hoveredSection }) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
-  const [deityData, setDeityData] = useState(null)
 
   useEffect(() => {
     const updateMousePosition = (e) => {
@@ -13,15 +12,6 @@ export function HoverTooltip({ hoveredSection }) {
 
     if (hoveredSection) {
       document.addEventListener('mousemove', updateMousePosition)
-      
-      // Load deity data for short description
-      if (hoveredSection.docFile) {
-        loadDeityContent(hoveredSection.docFile)
-          .then(data => setDeityData(data))
-          .catch(() => setDeityData(null))
-      }
-    } else {
-      setDeityData(null)
     }
 
     return () => {
@@ -30,6 +20,14 @@ export function HoverTooltip({ hoveredSection }) {
   }, [hoveredSection])
 
   if (!hoveredSection) return null
+
+  // Get the gods for this inscription
+  const gods = hoveredSection.gods?.map(godId => liverGods[godId]).filter(Boolean) || []
+  const group = liverGroups[hoveredSection.groupId]
+  
+  // Create display names
+  const deityNames = gods.map(god => god.name).join(' + ')
+  const romanEquivalents = gods.map(god => god.romanEquivalent).filter(Boolean)
 
   return (
     <div
@@ -41,13 +39,16 @@ export function HoverTooltip({ hoveredSection }) {
     >
       <div className="tooltip-content">
         <div className="deity-name">
-          {deityData?.name || hoveredSection.name}
-          {deityData?.romanEquivalent && (
-            <span className="roman-name"> ({deityData.romanEquivalent})</span>
+          {deityNames || `Section ${hoveredSection.id}`}
+          {romanEquivalents.length > 0 && (
+            <span className="roman-name"> ({romanEquivalents.join(', ')})</span>
           )}
         </div>
+        <div className="etruscan-text">
+          {hoveredSection.etruscanText}
+        </div>
         <div className="deity-description">
-          {deityData?.shortDescription || hoveredSection.description}
+          {group?.name} • {hoveredSection.divinationMeaning}
         </div>
       </div>
     </div>
