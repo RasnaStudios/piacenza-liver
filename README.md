@@ -12,9 +12,7 @@ An interactive 3D visualization of the ancient Etruscan Piacenza Liver (Fegato d
 
 ## 🌐 Access the Website
 
-The live website is available at: [liver.rasna.dev](liver.rasna.dev)
-
-*Note: Please update this section with your actual deployment URL*
+The live website is available at: [liver.rasna.dev](https://liver.rasna.dev)
 
 ## 🚀 Run Locally
 

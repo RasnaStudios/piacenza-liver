@@ -327,7 +327,7 @@ function PiacenzaLiverScene() {
 // Lighting setup function
 function setupLighting(scene) {
   // Clean spotlight setup
-  const spotlight = new THREE.SpotLight(0xfff4e6, 60.0)
+  const spotlight = new THREE.SpotLight(0xfff4e6, 300.0)
   spotlight.position.set(0, 6, 3)
   spotlight.target.position.set(0, 0, 0)
   spotlight.angle = Math.PI / 6
@@ -346,6 +346,27 @@ function setupLighting(scene) {
   
   scene.add(spotlight)
   scene.add(spotlight.target)
+  
+  // Bottom lights for reading inscriptions on underside (spread wide for corner coverage)
+  const bottomLight1 = new THREE.PointLight(0xfff4e6, 250, 15, 2)
+  bottomLight1.position.set(-6, -8, 4)
+  bottomLight1.castShadow = false
+  scene.add(bottomLight1)
+  
+  const bottomLight2 = new THREE.PointLight(0xfff4e6, 250, 15, 2)
+  bottomLight2.position.set(6, -8, -4)
+  bottomLight2.castShadow = false
+  scene.add(bottomLight2)
+  
+  const bottomLight3 = new THREE.PointLight(0xfff4e6, 250, 15, 2)
+  bottomLight3.position.set(-2, -10, -5)
+  bottomLight3.castShadow = false
+  scene.add(bottomLight3)
+  
+  const bottomLight4 = new THREE.PointLight(0xfff4e6, 250, 15, 2)
+  bottomLight4.position.set(2, -10, 5)
+  bottomLight4.castShadow = false
+  scene.add(bottomLight4)
   
   // Extremely subtle dust particles
   const particleCount = 40
@@ -410,21 +431,24 @@ function setupLighting(scene) {
   }
   animateParticles()
   
-  // Minimal ambient light
-  const ambientLight = new THREE.AmbientLight(0x1a1611, 0.08)
+    // Minimal ambient light for dramatic museum effect
+  const ambientLight = new THREE.AmbientLight(0x1a1611, 1)
   scene.add(ambientLight)
   
-  // Simple platform
-  const platformGeometry = new THREE.CylinderGeometry(4, 4, -2, 32)
-  const platformMaterial = new THREE.MeshPhongMaterial({ 
-    color: 0x222222,
+  // Large museum floor plane (invisible edges)
+  const floorGeometry = new THREE.PlaneGeometry(50, 50)
+  const floorMaterial = new THREE.MeshPhongMaterial({ 
+    color: 0x2a2a2a,
     transparent: true,
-    opacity: 0.8
+    opacity: 0.9
   })
-  const platform = new THREE.Mesh(platformGeometry, platformMaterial)
-  platform.position.set(0, -0.8, 0)
-  platform.receiveShadow = true
-  scene.add(platform)
+  const floor = new THREE.Mesh(floorGeometry, floorMaterial)
+  floor.rotation.x = -Math.PI / 2 // Rotate to be horizontal
+  floor.position.set(0, -3.0, 0)
+  floor.receiveShadow = true
+  scene.add(floor)
+  
+ 
 }
 
 export default function App() {
