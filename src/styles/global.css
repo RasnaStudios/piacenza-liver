@@ -14,6 +14,8 @@ body, html {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  font-family: Georgia, serif;
+  color: #c9a876;
 }
 
 /* Basic app styling */
@@ -39,9 +41,7 @@ body, html {
   height: 100vh;
   position: relative;
   overflow: hidden;
-  
-  /* Pure black museum background */
-  background: #000000;
+  background: #000000; /* Pure black museum background */
 }
 
 /* Dynamic centered title overlay - hides permanently after first interaction */
@@ -111,11 +111,6 @@ body, html {
   }
 }
 
-/* Remove the subtitle to keep focus on the main title */
-.three-container::after {
-  display: none;
-}
-
 /* Update vignette to not interfere with title */
 .scene-container::before {
   content: '';
@@ -132,6 +127,92 @@ body, html {
   );
   pointer-events: none;
   z-index: 0;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  body, html {
+    font-size: 14px;
+    overflow: hidden;
+  }
+
+  .piacenza-liver-app {
+    overflow: hidden;
+  }
+
+  .scene-container {
+    overflow: hidden;
+  }
+
+  .three-container {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+  }
+
+  .three-container::before {
+    font-size: clamp(24px, 8vw, 48px);
+    letter-spacing: 3px;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .three-container::before {
+    font-size: clamp(20px, 6vw, 36px);
+    top: 5%;
+  }
+}
+
+/* WebGL error fallback */
+.webgl-error {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(139, 101, 65, 0.95);
+  color: #f4e6d3;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  font-family: Georgia, serif;
+  max-width: 500px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+}
+
+.webgl-error h3 {
+  color: #d4af37;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.webgl-error p {
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.webgl-error ul {
+  text-align: left;
+  margin: 15px 0;
+}
+
+.webgl-error li {
+  margin-bottom: 8px;
+}
+
+/* Tooltip fade-in animation */
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Enhanced info panel */
@@ -646,165 +727,6 @@ body, html {
     0 0 4px rgba(0, 0, 0, 0.5);
 }
 
-.loading {
-  text-align: center;
-  padding: 40px 20px;
-  color: rgba(255, 255, 255, 0.8);
-  font-style: italic;
-  animation: fadeInOut 2s infinite;
-}
-
-.description-section,
-.divination-section,
-.historical-section,
-.hepatoscopy-section,
-.ritual-section,
-.symbols-section,
-.location-section,
-.archaeological-section {
-  position: relative;
-  z-index: 1;
-  margin-bottom: 24px;
-}
-
-.description-section h3,
-.divination-section h3,
-.historical-section h3,
-.hepatoscopy-section h3,
-.ritual-section h3,
-.symbols-section h3,
-.location-section h3,
-.archaeological-section h3 {
-  margin: 0 0 12px 0;
-  
-  /* Elegant gradient heading */
-  background: linear-gradient(
-    90deg,
-    #f4e6d3 0%,
-    #d4af37 50%,
-    #f4e6d3 100%
-  );
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  
-  font-size: 1.3em;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  font-family: 'Cinzel', 'Times New Roman', serif;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-  
-  /* Decorative underline */
-  position: relative;
-  padding-bottom: 8px;
-}
-
-.description-section h3::after,
-.divination-section h3::after,
-.historical-section h3::after,
-.hepatoscopy-section h3::after,
-.ritual-section h3::after,
-.symbols-section h3::after,
-.location-section h3::after,
-.archaeological-section h3::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 60px;
-  height: 2px;
-  background: linear-gradient(
-    90deg,
-    rgba(212, 175, 55, 0.8) 0%,
-    rgba(212, 175, 55, 0.4) 50%,
-    transparent 100%
-  );
-  border-radius: 1px;
-}
-
-.description-section p,
-.historical-section p,
-.location-section p,
-.archaeological-section p {
-  color: rgba(255, 255, 255, 0.95);
-  line-height: 1.6;
-  margin: 0;
-  
-  /* Enhanced text shadow for better readability */
-  text-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.8),
-    0 0 6px rgba(0, 0, 0, 0.5);
-}
-
-.divination-section ul,
-.ritual-section ul,
-.symbols-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.divination-section li,
-.ritual-section li,
-.symbols-section li {
-  position: relative;
-  padding-left: 24px;
-  margin-bottom: 8px;
-  color: rgba(255, 255, 255, 0.9);
-  line-height: 1.5;
-  
-  /* Enhanced text shadows */
-  text-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.8),
-    0 0 6px rgba(0, 0, 0, 0.5);
-}
-
-.divination-section li:before,
-.ritual-section li:before,
-.symbols-section li:before {
-  content: '◆';
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: #d4af37;
-  font-size: 12px;
-  text-shadow: 
-    0 0 8px rgba(212, 175, 55, 0.6),
-    0 1px 2px rgba(0, 0, 0, 0.8);
-}
-
-.hepatoscopy-subsection {
-  margin-bottom: 16px;
-}
-
-.hepatoscopy-subsection h4 {
-  margin: 0 0 8px 0;
-  color: rgba(212, 175, 55, 0.9);
-  font-size: 1.1em;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  text-shadow: 
-    0 1px 3px rgba(0, 0, 0, 0.8),
-    0 0 6px rgba(0, 0, 0, 0.5);
-}
-
-/* Hover tooltip */
-.hover-tooltip {
-  position: fixed;
-  top: 20px;
-  left: 20px;
-  background: rgba(26, 22, 17, 0.9);
-  color: #c9a876;
-  padding: 10px 15px;
-  border-radius: 5px;
-  border: 1px solid #8b6541;
-  pointer-events: none;
-  backdrop-filter: blur(5px);
-  font-size: 14px;
-  font-weight: 500;
-  z-index: 1000; /* Ensure tooltip is above everything */
-}
-
 /* Enhanced scrollbar styling */
 .info-panel::-webkit-scrollbar {
   width: 8px;
@@ -846,135 +768,4 @@ body, html {
     0 3px 6px rgba(0, 0, 0, 0.4),
     0 1px 3px rgba(212, 175, 55, 0.2),
     inset 0 1px 2px rgba(255, 255, 255, 0.2);
-}
-
-/* Fade animation for loading */
-@keyframes fadeInOut {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-  /* Ensure full viewport usage on mobile */
-  body, html {
-    height: 100vh;
-    height: -webkit-fill-available; /* iOS Safari fix */
-    overflow: hidden;
-    -webkit-overflow-scrolling: none;
-  }
-  
-  .piacenza-liver-app {
-    height: 100vh;
-    height: -webkit-fill-available; /* iOS Safari fix */
-  }
-  
-  .scene-container {
-    height: 100vh;
-    height: -webkit-fill-available; /* iOS Safari fix */
-  }
-  
-  .three-container {
-    height: 100vh;
-    height: -webkit-fill-available; /* iOS Safari fix */
-    /* Prevent zoom on mobile */
-    touch-action: pan-x pan-y;
-    -webkit-user-select: none;
-    -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: transparent;
-  }
-  
-  /* Mobile-optimized title */
-  .three-container::before {
-    font-size: clamp(24px, 8vw, 48px);
-    top: 5%;
-    letter-spacing: 3px;
-  }
-  
-  .info-panel {
-    width: 90vw;
-    left: 5vw;
-    right: 5vw;
-    max-height: 70vh;
-    top: 10px;
-  }
-  
-  .hover-tooltip {
-    display: none; /* Hide hover tooltips on mobile */
-  }
-  
-  .legend {
-    bottom: 10px;
-    left: 10px;
-    font-size: 10px;
-  }
-}
-
-/* Mobile landscape specific */
-@media (max-width: 768px) and (orientation: landscape) {
-  .three-container::before {
-    font-size: clamp(20px, 6vw, 36px);
-    top: 3%;
-  }
-  
-  .info-panel {
-    max-height: 85vh;
-  }
-}
-
-/* Legend positioning */
-.legend {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  color: rgba(196, 168, 118, 0.6);
-  font-family: Georgia, serif;
-  font-size: 11px;
-  line-height: 1.3;
-  pointer-events: none;
-  user-select: none;
-  z-index: 1000; /* Ensure legend is above everything */
-}
-
-/* WebGL Error Display */
-.webgl-error {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(26, 22, 17, 0.95);
-  border: 2px solid #8b6541;
-  border-radius: 12px;
-  padding: 30px;
-  max-width: 500px;
-  color: #c9a876;
-  font-family: Georgia, serif;
-  text-align: center;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
-  z-index: 2000;
-}
-
-.webgl-error h3 {
-  color: #d4af37;
-  margin: 0 0 15px 0;
-  font-size: 1.4em;
-  font-weight: 600;
-}
-
-.webgl-error p {
-  margin: 10px 0;
-  line-height: 1.5;
-  color: #c9a876;
-}
-
-.webgl-error ul {
-  text-align: left;
-  margin: 15px 0;
-  padding-left: 20px;
-}
-
-.webgl-error li {
-  margin: 5px 0;
-      color: #8b6541;
-  }
+} 
