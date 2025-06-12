@@ -11,6 +11,7 @@ import { DeityMarkers } from './models/DeityMarkers'
 import { DeityPanel } from './components/DeityPanel'
 import { HoverTooltip } from './components/HoverTooltip'
 import { Legend } from './components/Legend'
+import { LoadingScreen } from './components/LoadingScreen'
 
 import { MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
@@ -23,6 +24,8 @@ function PiacenzaLiverScene() {
   const [hoveredSection, setHoveredSection] = useState(null)
   const [isInteracting, setIsInteracting] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
+  const [loadingProgress, setLoadingProgress] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Refs for 3D objects and controllers
   const containerRef = useRef(null)
@@ -215,7 +218,17 @@ function PiacenzaLiverScene() {
     setupLighting(scene)
 
     // Create 3D models
-    const liverModel = new LiverModel(scene)
+    // Progress callback for loading
+    const handleLoadingProgress = (progress: number) => {
+      setLoadingProgress(progress)
+      if (progress >= 100) {
+        setTimeout(() => {
+          setIsLoading(false)
+        }, 1000) // Give a moment for the animation to complete
+      }
+    }
+
+    const liverModel = new LiverModel(scene, handleLoadingProgress)
     liverModelRef.current = liverModel
 
     // Pass liver model to markers for surface positioning
@@ -322,6 +335,12 @@ function PiacenzaLiverScene() {
         />
         
         <Legend />
+        
+        {/* Loading Screen */}
+        <LoadingScreen 
+          progress={loadingProgress} 
+          isVisible={isLoading} 
+        />
       </div>
     </div>
   )
