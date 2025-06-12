@@ -1,7 +1,22 @@
 import * as THREE from 'three'
 
 export class InteractionHandler {
-  constructor(camera, renderer, markers, labels = null) {
+  private camera: THREE.Camera
+  private renderer: THREE.WebGLRenderer
+  private markers: any
+  private labels: any
+  private raycaster: THREE.Raycaster
+  private mouse: THREE.Vector2
+  private onMarkerHover: ((marker: any) => void) | null
+  private onMarkerClick: ((marker: any) => void) | null
+  private onBackgroundClick: (() => void) | null
+  private isDragging: boolean
+  private mouseDownPosition: THREE.Vector2
+  private mouseDownTime: number
+  private dragThreshold: number
+  private clickTimeThreshold: number
+
+  constructor(camera: THREE.Camera, renderer: THREE.WebGLRenderer, markers: any, labels: any = null) {
     this.camera = camera
     this.renderer = renderer
     this.markers = markers
@@ -52,14 +67,14 @@ export class InteractionHandler {
   }
 
   // Update mouse coordinates from event
-  updateMouseCoordinates(event) {
+  updateMouseCoordinates(event: MouseEvent) {
     const rect = this.renderer.domElement.getBoundingClientRect()
     this.mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
     this.mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
   }
 
   // Handle mouse down (start of potential drag)
-  handleMouseDown(event) {
+  handleMouseDown(event: MouseEvent) {
     this.updateMouseCoordinates(event)
     this.mouseDownPosition.copy(this.mouse)
     this.mouseDownTime = performance.now()
@@ -67,7 +82,7 @@ export class InteractionHandler {
   }
 
   // Handle mouse up (end of potential drag)
-  handleMouseUp(event) {
+  handleMouseUp(event: MouseEvent) {
     this.updateMouseCoordinates(event)
     
     // Calculate if this was a drag gesture
@@ -106,6 +121,26 @@ export class InteractionHandler {
         return { type: 'marker', object: this.markers.getMarkerFromIntersection(intersection) }
       } else if (object.userData.type === 'deity-label') {
         return { type: 'label', object: this.labels.getLabelFromIntersection(intersection) }
+      }
+    }
+    
+    return null
+  }
+
+  // Perform raycasting against liver mesh for texture atlas interaction
+  getLiverIntersection(liverMesh) {
+    if (!liverMesh) return null
+    
+    this.raycaster.setFromCamera(this.mouse, this.camera)
+    const intersects = this.raycaster.intersectObject(liverMesh)
+    
+    if (intersects.length > 0) {
+      const intersection = intersects[0]
+      return {
+        point: intersection.point,
+        uv: intersection.uv,
+        face: intersection.face,
+        object: intersection.object
       }
     }
     

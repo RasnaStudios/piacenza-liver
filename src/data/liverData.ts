@@ -361,10 +361,10 @@ export const liverGods = {
 
 // INSCRIPTIONS: All 40 liver sections with their gods and relationships
 export const liverInscriptions = [
-  // SKY GROUP (1-4)
+  // SKY GROUP (1-4) - Outer rim top
   {
     id: 1,
-    position: new THREE.Vector3(0.8, 0.1, 0.6),
+    position: new THREE.Vector3(0, 0.1, -0.6),
     groupId: 'sky',
     etruscanText: '𐌔𐌍𐌄𐌋𐌉𐌂 𐌔𐌍𐌉𐌕', 
     gods: ['tinia', 'cilens'],
@@ -373,7 +373,7 @@ export const liverInscriptions = [
   },
   {
     id: 2,
-    position: new THREE.Vector3(0.9, 0.1, 0.2),
+    position: new THREE.Vector3(0.15, 0.1, -0.58),
     groupId: 'sky',
     etruscanText: '𐌔𐌀𐌚𐌋𐌅𐌖𐌚 𐌔𐌍𐌉𐌕',
     gods: ['tinia', 'thufltha'],
@@ -382,7 +382,7 @@ export const liverInscriptions = [
   },
   {
     id: 3,
-    position: new THREE.Vector3(0.8, 0.1, -0.2),
+    position: new THREE.Vector3(0.3, 0.1, -0.52),
     groupId: 'sky', 
     etruscanText: '𐌔𐌍𐌖𐌍𐌚𐌄𐌍 𐌚𐌔𐌍𐌉𐌕',
     gods: ['tinia', 'nethuns'],
@@ -391,7 +391,7 @@ export const liverInscriptions = [
   },
   {
     id: 4,
-    position: new THREE.Vector3(0.6, 0.1, -0.6),
+    position: new THREE.Vector3(0.42, 0.1, -0.4),
     groupId: 'sky',
     etruscanText: '𐌄𐌀𐌌 𐌋𐌀𐌉𐌍𐌖',
     gods: ['uni', 'mae'],
@@ -399,10 +399,10 @@ export const liverInscriptions = [
     divinationMeaning: 'Divine feminine power, marriage and maternal protection'
   },
 
-  // WATER GROUP (5-8)
+  // WATER GROUP (5-8) - Right side moving down
   {
     id: 5,
-    position: new THREE.Vector3(0.2, 0.1, -0.9),
+    position: new THREE.Vector3(0.5, 0.1, -0.25),
     groupId: 'water',
     etruscanText: '𐌌𐌖𐌂𐌄𐌕',
     gods: ['tecvm'],
@@ -411,7 +411,7 @@ export const liverInscriptions = [
   },
   {
     id: 6,
-    position: new THREE.Vector3(-0.2, 0.1, -0.9),
+    position: new THREE.Vector3(0.55, 0.1, -0.08),
     groupId: 'water',
     etruscanText: '𐌋𐌔𐌖𐌋',
     gods: ['lusal'],
@@ -420,7 +420,7 @@ export const liverInscriptions = [
   },
   {
     id: 7,
-    position: new THREE.Vector3(-0.6, 0.1, -0.6),
+    position: new THREE.Vector3(0.56, 0.1, 0.1),
     groupId: 'water',
     etruscanText: '𐌔𐌍𐌖𐌍𐌚𐌄𐌍',
     gods: ['nethuns'],
@@ -429,7 +429,7 @@ export const liverInscriptions = [
   },
   {
     id: 8,
-    position: new THREE.Vector3(-0.8, 0.1, -0.2),
+    position: new THREE.Vector3(0.52, 0.1, 0.28),
     groupId: 'water',
     etruscanText: '𐌔𐌀𐌚𐌀𐌂',
     gods: ['catha'],
@@ -437,10 +437,10 @@ export const liverInscriptions = [
     divinationMeaning: 'Solar reflection in water, light-water interaction'
   },
 
-  // EARTH GROUP (9-12)
+  // EARTH GROUP (9-12) - Bottom right to bottom left
   {
     id: 9,
-    position: new THREE.Vector3(-0.9, 0.1, 0.2),
+    position: new THREE.Vector3(0.45, 0.1, 0.42),
     groupId: 'earth',
     etruscanText: '𐌋 𐌔𐌍𐌖𐌋𐌅𐌖𐌅',
     gods: ['fufluns'],
@@ -449,7 +449,7 @@ export const liverInscriptions = [
   },
   {
     id: 10,
-    position: new THREE.Vector3(-0.8, 0.1, 0.6),
+    position: new THREE.Vector3(0.35, 0.1, 0.52),
     groupId: 'earth',
     etruscanText: '𐌔𐌍𐌀𐌅𐌋𐌄𐌔',
     gods: ['selvans'],
@@ -458,7 +458,7 @@ export const liverInscriptions = [
   },
   {
     id: 11,
-    position: new THREE.Vector3(-0.6, 0.1, 0.8),
+    position: new THREE.Vector3(0.18, 0.1, 0.58),
     groupId: 'earth',
     etruscanText: '𐌔𐌍𐌚𐌄𐌋',
     gods: ['lethns'],
@@ -467,7 +467,7 @@ export const liverInscriptions = [
   },
   {
     id: 12,
-    position: new THREE.Vector3(-0.2, 0.1, 0.9),
+    position: new THREE.Vector3(-0.18, 0.1, 0.58),
     groupId: 'earth',
     etruscanText: '𐌋𐌀𐌅𐌂𐌔𐌖𐌋𐌕',
     gods: ['tluscva'],
@@ -475,10 +475,10 @@ export const liverInscriptions = [
     divinationMeaning: 'Sacred water sources, spring protection, ritual purity'
   },
 
-  // UNDERWORLD GROUP (13-16)
+  // UNDERWORLD GROUP (13-16) - Left side
   {
     id: 13,
-    position: new THREE.Vector3(0.2, 0.1, 0.9),
+    position: new THREE.Vector3(-0.35, 0.1, 0.52),
     groupId: 'underworld',
     etruscanText: '𐌔𐌋𐌄𐌂',
     gods: ['cels'],
@@ -487,7 +487,7 @@ export const liverInscriptions = [
   },
   {
     id: 14,
-    position: new THREE.Vector3(0.6, 0.1, 0.8),
+    position: new THREE.Vector3(-0.45, 0.1, 0.42),
     groupId: 'underworld',
     etruscanText: '𐌔𐌍𐌀𐌐𐌋𐌀 𐌋𐌔𐌍𐌀𐌔𐌋𐌖𐌂',
     gods: ['culsans', 'alpans'],
@@ -496,7 +496,7 @@ export const liverInscriptions = [
   },
   {
     id: 15,
-    position: new THREE.Vector3(0.7, 0.1, 0.7),
+    position: new THREE.Vector3(0.45, 0.1, -0.15),
     groupId: 'underworld',
     etruscanText: '𐌉𐌔𐌋𐌕𐌄𐌅',
     gods: ['vetlsi'],
@@ -505,7 +505,7 @@ export const liverInscriptions = [
   },
   {
     id: 16,
-    position: new THREE.Vector3(0.75, 0.1, 0.4),
+    position: new THREE.Vector3(0.42, 0.1, -0.02),
     groupId: 'underworld',
     etruscanText: '𐌋𐌔𐌍𐌄𐌋𐌉𐌂',
     gods: ['cilens'],
@@ -513,10 +513,10 @@ export const liverInscriptions = [
     divinationMeaning: 'Underworld night passages, soul guidance'
   },
 
-  // PARS FAMILIARIS GROUP (17-24)
+  // PARS FAMILIARIS GROUP (17-24) - Red regions
   {
     id: 17,
-    position: new THREE.Vector3(0.5, 0.1, 0.4),
+    position: new THREE.Vector3(0.4, 0.1, 0.12),
     groupId: 'pars_familiaris',
     etruscanText: '𐌋𐌖𐌐',
     gods: ['pul'],
@@ -525,7 +525,7 @@ export const liverInscriptions = [
   },
   {
     id: 18,
-    position: new THREE.Vector3(0.6, 0.1, 0.0),
+    position: new THREE.Vector3(0.35, 0.1, 0.25),
     groupId: 'pars_familiaris',
     etruscanText: '𐌔𐌍𐌚𐌄𐌋',
     gods: ['lethns'],
@@ -534,7 +534,7 @@ export const liverInscriptions = [
   },
   {
     id: 19,
-    position: new THREE.Vector3(0.4, 0.1, 0.2),
+    position: new THREE.Vector3(0.3, 0.1, 0.35),
     groupId: 'pars_familiaris',
     etruscanText: '𐌋𐌔𐌀𐌋',
     gods: ['lasl'],
@@ -543,7 +543,7 @@ export const liverInscriptions = [
   },
   {
     id: 20,
-    position: new THREE.Vector3(0.3, 0.1, -0.4),
+    position: new THREE.Vector3(0.22, 0.1, 0.42),
     groupId: 'pars_familiaris',
     etruscanText: '𐌔𐌀𐌚𐌋𐌅𐌖𐌚 𐌔𐌍𐌉𐌕',
     gods: ['tinia', 'thufltha'],
@@ -552,7 +552,7 @@ export const liverInscriptions = [
   },
   {
     id: 21,
-    position: new THREE.Vector3(0.1, 0.1, -0.6),
+    position: new THREE.Vector3(0.12, 0.1, 0.45),
     groupId: 'pars_familiaris',
     etruscanText: '𐌔𐌀𐌚𐌋𐌅𐌖𐌚',
     gods: ['thufltha'],
@@ -561,7 +561,7 @@ export const liverInscriptions = [
   },
   {
     id: 22,
-    position: new THREE.Vector3(-0.1, 0.1, -0.5),
+    position: new THREE.Vector3(0, 0.1, 0.47),
     groupId: 'pars_familiaris',
     etruscanText: '𐌔𐌍𐌖𐌍𐌚𐌄𐌍 𐌚𐌔𐌍𐌉𐌕',
     gods: ['tinia', 'nethuns'],
@@ -570,7 +570,7 @@ export const liverInscriptions = [
   },
   {
     id: 23,
-    position: new THREE.Vector3(-0.3, 0.1, -0.3),
+    position: new THREE.Vector3(-0.12, 0.1, 0.45),
     groupId: 'pars_familiaris',
     etruscanText: '𐌔𐌀𐌚𐌀𐌂',
     gods: ['catha'],
@@ -579,7 +579,7 @@ export const liverInscriptions = [
   },
   {
     id: 24,
-    position: new THREE.Vector3(-0.5, 0.1, -0.1),
+    position: new THREE.Vector3(-0.22, 0.1, 0.42),
     groupId: 'pars_familiaris',
     etruscanText: '𐌋 𐌔𐌍𐌖𐌋𐌅𐌖𐌅',
     gods: ['fufluns'],
@@ -587,10 +587,10 @@ export const liverInscriptions = [
     divinationMeaning: 'Favorable harvest, joyful celebration, abundance'
   },
 
-  // GALL BLADDER GROUP (25-28)
+  // GALL BLADDER GROUP (25-28) - Blue-green regions
   {
     id: 25,
-    position: new THREE.Vector3(-0.4, 0.1, 0.1),
+    position: new THREE.Vector3(-0.3, 0.1, 0.35),
     groupId: 'gall_bladder',
     etruscanText: '𐌚𐌍𐌖𐌕',
     gods: ['tvnth'],
@@ -599,7 +599,7 @@ export const liverInscriptions = [
   },
   {
     id: 26,
-    position: new THREE.Vector3(-0.6, 0.1, 0.3),
+    position: new THREE.Vector3(-0.35, 0.1, 0.25),
     groupId: 'gall_bladder',
     etruscanText: '𐌓𐌀𐌋 𐌋𐌔𐌉𐌓𐌀𐌌',
     gods: ['maris', 'laran'],
@@ -608,7 +608,7 @@ export const liverInscriptions = [
   },
   {
     id: 27,
-    position: new THREE.Vector3(-0.1, 0.1, 0.4),
+    position: new THREE.Vector3(-0.4, 0.1, 0.12),
     groupId: 'gall_bladder',
     etruscanText: '𐌋𐌔𐌌𐌀𐌕𐌄𐌋',
     gods: ['letams'],
@@ -617,7 +617,7 @@ export const liverInscriptions = [
   },
   {
     id: 28,
-    position: new THREE.Vector3(0.1, 0.1, 0.6),
+    position: new THREE.Vector3(0.25, 0.1, 0.15),
     groupId: 'gall_bladder',
     etruscanText: '𐌔𐌍𐌖𐌍𐌚𐌄𐌍',
     gods: ['nethuns'],
@@ -625,10 +625,10 @@ export const liverInscriptions = [
     divinationMeaning: 'Concentrated water power, intense purification'
   },
 
-  // CENTRAL SECTION GROUP (29-32)
+  // CENTRAL SECTION GROUP (29-32) - Yellow regions
   {
     id: 29,
-    position: new THREE.Vector3(0.4, 0.1, 0.3),
+    position: new THREE.Vector3(0.3, 0.1, 0.02),
     groupId: 'central_section',
     etruscanText: '𐌄𐌋𐌂𐌓𐌄𐌇',
     gods: ['hercle'],
@@ -637,7 +637,7 @@ export const liverInscriptions = [
   },
   {
     id: 30,
-    position: new THREE.Vector3(0.2, 0.1, 0.3),
+    position: new THREE.Vector3(0.32, 0.1, -0.12),
     groupId: 'central_section',
     etruscanText: '𐌋𐌔𐌉𐌓𐌀𐌌',
     gods: ['maris'],
@@ -646,7 +646,7 @@ export const liverInscriptions = [
   },
   {
     id: 31,
-    position: new THREE.Vector3(0.0, 0.1, 0.2),
+    position: new THREE.Vector3(0.28, 0.1, -0.25),
     groupId: 'central_section',
     etruscanText: '𐌚𐌌𐌖𐌋𐌕𐌄𐌌 𐌔𐌌𐌀𐌚𐌄𐌋',
     gods: ['lethams', 'metlvmth'],
@@ -655,7 +655,7 @@ export const liverInscriptions = [
   },
   {
     id: 32,
-    position: new THREE.Vector3(-0.2, 0.1, 0.2),
+    position: new THREE.Vector3(0.22, 0.1, -0.35),
     groupId: 'central_section',
     etruscanText: '𐌋𐌕𐌖𐌓𐌀𐌌 𐌋𐌀𐌅𐌂𐌔𐌖𐌋𐌕',
     gods: ['tluscva', 'marutl'],
@@ -663,10 +663,10 @@ export const liverInscriptions = [
     divinationMeaning: 'Central water sanctity, enhanced nymph protection'
   },
 
-  // PARS HOSTILIS GROUP (33-38)
+  // PARS HOSTILIS GROUP (33-38) - Central purple region
   {
     id: 33,
-    position: new THREE.Vector3(-0.1, 0.1, 0.0),
+    position: new THREE.Vector3(-0.05, 0.1, 0.15),
     groupId: 'pars_hostilis',
     etruscanText: '𐌔𐌍𐌀𐌅𐌋𐌄𐌔',
     gods: ['selvans'],
@@ -675,7 +675,7 @@ export const liverInscriptions = [
   },
   {
     id: 34,
-    position: new THREE.Vector3(0.1, 0.1, -0.1),
+    position: new THREE.Vector3(-0.15, 0.1, 0.02),
     groupId: 'pars_hostilis',
     etruscanText: '𐌋𐌔𐌌𐌀𐌚𐌄𐌋',
     gods: ['lethams'],
@@ -684,7 +684,7 @@ export const liverInscriptions = [
   },
   {
     id: 35,
-    position: new THREE.Vector3(0.3, 0.1, -0.1),
+    position: new THREE.Vector3(-0.2, 0.1, -0.12),
     groupId: 'pars_hostilis',
     etruscanText: '𐌋𐌀𐌅𐌂𐌔𐌖𐌋𐌕',
     gods: ['tluscva'],
@@ -693,7 +693,7 @@ export const liverInscriptions = [
   },
   {
     id: 36,
-    position: new THREE.Vector3(0.0, 0.1, -0.2),
+    position: new THREE.Vector3(-0.15, 0.1, -0.25),
     groupId: 'pars_hostilis',
     etruscanText: '𐌒𐌋𐌄𐌅 𐌋𐌔𐌖𐌋',
     gods: ['lusal', 'velch'],
@@ -702,7 +702,7 @@ export const liverInscriptions = [
   },
   {
     id: 37,
-    position: new THREE.Vector3(0.1, 0.1, -0.1),
+    position: new THREE.Vector3(-0.05, 0.1, -0.35),
     groupId: 'pars_hostilis',
     etruscanText: '𐌔𐌄𐌓𐌕𐌀𐌔',
     gods: ['satres'],
@@ -711,7 +711,7 @@ export const liverInscriptions = [
   },
   {
     id: 38,
-    position: new THREE.Vector3(0.3, 0.1, -0.1),
+    position: new THREE.Vector3(0.08, 0.1, -0.25),
     groupId: 'pars_hostilis',
     etruscanText: '𐌋𐌔𐌍𐌄𐌋𐌉𐌂',
     gods: ['cilens'],
@@ -719,10 +719,10 @@ export const liverInscriptions = [
     divinationMeaning: 'Difficult passages, challenging transitions'
   },
 
-  // RETRO GROUP (39-40)
+  // RETRO GROUP (39-40) - Left outer rim
   {
     id: 39,
-    position: new THREE.Vector3(0.7, -0.2, 0.0),
+    position: new THREE.Vector3(-0.5, 0.1, 0.1),
     groupId: 'retro',
     etruscanText: '𐌔𐌋𐌉𐌔𐌖',
     gods: ['usil'],
@@ -731,7 +731,7 @@ export const liverInscriptions = [
   },
   {
     id: 40,
-    position: new THREE.Vector3(-0.7, -0.2, 0.0),
+    position: new THREE.Vector3(-0.52, 0.1, -0.28),
     groupId: 'retro',
     etruscanText: '𐌔𐌓𐌖𐌉𐌕',
     gods: ['tiur'],
