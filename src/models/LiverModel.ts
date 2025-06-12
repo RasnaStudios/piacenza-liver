@@ -1,15 +1,36 @@
 import * as THREE from 'three'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 
+import { 
+  liverInscriptionVertexShader, 
+  liverInscriptionFragmentShader, 
+  type LiverShaderUniforms 
+} from '../shaders/liverInscriptionShader'
+
 export class LiverModel {
   private scene: THREE.Scene
   private mesh: THREE.Mesh | null = null
   private object: THREE.Object3D | null = null
   private onProgress?: (progress: number) => void
+  
+  // New properties for inscription system
+  private shaderUniforms: LiverShaderUniforms
+  private maskTexture: THREE.Texture | null = null
+  private inscriptionPositions: Map<number, THREE.Vector2> = new Map()
+  private hoveredInscription: number = 0
+  private onModelReady?: () => void
 
   constructor(scene: THREE.Scene, onProgress?: (progress: number) => void) {
     this.scene = scene
     this.onProgress = onProgress
+    
+    // Initialize shader uniforms
+    this.shaderUniforms = {
+      time: { value: 0.0 },
+      diffuseTexture: { value: null },
+      maskTexture: { value: null },
+      hoveredInscription: { value: 0 }
+    }
     
     this.loadLiverModel()
   }
@@ -45,27 +66,29 @@ export class LiverModel {
         texture.magFilter = THREE.LinearFilter
       })
 
+      // Load the segmentation map texture
+      this.maskTexture = await this.loadSegmentationMap()
+      // inscriptionPositions is populated by loadSegmentationMap()
+
       this.onProgress?.(60) // Textures configured
 
-      // Create PBR material with bronze properties
-      const material = new THREE.MeshStandardMaterial({
-        map: diffuseTexture,
-        normalMap: normalTexture,
-        metalnessMap: metallicTexture,
-        roughnessMap: roughnessTexture,
-        
-        // Fine-tune bronze material properties
-        metalness: 0.8, // High metalness for bronze
-        roughness: 0.4, // Moderate roughness for aged bronze
-        normalScale: new THREE.Vector2(1.0, 1.0), // Normal map intensity
-        
-        // Enhanced bronze color tinting
-        color: new THREE.Color(0x8b6f47), // Warm bronze color
-        
-        // Enable shadows
+      // Set up shader uniforms
+      this.shaderUniforms.diffuseTexture.value = diffuseTexture
+      this.shaderUniforms.maskTexture.value = this.maskTexture
+
+      // Create custom shader material instead of MeshStandardMaterial
+      const material = new THREE.ShaderMaterial({
+        uniforms: this.shaderUniforms,
+        vertexShader: liverInscriptionVertexShader,
+        fragmentShader: liverInscriptionFragmentShader,
+        side: THREE.FrontSide,
         transparent: false,
-        opacity: 1.0,
       })
+      
+      console.log('🔥 Shader material created:', material)
+      console.log('🔥 Shader uniforms:', this.shaderUniforms)
+      console.log('🔥 Vertex shader length:', liverInscriptionVertexShader.length)
+      console.log('🔥 Fragment shader length:', liverInscriptionFragmentShader.length)
 
       this.onProgress?.(75) // Material created
 
@@ -91,7 +114,7 @@ export class LiverModel {
             this.mesh = child
           }
           
-          console.log('Applied PBR material to mesh:', child.name || 'unnamed')
+          console.log('Applied inscription shader material to mesh:', child.name || 'unnamed')
         }
       })
 
@@ -114,6 +137,10 @@ export class LiverModel {
       // Complete loading after a short delay
       setTimeout(() => {
         this.onProgress?.(100)
+        // Notify that the model is ready
+        if (this.onModelReady) {
+          this.onModelReady()
+        }
       }, 500)
       
     } catch (error) {
@@ -200,6 +227,74 @@ export class LiverModel {
     return this.object || this.mesh
   }
 
+  // New methods for inscription system
+  
+  // Update shader uniforms (call this in your render loop)
+  updateShaderUniforms(time: number) {
+    if (this.shaderUniforms) {
+      this.shaderUniforms.time.value = time
+    }
+  }
+
+  // Set hovered inscription for shader highlighting
+  setHoveredInscription(inscriptionId: number) {
+    console.log(`🔥 Setting hovered inscription: ${inscriptionId}`)
+    this.hoveredInscription = inscriptionId
+    if (this.shaderUniforms) {
+      this.shaderUniforms.hoveredInscription.value = inscriptionId
+      console.log(`🔥 Shader uniform updated: hoveredInscription = ${this.shaderUniforms.hoveredInscription.value}`)
+    } else {
+      console.warn('🔥 No shader uniforms available')
+    }
+  }
+
+  // Get inscription ID at UV coordinates (for mouse interaction)
+  getInscriptionAtUV(u: number, v: number): number {
+    if (!this.maskTexture) return 0
+    
+    // Create a temporary canvas to sample the texture
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return 0
+    
+    canvas.width = this.maskTexture.image.width
+    canvas.height = this.maskTexture.image.height
+    
+    // Draw the texture to canvas
+    ctx.drawImage(this.maskTexture.image, 0, 0)
+    
+    // Sample the pixel at the UV coordinates (flip V to match shader)
+    const x = Math.floor(u * canvas.width)
+    const y = Math.floor((1 - v) * canvas.height) // Flip V to match shader
+    
+    // Clamp coordinates to valid range
+    const clampedX = Math.max(0, Math.min(x, canvas.width - 1))
+    const clampedY = Math.max(0, Math.min(y, canvas.height - 1))
+    
+    // Get pixel data
+    const imageData = ctx.getImageData(clampedX, clampedY, 1, 1)
+    const pixelValue = imageData.data[0] // Red channel (grayscale)
+    
+    console.log(`Sampled UV (${u.toFixed(3)}, ${v.toFixed(3)}) -> pixel (${clampedX}, ${clampedY}) -> value ${pixelValue}`)
+    
+    return pixelValue
+  }
+
+  // Get mask texture for external access
+  getMaskTexture() {
+    return this.maskTexture
+  }
+
+  // Get inscription positions for markers
+  getInscriptionPositions(): Map<number, THREE.Vector2> {
+    return this.inscriptionPositions || new Map()
+  }
+
+  // Set callback for when model is ready
+  setOnModelReady(callback: () => void) {
+    this.onModelReady = callback
+  }
+
   // Smooth initial rotation and zoom animation (90° left + zoom in)
   animateInitialRotation() {
     const target = this.object || this.mesh
@@ -280,5 +375,116 @@ export class LiverModel {
       this.mesh = null
       this.object = null
     }
+  }
+
+  // Load the existing segmentation map texture
+  private loadSegmentationMap(): Promise<THREE.Texture> {
+    console.log('Starting to load segmentation map...')
+    return new Promise((resolve, reject) => {
+      const textureLoader = new THREE.TextureLoader()
+      textureLoader.load(
+        '/liver-model/Pbr/segmentation.png',
+        (texture) => {
+          console.log('Segmentation map loaded successfully:', texture.image.width, 'x', texture.image.height)
+          console.log('Segmentation map image type:', texture.image.constructor.name)
+          console.log('Segmentation map has data:', !!texture.image.data)
+          
+          texture.flipY = false
+          texture.needsUpdate = true
+          
+          // Extract inscription positions from the segmentation map
+          this.extractInscriptionPositionsFromTexture(texture)
+          
+          console.log('Loaded segmentation map texture:', texture.image.width, 'x', texture.image.height)
+          resolve(texture)
+        },
+        (progress) => {
+          console.log('Loading segmentation map progress:', progress)
+        },
+        (error) => {
+          console.error('Failed to load segmentation map:', error)
+          reject(error)
+        }
+      )
+    })
+  }
+
+  // Extract inscription positions from the segmentation map texture
+  private extractInscriptionPositionsFromTexture(texture: THREE.Texture) {
+    console.log('Extracting inscription positions from texture...')
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      console.error('Could not get canvas context')
+      return
+    }
+    
+    canvas.width = texture.image.width
+    canvas.height = texture.image.height
+    console.log('Canvas size:', canvas.width, 'x', canvas.height)
+    
+    // Draw the texture image to canvas
+    ctx.drawImage(texture.image, 0, 0)
+    
+    // Get image data to analyze pixel values
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+    const data = imageData.data
+    console.log('Image data size:', data.length, 'pixels')
+    
+    this.inscriptionPositions = new Map()
+    
+    // First, let's see what pixel values exist in the image (using only red channel)
+    const uniqueValues = new Set<number>()
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i]
+      uniqueValues.add(r)
+    }
+    console.log('Unique red channel values found:', Array.from(uniqueValues).sort((a, b) => a - b))
+    
+    // Also check a few sample pixels to see the actual data
+    console.log('Sample pixels from segmentation map (red channel only):')
+    for (let y = 0; y < Math.min(10, canvas.height); y += 2) {
+      for (let x = 0; x < Math.min(10, canvas.width); x += 2) {
+        const index = (y * canvas.width + x) * 4
+        const r = data[index]
+        console.log(`  Pixel (${x}, ${y}): Red=${r}`)
+      }
+    }
+    
+    // Scan the image for each inscription ID (1-22)
+    for (let inscriptionId = 1; inscriptionId <= 22; inscriptionId++) {
+      let found = false
+      let totalX = 0
+      let totalY = 0
+      let pixelCount = 0
+      
+      // Scan all pixels
+      for (let y = 0; y < canvas.height; y++) {
+        for (let x = 0; x < canvas.width; x++) {
+          const index = (y * canvas.width + x) * 4
+          const r = data[index]
+          
+          // Use only red channel as grayscale value
+          if (r === inscriptionId) {
+            found = true
+            totalX += x
+            totalY += y
+            pixelCount++
+          }
+        }
+      }
+      
+      if (found && pixelCount > 0) {
+        // Calculate center position in UV coordinates (flip V for Three.js)
+        const centerU = totalX / pixelCount / canvas.width
+        const centerV = 1 - (totalY / pixelCount / canvas.height)
+        this.inscriptionPositions.set(inscriptionId, new THREE.Vector2(centerU, centerV))
+        console.log(`Found inscription ${inscriptionId} at UV: (${centerU.toFixed(3)}, ${centerV.toFixed(3)}) with ${pixelCount} pixels`)
+      } else {
+        console.warn(`No pixels found for inscription ${inscriptionId}`)
+      }
+    }
+    
+    console.log('Extracted inscription positions:', this.inscriptionPositions.size, 'positions')
   }
 } 

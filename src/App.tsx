@@ -1,13 +1,12 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 // Modular imports
 import { liverInscriptions } from './data/liverData'
 import { CameraController } from './controllers/CameraController'
 import { InteractionHandler } from './controllers/InteractionHandler'
 import { LiverModel } from './models/LiverModel'
-import { DeityMarkers } from './models/DeityMarkers'
 import { DeityPanel } from './components/DeityPanel'
 import { HoverTooltip } from './components/HoverTooltip'
 import { Legend } from './components/Legend'
@@ -15,79 +14,123 @@ import { LoadingScreen } from './components/LoadingScreen'
 
 import { MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
-import { ancientTheme } from './styles/theme'
 import './styles/global.css'
 
 function PiacenzaLiverScene() {
   // State management
-  const [selectedInscription, setSelectedInscription] = useState(null)
-  const [hoveredSection, setHoveredSection] = useState(null)
+  const [selectedInscription, setSelectedInscription] = useState<any>(null)
+  const [hoveredSection, setHoveredSection] = useState<any>(null)
   const [isInteracting, setIsInteracting] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
 
   // Refs for 3D objects and controllers
-  const containerRef = useRef(null)
-  const sceneRef = useRef(null)
-  const rendererRef = useRef(null)
-  const cameraRef = useRef(null)
-  const controlsRef = useRef(null)
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const sceneRef = useRef<THREE.Scene | null>(null)
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
+  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
+  const controlsRef = useRef<OrbitControls | null>(null)
   
   // Controller refs
-  const cameraControllerRef = useRef(null)
-  const interactionHandlerRef = useRef(null)
-  const liverModelRef = useRef(null)
-  const deityMarkersRef = useRef(null)
+  const cameraControllerRef = useRef<CameraController | null>(null)
+  const interactionHandlerRef = useRef<InteractionHandler | null>(null)
+  const liverModelRef = useRef<LiverModel | null>(null)
   
   // Animation frame ref
-  const animationIdRef = useRef(null)
+  const animationIdRef = useRef<number | null>(null)
   
   // Title hiding timeout
-  const titleTimeoutRef = useRef(null)
+  const titleTimeoutRef = useRef<number | null>(null)
   
   // Zoom detection refs
-  const initialCameraDistance = useRef(null)
+  const initialCameraDistance = useRef<number | null>(null)
   const hasZoomedRef = useRef(false)
 
   // Optimized callback handlers
-  const handleMarkerHover = useCallback((section) => {
+  const handleMarkerHover = useCallback((section: any) => {
     setHoveredSection(section)
+    if (liverModelRef.current && section?.id) {
+      liverModelRef.current.setHoveredInscription(section.id)
+    }
   }, [])
 
-  const handleMarkerClick = useCallback((inscription) => {
+  const handleMarkerClick = useCallback((inscription: any) => {
     setSelectedInscription(inscription)
     
     // Hide title when panel opens
     setHasInteracted(true)
     hasZoomedRef.current = true
     
-    // Focus camera on the selected deity using the text marker's orientation for optimal positioning
-    // Pass isPanelOpen=true since panel will be open after selection
-    if (cameraControllerRef.current && deityMarkersRef.current) {
-      const marker = deityMarkersRef.current.getMarkerBySection(inscription.id)
-      cameraControllerRef.current.focusOn(inscription.position, 600, marker, true) // Panel will be open
+    // Get the correct position from the texture atlas
+    if (cameraControllerRef.current && liverModelRef.current) {
+      const inscriptionPositions = liverModelRef.current.getInscriptionPositions()
+      const uvPosition = inscriptionPositions.get(inscription.id)
+      
+      if (uvPosition) {
+        // Convert UV to world position on the liver surface
+        const liverMesh = liverModelRef.current.getMesh()
+        if (liverMesh) {
+          // Use the UV coordinates to find the world position on the liver surface
+          const worldPosition = new THREE.Vector3()
+          const geometry = liverMesh.geometry
+          const positions = geometry.attributes.position.array as Float32Array
+          const uvs = geometry.attributes.uv.array as Float32Array
+          
+          // Find the closest vertex to the UV coordinate
+          let minDistance = Infinity
+          let closestVertex = 0
+          
+          for (let i = 0; i < positions.length / 3; i++) {
+            const vertexUV = new THREE.Vector2(uvs[i * 2], uvs[i * 2 + 1])
+            const distance = uvPosition.distanceTo(vertexUV)
+            
+            if (distance < minDistance) {
+              minDistance = distance
+              closestVertex = i
+            }
+          }
+          
+          // Get the world position of the closest vertex
+          worldPosition.set(
+            positions[closestVertex * 3],
+            positions[closestVertex * 3 + 1],
+            positions[closestVertex * 3 + 2]
+          )
+          
+          // Transform to world space
+          worldPosition.applyMatrix4(liverMesh.matrixWorld)
+          
+          // Focus camera on the correct position
+          cameraControllerRef.current.focusOn(worldPosition, 600, null, true)
+        }
+      }
     }
   }, [])
 
   const handleBackgroundClick = useCallback(() => {
     setSelectedInscription(null)
     
-    // Return camera to manual position
-    if (cameraControllerRef.current) {
-      cameraControllerRef.current.returnToManualPosition()
+    // Clear hover effect
+    if (liverModelRef.current) {
+      liverModelRef.current.setHoveredInscription(0)
     }
   }, [])
 
   const handlePanelClose = useCallback(() => {
     setSelectedInscription(null)
     
-    // Use camera controller for smooth animation back to default (same as double-click)
+    // Use camera controller for smooth animation back to default
     if (cameraControllerRef.current) {
       cameraControllerRef.current.resetToDefault(800)
     }
     
-    // Reset title visibility and zoom state (same as double-click)
+    // Clear hover effect
+    if (liverModelRef.current) {
+      liverModelRef.current.setHoveredInscription(0)
+    }
+    
+    // Reset title visibility and zoom state
     setHasInteracted(false)
     setIsInteracting(false)
     hasZoomedRef.current = false
@@ -99,7 +142,6 @@ function PiacenzaLiverScene() {
   // Handle camera interaction for title visibility
   const handleInteractionStart = useCallback(() => {
     setIsInteracting(true)
-    // Don't set hasInteracted here - only on zoom
     if (titleTimeoutRef.current) {
       clearTimeout(titleTimeoutRef.current)
     }
@@ -110,13 +152,13 @@ function PiacenzaLiverScene() {
     if (titleTimeoutRef.current) {
       clearTimeout(titleTimeoutRef.current)
     }
-    titleTimeoutRef.current = setTimeout(() => {
+    titleTimeoutRef.current = window.setTimeout(() => {
       setIsInteracting(false)
     }, 2000)
   }, [])
 
   // Check for zoom and hide title if user zoomed in
-  const checkForZoom = useCallback((camera) => {
+  const checkForZoom = useCallback((camera: THREE.PerspectiveCamera) => {
     if (initialCameraDistance.current === null) {
       // Store initial distance
       initialCameraDistance.current = camera.position.length()
@@ -126,7 +168,7 @@ function PiacenzaLiverScene() {
     const currentDistance = camera.position.length()
     const initialDistance = initialCameraDistance.current
     
-    // If user has zoomed in significantly (closer to the liver) and hasn't already marked as zoomed
+    // If user has zoomed in significantly and hasn't already marked as zoomed
     if (currentDistance < initialDistance * 0.8 && !hasZoomedRef.current) {
       hasZoomedRef.current = true
       setHasInteracted(true) // Hide title permanently only on zoom
@@ -143,12 +185,12 @@ function PiacenzaLiverScene() {
         container.classList.remove('interacting')
       }
       
-             // Add or remove interacted class based on state
-       if (hasInteracted) {
-         container.classList.add('interacted')
-       } else {
-         container.classList.remove('interacted')
-       }
+      // Add or remove interacted class based on state
+      if (hasInteracted) {
+        container.classList.add('interacted')
+      } else {
+        container.classList.remove('interacted')
+      }
     }
   }, [isInteracting, hasInteracted])
 
@@ -159,9 +201,7 @@ function PiacenzaLiverScene() {
 
     // Scene setup
     const scene = new THREE.Scene()
-    // Pure black museum background
     scene.background = new THREE.Color(0x000000)
-    
     sceneRef.current = scene
 
     // Camera setup
@@ -174,17 +214,17 @@ function PiacenzaLiverScene() {
     camera.position.set(0, 2, 3)
     cameraRef.current = camera
 
-    // Renderer setup - fully transparent
+    // Renderer setup
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
-      alpha: true, // Enable transparency
+      alpha: true,
       powerPreference: "high-performance"
     })
     renderer.setSize(container.clientWidth, container.clientHeight)
-    renderer.setClearColor(0x000000, 0) // Fully transparent background
+    renderer.setClearColor(0x000000, 0)
     renderer.shadowMap.enabled = true
     renderer.shadowMap.type = THREE.PCFSoftShadowMap
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)) // Optimize for performance
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     container.appendChild(renderer.domElement)
     rendererRef.current = renderer
 
@@ -198,70 +238,187 @@ function PiacenzaLiverScene() {
     controlsRef.current = controls
 
     // Store initial camera distance after setup
-    initialCameraDistance.current = camera.position.length()
-
-    // Add wheel event listener for immediate zoom detection
-    const handleWheel = (event) => {
-      // Mark as zoomed immediately when user starts scrolling (zooming)
-      if (!hasZoomedRef.current) {
-        hasZoomedRef.current = true
-        setHasInteracted(true)
+    setTimeout(() => {
+      if (camera) {
+        initialCameraDistance.current = camera.position.length()
       }
+    }, 100)
+
+    // Set up lighting
+    setupLighting(scene)
+
+    // Mouse wheel handling for zoom detection
+    const handleWheel = (event: WheelEvent) => {
+      checkForZoom(camera)
+      
+      // Always mark as interacting on wheel
+      handleInteractionStart()
+      
+      // Debounced interaction end
+      if (titleTimeoutRef.current) {
+        clearTimeout(titleTimeoutRef.current)
+      }
+      titleTimeoutRef.current = window.setTimeout(() => {
+        handleInteractionEnd()
+      }, 100)
     }
     renderer.domElement.addEventListener('wheel', handleWheel, { passive: true })
 
-    // Add interaction detection for title hiding
-    controls.addEventListener('start', handleInteractionStart)
-    controls.addEventListener('end', handleInteractionEnd)
-
-    // Lighting setup
-    setupLighting(scene)
-
-    // Create 3D models
-    // Progress callback for loading
+    // Loading progress handler
     const handleLoadingProgress = (progress: number) => {
       setLoadingProgress(progress)
       if (progress >= 100) {
         setTimeout(() => {
           setIsLoading(false)
-        }, 1000) // Give a moment for the animation to complete
+          
+
+        }, 500)
       }
     }
+
+    // Initialize controllers and models
+    const cameraController = new CameraController(camera, controls)
+    cameraControllerRef.current = cameraController
 
     const liverModel = new LiverModel(scene, handleLoadingProgress)
     liverModelRef.current = liverModel
 
-    // Pass liver model to markers for surface positioning
-    const deityMarkers = new DeityMarkers(scene, liverInscriptions, liverModel)
-    deityMarkersRef.current = deityMarkers
+    // Log deity region locations for debugging
+    setTimeout(() => {
+      const inscriptionPositions = liverModel.getInscriptionPositions()
+      console.log('📍 DEITY REGION LOCATIONS:')
+      inscriptionPositions.forEach((uv: THREE.Vector2, id: number) => {
+        const inscription = liverInscriptions.find(ins => ins.id === id)
+        console.log(`  ${id}: UV(${uv.x.toFixed(3)}, ${uv.y.toFixed(3)}) - ${inscription?.etruscanText || 'Unknown'}`)
+      })
+    }, 2000)
 
-    // Initialize controllers
-    const cameraController = new CameraController(camera, controls)
-    cameraControllerRef.current = cameraController
+    // Set up simple texture atlas interaction system
+    const handleMouseMove = (event: MouseEvent) => {
+      // Update mouse coordinates
+      const rect = renderer.domElement.getBoundingClientRect()
+      const mouse = new THREE.Vector2()
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+      
+      // Debug: log all objects in scene
+      console.log('🔍 Scene objects:', scene.children.length, 'children')
+      scene.children.forEach((child, index) => {
+        console.log(`  ${index}: ${child.name || 'unnamed'} (${child.type})`)
+        if (child.children.length > 0) {
+          child.children.forEach((grandchild, gIndex) => {
+            console.log(`    ${gIndex}: ${grandchild.name || 'unnamed'} (${grandchild.type})`)
+          })
+        }
+      })
+      
+      // Raycast against liver mesh
+      const raycaster = new THREE.Raycaster()
+      raycaster.setFromCamera(mouse, camera)
+      
+      const liverMesh = liverModel.getMesh()
+      if (liverMesh) {
+        const intersects = raycaster.intersectObjects([liverMesh])
+        
+        if (intersects.length > 0) {
+          const intersection = intersects[0]
+          const uv = intersection.uv
+          
+          if (uv) {
+            // Sample the segmentation map at this UV coordinate
+            const inscriptionId = liverModel.getInscriptionAtUV(uv.x, uv.y)
+            
+            if (inscriptionId > 0 && inscriptionId <= 22) {
+              // Set hovered inscription in shader
+              liverModel.setHoveredInscription(inscriptionId)
+              
+              // Find the inscription data
+              const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
+              if (inscription) {
+                handleMarkerHover(inscription)
+                renderer.domElement.style.cursor = 'pointer'
+                console.log(`🎯 HOVERING: Inscription ${inscriptionId} - ${inscription.etruscanText}`)
+              }
+            } else {
+              // No inscription found
+              liverModel.setHoveredInscription(0)
+              handleMarkerHover(null)
+              renderer.domElement.style.cursor = 'grab'
+            }
+          }
+        } else {
+          // No intersection with liver
+          liverModel.setHoveredInscription(0)
+          handleMarkerHover(null)
+          renderer.domElement.style.cursor = 'grab'
+        }
+      } else {
+        // No liver mesh available
+        liverModel.setHoveredInscription(0)
+        handleMarkerHover(null)
+        renderer.domElement.style.cursor = 'grab'
+      }
+    }
+    
+    const handleClick = (event: MouseEvent) => {
+      // Update mouse coordinates
+      const rect = renderer.domElement.getBoundingClientRect()
+      const mouse = new THREE.Vector2()
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+      
+      // Raycast against liver mesh
+      const raycaster = new THREE.Raycaster()
+      raycaster.setFromCamera(mouse, camera)
+      
+      const liverMesh = liverModel.getMesh()
+      if (liverMesh) {
+        const intersects = raycaster.intersectObjects([liverMesh])
+        
+        if (intersects.length > 0) {
+          const intersection = intersects[0]
+          const uv = intersection.uv
+          
+          if (uv) {
+            // Sample the segmentation map at this UV coordinate
+            const inscriptionId = liverModel.getInscriptionAtUV(uv.x, uv.y)
+            
+            if (inscriptionId > 0 && inscriptionId <= 22) {
+              // Find the inscription data
+              const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
+              if (inscription) {
+                handleMarkerClick(inscription)
+              }
+            }
+          }
+        } else {
+          // Background clicked
+          handleBackgroundClick()
+        }
+      } else {
+        // Background clicked
+        handleBackgroundClick()
+      }
+    }
+    
+    // Add event listeners
+    renderer.domElement.addEventListener('mousemove', handleMouseMove, { passive: true })
+    renderer.domElement.addEventListener('click', handleClick)
 
-    // Double-click to reset camera position and show title
-    const handleDoubleClick = (event) => {
-      // Use camera controller for smooth animation back to default
+    // Double-click handler for reset
+    const handleDoubleClick = (event: MouseEvent) => {
+      event.preventDefault()
       cameraController.resetToDefault(800)
       
-      // Reset title visibility and zoom state
+      setSelectedInscription(null)
       setHasInteracted(false)
       setIsInteracting(false)
       hasZoomedRef.current = false
-      initialCameraDistance.current = camera.position.length()
-      
-      // Close any open panel
-      setSelectedInscription(null)
+      if (camera) {
+        initialCameraDistance.current = camera.position.length()
+      }
     }
-    
     renderer.domElement.addEventListener('dblclick', handleDoubleClick)
-
-    // Only pass markers to interaction handler (no labels)
-    const interactionHandler = new InteractionHandler(camera, renderer, deityMarkers, null)
-    interactionHandler.setMarkerHoverCallback(handleMarkerHover)
-    interactionHandler.setMarkerClickCallback(handleMarkerClick)
-    interactionHandler.setBackgroundClickCallback(handleBackgroundClick)
-    interactionHandlerRef.current = interactionHandler
 
     // Resize handler
     const handleResize = () => {
@@ -273,17 +430,17 @@ function PiacenzaLiverScene() {
     }
     window.addEventListener('resize', handleResize)
 
-    // Optimized animation loop with visibility updates
+    // Animation loop with shader updates
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate)
       controls.update()
       
       // Check for zoom changes
       checkForZoom(camera)
-      
-      // Update marker visibility based on camera position
-      if (deityMarkers) {
-        deityMarkers.updateVisibility(camera)
+
+      // Update shader uniforms with time
+      if (liverModel) {
+        liverModel.updateShaderUniforms(performance.now() * 0.001)
       }
       
       renderer.render(scene, camera)
@@ -292,32 +449,29 @@ function PiacenzaLiverScene() {
 
     // Cleanup function
     return () => {
-      // Stop animation loop
       if (animationIdRef.current) {
         cancelAnimationFrame(animationIdRef.current)
       }
 
-      // Cleanup controllers
       cameraController?.dispose()
-      interactionHandler?.dispose()
       liverModel?.dispose()
-      deityMarkers?.dispose()
 
-      // Cleanup Three.js objects
+      // Remove event listeners
+      renderer.domElement.removeEventListener('mousemove', handleMouseMove)
+      renderer.domElement.removeEventListener('click', handleClick)
+
       renderer.dispose()
       scene.clear()
 
-      // Remove event listeners
       window.removeEventListener('resize', handleResize)
       renderer.domElement.removeEventListener('dblclick', handleDoubleClick)
       renderer.domElement.removeEventListener('wheel', handleWheel)
       
-      // Remove renderer from DOM
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement)
       }
     }
-  }, [handleMarkerHover, handleMarkerClick, handleBackgroundClick, checkForZoom])
+  }, [handleMarkerHover, handleMarkerClick, handleBackgroundClick, checkForZoom, handleInteractionStart, handleInteractionEnd])
 
   return (
     <div className="piacenza-liver-app">
@@ -347,7 +501,7 @@ function PiacenzaLiverScene() {
 }
 
 // Lighting setup function
-function setupLighting(scene) {
+function setupLighting(scene: THREE.Scene) {
   // Clean spotlight setup
   const spotlight = new THREE.SpotLight(0xfff4e6, 300.0)
   spotlight.position.set(0, 6, 3)
@@ -475,7 +629,7 @@ function setupLighting(scene) {
 
 export default function App() {
   return (
-    <MantineProvider theme={ancientTheme}>
+    <MantineProvider>
       <PiacenzaLiverScene />
     </MantineProvider>
   )
