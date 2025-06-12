@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 // Modular imports
 import { liverInscriptions } from './data/liverData'
@@ -12,7 +12,10 @@ import { DeityPanel } from './components/DeityPanel'
 import { HoverTooltip } from './components/HoverTooltip'
 import { Legend } from './components/Legend'
 
-import './App.css'
+import { MantineProvider } from '@mantine/core'
+import '@mantine/core/styles.css'
+import { ancientTheme } from './styles/theme'
+import './styles/global.css'
 
 function PiacenzaLiverScene() {
   // State management
@@ -315,8 +318,8 @@ function PiacenzaLiverScene() {
         />
         
         <HoverTooltip 
-          hoveredSection={hoveredSection && !selectedInscription ? hoveredSection : null} 
-      />
+          hoveredSection={selectedInscription ? null : hoveredSection} 
+        />
         
         <Legend />
       </div>
@@ -452,5 +455,9 @@ function setupLighting(scene) {
 }
 
 export default function App() {
-  return <PiacenzaLiverScene />
+  return (
+    <MantineProvider theme={ancientTheme}>
+      <PiacenzaLiverScene />
+    </MantineProvider>
+  )
 }
