@@ -98,3 +98,73 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+# CVAT XML to Segmentation Map Converter
+
+This script converts CVAT XML annotation files into segmentation maps. It reads polyline annotations and creates a visual segmentation map where each label is represented by its assigned color.
+
+## Features
+
+- Parses CVAT XML annotation files
+- Extracts label colors and polyline coordinates
+- Creates a segmentation map with filled polygons
+- Generates a label map showing color-to-label correspondence
+- Supports command-line arguments for customization
+
+## Installation
+
+1. Install the required dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Usage
+
+### Basic Usage
+```bash
+python create_segmentation_map.py /path/to/annotations.xml
+```
+
+### Advanced Usage
+```bash
+python create_segmentation_map.py /path/to/annotations.xml \
+    --output my_segmentation.png \
+    --label-map my_label_map.png
+```
+
+### Command Line Arguments
+
+- `xml_path`: Path to the CVAT XML file (required)
+- `--output`, `-o`: Output path for segmentation map (default: `segmentation_map.png`)
+- `--label-map`, `-l`: Output path for label map (default: `label_map.png`)
+
+## Output Files
+
+1. **Segmentation Map**: A PNG image where each annotated region is filled with its corresponding label color
+2. **Label Map**: A reference image showing which color corresponds to which label number
+
+## Example
+
+If you have a CVAT XML file at `/Users/land/Desktop/annotations.xml`, run:
+
+```bash
+python create_segmentation_map.py /Users/land/Desktop/annotations.xml
+```
+
+This will create:
+- `segmentation_map.png` - The main segmentation map
+- `label_map.png` - Reference showing label colors
+
+## How It Works
+
+1. **XML Parsing**: Extracts label definitions and their assigned colors
+2. **Coordinate Processing**: Converts polyline point strings to coordinate arrays
+3. **Map Generation**: Creates a black background image and fills each polyline region with its label color
+4. **Visualization**: Draws both filled polygons and outlines for better visibility
+
+## Requirements
+
+- Python 3.6+
+- numpy
+- opencv-python
+- Pillow

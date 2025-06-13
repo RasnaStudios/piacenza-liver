@@ -563,4 +563,104 @@ export class DeityMarkers {
     console.log('Liver mesh is ready, positioning markers...')
     this.positionMarkersFromTexture()
   }
+
+  // Calculate camera transformation based on surface normal at inscription position
+  calculateCameraTransformFromNormal(inscriptionId: number): {
+    position: THREE.Vector3,
+    target: THREE.Vector3,
+    rotation: THREE.Euler
+  } | null {
+    if (!this.liverModel) {
+      console.error('No liver model available for camera transform calculation')
+      return null
+    }
+    
+    const liverMesh = this.liverModel.getMesh()
+    if (!liverMesh) {
+      console.error('No liver mesh available for camera transform calculation')
+      return null
+    }
+    
+    // Get the UV position for this inscription
+    const inscriptionPositions = this.liverModel.getInscriptionPositions()
+    const uvPosition = inscriptionPositions.get(inscriptionId)
+    
+    if (!uvPosition) {
+      console.error(`No UV position found for inscription ${inscriptionId}`)
+      return null
+    }
+    
+    // Get the world position on the liver surface
+    const worldPosition = this.uvToWorldPosition(liverMesh, uvPosition)
+    if (!worldPosition) {
+      console.error(`Failed to convert UV to world position for inscription ${inscriptionId}`)
+      return null
+    }
+    
+    // Get the surface normal at this position
+    const surfaceNormal = this.getSurfaceNormalAtUV(liverMesh, uvPosition)
+    if (!surfaceNormal) {
+      console.error(`Failed to get surface normal for inscription ${inscriptionId}`)
+      return null
+    }
+    
+    // Calculate camera position based on surface normal
+    // Position camera at a distance from the surface, aligned with the normal
+    const cameraDistance = 0.8 // Distance from surface
+    const cameraOffset = surfaceNormal.clone().multiplyScalar(cameraDistance)
+    const cameraPosition = worldPosition.clone().add(cameraOffset)
+    
+    // Calculate camera rotation to look at the target
+    // The camera should look along the normal direction towards the surface
+    const lookDirection = surfaceNormal.clone().negate() // Look towards the surface
+    
+    // Create a rotation matrix from the look direction
+    const up = new THREE.Vector3(0, 1, 0) // World up vector
+    const right = new THREE.Vector3().crossVectors(up, lookDirection).normalize()
+    const adjustedUp = new THREE.Vector3().crossVectors(lookDirection, right).normalize()
+    
+    // Create rotation matrix
+    const rotationMatrix = new THREE.Matrix4()
+    rotationMatrix.makeBasis(right, adjustedUp, lookDirection.negate())
+    
+    // Extract Euler angles from rotation matrix
+    const rotation = new THREE.Euler()
+    rotation.setFromRotationMatrix(rotationMatrix)
+    
+    // Add a small offset to the target to ensure good viewing angle
+    const targetOffset = surfaceNormal.clone().multiplyScalar(-0.1) // Slightly into the surface
+    const target = worldPosition.clone().add(targetOffset)
+    
+    console.log(`Calculated camera transform for inscription ${inscriptionId}:`, {
+      position: cameraPosition.toArray(),
+      target: target.toArray(),
+      rotation: rotation.toArray(),
+      surfaceNormal: surfaceNormal.toArray()
+    })
+    
+    return {
+      position: cameraPosition,
+      target: target,
+      rotation: rotation
+    }
+  }
+
+  // Update all inscription camera transforms based on surface normals
+  updateAllCameraTransforms() {
+    console.log('Updating camera transforms for all inscriptions based on surface normals...')
+    
+    this.liverInscriptions.forEach(inscription => {
+      const cameraTransform = this.calculateCameraTransformFromNormal(inscription.id)
+      
+      if (cameraTransform) {
+        // Update the inscription data with the new camera transform
+        inscription.cameraTransform = cameraTransform
+        console.log(`Updated camera transform for inscription ${inscription.id}`)
+      } else {
+        console.error(`Failed to calculate camera transform for inscription ${inscription.id}`)
+      }
+    })
+    
+    console.log('Camera transform update completed')
+  }
 } 
