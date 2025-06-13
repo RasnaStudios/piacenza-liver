@@ -19,6 +19,7 @@ export class LiverModel {
   private inscriptionPositions: Map<number, THREE.Vector2> = new Map()
   private hoveredInscription: number = 0
   private onModelReady?: () => void
+  private textureData: Uint8Array | null = null // Cache for texture data
 
   constructor(scene: THREE.Scene, onProgress?: (progress: number) => void) {
     this.scene = scene
@@ -137,6 +138,7 @@ export class LiverModel {
       // Complete loading after a short delay
       setTimeout(() => {
         this.onProgress?.(100)
+        
         // Notify that the model is ready
         if (this.onModelReady) {
           this.onModelReady()
@@ -250,34 +252,27 @@ export class LiverModel {
 
   // Get inscription ID at UV coordinates (for mouse interaction)
   getInscriptionAtUV(u: number, v: number): number {
-    if (!this.maskTexture) return 0
+    if (!this.maskTexture || !this.textureData) {
+      return 0
+    }
     
-    // Create a temporary canvas to sample the texture
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return 0
+    const image = this.maskTexture.image as HTMLImageElement
+    const width = image.width
+    const height = image.height
     
-    canvas.width = this.maskTexture.image.width
-    canvas.height = this.maskTexture.image.height
-    
-    // Draw the texture to canvas
-    ctx.drawImage(this.maskTexture.image, 0, 0)
-    
-    // Sample the pixel at the UV coordinates (flip V to match shader)
-    const x = Math.floor(u * canvas.width)
-    const y = Math.floor((1 - v) * canvas.height) // Flip V to match shader
+    // Calculate pixel coordinates from UV (flip V to match shader)
+    const x = Math.floor(u * width)
+    const y = Math.floor((1 - v) * height)
     
     // Clamp coordinates to valid range
-    const clampedX = Math.max(0, Math.min(x, canvas.width - 1))
-    const clampedY = Math.max(0, Math.min(y, canvas.height - 1))
+    const clampedX = Math.max(0, Math.min(x, width - 1))
+    const clampedY = Math.max(0, Math.min(y, height - 1))
     
-    // Get pixel data
-    const imageData = ctx.getImageData(clampedX, clampedY, 1, 1)
-    const pixelValue = imageData.data[0] // Red channel (grayscale)
+    // Calculate index in the cached data array
+    const index = (clampedY * width + clampedX) * 4
     
-    console.log(`Sampled UV (${u.toFixed(3)}, ${v.toFixed(3)}) -> pixel (${clampedX}, ${clampedY}) -> value ${pixelValue}`)
-    
-    return pixelValue
+    // Get pixel value from cached data
+    return this.textureData[index]
   }
 
   // Get mask texture for external access
@@ -384,16 +379,11 @@ export class LiverModel {
 
   // Load the existing segmentation map texture
   private loadSegmentationMap(): Promise<THREE.Texture> {
-    console.log('Starting to load segmentation map...')
     return new Promise((resolve, reject) => {
       const textureLoader = new THREE.TextureLoader()
       textureLoader.load(
         '/liver-model/Pbr/segmentation.png',
         (texture) => {
-          console.log('Segmentation map loaded successfully:', texture.image.width, 'x', texture.image.height)
-          console.log('Segmentation map image type:', texture.image.constructor.name)
-          console.log('Segmentation map has data:', !!texture.image.data)
-          
           // Set texture filtering to prevent interpolation
           texture.magFilter = THREE.NearestFilter
           texture.minFilter = THREE.NearestFilter
@@ -402,17 +392,22 @@ export class LiverModel {
           texture.flipY = false
           texture.needsUpdate = true
           
-          // Extract inscription positions from the segmentation map
-          this.extractInscriptionPositionsFromTexture(texture)
-          
-          console.log('Loaded segmentation map texture:', texture.image.width, 'x', texture.image.height)
-          resolve(texture)
+          // Ensure texture is fully loaded before proceeding
+          if (texture.image.complete) {
+            this.extractInscriptionPositionsFromTexture(texture)
+            resolve(texture)
+          } else {
+            texture.image.onload = () => {
+              this.extractInscriptionPositionsFromTexture(texture)
+              resolve(texture)
+            }
+            texture.image.onerror = (error: Event) => {
+              reject(error)
+            }
+          }
         },
-        (progress) => {
-          console.log('Loading segmentation map progress:', progress)
-        },
+        undefined,
         (error) => {
-          console.error('Failed to load segmentation map:', error)
           reject(error)
         }
       )
@@ -421,17 +416,14 @@ export class LiverModel {
 
   // Extract inscription positions from the segmentation map texture
   private extractInscriptionPositionsFromTexture(texture: THREE.Texture) {
-    console.log('Extracting inscription positions from texture...')
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')
     if (!ctx) {
-      console.error('Could not get canvas context')
       return
     }
     
     canvas.width = texture.image.width
     canvas.height = texture.image.height
-    console.log('Canvas size:', canvas.width, 'x', canvas.height)
     
     // Draw the texture image to canvas
     ctx.drawImage(texture.image, 0, 0)
@@ -439,7 +431,12 @@ export class LiverModel {
     // Get image data to analyze pixel values
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
     const data = imageData.data
-    console.log('Image data size:', data.length, 'pixels')
+    
+    // Cache the texture data for faster UV sampling
+    this.textureData = new Uint8Array(data.length)
+    for (let i = 0; i < data.length; i += 4) {
+      this.textureData[i] = data[i] // Red channel (grayscale)
+    }
     
     this.inscriptionPositions = new Map()
     
@@ -448,17 +445,6 @@ export class LiverModel {
     for (let i = 0; i < data.length; i += 4) {
       const r = data[i]
       uniqueValues.add(r)
-    }
-    console.log('Unique red channel values found:', Array.from(uniqueValues).sort((a, b) => a - b))
-    
-    // Also check a few sample pixels to see the actual data
-    console.log('Sample pixels from segmentation map (red channel only):')
-    for (let y = 0; y < Math.min(10, canvas.height); y += 2) {
-      for (let x = 0; x < Math.min(10, canvas.width); x += 2) {
-        const index = (y * canvas.width + x) * 4
-        const r = data[index]
-        console.log(`  Pixel (${x}, ${y}): Red=${r}`)
-      }
     }
     
     // Scan the image for each inscription ID (1-40)
