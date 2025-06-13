@@ -274,65 +274,55 @@ function PiacenzaLiverScene() {
 
     // Set up simple texture atlas interaction system
     const handleMouseMove = (event: MouseEvent) => {
+      // Check if liver model is ready
+      const liverMesh = liverModel.getMesh()
+      if (!liverMesh || !liverModel.getMaskTexture()) {
+        return // Don't process mouse events if model isn't ready
+      }
+      
       // Update mouse coordinates
       const rect = renderer.domElement.getBoundingClientRect()
       const mouse = new THREE.Vector2()
       mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
       mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
       
-      // Debug: log all objects in scene
-      console.log('🔍 Scene objects:', scene.children.length, 'children')
-      scene.children.forEach((child, index) => {
-        console.log(`  ${index}: ${child.name || 'unnamed'} (${child.type})`)
-        if (child.children.length > 0) {
-          child.children.forEach((grandchild, gIndex) => {
-            console.log(`    ${gIndex}: ${grandchild.name || 'unnamed'} (${grandchild.type})`)
-          })
-        }
-      })
-      
       // Raycast against liver mesh
       const raycaster = new THREE.Raycaster()
       raycaster.setFromCamera(mouse, camera)
       
-      const liverMesh = liverModel.getMesh()
-      if (liverMesh) {
-        const intersects = raycaster.intersectObjects([liverMesh])
+      const intersects = raycaster.intersectObjects([liverMesh])
+      
+      if (intersects.length > 0) {
+        const intersection = intersects[0]
+        const uv = intersection.uv
         
-        if (intersects.length > 0) {
-          const intersection = intersects[0]
-          const uv = intersection.uv
+        if (uv) {
+          // Sample the segmentation map at this UV coordinate
+          const inscriptionId = liverModel.getInscriptionAtUV(uv.x, uv.y)
           
-          if (uv) {
-            // Sample the segmentation map at this UV coordinate
-            const inscriptionId = liverModel.getInscriptionAtUV(uv.x, uv.y)
+          if (inscriptionId > 0 && inscriptionId <= 40) {
+            // Set hovered inscription in shader
+            liverModel.setHoveredInscription(inscriptionId)
             
-            if (inscriptionId > 0 && inscriptionId <= 40) {
-              // Set hovered inscription in shader
-              liverModel.setHoveredInscription(inscriptionId)
-              
-              // Find the inscription data
-              const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
-              if (inscription) {
-                handleMarkerHover(inscription)
-                renderer.domElement.style.cursor = 'pointer'
-                console.log(`🎯 HOVERING: Inscription ${inscriptionId} - ${inscription.etruscanText}`)
-              }
-            } else {
-              // No inscription found
-              liverModel.setHoveredInscription(0)
-              handleMarkerHover(null)
-              renderer.domElement.style.cursor = 'grab'
+            // Find the inscription data
+            const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
+            if (inscription) {
+              handleMarkerHover(inscription)
+              renderer.domElement.style.cursor = 'pointer'
             }
+          } else {
+            // No inscription found
+            liverModel.setHoveredInscription(0)
+            handleMarkerHover(null)
+            renderer.domElement.style.cursor = 'grab'
           }
         } else {
-          // No intersection with liver
           liverModel.setHoveredInscription(0)
           handleMarkerHover(null)
           renderer.domElement.style.cursor = 'grab'
         }
       } else {
-        // No liver mesh available
+        // No intersection with liver
         liverModel.setHoveredInscription(0)
         handleMarkerHover(null)
         renderer.domElement.style.cursor = 'grab'

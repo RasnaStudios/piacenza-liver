@@ -72,7 +72,8 @@ export const liverInscriptionFragmentShader = `
     vec4 diffuseColor = texture2D(diffuseTexture, vUv);
     
     // Sample the mask texture to get inscription ID
-    vec2 maskUv = vec2(vUv.x, 1.0 - vUv.y); // Flip Y coordinate
+    // Flip Y coordinate to match texture orientation
+    vec2 maskUv = vec2(vUv.x, 1.0 - vUv.y);
     vec4 maskColor = texture2D(maskTexture, maskUv);
     
     // More precise conversion from grayscale to inscription ID
