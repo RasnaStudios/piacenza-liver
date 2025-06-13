@@ -7,7 +7,6 @@ An interactive 3D visualization of the ancient Etruscan Piacenza Liver (Fegato d
 - **Interactive 3D Model**: Navigate around the bronze liver model with mouse/touch controls
 - **Authentic Etruscan Script**: All 42 inscriptions displayed in original Etruscan Unicode characters (𐌀-𐌚)
 - **Scholarly Annotations**: Comprehensive deity information, divination meanings, and archaeological notes
-- **Mobile Optimized**: Responsive design with touch controls and performance optimizations
 - **Cosmological Grouping**: Organized by the six structural groups (A-G) of the liver's layout
 
 ## 🌐 Access the Website
@@ -67,10 +66,6 @@ The live website is available at: [liver.rasna.dev](https://liver.rasna.dev)
   pnpm lint
   ```
 
-## 🏛️ About the Piacenza Liver
-
-The Piacenza Liver is a bronze model dating to the late 2nd or early 1st century BCE, discovered near Piacenza, Italy in 1877. It served as a guide for Etruscan haruspices (diviners) who interpreted the will of the gods by examining sheep livers. The model maps the Etruscan cosmos onto 42 sections, each dedicated to specific deities.
-
 ## 🛠️ Built With
 
 - **React** - UI framework
@@ -81,8 +76,7 @@ The Piacenza Liver is a bronze model dating to the late 2nd or early 1st century
 ## 📚 Scholarly Sources
 
 This visualization is based on research from:
-- "Cosmogonica" scholarly framework
-- "Padanu" archaeological studies
+- "Cosmogonica" and "padanu" by Gottarelli
 - Maggiani-Gottarelli cosmological interpretation
 
 ## 📱 Browser Compatibility
