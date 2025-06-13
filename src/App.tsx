@@ -55,56 +55,16 @@ function PiacenzaLiverScene() {
     }
   }, [])
 
-  const handleMarkerClick = useCallback((inscription: any) => {
-    setSelectedInscription(inscription)
+  const handleInscriptionClick = useCallback((inscriptionId: number) => {
+    console.log(`Inscription ${inscriptionId} clicked`)
     
-    // Hide title when panel opens
-    setHasInteracted(true)
-    hasZoomedRef.current = true
-    
-    // Get the correct position from the texture atlas
-    if (cameraControllerRef.current && liverModelRef.current) {
-      const inscriptionPositions = liverModelRef.current.getInscriptionPositions()
-      const uvPosition = inscriptionPositions.get(inscription.id)
-      
-      if (uvPosition) {
-        // Convert UV to world position on the liver surface
-        const liverMesh = liverModelRef.current.getMesh()
-        if (liverMesh) {
-          // Use the UV coordinates to find the world position on the liver surface
-          const worldPosition = new THREE.Vector3()
-          const geometry = liverMesh.geometry
-          const positions = geometry.attributes.position.array as Float32Array
-          const uvs = geometry.attributes.uv.array as Float32Array
-          
-          // Find the closest vertex to the UV coordinate
-          let minDistance = Infinity
-          let closestVertex = 0
-          
-          for (let i = 0; i < positions.length / 3; i++) {
-            const vertexUV = new THREE.Vector2(uvs[i * 2], uvs[i * 2 + 1])
-            const distance = uvPosition.distanceTo(vertexUV)
-            
-            if (distance < minDistance) {
-              minDistance = distance
-              closestVertex = i
-            }
-          }
-          
-          // Get the world position of the closest vertex
-          worldPosition.set(
-            positions[closestVertex * 3],
-            positions[closestVertex * 3 + 1],
-            positions[closestVertex * 3 + 2]
-          )
-          
-          // Transform to world space
-          worldPosition.applyMatrix4(liverMesh.matrixWorld)
-          
-          // Focus camera on the correct position
-          cameraControllerRef.current.focusOn(worldPosition, 600, null, true)
-        }
-      }
+    // Find the inscription data and open the panel
+    const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
+    if (inscription) {
+      setSelectedInscription(inscription)
+      // Hide title when panel opens
+      setHasInteracted(true)
+      hasZoomedRef.current = true
     }
   }, [])
 
@@ -283,15 +243,34 @@ function PiacenzaLiverScene() {
     const liverModel = new LiverModel(scene, handleLoadingProgress)
     liverModelRef.current = liverModel
 
-    // Log deity region locations for debugging
-    setTimeout(() => {
+    // Set up callback for when liver model is ready
+    liverModel.setOnModelReady(() => {
+      console.log('🎯 Liver model is ready! Updating camera transforms...')
+      
       const inscriptionPositions = liverModel.getInscriptionPositions()
+      
+      // Log inscription positions for debugging
       console.log('📍 DEITY REGION LOCATIONS:')
       inscriptionPositions.forEach((uv: THREE.Vector2, id: number) => {
         const inscription = liverInscriptions.find(ins => ins.id === id)
         console.log(`  ${id}: UV(${uv.x.toFixed(3)}, ${uv.y.toFixed(3)}) - ${inscription?.etruscanText || 'Unknown'}`)
       })
-    }, 2000)
+    })
+
+    // Also keep the timeout as backup
+    setTimeout(() => {
+      console.log('⏰ Backup timeout: Checking inscription positions...')
+      const inscriptionPositions = liverModel.getInscriptionPositions()
+      if (inscriptionPositions.size > 0) {
+        console.log('📍 DEITY REGION LOCATIONS (backup):')
+        inscriptionPositions.forEach((uv: THREE.Vector2, id: number) => {
+          const inscription = liverInscriptions.find(ins => ins.id === id)
+          console.log(`  ${id}: UV(${uv.x.toFixed(3)}, ${uv.y.toFixed(3)}) - ${inscription?.etruscanText || 'Unknown'}`)
+        })
+      } else {
+        console.warn('⚠️ No inscription positions found in backup timeout')
+      }
+    }, 5000) // Increased delay as backup
 
     // Set up simple texture atlas interaction system
     const handleMouseMove = (event: MouseEvent) => {
@@ -328,7 +307,7 @@ function PiacenzaLiverScene() {
             // Sample the segmentation map at this UV coordinate
             const inscriptionId = liverModel.getInscriptionAtUV(uv.x, uv.y)
             
-            if (inscriptionId > 0 && inscriptionId <= 22) {
+            if (inscriptionId > 0 && inscriptionId <= 40) {
               // Set hovered inscription in shader
               liverModel.setHoveredInscription(inscriptionId)
               
@@ -383,11 +362,11 @@ function PiacenzaLiverScene() {
             // Sample the segmentation map at this UV coordinate
             const inscriptionId = liverModel.getInscriptionAtUV(uv.x, uv.y)
             
-            if (inscriptionId > 0 && inscriptionId <= 22) {
+            if (inscriptionId > 0 && inscriptionId <= 40) {
               // Find the inscription data
               const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
               if (inscription) {
-                handleMarkerClick(inscription)
+                handleInscriptionClick(inscriptionId)
               }
             }
           }
@@ -471,7 +450,7 @@ function PiacenzaLiverScene() {
         container.removeChild(renderer.domElement)
       }
     }
-  }, [handleMarkerHover, handleMarkerClick, handleBackgroundClick, checkForZoom, handleInteractionStart, handleInteractionEnd])
+  }, [handleMarkerHover, handleInscriptionClick, handleBackgroundClick, checkForZoom, handleInteractionStart, handleInteractionEnd])
 
   return (
     <div className="piacenza-liver-app">

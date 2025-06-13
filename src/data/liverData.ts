@@ -364,7 +364,11 @@ export const liverInscriptions = [
   // SKY GROUP (1-4) - Outer rim top
   {
     id: 1,
-    position: new THREE.Vector3(0, 0.1, -0.6),
+    cameraTransform: {
+      position: new THREE.Vector3(0, 0.3, -0.8),
+      target: new THREE.Vector3(0, 0, -0.6),
+      rotation: new THREE.Euler(0, 0, 0)
+    },
     groupId: 'sky',
     etruscanText: '𐌔𐌍𐌄𐌋𐌉𐌂 𐌔𐌍𐌉𐌕', 
     gods: ['tinia', 'cilens'],
@@ -373,7 +377,11 @@ export const liverInscriptions = [
   },
   {
     id: 2,
-    position: new THREE.Vector3(0.15, 0.1, -0.58),
+    cameraTransform: {
+      position: new THREE.Vector3(0.2, 0.3, -0.75),
+      target: new THREE.Vector3(0.15, 0, -0.58),
+      rotation: new THREE.Euler(0, -0.2, 0)
+    },
     groupId: 'sky',
     etruscanText: '𐌔𐌀𐌚𐌋𐌅𐌖𐌚 𐌔𐌍𐌉𐌕',
     gods: ['tinia', 'thufltha'],
@@ -382,7 +390,11 @@ export const liverInscriptions = [
   },
   {
     id: 3,
-    position: new THREE.Vector3(0.3, 0.1, -0.52),
+    cameraTransform: {
+      position: new THREE.Vector3(0.4, 0.3, -0.65),
+      target: new THREE.Vector3(0.3, 0, -0.52),
+      rotation: new THREE.Euler(0, -0.3, 0)
+    },
     groupId: 'sky', 
     etruscanText: '𐌔𐌍𐌖𐌍𐌚𐌄𐌍 𐌚𐌔𐌍𐌉𐌕',
     gods: ['tinia', 'nethuns'],
@@ -391,7 +403,11 @@ export const liverInscriptions = [
   },
   {
     id: 4,
-    position: new THREE.Vector3(0.42, 0.1, -0.4),
+    cameraTransform: {
+      position: new THREE.Vector3(0.55, 0.3, -0.5),
+      target: new THREE.Vector3(0.42, 0, -0.4),
+      rotation: new THREE.Euler(0, -0.4, 0)
+    },
     groupId: 'sky',
     etruscanText: '𐌄𐌀𐌌 𐌋𐌀𐌉𐌍𐌖',
     gods: ['uni', 'mae'],
@@ -402,7 +418,11 @@ export const liverInscriptions = [
   // WATER GROUP (5-8) - Right side moving down
   {
     id: 5,
-    position: new THREE.Vector3(0.5, 0.1, -0.25),
+    cameraTransform: {
+      position: new THREE.Vector3(0.65, 0.3, -0.3),
+      target: new THREE.Vector3(0.5, 0, -0.25),
+      rotation: new THREE.Euler(0, -0.5, 0)
+    },
     groupId: 'water',
     etruscanText: '𐌌𐌖𐌂𐌄𐌕',
     gods: ['tecvm'],
@@ -411,7 +431,11 @@ export const liverInscriptions = [
   },
   {
     id: 6,
-    position: new THREE.Vector3(0.55, 0.1, -0.08),
+    cameraTransform: {
+      position: new THREE.Vector3(0.7, 0.3, -0.1),
+      target: new THREE.Vector3(0.55, 0, -0.08),
+      rotation: new THREE.Euler(0, -0.6, 0)
+    },
     groupId: 'water',
     etruscanText: '𐌋𐌔𐌖𐌋',
     gods: ['lusal'],
@@ -420,7 +444,11 @@ export const liverInscriptions = [
   },
   {
     id: 7,
-    position: new THREE.Vector3(0.56, 0.1, 0.1),
+    cameraTransform: {
+      position: new THREE.Vector3(0.72, 0.3, 0.15),
+      target: new THREE.Vector3(0.56, 0, 0.1),
+      rotation: new THREE.Euler(0, -0.7, 0)
+    },
     groupId: 'water',
     etruscanText: '𐌔𐌍𐌖𐌍𐌚𐌄𐌍',
     gods: ['nethuns'],
@@ -429,7 +457,11 @@ export const liverInscriptions = [
   },
   {
     id: 8,
-    position: new THREE.Vector3(0.52, 0.1, 0.28),
+    cameraTransform: {
+      position: new THREE.Vector3(0.68, 0.3, 0.35),
+      target: new THREE.Vector3(0.52, 0, 0.28),
+      rotation: new THREE.Euler(0, -0.8, 0)
+    },
     groupId: 'water',
     etruscanText: '𐌔𐌀𐌚𐌀𐌂',
     gods: ['catha'],
@@ -440,7 +472,11 @@ export const liverInscriptions = [
   // EARTH GROUP (9-12) - Bottom right to bottom left
   {
     id: 9,
-    position: new THREE.Vector3(0.45, 0.1, 0.42),
+    cameraTransform: {
+      position: new THREE.Vector3(0.6, 0.3, 0.5),
+      target: new THREE.Vector3(0.45, 0, 0.42),
+      rotation: new THREE.Euler(0, -0.9, 0)
+    },
     groupId: 'earth',
     etruscanText: '𐌋 𐌔𐌍𐌖𐌋𐌅𐌖𐌅',
     gods: ['fufluns'],
@@ -449,7 +485,11 @@ export const liverInscriptions = [
   },
   {
     id: 10,
-    position: new THREE.Vector3(0.35, 0.1, 0.52),
+    cameraTransform: {
+      position: new THREE.Vector3(0.5, 0.3, 0.6),
+      target: new THREE.Vector3(0.35, 0, 0.52),
+      rotation: new THREE.Euler(0, -1.0, 0)
+    },
     groupId: 'earth',
     etruscanText: '𐌔𐌍𐌀𐌅𐌋𐌄𐌔',
     gods: ['selvans'],
@@ -458,7 +498,11 @@ export const liverInscriptions = [
   },
   {
     id: 11,
-    position: new THREE.Vector3(0.18, 0.1, 0.58),
+    cameraTransform: {
+      position: new THREE.Vector3(0.3, 0.3, 0.65),
+      target: new THREE.Vector3(0.18, 0, 0.58),
+      rotation: new THREE.Euler(0, -1.1, 0)
+    },
     groupId: 'earth',
     etruscanText: '𐌔𐌍𐌚𐌄𐌋',
     gods: ['lethns'],
@@ -467,7 +511,11 @@ export const liverInscriptions = [
   },
   {
     id: 12,
-    position: new THREE.Vector3(-0.18, 0.1, 0.58),
+    cameraTransform: {
+      position: new THREE.Vector3(-0.3, 0.3, 0.65),
+      target: new THREE.Vector3(-0.18, 0, 0.58),
+      rotation: new THREE.Euler(0, 1.1, 0)
+    },
     groupId: 'earth',
     etruscanText: '𐌋𐌀𐌅𐌂𐌔𐌖𐌋𐌕',
     gods: ['tluscva'],
@@ -478,7 +526,11 @@ export const liverInscriptions = [
   // UNDERWORLD GROUP (13-16) - Left side
   {
     id: 13,
-    position: new THREE.Vector3(-0.35, 0.1, 0.52),
+    cameraTransform: {
+      position: new THREE.Vector3(-0.5, 0.3, 0.6),
+      target: new THREE.Vector3(-0.35, 0, 0.52),
+      rotation: new THREE.Euler(0, 1.0, 0)
+    },
     groupId: 'underworld',
     etruscanText: '𐌔𐌋𐌄𐌂',
     gods: ['cels'],
@@ -487,7 +539,11 @@ export const liverInscriptions = [
   },
   {
     id: 14,
-    position: new THREE.Vector3(-0.45, 0.1, 0.42),
+    cameraTransform: {
+      position: new THREE.Vector3(-0.6, 0.3, 0.5),
+      target: new THREE.Vector3(-0.45, 0, 0.42),
+      rotation: new THREE.Euler(0, 0.9, 0)
+    },
     groupId: 'underworld',
     etruscanText: '𐌔𐌍𐌀𐌐𐌋𐌀 𐌋𐌔𐌍𐌀𐌔𐌋𐌖𐌂',
     gods: ['culsans', 'alpans'],
@@ -496,7 +552,11 @@ export const liverInscriptions = [
   },
   {
     id: 15,
-    position: new THREE.Vector3(0.45, 0.1, -0.15),
+    cameraTransform: {
+      position: new THREE.Vector3(0.6, 0.3, -0.2),
+      target: new THREE.Vector3(0.45, 0, -0.15),
+      rotation: new THREE.Euler(0, -0.4, 0)
+    },
     groupId: 'underworld',
     etruscanText: '𐌉𐌔𐌋𐌕𐌄𐌅',
     gods: ['vetlsi'],
@@ -505,7 +565,11 @@ export const liverInscriptions = [
   },
   {
     id: 16,
-    position: new THREE.Vector3(0.42, 0.1, -0.02),
+    cameraTransform: {
+      position: new THREE.Vector3(0.55, 0.3, -0.05),
+      target: new THREE.Vector3(0.42, 0, -0.02),
+      rotation: new THREE.Euler(0, -0.3, 0)
+    },
     groupId: 'underworld',
     etruscanText: '𐌋𐌔𐌍𐌄𐌋𐌉𐌂',
     gods: ['cilens'],
@@ -516,7 +580,11 @@ export const liverInscriptions = [
   // PARS FAMILIARIS GROUP (17-24) - Red regions
   {
     id: 17,
-    position: new THREE.Vector3(0.4, 0.1, 0.12),
+    cameraTransform: {
+      position: new THREE.Vector3(0.55, 0.3, 0.2),
+      target: new THREE.Vector3(0.4, 0, 0.12),
+      rotation: new THREE.Euler(0, -0.8, 0)
+    },
     groupId: 'pars_familiaris',
     etruscanText: '𐌋𐌖𐌐',
     gods: ['pul'],
@@ -525,7 +593,11 @@ export const liverInscriptions = [
   },
   {
     id: 18,
-    position: new THREE.Vector3(0.35, 0.1, 0.25),
+    cameraTransform: {
+      position: new THREE.Vector3(0.5, 0.3, 0.35),
+      target: new THREE.Vector3(0.35, 0, 0.25),
+      rotation: new THREE.Euler(0, -0.9, 0)
+    },
     groupId: 'pars_familiaris',
     etruscanText: '𐌔𐌍𐌚𐌄𐌋',
     gods: ['lethns'],
@@ -534,7 +606,11 @@ export const liverInscriptions = [
   },
   {
     id: 19,
-    position: new THREE.Vector3(0.3, 0.1, 0.35),
+    cameraTransform: {
+      position: new THREE.Vector3(0.45, 0.3, 0.45),
+      target: new THREE.Vector3(0.3, 0, 0.35),
+      rotation: new THREE.Euler(0, -1.0, 0)
+    },
     groupId: 'pars_familiaris',
     etruscanText: '𐌋𐌔𐌀𐌋',
     gods: ['lasl'],
@@ -543,7 +619,11 @@ export const liverInscriptions = [
   },
   {
     id: 20,
-    position: new THREE.Vector3(0.22, 0.1, 0.42),
+    cameraTransform: {
+      position: new THREE.Vector3(0.35, 0.3, 0.52),
+      target: new THREE.Vector3(0.22, 0, 0.42),
+      rotation: new THREE.Euler(0, -1.1, 0)
+    },
     groupId: 'pars_familiaris',
     etruscanText: '𐌔𐌀𐌚𐌋𐌅𐌖𐌚 𐌔𐌍𐌉𐌕',
     gods: ['tinia', 'thufltha'],
@@ -552,7 +632,11 @@ export const liverInscriptions = [
   },
   {
     id: 21,
-    position: new THREE.Vector3(0.12, 0.1, 0.45),
+    cameraTransform: {
+      position: new THREE.Vector3(0.25, 0.3, 0.55),
+      target: new THREE.Vector3(0.12, 0, 0.45),
+      rotation: new THREE.Euler(0, -1.2, 0)
+    },
     groupId: 'pars_familiaris',
     etruscanText: '𐌔𐌀𐌚𐌋𐌅𐌖𐌚',
     gods: ['thufltha'],
@@ -561,30 +645,16 @@ export const liverInscriptions = [
   },
   {
     id: 22,
-    position: new THREE.Vector3(0, 0.1, 0.47),
+    cameraTransform: {
+      position: new THREE.Vector3(0.15, 0.3, 0.57),
+      target: new THREE.Vector3(0, 0, 0.47),
+      rotation: new THREE.Euler(0, -1.3, 0)
+    },
     groupId: 'pars_familiaris',
     etruscanText: '𐌔𐌍𐌖𐌍𐌚𐌄𐌍 𐌚𐌔𐌍𐌉𐌕',
     gods: ['tinia', 'nethuns'],
     relationship: 'Nethuns in Tinia\'s house - atmospheric humidity',
     divinationMeaning: 'Favorable water omens under divine protection'
-  },
-  {
-    id: 23,
-    position: new THREE.Vector3(-0.12, 0.1, 0.45),
-    groupId: 'pars_familiaris',
-    etruscanText: '𐌔𐌀𐌚𐌀𐌂',
-    gods: ['catha'],
-    relationship: 'Sun goddess in favorable realm',
-    divinationMeaning: 'Favorable solar omens, beneficial illumination'
-  },
-  {
-    id: 24,
-    position: new THREE.Vector3(-0.22, 0.1, 0.42),
-    groupId: 'pars_familiaris',
-    etruscanText: '𐌋 𐌔𐌍𐌖𐌋𐌅𐌖𐌅',
-    gods: ['fufluns'],
-    relationship: 'Wine god in favorable household context',
-    divinationMeaning: 'Favorable harvest, joyful celebration, abundance'
   },
 
   // GALL BLADDER GROUP (25-28) - Blue-green regions

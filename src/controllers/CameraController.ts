@@ -1,8 +1,16 @@
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { globalAnimator, easingFunctions, lerpVector3 } from '../utils/animationUtils'
 
 export class CameraController {
-  constructor(camera, controls) {
+  private camera: THREE.Camera
+  private controls: OrbitControls
+  private lastManualPosition: THREE.Vector3
+  private lastManualTarget: THREE.Vector3
+  private isAnimating: boolean
+  private currentAnimationId: number | null
+
+  constructor(camera: THREE.Camera, controls: OrbitControls) {
     this.camera = camera
     this.controls = controls
     
@@ -52,7 +60,7 @@ export class CameraController {
   }
 
   // Animate camera to focus on a specific position with panel-aware positioning and proper text orientation
-  focusOn(targetPosition, duration = 800, textMarker = null, isPanelOpen = false) {
+  focusOn(targetPosition: THREE.Vector3, duration: number = 800, customCameraPosition: THREE.Vector3 | null = null, isPanelOpen: boolean = false) {
     // Stop any existing animation first
     this.stopAnimation()
     
@@ -64,17 +72,13 @@ export class CameraController {
     const startTarget = this.controls.target.clone()
     
     // Target is the inscription position - this centers it in the screen
-    const endTarget = textMarker ? textMarker.position.clone() : targetPosition.clone()
+    const endTarget = targetPosition.clone()
     
-    // Position camera along the surface normal from the inscription
-    let endPosition
-    if (textMarker && textMarker.userData.surfaceNormal) {
-      // Get the surface normal from the marker data
-      const surfaceNormal = textMarker.userData.surfaceNormal.clone().normalize()
-      
-      // Position camera along the normal, away from the surface
-      const viewDistance = 1.0
-      endPosition = endTarget.clone().add(surfaceNormal.multiplyScalar(viewDistance))
+    // Use custom camera position if provided, otherwise calculate based on target
+    let endPosition: THREE.Vector3
+    if (customCameraPosition) {
+      // Use the predefined camera position from the inscription data
+      endPosition = customCameraPosition.clone()
     } else {
       // Fallback: position camera at a reasonable offset
       const offset = new THREE.Vector3(0, 0.5, 1.0)
@@ -90,7 +94,7 @@ export class CameraController {
     this.currentAnimationId = globalAnimator.animate(
       'camera-focus',
       duration,
-      (progress) => {
+      (progress: number) => {
         // Check if animation was interrupted
         if (!this.isAnimating) {
           return // Stop updating if animation was cancelled

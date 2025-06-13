@@ -340,41 +340,46 @@ export class LiverModel {
 
   // Cleanup
   dispose() {
-    const target = this.object || this.mesh
-    if (target) {
-      // Dispose geometry and materials
-      target.traverse((child) => {
-        if (child instanceof THREE.Mesh) {
-          if (child.geometry) {
-            child.geometry.dispose()
-          }
-          if (child.material) {
-            // Handle both single materials and material arrays
-            if (Array.isArray(child.material)) {
-              child.material.forEach((material: any) => {
-                if (material.map) material.map.dispose()
-                if (material.normalMap) material.normalMap.dispose()
-                if (material.metalnessMap) material.metalnessMap.dispose()
-                if (material.roughnessMap) material.roughnessMap.dispose()
-                material.dispose()
-              })
-            } else {
-              const material = child.material as any
-              if (material.map) material.map.dispose()
-              if (material.normalMap) material.normalMap.dispose()
-              if (material.metalnessMap) material.metalnessMap.dispose()
-              if (material.roughnessMap) material.roughnessMap.dispose()
-              material.dispose()
-            }
-          }
-        }
-      })
-      
-      // Remove from scene
-      this.scene.remove(target)
-      this.mesh = null
-      this.object = null
+    // Dispose of textures
+    if (this.shaderUniforms.diffuseTexture.value) {
+      this.shaderUniforms.diffuseTexture.value.dispose()
     }
+    if (this.shaderUniforms.maskTexture.value) {
+      this.shaderUniforms.maskTexture.value.dispose()
+    }
+    if (this.maskTexture) {
+      this.maskTexture.dispose()
+    }
+    
+    // Dispose of materials
+    if (this.mesh && this.mesh.material) {
+      if (Array.isArray(this.mesh.material)) {
+        this.mesh.material.forEach(material => material.dispose())
+      } else {
+        this.mesh.material.dispose()
+      }
+    }
+    
+    // Dispose of geometries
+    if (this.mesh && this.mesh.geometry) {
+      this.mesh.geometry.dispose()
+    }
+    
+    // Remove from scene
+    if (this.object) {
+      this.scene.remove(this.object)
+    }
+    if (this.mesh && this.mesh !== this.object) {
+      this.scene.remove(this.mesh)
+    }
+    
+    // Clear references
+    this.mesh = null
+    this.object = null
+    this.maskTexture = null
+    this.inscriptionPositions.clear()
+    
+    console.log('LiverModel disposed')
   }
 
   // Load the existing segmentation map texture
@@ -389,6 +394,11 @@ export class LiverModel {
           console.log('Segmentation map image type:', texture.image.constructor.name)
           console.log('Segmentation map has data:', !!texture.image.data)
           
+          // Set texture filtering to prevent interpolation
+          texture.magFilter = THREE.NearestFilter
+          texture.minFilter = THREE.NearestFilter
+          texture.wrapS = THREE.ClampToEdgeWrapping
+          texture.wrapT = THREE.ClampToEdgeWrapping
           texture.flipY = false
           texture.needsUpdate = true
           
@@ -451,8 +461,8 @@ export class LiverModel {
       }
     }
     
-    // Scan the image for each inscription ID (1-22)
-    for (let inscriptionId = 1; inscriptionId <= 22; inscriptionId++) {
+    // Scan the image for each inscription ID (1-40)
+    for (let inscriptionId = 1; inscriptionId <= 40; inscriptionId++) {
       let found = false
       let totalX = 0
       let totalY = 0
