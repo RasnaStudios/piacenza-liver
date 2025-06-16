@@ -80,8 +80,11 @@ function PiacenzaLiverScene() {
   const handlePanelClose = useCallback(() => {
     setSelectedInscription(null)
     
-    // Use camera controller for smooth animation back to default
-    if (cameraControllerRef.current) {
+    // Check if we're on mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    
+    // Use camera controller for smooth animation back to default (only on desktop)
+    if (cameraControllerRef.current && !isMobile) {
       cameraControllerRef.current.resetToDefault(800)
     }
     

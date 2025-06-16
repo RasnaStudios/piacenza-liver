@@ -14,7 +14,7 @@ export class LiverModel {
   private onProgress?: (progress: number) => void
   
   // New properties for inscription system
-  private shaderUniforms: LiverShaderUniforms
+  private shaderUniforms!: LiverShaderUniforms
   private maskTexture: THREE.Texture | null = null
   private inscriptionPositions: Map<number, THREE.Vector2> = new Map()
   private hoveredInscription: number = 0
@@ -24,6 +24,12 @@ export class LiverModel {
   constructor(scene: THREE.Scene, onProgress?: (progress: number) => void) {
     this.scene = scene
     this.onProgress = onProgress
+    
+    // Check WebGL support
+    if (!this.checkWebGLSupport()) {
+      console.error('WebGL not supported on this device')
+      throw new Error('WebGL not supported')
+    }
     
     // Initialize shader uniforms
     this.shaderUniforms = {
@@ -36,40 +42,77 @@ export class LiverModel {
     this.loadLiverModel()
   }
 
+  // Check WebGL support
+  private checkWebGLSupport(): boolean {
+    try {
+      const canvas = document.createElement('canvas')
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl')
+      return !!gl
+    } catch (e) {
+      return false
+    }
+  }
+
   // Load the OBJ model with PBR textures
   async loadLiverModel() {
     try {
       // Report initial progress
       this.onProgress?.(10)
 
-      // Load all textures in parallel
+      // Check if we're on mobile and adjust loading strategy
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      
+      // Load all textures in parallel with mobile-specific settings
       const textureLoader = new THREE.TextureLoader()
-      const textures = await Promise.all([
+      
+      // For mobile, use lower quality settings to improve performance
+      if (isMobile) {
+        textureLoader.setCrossOrigin('anonymous')
+      }
+      
+      const texturePromises = [
         textureLoader.loadAsync('/liver-model/Pbr/texture_diffuse.png'),
         textureLoader.loadAsync('/liver-model/Pbr/texture_normal.png'),
         textureLoader.loadAsync('/liver-model/Pbr/texture_metallic.png'),
         textureLoader.loadAsync('/liver-model/Pbr/texture_roughness.png')
-      ])
+      ]
       
-      console.log('Textures loaded:', textures.map(t => ({ width: t.image.width, height: t.image.height })))
+      // Add timeout for mobile devices
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Texture loading timeout')), isMobile ? 30000 : 60000)
+      })
+      
+      const textures = await Promise.race([
+        Promise.all(texturePromises),
+        timeoutPromise
+      ]) as THREE.Texture[]
 
       this.onProgress?.(40) // Textures loaded
 
       const [diffuseTexture, normalTexture, metallicTexture, roughnessTexture] = textures
 
-      // Configure texture settings for better quality
+      // Configure texture settings for better quality and mobile compatibility
       textures.forEach(texture => {
         texture.wrapS = THREE.RepeatWrapping
         texture.wrapT = THREE.RepeatWrapping
-        texture.flipY = true // Try standard Y-flip for OBJ textures
+        texture.flipY = true
         texture.generateMipmaps = true
-        texture.minFilter = THREE.LinearMipmapLinearFilter
-        texture.magFilter = THREE.LinearFilter
+        
+        // Use lower quality filters on mobile for better performance
+        if (isMobile) {
+          texture.minFilter = THREE.LinearMipmapNearestFilter
+          texture.magFilter = THREE.NearestFilter
+        } else {
+          texture.minFilter = THREE.LinearMipmapLinearFilter
+          texture.magFilter = THREE.LinearFilter
+        }
       })
 
-      // Load the segmentation map texture
-      this.maskTexture = await this.loadSegmentationMap()
-      // inscriptionPositions is populated by loadSegmentationMap()
+      // Load the segmentation map texture with timeout
+      this.maskTexture = await Promise.race([
+        this.loadSegmentationMap(),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Segmentation map timeout')), 15000))
+      ]) as THREE.Texture
 
       this.onProgress?.(60) // Textures configured
 
@@ -77,59 +120,52 @@ export class LiverModel {
       this.shaderUniforms.diffuseTexture.value = diffuseTexture
       this.shaderUniforms.maskTexture.value = this.maskTexture
 
-      // Create custom shader material instead of MeshStandardMaterial
+      // Create custom shader material with mobile optimizations
       const material = new THREE.ShaderMaterial({
         uniforms: this.shaderUniforms,
         vertexShader: liverInscriptionVertexShader,
         fragmentShader: liverInscriptionFragmentShader,
         side: THREE.FrontSide,
         transparent: false,
+        // Mobile-specific optimizations
+        precision: isMobile ? 'mediump' : 'highp'
       })
-      
-      console.log('🔥 Shader material created:', material)
-      console.log('🔥 Shader uniforms:', this.shaderUniforms)
-      console.log('🔥 Vertex shader length:', liverInscriptionVertexShader.length)
-      console.log('🔥 Fragment shader length:', liverInscriptionFragmentShader.length)
 
       this.onProgress?.(75) // Material created
 
-      // Load the OBJ model
+      // Load the OBJ model with timeout
       const objLoader = new OBJLoader()
-      const object = await objLoader.loadAsync('/liver-model/Pbr/base.obj')
+      const object = await Promise.race([
+        objLoader.loadAsync('/liver-model/Pbr/base.obj'),
+        new Promise((_, reject) => setTimeout(() => reject(new Error('OBJ loading timeout')), 30000))
+      ]) as THREE.Object3D
       
       this.onProgress?.(90) // Model loaded
-      
-      console.log('OBJ loaded, traversing children...')
-      console.log('Object children count:', object.children.length)
 
       // Apply material to all meshes in the loaded object
       object.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           child.material = material
-          child.castShadow = true
-          child.receiveShadow = true
+          child.castShadow = !isMobile // Disable shadows on mobile for performance
+          child.receiveShadow = !isMobile
           child.userData = { type: 'liver' }
           
           // Store reference to the main mesh
           if (!this.mesh) {
             this.mesh = child
           }
-          
-          console.log('Applied inscription shader material to mesh:', child.name || 'unnamed')
         }
       })
 
       // Scale and position the model appropriately
-      object.scale.setScalar(1.0) // Adjust scale as needed
+      object.scale.setScalar(1.0)
       object.position.set(0, 0, 0)
       object.rotation.set(0, 0, 0)
 
       // Add to scene
       this.scene.add(object)
-      this.object = object // Store reference to the entire object
+      this.object = object
 
-      console.log('PBR Liver model loaded successfully')
-      
       this.onProgress?.(95) // Setup complete
       
       // Start smooth rotation animation (90° to the left)
@@ -143,54 +179,13 @@ export class LiverModel {
         if (this.onModelReady) {
           this.onModelReady()
         }
-      }, 500)
+      }, isMobile ? 1000 : 500) // Longer delay on mobile
       
     } catch (error) {
       console.error('Error loading liver model:', error)
-      
-      // Fallback: create a simple geometry if model loading fails
-      this.createFallbackLiver()
+      // Don't create fallback - if loading fails, it should fail properly
+      throw error
     }
-  }
-
-  // Fallback method if OBJ loading fails
-  createFallbackLiver() {
-    console.log('Using fallback liver geometry')
-    
-    // Create simple liver-shaped geometry
-    const geometry = new THREE.SphereGeometry(1, 32, 16)
-    const positions = geometry.attributes.position.array
-    
-    // Transform to liver shape
-    for (let i = 0; i < positions.length; i += 3) {
-      const x = positions[i]
-      const y = positions[i + 1]
-      const z = positions[i + 2]
-      
-      positions[i + 1] = y * 0.3 // Flatten vertically
-      positions[i] = x * (1 + z * 0.3) // Make asymmetric
-      positions[i + 2] = z * 1.2 // Elongate
-    }
-    
-    geometry.attributes.position.needsUpdate = true
-    geometry.computeVertexNormals()
-    
-    // Create simple bronze material
-    const material = new THREE.MeshStandardMaterial({
-      color: 0x8b6f47,
-      metalness: 0.8,
-      roughness: 0.4
-    })
-    
-    // Create mesh
-    this.mesh = new THREE.Mesh(geometry, material)
-    this.mesh.castShadow = true
-    this.mesh.receiveShadow = true
-    this.mesh.userData = { type: 'liver' }
-    
-    // Add to scene
-    this.scene.add(this.mesh)
-    this.object = this.mesh
   }
 
   // Get current position
@@ -381,6 +376,15 @@ export class LiverModel {
   private loadSegmentationMap(): Promise<THREE.Texture> {
     return new Promise((resolve, reject) => {
       const textureLoader = new THREE.TextureLoader()
+      
+      // Check if we're on mobile
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      
+      // Set cross-origin for mobile
+      if (isMobile) {
+        textureLoader.setCrossOrigin('anonymous')
+      }
+      
       textureLoader.load(
         '/liver-model/Pbr/segmentation.png',
         (texture) => {
