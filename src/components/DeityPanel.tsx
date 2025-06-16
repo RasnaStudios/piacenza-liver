@@ -11,6 +11,9 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     return null
   }
 
+  // Check if we're on mobile
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
   // Get the group information
   const group = (liverGroups as any)[selectedInscription.groupId]
   
@@ -44,7 +47,13 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
             </div>
           </div>
         </div>
-        <button onClick={onClose}>×</button>
+        <button 
+          onClick={onClose}
+          aria-label="Close panel"
+          title="Close panel"
+        >
+          {isMobile ? '✕' : '×'}
+        </button>
       </div>
 
       {/* Scrollable Content */}
@@ -115,6 +124,9 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
           <h3>Combined Divination Meaning</h3>
           <p>{selectedInscription.divinationMeaning}</p>
         </div>
+        
+        {/* Mobile: Add some bottom padding for better scrolling */}
+        {isMobile && <div style={{ height: '40px' }} />}
       </div>
     </div>
   )

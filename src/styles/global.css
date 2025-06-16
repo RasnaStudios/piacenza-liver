@@ -286,6 +286,27 @@ body, html {
   }
 }
 
+/* Mobile panel slide-up animation */
+@media (max-width: 768px) {
+  @keyframes panelSlideIn {
+    0% {
+      opacity: 0;
+      transform: translateY(100%) scale(0.95);
+      filter: blur(5px);
+    }
+    50% {
+      opacity: 0.8;
+      transform: translateY(20%) scale(0.98);
+      filter: blur(2px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+}
+
 .panel-header {
   display: flex;
   justify-content: space-between;
@@ -768,4 +789,108 @@ body, html {
     0 3px 6px rgba(0, 0, 0, 0.4),
     0 1px 3px rgba(212, 175, 55, 0.2),
     inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile styles for deity panel */
+@media (max-width: 768px) {
+  .info-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    border-radius: 0;
+    transform: translateY(100%);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  }
+  
+  .info-panel.visible {
+    transform: translateY(0);
+  }
+  
+  .panel-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 20px;
+    border-radius: 0;
+  }
+  
+  .panel-header button {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+    border-radius: 50%;
+    background: rgba(139, 101, 65, 0.8);
+    border: 2px solid rgba(212, 175, 55, 0.3);
+    color: #f4e6d3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .panel-header button:hover {
+    background: rgba(212, 175, 55, 0.9);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+  }
+  
+  .panel-content {
+    padding: 20px;
+  }
+  
+  .deity-names h2 {
+    font-size: 1.5em;
+    line-height: 1.2;
+  }
+  
+  .deity-names h3 {
+    font-size: 1em;
+  }
+  
+  .etruscan-inscription {
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 12px 20px;
+    font-size: 14px;
+  }
+  
+  .deity-card {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 12px;
+  }
+  
+  .deity-header h4 {
+    font-size: 1.2em;
+  }
+  
+  .deity-domain,
+  .deity-description,
+  .deity-divination {
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+  
+  .group-section,
+  .deities-section,
+  .relationship-section,
+  .combined-divination-section {
+    margin-bottom: 24px;
+  }
+  
+  .group-header h3,
+  .deities-section h3,
+  .relationship-section h3,
+  .combined-divination-section h3 {
+    font-size: 1.3em;
+    margin-bottom: 12px;
+  }
 } 
