@@ -24,6 +24,7 @@ function PiacenzaLiverScene() {
   const [hasInteracted, setHasInteracted] = useState(false)
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
 
   // Refs for 3D objects and controllers
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -93,13 +94,12 @@ function PiacenzaLiverScene() {
       liverModelRef.current.setHoveredInscription(0)
     }
     
-    // Reset title visibility and zoom state
-    setHasInteracted(false)
+    // Don't reset title visibility if user has already interacted
+    // Only reset interaction state, not the permanent interacted state
     setIsInteracting(false)
-    hasZoomedRef.current = false
-    if (cameraRef.current) {
-      initialCameraDistance.current = cameraRef.current.position.length()
-    }
+    
+    // Keep hasInteracted and hasZoomedRef as they are
+    // This prevents title from reappearing when closing panels
   }, [])
 
   // Handle camera interaction for title visibility
@@ -277,6 +277,8 @@ function PiacenzaLiverScene() {
 
     // Set up simple texture atlas interaction system
     const handleMouseMove = (event: MouseEvent) => {
+      setMousePosition({ x: event.clientX, y: event.clientY })
+      
       // Check if liver model is ready
       const liverMesh = liverModel.getMesh()
       if (!liverMesh || !liverModel.getMaskTexture()) {
@@ -457,15 +459,16 @@ function PiacenzaLiverScene() {
         />
         
         <HoverTooltip 
-          hoveredSection={selectedInscription ? null : hoveredSection} 
+          hoveredSection={hoveredSection}
+          mousePosition={mousePosition}
         />
         
-        <Legend />
+        <Legend hasInteracted={hasInteracted} />
         
         {/* Loading Screen */}
         <LoadingScreen 
           progress={loadingProgress} 
-          isVisible={isLoading} 
+          isLoading={isLoading} 
         />
       </div>
     </div>
