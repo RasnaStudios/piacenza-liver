@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { globalAnimator, easingFunctions, lerpVector3 } from '../utils/animationUtils'
+import { globalAnimator, easingFunctions, lerpVector3 } from './Animation'
 
 export class CameraController {
   private camera: THREE.Camera
@@ -59,6 +59,62 @@ export class CameraController {
     }
   }
 
+  // Helper method to calculate a roll-safe camera position
+  private calculateRollSafePosition(
+    startPosition: THREE.Vector3, 
+    startTarget: THREE.Vector3, 
+    endPosition: THREE.Vector3, 
+    endTarget: THREE.Vector3
+  ): THREE.Vector3 {
+    // Calculate the viewing directions
+    const startDirection = startPosition.clone().sub(startTarget).normalize()
+    const endDirection = endPosition.clone().sub(endTarget).normalize()
+    
+    // Calculate the angle between the directions
+    const angle = startDirection.angleTo(endDirection)
+    
+    // If the angle is small, use the original end position
+    if (angle < Math.PI / 4) { // Less than 45 degrees
+      return endPosition
+    }
+    
+    // For larger angles, use spherical interpolation to prevent roll
+    if (angle > Math.PI / 2) { // More than 90 degrees
+      console.log(`Large angle detected (${(angle * 180 / Math.PI).toFixed(1)}°), using conservative interpolation`)
+      
+      // Use a more conservative approach - blend the directions
+      const blendFactor = 0.6 // 60% toward target direction
+      const blendedDirection = startDirection.clone()
+        .multiplyScalar(1 - blendFactor)
+        .add(endDirection.clone().multiplyScalar(blendFactor))
+        .normalize()
+      
+      // Calculate the distance from target to maintain
+      const distance = endPosition.distanceTo(endTarget)
+      
+      // Return position that uses blended direction
+      return endTarget.clone().add(blendedDirection.multiplyScalar(distance))
+    }
+    
+    // For medium angles, use spherical interpolation
+    const t = 0.5 // Use halfway point for medium angles
+    const sinAngle = Math.sin(angle)
+    const sinT = Math.sin(t * angle)
+    const sinOneMinusT = Math.sin((1 - t) * angle)
+    
+    // Spherical interpolation formula
+    const interpolatedDirection = startDirection.clone()
+      .multiplyScalar(sinOneMinusT / sinAngle)
+      .add(endDirection.clone().multiplyScalar(sinT / sinAngle))
+      .normalize()
+    
+    // Calculate the distance from target to maintain
+    const distance = endPosition.distanceTo(endTarget)
+    
+    // Return position that uses interpolated direction
+    return endTarget.clone().add(interpolatedDirection.multiplyScalar(distance))
+  }
+
   // Animate camera to focus on a specific position with panel-aware positioning and proper text orientation
   focusOn(targetPosition: THREE.Vector3, duration: number = 800, customCameraPosition: THREE.Vector3 | null = null, isPanelOpen: boolean = false) {
     // Stop any existing animation first
@@ -85,6 +141,32 @@ export class CameraController {
       endPosition = endTarget.clone().add(offset)
     }
 
+    // Check for potential excessive roll and adjust if necessary
+    const startDirection = startPosition.clone().sub(startTarget).normalize()
+    const endDirection = endPosition.clone().sub(endTarget).normalize()
+    const rollAngle = startDirection.angleTo(endDirection)
+    
+    // If the roll angle would be too large, use a more conservative approach
+    if (rollAngle > Math.PI / 2) { // More than 90 degrees
+      console.log(`Large roll detected (${(rollAngle * 180 / Math.PI).toFixed(1)}°), using conservative approach`)
+      
+      // Instead of direct interpolation, use a two-step approach:
+      // 1. First move to a position that maintains current orientation
+      // 2. Then gradually adjust to the final position
+      
+      // Calculate a conservative end position that's closer to current orientation
+      const conservativeDirection = startDirection.clone()
+        .multiplyScalar(0.3) // Keep 30% of current direction
+        .add(endDirection.clone().multiplyScalar(0.7)) // Add 70% of target direction
+        .normalize()
+      
+      const conservativeEndPosition = endTarget.clone().add(conservativeDirection.multiplyScalar(endPosition.distanceTo(endTarget)))
+      endPosition = conservativeEndPosition
+    }
+
+    // Use the roll-safe position calculation
+    endPosition = this.calculateRollSafePosition(startPosition, startTarget, endPosition, endTarget)
+
     // Reusable vectors for performance
     const tempCameraPos = new THREE.Vector3()
     const tempTargetPos = new THREE.Vector3()
@@ -108,9 +190,16 @@ export class CameraController {
         lerpVector3(startTarget, endTarget, progress, tempTargetPos)
         this.controls.target.copy(tempTargetPos)
         
+        // Ensure camera maintains consistent up direction to prevent roll
+        // Use lookAt with a fixed up vector (0, 1, 0) to eliminate roll
+        this.camera.lookAt(tempTargetPos)
+        
+        // Force the camera's up vector to be (0, 1, 0) to prevent roll
+        this.camera.up.set(0, 1, 0)
+        
         this.controls.update()
       },
-      easingFunctions.easeInOutQuart, // Faster, snappier easing
+      easingFunctions.easeInOutBalanced, // Balanced ease in/out with same speed
       () => {
         this.isAnimating = false
         this.currentAnimationId = null
@@ -154,9 +243,13 @@ export class CameraController {
         lerpVector3(startTarget, endTarget, progress, tempTargetPos)
         this.controls.target.copy(tempTargetPos)
         
+        // Ensure camera maintains consistent up direction to prevent roll
+        this.camera.lookAt(tempTargetPos)
+        this.camera.up.set(0, 1, 0)
+        
         this.controls.update()
       },
-      easingFunctions.easeOutCubic,
+      easingFunctions.easeInOutBalanced, // Balanced ease in/out with same speed
       () => {
         this.isAnimating = false
         this.currentAnimationId = null
@@ -204,9 +297,13 @@ export class CameraController {
         lerpVector3(startTarget, endTarget, progress, tempTargetPos)
         this.controls.target.copy(tempTargetPos)
         
+        // Ensure camera maintains consistent up direction to prevent roll
+        this.camera.lookAt(tempTargetPos)
+        this.camera.up.set(0, 1, 0)
+        
         this.controls.update()
       },
-      easingFunctions.easeInOutQuart,
+      easingFunctions.easeInOutBalanced, // Balanced ease in/out with same speed
       () => {
         this.isAnimating = false
         this.currentAnimationId = null
@@ -254,9 +351,13 @@ export class CameraController {
         lerpVector3(startTarget, endTarget, progress, tempTargetPos)
         this.controls.target.copy(tempTargetPos)
         
+        // Ensure camera maintains consistent up direction to prevent roll
+        this.camera.lookAt(tempTargetPos)
+        this.camera.up.set(0, 1, 0)
+        
         this.controls.update()
       },
-      easingFunctions.easeOutCubic,
+      easingFunctions.easeInOutBalanced, // Balanced ease in/out with same speed
       () => {
         this.isAnimating = false
         this.currentAnimationId = null

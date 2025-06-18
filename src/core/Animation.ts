@@ -1,19 +1,16 @@
 // Optimized easing functions for smooth animations
 export const easingFunctions = {
-  // Cubic ease out - smooth deceleration
-  easeOutCubic: (t) => 1 - Math.pow(1 - t, 3),
-  
-  // Cubic ease in out - smooth acceleration and deceleration
-  easeInOutCubic: (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2,
-  
-  // Quartic ease out - more dramatic deceleration
-  easeOutQuart: (t) => 1 - Math.pow(1 - t, 4),
-  
-  // Quartic ease in out - snappy acceleration and deceleration
-  easeInOutQuart: (t) => t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2,
-  
-  // Linear - constant speed
-  linear: (t) => t
+  // Balanced ease in out - same speed for acceleration and deceleration
+  easeInOutBalanced: (t) => {
+    if (t < 0.5) {
+      // First half: ease in with quadratic curve
+      return 2 * t * t
+    } else {
+      // Second half: ease out with quadratic curve (mirrored)
+      const u = 2 * t - 2
+      return 1 - 0.5 * u * u
+    }
+  }
 }
 
 // High-performance animation class using requestAnimationFrame
@@ -25,7 +22,7 @@ export class OptimizedAnimator {
   }
 
   // Add a new animation
-  animate(id, duration, updateFunction, easing = easingFunctions.easeOutCubic, onComplete = null) {
+  animate(id, duration, updateFunction, easing = easingFunctions.easeInOutBalanced, onComplete = null) {
     const animation = {
       id,
       startTime: performance.now(),
@@ -47,12 +44,6 @@ export class OptimizedAnimator {
   // Remove an animation
   stop(id) {
     return this.animations.delete(id)
-  }
-
-  // Stop all animations
-  stopAll() {
-    this.animations.clear()
-    this.isRunning = false
   }
 
   // Start the animation loop
@@ -102,16 +93,6 @@ export class OptimizedAnimator {
       this.isRunning = false
     }
   }
-
-  // Check if a specific animation is running
-  isAnimating(id) {
-    return this.animations.has(id)
-  }
-
-  // Check if any animations are running
-  hasActiveAnimations() {
-    return this.animations.size > 0
-  }
 }
 
 // Global animator instance for shared use
@@ -123,24 +104,4 @@ export const lerpVector3 = (start, end, t, target) => {
   target.y = start.y + (end.y - start.y) * t
   target.z = start.z + (end.z - start.z) * t
   return target
-}
-
-// Utility function for smooth camera transitions
-export const createCameraAnimation = (camera, controls, startPos, endPos, startTarget, endTarget, duration = 1500) => {
-  const tempVector = { x: 0, y: 0, z: 0 }
-  
-  return {
-    duration,
-    update: (progress) => {
-      // Interpolate camera position
-      lerpVector3(startPos, endPos, progress, tempVector)
-      camera.position.set(tempVector.x, tempVector.y, tempVector.z)
-      
-      // Interpolate camera target
-      lerpVector3(startTarget, endTarget, progress, tempVector)
-      controls.target.set(tempVector.x, tempVector.y, tempVector.z)
-      
-      controls.update()
-    }
-  }
 } 
