@@ -5,7 +5,7 @@ import {
   liverInscriptionVertexShader, 
   liverInscriptionFragmentShader, 
   type LiverShaderUniforms 
-} from '../shaders/liverInscriptionShader'
+} from '../shaders/LiverInscriptionShader'
 import { easingFunctions } from './Animation'
 
 export class LiverModel {
@@ -192,7 +192,6 @@ export class LiverModel {
   }
 
   setHoveredInscription(inscriptionId: number) {
-    this.hoveredInscription = inscriptionId
     this.shaderUniforms.hoveredInscription.value = inscriptionId
   }
 

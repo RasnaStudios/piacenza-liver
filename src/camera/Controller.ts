@@ -116,7 +116,13 @@ export class CameraController {
   }
 
   // Animate camera to focus on a specific position with panel-aware positioning and proper text orientation
-  focusOn(targetPosition: THREE.Vector3, duration: number = 800, customCameraPosition: THREE.Vector3 | null = null, isPanelOpen: boolean = false) {
+  focusOn(
+    targetPosition: THREE.Vector3, 
+    duration: number = 800, 
+    customCameraPosition: THREE.Vector3 | null = null, 
+    isPanelOpen: boolean = false,
+    onComplete?: () => void
+  ) {
     // Stop any existing animation first
     this.stopAnimation()
     
@@ -203,6 +209,10 @@ export class CameraController {
       () => {
         this.isAnimating = false
         this.currentAnimationId = null
+        // Call the completion callback if provided
+        if (onComplete) {
+          onComplete()
+        }
       }
     )
 

@@ -70,11 +70,63 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
 
       @media (max-width: 768px) {
         .deity-panel-mobile {
-          top: 10px !important;
-          right: 10px !important;
-          left: 10px !important;
-          width: auto !important;
-          max-height: 80vh !important;
+          position: fixed !important;
+          top: 0 !important;
+          right: 0 !important;
+          left: 0 !important;
+          bottom: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          max-height: 100vh !important;
+          border-radius: 0 !important;
+          z-index: 9999 !important;
+        }
+        
+        .deity-panel-mobile .panel-header {
+          padding: 16px !important;
+          border-radius: 0 !important;
+        }
+        
+        .deity-panel-mobile .panel-content {
+          padding: 16px !important;
+          height: calc(100vh - 120px) !important;
+          overflow-y: auto !important;
+        }
+
+        /* Mobile Font Overrides - Much Larger Fonts */
+        .mobile-title {
+          font-size: 6vw !important;
+          line-height: 1.2 !important;
+        }
+        
+        .mobile-subtitle {
+          font-size: 4.5vw !important;
+          line-height: 1.3 !important;
+        }
+        
+        .mobile-section-title {
+          font-size: 5vw !important;
+          line-height: 1.3 !important;
+        }
+        
+        .mobile-subsection-title {
+          font-size: 4.5vw !important;
+          line-height: 1.3 !important;
+        }
+        
+        .mobile-body-text {
+          font-size: 4vw !important;
+          line-height: 1.5 !important;
+        }
+        
+        .mobile-label-text {
+          font-size: 3.5vw !important;
+          line-height: 1.4 !important;
+        }
+        
+        .mobile-etruscan-text {
+          font-size: 4.5vw !important;
+          line-height: 1.4 !important;
         }
       }
     `
@@ -100,14 +152,17 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
 
   const panelStyles = {
     position: 'fixed' as const,
-    top: 20,
-    right: 20,
-    width: 400,
-    maxHeight: '85vh',
+    top: isMobile ? 0 : 20,
+    right: isMobile ? 0 : 20,
+    left: isMobile ? 0 : undefined,
+    bottom: isMobile ? 0 : undefined,
+    width: isMobile ? '100vw' : 400,
+    height: isMobile ? '100vh' : undefined,
+    maxHeight: isMobile ? '100vh' : '85vh',
     background: 'linear-gradient(135deg, rgba(20, 16, 12, 1.0) 0%, rgba(32, 26, 20, 1.0) 25%, rgba(44, 36, 28, 1.0) 50%, rgba(58, 48, 38, 1.0) 75%, rgba(70, 58, 46, 1.0) 100%)',
     backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.05) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 101, 65, 0.05) 0%, transparent 50%), radial-gradient(circle at 50% 10%, rgba(201, 168, 118, 0.03) 0%, transparent 50%)',
     border: 'none',
-    borderRadius: 16,
+    borderRadius: isMobile ? 0 : 16,
     color: '#f4e6d3',
     opacity: 1,
     transform: 'translateX(0)',
@@ -115,20 +170,19 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     overflowY: 'auto' as const,
     backdropFilter: 'blur(20px) saturate(180%)',
     boxShadow: '0 16px 48px rgba(0, 0, 0, 0.8), 0 8px 24px rgba(139, 101, 65, 0.2), 0 2px 8px rgba(212, 175, 55, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.1), inset 0 -1px 2px rgba(0, 0, 0, 0.3)',
-    zIndex: 1000,
+    zIndex: isMobile ? 9999 : 1000,
     animation: 'panelSlideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-    className: `deity-panel-scrollbar ${isMobile ? 'deity-panel-mobile' : ''}`,
   }
 
   const headerStyles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    padding: 24,
+    padding: isMobile ? 16 : 24,
     borderBottom: '2px solid rgba(139, 101, 65, 0.3)',
     background: 'linear-gradient(135deg, rgba(32, 26, 20, 1.0) 0%, rgba(48, 40, 32, 1.0) 50%, rgba(64, 54, 44, 1.0) 100%)',
     boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.1), inset 0 -1px 2px rgba(0, 0, 0, 0.2)',
-    borderRadius: '16px 16px 0 0',
+    borderRadius: isMobile ? 0 : '16px 16px 0 0',
   }
 
   const headerLeftStyles = {
@@ -167,7 +221,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',
-    fontSize: '1.8em',
+    fontSize: isMobile ? 'inherit' : '1.8em',
     fontWeight: 700,
     letterSpacing: '1.5px',
     textShadow: '0 2px 4px rgba(0, 0, 0, 0.6)',
@@ -177,7 +231,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const deitySubtitleStyles = {
     margin: '8px 0 4px 0',
     color: 'rgba(244, 230, 211, 0.8)',
-    fontSize: '1.1em',
+    fontSize: isMobile ? 'inherit' : '1.1em',
     fontWeight: 500,
     fontStyle: 'italic',
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
@@ -193,7 +247,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
 
   const etruscanLabelStyles = {
     display: 'block',
-    fontSize: '0.85em',
+    fontSize: isMobile ? 'inherit' : '0.85em',
     color: 'rgba(244, 230, 211, 0.7)',
     marginBottom: 4,
     fontStyle: 'italic',
@@ -205,7 +259,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',
-    fontSize: '1.1em',
+    fontSize: isMobile ? 'inherit' : '1.1em',
     fontStyle: 'italic',
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
     letterSpacing: '0.5px',
@@ -215,13 +269,13 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     background: 'rgba(139, 101, 65, 0.2)',
     border: '1px solid rgba(139, 101, 65, 0.4)',
     borderRadius: '50%',
-    width: 32,
-    height: 32,
+    width: isMobile ? 44 : 32,
+    height: isMobile ? 44 : 32,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     color: 'rgba(244, 230, 211, 0.8)',
-    fontSize: 18,
+    fontSize: isMobile ? 20 : 18,
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     backdropFilter: 'blur(4px)',
@@ -229,8 +283,10 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   }
 
   const contentStyles = {
-    padding: 24,
+    padding: isMobile ? 16 : 24,
     position: 'relative' as const,
+    height: isMobile ? 'calc(100vh - 120px)' : undefined,
+    overflowY: isMobile ? 'auto' as const : undefined,
   }
 
   const groupSectionStyles = {
@@ -259,7 +315,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const groupTitleStyles = {
     margin: 0,
     color: '#f4e6d3',
-    fontSize: '1.2em',
+    fontSize: isMobile ? 'inherit' : '1.2em',
     fontWeight: 600,
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
   }
@@ -268,13 +324,13 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     margin: '8px 0',
     color: 'rgba(244, 230, 211, 0.9)',
     lineHeight: 1.6,
-    fontSize: '0.95em',
+    fontSize: isMobile ? 'inherit' : '0.95em',
   }
 
   const cosmologicalTitleStyles = {
     margin: '16px 0 8px 0',
     color: '#d4af37',
-    fontSize: '1.1em',
+    fontSize: isMobile ? 'inherit' : '1.1em',
     fontWeight: 600,
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
   }
@@ -283,7 +339,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     margin: 0,
     color: 'rgba(244, 230, 211, 0.9)',
     lineHeight: 1.6,
-    fontSize: '0.9em',
+    fontSize: isMobile ? 'inherit' : '0.9em',
     fontStyle: 'italic',
   }
 
@@ -294,7 +350,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const deitiesTitleStyles = {
     margin: '0 0 16px 0',
     color: '#f4e6d3',
-    fontSize: '1.3em',
+    fontSize: isMobile ? 'inherit' : '1.3em',
     fontWeight: 600,
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
   }
@@ -318,7 +374,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const deityNameStyles = {
     margin: 0,
     color: '#d4af37',
-    fontSize: '1.1em',
+    fontSize: isMobile ? 'inherit' : '1.1em',
     fontWeight: 600,
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
   }
@@ -326,7 +382,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const deityScriptStyles = {
     fontFamily: 'Noto Sans Old Italic, Aegean, serif',
     color: 'rgba(244, 230, 211, 0.7)',
-    fontSize: '0.9em',
+    fontSize: isMobile ? '1.0em' : '0.9em',
     fontStyle: 'italic',
   }
 
@@ -338,7 +394,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   }
 
   const equivalentStyles = {
-    fontSize: '0.85em',
+    fontSize: isMobile ? '0.95em' : '0.85em',
     color: 'rgba(244, 230, 211, 0.8)',
     fontStyle: 'italic',
   }
@@ -346,20 +402,20 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const deityDomainStyles = {
     margin: '8px 0',
     color: 'rgba(244, 230, 211, 0.9)',
-    fontSize: '0.9em',
+    fontSize: isMobile ? '1.0em' : '0.9em',
   }
 
   const deityDescriptionStyles = {
     margin: '8px 0',
     color: 'rgba(244, 230, 211, 0.9)',
     lineHeight: 1.6,
-    fontSize: '0.9em',
+    fontSize: isMobile ? 'inherit' : '0.9em',
   }
 
   const deityDivinationStyles = {
     margin: '12px 0 0 0',
     color: 'rgba(244, 230, 211, 0.9)',
-    fontSize: '0.9em',
+    fontSize: isMobile ? 'inherit' : '0.9em',
     fontStyle: 'italic',
   }
 
@@ -374,7 +430,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const relationshipTitleStyles = {
     margin: '0 0 12px 0',
     color: '#d4af37',
-    fontSize: '1.1em',
+    fontSize: isMobile ? 'inherit' : '1.1em',
     fontWeight: 600,
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
   }
@@ -383,7 +439,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     margin: 0,
     color: 'rgba(244, 230, 211, 0.9)',
     lineHeight: 1.6,
-    fontSize: '0.9em',
+    fontSize: isMobile ? 'inherit' : '0.9em',
     fontStyle: 'italic',
   }
 
@@ -397,7 +453,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const combinedDivinationTitleStyles = {
     margin: '0 0 12px 0',
     color: '#d4af37',
-    fontSize: '1.1em',
+    fontSize: isMobile ? 'inherit' : '1.1em',
     fontWeight: 600,
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
   }
@@ -406,28 +462,43 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     margin: 0,
     color: 'rgba(244, 230, 211, 0.9)',
     lineHeight: 1.6,
-    fontSize: '0.9em',
+    fontSize: isMobile ? 'inherit' : '0.9em',
     fontStyle: 'italic',
   }
 
+  // Simplified styles for better mobile handling
+  const getTextClass = (type: string) => {
+    if (!isMobile) return ''
+    switch (type) {
+      case 'title': return 'mobile-title'
+      case 'subtitle': return 'mobile-subtitle'
+      case 'section-title': return 'mobile-section-title'
+      case 'subsection-title': return 'mobile-subsection-title'
+      case 'body': return 'mobile-body-text'
+      case 'label': return 'mobile-label-text'
+      case 'etruscan': return 'mobile-etruscan-text'
+      default: return 'mobile-body-text'
+    }
+  }
+
   return (
-    <div style={panelStyles}>
-      <div style={headerStyles}>
+    <div style={panelStyles} className={`deity-panel-scrollbar ${isMobile ? 'deity-panel-mobile' : ''}`}>
+      <div style={headerStyles} className="panel-header">
         <div style={headerLeftStyles}>
           <div style={badgeStyles}>
             {selectedInscription.id}
           </div>
           <div style={deityNamesStyles}>
-            <h2 style={deityTitleStyles}>{deityNames}</h2>
+            <h2 style={deityTitleStyles} className={getTextClass('title')}>{deityNames}</h2>
             {romanEquivalents.length > 0 && (
-              <h3 style={deitySubtitleStyles}>Roman: {romanEquivalents.join(', ')}</h3>
+              <h3 style={deitySubtitleStyles} className={getTextClass('subtitle')}>Roman: {romanEquivalents.join(', ')}</h3>
             )}
             {greekEquivalents.length > 0 && (
-              <h3 style={deitySubtitleStyles}>Greek: {greekEquivalents.join(', ')}</h3>
+              <h3 style={deitySubtitleStyles} className={getTextClass('subtitle')}>Greek: {greekEquivalents.join(', ')}</h3>
             )}
             <div style={etruscanStyles}>
-              <span style={etruscanLabelStyles}>Etruscan inscription:</span>
-              <span style={etruscanTextStyles}>{selectedInscription.etruscanText}</span>
+              <span style={etruscanLabelStyles} className={getTextClass('label')}>Etruscan inscription:</span>
+              <span style={etruscanTextStyles} className={getTextClass('etruscan')}>{selectedInscription.etruscanText}</span>
             </div>
           </div>
         </div>
@@ -441,7 +512,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
         </button>
       </div>
 
-      <div style={contentStyles}>
+      <div style={contentStyles} className="panel-content">
         <div style={groupSectionStyles}>
           <div style={groupHeaderStyles}>
             <div 
@@ -450,41 +521,41 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
                 backgroundColor: group?.color
               }}
             />
-            <h3 style={groupTitleStyles}>{group?.name}</h3>
+            <h3 style={groupTitleStyles} className={getTextClass('section-title')}>{group?.name}</h3>
           </div>
-          <p style={groupDescriptionStyles}>{group?.description}</p>
+          <p style={groupDescriptionStyles} className={getTextClass('body')}>{group?.description}</p>
           <div>
-            <h4 style={cosmologicalTitleStyles}>Cosmological Meaning</h4>
-            <p style={cosmologicalTextStyles}>{group?.cosmologicalMeaning}</p>
+            <h4 style={cosmologicalTitleStyles} className={getTextClass('subsection-title')}>Cosmological Meaning</h4>
+            <p style={cosmologicalTextStyles} className={getTextClass('body')}>{group?.cosmologicalMeaning}</p>
           </div>
         </div>
 
         <div style={deitiesSectionStyles}>
-          <h3 style={deitiesTitleStyles}>Deit{gods.length > 1 ? 'ies' : 'y'} Details</h3>
+          <h3 style={deitiesTitleStyles} className={getTextClass('section-title')}>Deit{gods.length > 1 ? 'ies' : 'y'} Details</h3>
           
           {gods.map((god: any, index: number) => (
             <div key={god.id} style={deityCardStyles}>
               <div style={deityHeaderStyles}>
-                <h4 style={deityNameStyles}>{god.name}</h4>
-                <span style={deityScriptStyles}>{god.etruscanScript}</span>
+                <h4 style={deityNameStyles} className={getTextClass('subsection-title')}>{god.name}</h4>
+                <span style={deityScriptStyles} className={getTextClass('label')}>{god.etruscanScript}</span>
               </div>
               
               <div style={deityEquivalentsStyles}>
                 {god.romanEquivalent && (
-                  <span style={equivalentStyles}>Roman: {god.romanEquivalent}</span>
+                  <span style={equivalentStyles} className={getTextClass('label')}>Roman: {god.romanEquivalent}</span>
                 )}
                 {god.greekEquivalent && (
-                  <span style={equivalentStyles}>Greek: {god.greekEquivalent}</span>
+                  <span style={equivalentStyles} className={getTextClass('label')}>Greek: {god.greekEquivalent}</span>
                 )}
               </div>
               
-              <div style={deityDomainStyles}>
+              <div style={deityDomainStyles} className={getTextClass('body')}>
                 <strong>Domain:</strong> {god.domain}
               </div>
               
-              <p style={deityDescriptionStyles}>{god.description}</p>
+              <p style={deityDescriptionStyles} className={getTextClass('body')}>{god.description}</p>
               
-              <div style={deityDivinationStyles}>
+              <div style={deityDivinationStyles} className={getTextClass('body')}>
                 <strong>Divination Meaning:</strong> {god.divinationMeaning}
               </div>
             </div>
@@ -493,14 +564,14 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
 
         {gods.length > 1 && (
           <div style={relationshipSectionStyles}>
-            <h3 style={relationshipTitleStyles}>Why These Gods Appear Together</h3>
-            <p style={relationshipTextStyles}>{selectedInscription.relationship}</p>
+            <h3 style={relationshipTitleStyles} className={getTextClass('subsection-title')}>Why These Gods Appear Together</h3>
+            <p style={relationshipTextStyles} className={getTextClass('body')}>{selectedInscription.relationship}</p>
           </div>
         )}
 
         <div style={combinedDivinationStyles}>
-          <h3 style={combinedDivinationTitleStyles}>Combined Divination Meaning</h3>
-          <p style={combinedDivinationTextStyles}>{selectedInscription.divinationMeaning}</p>
+          <h3 style={combinedDivinationTitleStyles} className={getTextClass('subsection-title')}>Combined Divination Meaning</h3>
+          <p style={combinedDivinationTextStyles} className={getTextClass('body')}>{selectedInscription.divinationMeaning}</p>
         </div>
       </div>
     </div>

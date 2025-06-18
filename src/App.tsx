@@ -63,12 +63,20 @@ function PiacenzaLiverScene() {
 
   const handleInscriptionClick = useCallback((inscriptionId: number) => {
     console.log(`Inscription ${inscriptionId} clicked`)
-    // Find the inscription data and open the panel
+    // Find the inscription data 
     const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
     if (inscription) {
-      setSelectedInscription(inscription)
       setHasInteracted(true)
       hasZoomedRef.current = true
+      
+      // Check if we're on mobile
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      
+      // On desktop, open panel immediately
+      if (!isMobile) {
+        setSelectedInscription(inscription)
+      }
+      
       // Camera animation logic
       if (cameraControllerRef.current && liverModelRef.current && cameraRef.current) {
         const liverModel = liverModelRef.current
@@ -86,7 +94,16 @@ function PiacenzaLiverScene() {
                 worldPosition,
                 camera.position
               )
-              cameraControllerRef.current.focusOn(worldPosition, 1000, cameraPosition, true)
+              
+              // Start camera animation with completion callback for mobile
+              cameraControllerRef.current.focusOn(
+                worldPosition, 
+                1000, 
+                cameraPosition, 
+                true,
+                // On mobile, open panel when animation completes
+                isMobile ? () => setSelectedInscription(inscription) : undefined
+              )
             }
           }
         }
