@@ -3,13 +3,13 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 // Data
-import { liverInscriptions } from './data/liverData'
+import { liverInscriptions } from './scene/LiverData'
 
 // Core 3D logic
-import { CameraController } from './core/CameraController'
-import { LiverModel } from './core/LiverModel'
-import { InteractionManager } from './core/InteractionManager'
-import { calculateCameraPositionFromSurface, getWorldPositionFromUV } from './core/cameraPositioning'
+import { CameraController } from './camera/Controller'
+import { LiverModel } from './scene/LiverModel'
+import { InteractionManager } from './scene/InteractionManager'
+import { calculateCameraPositionFromSurface, getWorldPositionFromUV } from './camera/Positioning'
 
 // UI Components
 import { DeityPanel } from './ui/DeityPanel'

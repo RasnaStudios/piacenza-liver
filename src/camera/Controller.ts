@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { globalAnimator, easingFunctions, lerpVector3 } from './Animation'
+import { globalAnimator, easingFunctions, lerpVector3 } from '../scene/Animation'
 
 export class CameraController {
   private camera: THREE.Camera
