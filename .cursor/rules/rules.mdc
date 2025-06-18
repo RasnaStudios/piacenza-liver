@@ -1,0 +1,11 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Use pnpm
+don't be funny, be professional
+don't write too much extra text in the answers, just use the tools you have (edit, read, search)
+don't clatter main files, try to be modular and create functions in the right files
+use tailwind css instead of creating css files
+
