@@ -164,6 +164,10 @@ body, html {
     pointer-events: none;
     transition: opacity 0.3s ease-out;
   }
+
+  .scene-container.panel-open {
+    transform: none;
+  }
 }
 
 @media (max-width: 768px) and (orientation: landscape) {
