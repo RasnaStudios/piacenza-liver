@@ -169,8 +169,8 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
 
 
   const etruscanStyles = {
-    marginTop: 8,
-    marginBottom: 8,
+    marginTop: 0,
+    marginBottom: 0,
     padding: '0',
     background: 'transparent',
     borderRadius: 0,
@@ -448,6 +448,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     padding: isMobile ? 16 : 24,
+    paddingTop: 32,
     borderBottom: '1px solid rgba(139, 101, 65, 0.2)',
     background: 'linear-gradient(135deg, rgba(16, 12, 8, 0.7) 0%, rgba(24, 20, 16, 0.7) 50%, rgba(32, 26, 20, 0.7) 100%)',
     boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.05), inset 0 -1px 2px rgba(0, 0, 0, 0.1)',
@@ -496,7 +497,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
               <h2 style={deityTitleStyles} className={getTextClass('title')}>{deityNames}</h2>
             </div>
           </div>
-          <div style={{ ...etruscanStyles, marginTop: '8px' }}>
+          <div style={etruscanStyles}>
             <span style={etruscanTextStyles} className={getTextClass('etruscan')}>{selectedInscription.etruscanText}</span>
           </div>
           
