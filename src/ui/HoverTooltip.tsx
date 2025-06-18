@@ -36,8 +36,8 @@ export function HoverTooltip({ hoveredSection, mousePosition }: HoverTooltipProp
     backdropFilter: 'blur(15px) saturate(180%)',
     boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(139, 101, 65, 0.2), 0 2px 8px rgba(212, 175, 55, 0.1), inset 0 1px 2px rgba(255, 255, 255, 0.1), inset 0 -1px 2px rgba(0, 0, 0, 0.3)',
     zIndex: 1000,
-    maxWidth: 250,
-    minWidth: 140,
+    maxWidth: 320,
+    minWidth: 'auto',
     opacity: 1,
     transform: 'translateY(0) scale(1)',
     transition: 'all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1)',
@@ -65,48 +65,53 @@ export function HoverTooltip({ hoveredSection, mousePosition }: HoverTooltipProp
 
   const deityNamesStyles = {
     color: '#f4e6d3',
-    fontSize: '0.75em',
-    fontWeight: 500,
-    lineHeight: 1,
+    fontSize: '0.85em',
+    fontWeight: 600,
+    lineHeight: 1.2,
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
+    fontFamily: 'Cinzel, Times New Roman, serif',
+    letterSpacing: '0.3px',
   }
 
   return (
     <Paper style={tooltipStyles}>
-      <div style={contentStyles}>
-        <Badge 
-          size="sm" 
-          variant="filled"
-          style={{ 
-            backgroundColor: group?.color,
-            color: '#fff',
-            border: '1px solid rgba(255, 255, 255, 0.3)',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '18px',
-            height: '18px',
-            borderRadius: '50%',
-            fontSize: '10px',
-            fontWeight: '700',
-            fontFamily: 'Georgia, serif',
-            textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)',
-            padding: '0',
-            lineHeight: '1',
-            flexShrink: 0,
-          }}
-        >
-          {hoveredSection.id}
-        </Badge>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={contentStyles}>
+          <Badge 
+            size="sm" 
+            variant="filled"
+            style={{ 
+              backgroundColor: group?.color,
+              color: '#000',
+              border: '2px solid rgba(0, 0, 0, 0.3)',
+              boxShadow: '0 3px 8px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minWidth: '28px',
+              width: 'auto',
+              height: '28px',
+              borderRadius: '50%',
+              fontSize: '13px',
+              fontWeight: '900',
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+              textShadow: '0 1px 2px rgba(255, 255, 255, 0.5)',
+              padding: '0 4px',
+              lineHeight: '1',
+              flexShrink: 0,
+            }}
+          >
+            {hoveredSection.id}
+          </Badge>
+          
+          <span style={etruscanTextStyles}>
+            {hoveredSection.etruscanText}
+          </span>
+        </div>
         
-        <span style={etruscanTextStyles}>
-          {hoveredSection.etruscanText}
-        </span>
-        
-        <span style={deityNamesStyles}>
+        <div style={deityNamesStyles}>
           {deityNames}
-        </span>
+        </div>
       </div>
     </Paper>
   )
