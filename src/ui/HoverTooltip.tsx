@@ -2,7 +2,7 @@ import {
   Paper, 
   Badge
 } from '@mantine/core'
-import { liverGroups, liverGods } from '../data/liverData'
+import { liverGroups, liverGods } from '../scene/LiverData'
 
 interface HoverTooltipProps {
   hoveredSection: any

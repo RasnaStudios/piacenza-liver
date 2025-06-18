@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { liverGroups, liverGods } from '../data/liverData'
+import { liverGroups, liverGods } from '../scene/LiverData'
 
 interface DeityPanelProps {
   selectedInscription: any
