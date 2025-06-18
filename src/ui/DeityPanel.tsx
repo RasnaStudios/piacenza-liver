@@ -147,8 +147,6 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const gods = selectedInscription.gods.map((godId: string) => (liverGods as any)[godId]).filter(Boolean)
 
   const deityNames = gods.map((god: any) => god.name).join(' + ')
-  const romanEquivalents = gods.map((god: any) => god.romanEquivalent).filter(Boolean)
-  const greekEquivalents = gods.map((god: any) => god.greekEquivalent).filter(Boolean)
 
   const deityTitleStyles = {
     margin: 0,
@@ -159,7 +157,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     fontSize: isMobile ? 'inherit' : '1.8em',
     fontWeight: 700,
     letterSpacing: '1.5px',
-    textShadow: '0 2px 4px rgba(0, 0, 0, 0.6)',
+    textShadow: '0 0 8px rgba(0, 0, 0, 0.8), 0 2px 6px rgba(0, 0, 0, 0.9)',
     fontFamily: 'Cinzel, Times New Roman, serif',
     width: '100%',
     overflow: 'hidden',
@@ -185,7 +183,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     backgroundClip: 'text',
     fontSize: isMobile ? '10vw' : '1.4em',
     fontStyle: 'italic',
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
+    textShadow: '0 0 6px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9)',
     letterSpacing: '0.5px',
   }
 
@@ -254,7 +252,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: '#f4e6d3',
     fontSize: isMobile ? 'inherit' : '1.2em',
     fontWeight: 600,
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
+    textShadow: '0 0 6px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9)',
   }
 
   const groupDescriptionStyles = {
@@ -262,6 +260,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: 'rgba(244, 230, 211, 0.9)',
     lineHeight: 1.6,
     fontSize: isMobile ? 'inherit' : '0.95em',
+    textShadow: '0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9)',
   }
 
   const cosmologicalTitleStyles = {
@@ -269,7 +268,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: '#d4af37',
     fontSize: isMobile ? 'inherit' : '1.1em',
     fontWeight: 600,
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
+    textShadow: '0 0 6px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9)',
   }
 
   const cosmologicalTextStyles = {
@@ -278,6 +277,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     lineHeight: 1.6,
     fontSize: isMobile ? 'inherit' : '0.9em',
     fontStyle: 'italic',
+    textShadow: '0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9)',
   }
 
   const deitiesSectionStyles = {
@@ -289,7 +289,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: '#f4e6d3',
     fontSize: isMobile ? 'inherit' : '1.3em',
     fontWeight: 600,
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
+    textShadow: '0 0 6px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9)',
   }
 
   const deityCardStyles = {
@@ -314,7 +314,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: '#d4af37',
     fontSize: isMobile ? 'inherit' : '1.1em',
     fontWeight: 600,
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
+    textShadow: '0 0 6px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9)',
   }
 
   const deityScriptStyles = {
@@ -322,6 +322,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: 'rgba(244, 230, 211, 0.7)',
     fontSize: isMobile ? '1.0em' : '0.9em',
     fontStyle: 'italic',
+    textShadow: '0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9)',
   }
 
   const deityEquivalentsStyles = {
@@ -335,12 +336,14 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     fontSize: isMobile ? '0.95em' : '0.85em',
     color: 'rgba(244, 230, 211, 0.8)',
     fontStyle: 'italic',
+    textShadow: '0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9)',
   }
 
   const deityDomainStyles = {
     margin: '8px 0',
     color: 'rgba(244, 230, 211, 0.9)',
     fontSize: isMobile ? '1.0em' : '0.9em',
+    textShadow: '0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9)',
   }
 
   const deityDescriptionStyles = {
@@ -348,6 +351,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: 'rgba(244, 230, 211, 0.9)',
     lineHeight: 1.6,
     fontSize: isMobile ? 'inherit' : '0.9em',
+    textShadow: '0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9)',
   }
 
   const deityDivinationStyles = {
@@ -355,6 +359,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: 'rgba(244, 230, 211, 0.9)',
     fontSize: isMobile ? 'inherit' : '0.9em',
     fontStyle: 'italic',
+    textShadow: '0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9)',
   }
 
   const relationshipSectionStyles = {
@@ -370,7 +375,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: '#d4af37',
     fontSize: isMobile ? 'inherit' : '1.1em',
     fontWeight: 600,
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
+    textShadow: '0 0 6px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9)',
   }
 
   const relationshipTextStyles = {
@@ -379,6 +384,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     lineHeight: 1.6,
     fontSize: isMobile ? 'inherit' : '0.9em',
     fontStyle: 'italic',
+    textShadow: '0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9)',
   }
 
   const combinedDivinationStyles = {
@@ -393,7 +399,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     color: '#d4af37',
     fontSize: isMobile ? 'inherit' : '1.1em',
     fontWeight: 600,
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.6)',
+    textShadow: '0 0 6px rgba(0, 0, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9)',
   }
 
   const combinedDivinationTextStyles = {
@@ -402,6 +408,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     lineHeight: 1.6,
     fontSize: isMobile ? 'inherit' : '0.9em',
     fontStyle: 'italic',
+    textShadow: '0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9)',
   }
 
   // Simplified styles for better mobile handling
@@ -421,16 +428,16 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
 
   const panelStyles = {
     position: 'fixed' as const,
-    top: 0,
+    top: isMobile ? 0 : 20,
     right: isMobile ? 0 : 20,
     left: isMobile ? 0 : undefined,
-    bottom: 0,
+    bottom: isMobile ? 0 : 20,
     width: isMobile ? '100vw' : 500,
-    height: '100vh',
+    height: isMobile ? '100vh' : 'calc(100vh - 40px)',
     background: 'linear-gradient(135deg, rgba(8, 6, 4, 0.92) 0%, rgba(12, 9, 6, 0.92) 25%, rgba(16, 12, 8, 0.92) 50%, rgba(20, 15, 10, 0.92) 75%, rgba(24, 18, 12, 0.92) 100%)',
     backgroundImage: 'radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.08) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(139, 101, 65, 0.08) 0%, transparent 50%), radial-gradient(circle at 50% 10%, rgba(201, 168, 118, 0.05) 0%, transparent 50%)',
     border: '1px solid rgba(139, 101, 65, 0.2)',
-    borderRadius: isMobile ? 0 : '0 0 0 0',
+    borderRadius: isMobile ? 0 : '12px',
     color: '#f4e6d3',
     opacity: 1,
     transform: 'translateX(0)',
@@ -452,7 +459,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     borderBottom: '1px solid rgba(139, 101, 65, 0.2)',
     background: 'linear-gradient(135deg, rgba(16, 12, 8, 0.7) 0%, rgba(24, 20, 16, 0.7) 50%, rgba(32, 26, 20, 0.7) 100%)',
     boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.05), inset 0 -1px 2px rgba(0, 0, 0, 0.1)',
-    borderRadius: isMobile ? 0 : '16px 16px 0 0',
+    borderRadius: isMobile ? 0 : '12px 12px 0 0',
   }
 
   const headerLeftStyles = {
