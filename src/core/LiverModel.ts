@@ -6,6 +6,7 @@ import {
   liverInscriptionFragmentShader, 
   type LiverShaderUniforms 
 } from '../shaders/liverInscriptionShader'
+import { easingFunctions } from './Animation'
 
 export class LiverModel {
   private scene: THREE.Scene
@@ -239,10 +240,7 @@ export class LiverModel {
       const elapsed = Date.now() - startTime
       const progress = Math.min(elapsed / duration, 1)
       
-      const easeInOutCubic = (t: number) => 
-        t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1
-      
-      const easedProgress = easeInOutCubic(progress)
+      const easedProgress = easingFunctions.easeInOutBalanced(progress)
       
       target.rotation.y = startRotation + (endRotation - startRotation) * easedProgress
       

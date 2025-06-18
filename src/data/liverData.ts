@@ -508,11 +508,6 @@ export const liverInscriptions = [
   },
   {
     id: 18,
-    cameraTransform: {
-
-      target: new THREE.Vector3(0.35, 0, 0.25),
-      rotation: new THREE.Euler(0, -0.9, 0)
-    },
     groupId: 'pars_familiaris',
     etruscanText: '𐌋𐌄𐌚𐌍',
     gods: ['lethns'],
