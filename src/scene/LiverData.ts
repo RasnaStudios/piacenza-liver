@@ -1,4 +1,4 @@
-import * as THREE from 'three'
+
 
 // ================================================================================================
 // PIACENZA LIVER DATA - REFACTORED STRUCTURE
@@ -37,7 +37,7 @@ export const liverGroups = {
   },
   underworld: {
     id: 'underworld',
-    name: 'Under-world',
+    name: 'Underworld',
     positions: [13, 14, 15, 16],
     color: '#808000', // Olive-green
     description: 'The chthonic realm of earth goddesses, protective spirits, and underworld deities. Controls death omens, protection, and liminal passages.',
