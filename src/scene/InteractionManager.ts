@@ -21,9 +21,17 @@ export class InteractionManager {
   private mouseDownPosition: { x: number, y: number } | null = null
   private mouseMovedDuringClick = false
   
+  // Model rotation state
+  private isRotatingModel = false
+  private isShiftPressed = false
+  private lastMousePosition = { x: 0, y: 0 }
+  
   private boundHandleMouseMove: (event: MouseEvent) => void
   private boundHandleClick: (event: MouseEvent) => void
   private boundHandleMouseDown: (event: MouseEvent) => void
+  private boundHandleMouseUp: (event: MouseEvent) => void
+  private boundHandleKeyDown: (event: KeyboardEvent) => void
+  private boundHandleKeyUp: (event: KeyboardEvent) => void
   private boundHandleControlsStart: () => void
   private boundHandleControlsEnd: () => void
 
@@ -45,6 +53,9 @@ export class InteractionManager {
     this.boundHandleMouseMove = this.handleMouseMove.bind(this)
     this.boundHandleClick = this.handleClick.bind(this)
     this.boundHandleMouseDown = this.handleMouseDown.bind(this)
+    this.boundHandleMouseUp = this.handleMouseUp.bind(this)
+    this.boundHandleKeyDown = this.handleKeyDown.bind(this)
+    this.boundHandleKeyUp = this.handleKeyUp.bind(this)
     this.boundHandleControlsStart = this.handleControlsStart.bind(this)
     this.boundHandleControlsEnd = this.handleControlsEnd.bind(this)
     
@@ -52,20 +63,91 @@ export class InteractionManager {
   }
 
   private setupEventListeners() {
-    this.renderer.domElement.addEventListener('mousemove', this.boundHandleMouseMove, { passive: true })
+    this.renderer.domElement.addEventListener('mousemove', this.boundHandleMouseMove)
     this.renderer.domElement.addEventListener('click', this.boundHandleClick)
     this.renderer.domElement.addEventListener('mousedown', this.boundHandleMouseDown)
+    this.renderer.domElement.addEventListener('mouseup', this.boundHandleMouseUp)
+    
+    // Keyboard events for Shift detection
+    window.addEventListener('keydown', this.boundHandleKeyDown)
+    window.addEventListener('keyup', this.boundHandleKeyUp)
     
     this.controls.addEventListener('start', this.boundHandleControlsStart)
     this.controls.addEventListener('end', this.boundHandleControlsEnd)
+    
+    console.log('🎮 Model Rotation Controls Active:')
+    console.log('  Hold SHIFT + drag mouse to rotate the liver model')
+    console.log('  R key: Log current rotation values')
   }
 
   private handleMouseDown(event: MouseEvent) {
     this.mouseDownPosition = { x: event.clientX, y: event.clientY }
     this.mouseMovedDuringClick = false
+    this.lastMousePosition = { x: event.clientX, y: event.clientY }
+    
+    // Check if Shift is pressed for model rotation
+    if (this.isShiftPressed) {
+      this.isRotatingModel = true
+      this.controls.enabled = false // Disable camera controls
+      event.preventDefault()
+    }
+  }
+  
+  private handleMouseUp(_event: MouseEvent) {
+    if (this.isRotatingModel) {
+      this.isRotatingModel = false
+      this.controls.enabled = true // Re-enable camera controls
+    }
+  }
+  
+  private handleKeyDown(event: KeyboardEvent) {
+    if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+      this.isShiftPressed = true
+    } else if (event.code === 'KeyR') {
+      this.logCurrentRotation()
+    }
+  }
+  
+  private handleKeyUp(event: KeyboardEvent) {
+    if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
+      this.isShiftPressed = false
+      if (this.isRotatingModel) {
+        this.isRotatingModel = false
+        this.controls.enabled = true
+      }
+    }
+  }
+  
+  private logCurrentRotation() {
+    const liverObject = this.liverModel.getObject()
+    if (liverObject) {
+      const r = liverObject.rotation
+      console.log('📍 Current Liver Model Rotation:')
+      console.log(`  object.rotation.set(${r.x.toFixed(3)}, ${r.y.toFixed(3)}, ${r.z.toFixed(3)})`)
+      console.log(`  Degrees: X=${(r.x * 180/Math.PI).toFixed(1)}° Y=${(r.y * 180/Math.PI).toFixed(1)}° Z=${(r.z * 180/Math.PI).toFixed(1)}°`)
+    }
   }
 
   private handleMouseMove(event: MouseEvent) {
+    // Handle model rotation when Shift+drag is active
+    if (this.isRotatingModel && this.isShiftPressed) {
+      const deltaX = event.clientX - this.lastMousePosition.x
+      const deltaY = event.clientY - this.lastMousePosition.y
+      
+      const liverObject = this.liverModel.getObject()
+      if (liverObject) {
+        // Rotation sensitivity
+        const rotationSpeed = 0.01
+        
+        // Apply rotation: horizontal movement = Y rotation, vertical movement = X rotation
+        liverObject.rotation.y += deltaX * rotationSpeed
+        liverObject.rotation.x += deltaY * rotationSpeed
+      }
+      
+      this.lastMousePosition = { x: event.clientX, y: event.clientY }
+      return // Skip normal hover detection when rotating model
+    }
+    
     if (this.mouseDownPosition) {
       const deltaX = Math.abs(event.clientX - this.mouseDownPosition.x)
       const deltaY = Math.abs(event.clientY - this.mouseDownPosition.y)
@@ -189,6 +271,11 @@ export class InteractionManager {
     this.renderer.domElement.removeEventListener('mousemove', this.boundHandleMouseMove)
     this.renderer.domElement.removeEventListener('click', this.boundHandleClick)
     this.renderer.domElement.removeEventListener('mousedown', this.boundHandleMouseDown)
+    this.renderer.domElement.removeEventListener('mouseup', this.boundHandleMouseUp)
+    
+    window.removeEventListener('keydown', this.boundHandleKeyDown)
+    window.removeEventListener('keyup', this.boundHandleKeyUp)
+    
     this.controls.removeEventListener('start', this.boundHandleControlsStart)
     this.controls.removeEventListener('end', this.boundHandleControlsEnd)
   }

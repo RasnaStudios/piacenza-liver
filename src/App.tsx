@@ -16,6 +16,7 @@ import { DeityPanel } from './ui/DeityPanel'
 import { HoverTooltip } from './ui/HoverTooltip'
 import { Legend } from './ui/Legend'
 import { LoadingScreen } from './ui/LoadingScreen'
+import { SceneConfig } from './config/SceneConfig'
 
 import { MantineProvider } from '@mantine/core'
 import '@mantine/core/styles.css'
@@ -52,6 +53,7 @@ function PiacenzaLiverScene() {
   // Zoom detection refs
   const initialCameraDistance = useRef<number | null>(null)
   const hasZoomedRef = useRef(false)
+  const isIntroAnimationRef = useRef(false) // Flag to disable zoom detection during intro
 
   // Optimized callback handlers
   const handleMarkerHover = useCallback((section: any) => {
@@ -164,6 +166,11 @@ function PiacenzaLiverScene() {
 
   // Check for zoom and hide title if user zoomed in
   const checkForZoom = useCallback((camera: THREE.PerspectiveCamera) => {
+    // Skip zoom detection during intro animation
+    if (isIntroAnimationRef.current) {
+      return
+    }
+
     if (initialCameraDistance.current === null) {
       // Store initial distance
       initialCameraDistance.current = camera.position.length()
@@ -216,7 +223,7 @@ function PiacenzaLiverScene() {
       0.1,
       1000
     )
-    camera.position.set(0, 2, 3)
+            camera.position.copy(SceneConfig.camera.initial)
     cameraRef.current = camera
 
     // Renderer setup
@@ -238,8 +245,12 @@ function PiacenzaLiverScene() {
     controls.enableDamping = true
     controls.dampingFactor = 0.05
     controls.maxPolarAngle = Math.PI * 0.8
-    controls.minDistance = 1
-    controls.maxDistance = 10
+    controls.minDistance = 3
+    controls.maxDistance = 20
+    
+    // Set initial camera target (where camera looks at)
+            controls.target.copy(SceneConfig.camera.target)
+    
     controlsRef.current = controls
 
     // Add event listeners for pan/rotate detection
@@ -273,7 +284,7 @@ function PiacenzaLiverScene() {
     setupLighting(scene)
 
     // Mouse wheel handling for zoom detection
-    const handleWheel = (event: WheelEvent) => {
+    const handleWheel = (_event: WheelEvent) => {
       checkForZoom(camera)
       
       // Always mark as interacting on wheel
@@ -296,6 +307,56 @@ function PiacenzaLiverScene() {
         setTimeout(() => {
           setIsLoading(false)
           
+          // Start simple camera animation after loading screen fades out
+          setTimeout(() => {
+            if (cameraRef.current && controlsRef.current) {
+              console.log('🎬 Starting simple camera animation...')
+              isIntroAnimationRef.current = true // Disable zoom detection during intro
+              
+              // Simple camera lerp animation using config (initial + offset)
+              const startPos = SceneConfig.camera.initial
+              const startTarget = SceneConfig.camera.target
+                        const endPos = startPos.clone().add(SceneConfig.animation.camera.positionOffset)
+          const endTarget = startTarget.clone().add(SceneConfig.animation.camera.targetOffset)
+              const duration = SceneConfig.animation.camera.duration
+              const startTime = Date.now()
+              
+              const animateCamera = () => {
+                const elapsed = Date.now() - startTime
+                const progress = Math.min(elapsed / duration, 1)
+                
+                // Simple lerp
+                const t = progress * progress * (3 - 2 * progress) // Smooth step
+                
+                if (cameraRef.current && controlsRef.current) {
+                  // Animate camera position
+                  cameraRef.current.position.x = startPos.x + (endPos.x - startPos.x) * t
+                  cameraRef.current.position.y = startPos.y + (endPos.y - startPos.y) * t
+                  cameraRef.current.position.z = startPos.z + (endPos.z - startPos.z) * t
+                  
+                  // Animate camera target (pan)
+                  controlsRef.current.target.x = startTarget.x + (endTarget.x - startTarget.x) * t
+                  controlsRef.current.target.y = startTarget.y + (endTarget.y - startTarget.y) * t
+                  controlsRef.current.target.z = startTarget.z + (endTarget.z - startTarget.z) * t
+                  
+                  controlsRef.current.update()
+                }
+                
+                if (progress < 1) {
+                  requestAnimationFrame(animateCamera)
+                } else {
+                  // Animation complete
+                  isIntroAnimationRef.current = false
+                  if (cameraRef.current) {
+                    initialCameraDistance.current = cameraRef.current.position.length()
+                  }
+                  console.log('🎬 Simple camera animation complete')
+                }
+              }
+              
+              animateCamera()
+            }
+          }, 300) // Small delay after loading screen disappears
 
         }, 500)
       }
@@ -350,10 +411,58 @@ function PiacenzaLiverScene() {
       event.preventDefault()
       cameraController.resetToDefault(800)
       
+      // Smoothly reset model POSITION AND ROTATION to default
+      if (liverModelRef.current) {
+        const liverObject = liverModelRef.current.getObject()
+        if (liverObject) {
+          const startPosition = {
+            x: liverObject.position.x,
+            y: liverObject.position.y,
+            z: liverObject.position.z
+          }
+          const startRotation = {
+            x: liverObject.rotation.x,
+            y: liverObject.rotation.y, 
+            z: liverObject.rotation.z
+          }
+          const endPosition = SceneConfig.model.position
+          const endRotation = SceneConfig.model.rotation
+          const duration = SceneConfig.reset.duration
+          const startTime = Date.now()
+          
+          const animateModel = () => {
+            const elapsed = Date.now() - startTime
+            const progress = Math.min(elapsed / duration, 1)
+            
+            // Smooth step easing
+            const t = progress * progress * (3 - 2 * progress)
+            
+            if (liverObject) {
+              // Animate POSITION
+              liverObject.position.x = startPosition.x + (endPosition.x - startPosition.x) * t
+              liverObject.position.y = startPosition.y + (endPosition.y - startPosition.y) * t
+              liverObject.position.z = startPosition.z + (endPosition.z - startPosition.z) * t
+              
+              // Animate ROTATION
+              liverObject.rotation.x = startRotation.x + (endRotation.x - startRotation.x) * t
+              liverObject.rotation.y = startRotation.y + (endRotation.y - startRotation.y) * t
+              liverObject.rotation.z = startRotation.z + (endRotation.z - startRotation.z) * t
+            }
+            
+            if (progress < 1) {
+              requestAnimationFrame(animateModel)
+            }
+          }
+          
+          animateModel()
+        }
+      }
+      
       setSelectedInscription(null)
       setHasInteracted(false)
       setIsInteracting(false)
       hasZoomedRef.current = false
+      isIntroAnimationRef.current = false // Clear intro flag
       if (camera) {
         initialCameraDistance.current = camera.position.length()
       }
@@ -471,7 +580,7 @@ function PiacenzaLiverScene() {
 // Lighting setup function
 function setupLighting(scene: THREE.Scene) {
   // Clean spotlight setup
-  const spotlight = new THREE.SpotLight(0xfff4e6, 300.0)
+  const spotlight = new THREE.SpotLight(0xfff4e6, 100.0)
   spotlight.position.set(0, 6, 3)
   spotlight.target.position.set(0, 0, 0)
   spotlight.angle = Math.PI / 6
@@ -491,23 +600,23 @@ function setupLighting(scene: THREE.Scene) {
   scene.add(spotlight)
   scene.add(spotlight.target)
   
-  // Bottom lights for reading inscriptions on underside (spread wide for corner coverage)
-  const bottomLight1 = new THREE.PointLight(0xfff4e6, 250, 15, 2)
+  // Bottom lights for reading inscriptions on underside
+  const bottomLight1 = new THREE.PointLight(0xfff4e6, 25, 15, 2)
   bottomLight1.position.set(-6, -8, 4)
   bottomLight1.castShadow = false
   scene.add(bottomLight1)
   
-  const bottomLight2 = new THREE.PointLight(0xfff4e6, 250, 15, 2)
+  const bottomLight2 = new THREE.PointLight(0xfff4e6, 25, 15, 2)
   bottomLight2.position.set(6, -8, -4)
   bottomLight2.castShadow = false
   scene.add(bottomLight2)
   
-  const bottomLight3 = new THREE.PointLight(0xfff4e6, 250, 15, 2)
+  const bottomLight3 = new THREE.PointLight(0xfff4e6, 25, 15, 2)
   bottomLight3.position.set(-2, -10, -5)
   bottomLight3.castShadow = false
   scene.add(bottomLight3)
   
-  const bottomLight4 = new THREE.PointLight(0xfff4e6, 250, 15, 2)
+  const bottomLight4 = new THREE.PointLight(0xfff4e6, 25, 15, 2)
   bottomLight4.position.set(2, -10, 5)
   bottomLight4.castShadow = false
   scene.add(bottomLight4)
