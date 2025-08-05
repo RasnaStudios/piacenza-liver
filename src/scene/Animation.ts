@@ -1,7 +1,9 @@
+import * as THREE from 'three'
+
 // Optimized easing functions for smooth animations
 export const easingFunctions = {
   // Balanced ease in out - same speed for acceleration and deceleration
-  easeInOutBalanced: (t) => {
+  easeInOutBalanced: (t: number) => {
     if (t < 0.5) {
       // First half: ease in with quadratic curve
       return 2 * t * t
@@ -15,14 +17,16 @@ export const easingFunctions = {
 
 // High-performance animation class using requestAnimationFrame
 export class OptimizedAnimator {
+  private animations: Map<string, any> = new Map()
+  private isRunning: boolean = false
+  private boundUpdate: (currentTime: number) => void
+  
   constructor() {
-    this.animations = new Map()
-    this.isRunning = false
     this.boundUpdate = this.update.bind(this)
   }
 
   // Add a new animation
-  animate(id, duration, updateFunction, easing = easingFunctions.easeInOutBalanced, onComplete = null) {
+  animate(id: string, duration: number, updateFunction: (progress: number) => void, easing = easingFunctions.easeInOutBalanced, onComplete: (() => void) | null = null) {
     const animation = {
       id,
       startTime: performance.now(),
@@ -42,7 +46,7 @@ export class OptimizedAnimator {
   }
 
   // Remove an animation
-  stop(id) {
+  stop(id: string) {
     return this.animations.delete(id)
   }
 
@@ -55,7 +59,7 @@ export class OptimizedAnimator {
   }
 
   // Main update loop - optimized for performance
-  update(currentTime) {
+  update(currentTime: number) {
     if (this.animations.size === 0) {
       this.isRunning = false
       return
@@ -99,7 +103,7 @@ export class OptimizedAnimator {
 export const globalAnimator = new OptimizedAnimator()
 
 // Utility function for vector interpolation
-export const lerpVector3 = (start, end, t, target) => {
+export const lerpVector3 = (start: THREE.Vector3, end: THREE.Vector3, t: number, target: THREE.Vector3) => {
   target.x = start.x + (end.x - start.x) * t
   target.y = start.y + (end.y - start.y) * t
   target.z = start.z + (end.z - start.z) * t

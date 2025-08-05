@@ -23,7 +23,7 @@ export class SceneManager {
       0.1,
       1000
     );
-    this.camera.position.set(0, 0, 5);
+    this.camera.position.set(0, 0, 8); // Moved further back for larger model
 
     // Renderer setup
     this.renderer = new THREE.WebGLRenderer({ antialias: true });

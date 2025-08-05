@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { globalAnimator, easingFunctions, lerpVector3 } from '../scene/Animation'
+import { SceneConfig } from '../config/SceneConfig'
 
 export class CameraController {
   private camera: THREE.Camera
@@ -8,15 +9,18 @@ export class CameraController {
   private lastManualPosition: THREE.Vector3
   private lastManualTarget: THREE.Vector3
   private isAnimating: boolean
-  private currentAnimationId: number | null
+  private currentAnimationId: string | null
 
   constructor(camera: THREE.Camera, controls: OrbitControls) {
     this.camera = camera
     this.controls = controls
     
     // Track user's manual positions
-    this.lastManualPosition = new THREE.Vector3(0, 2, 3)
-    this.lastManualTarget = new THREE.Vector3(0, 0, 0)
+    // Calculate intro end position and target using config
+    const endPos = SceneConfig.camera.initial.clone().add(SceneConfig.animation.camera.positionOffset)
+    const endTarget = SceneConfig.camera.target.clone().add(SceneConfig.animation.camera.targetOffset)
+    this.lastManualPosition = endPos
+    this.lastManualTarget = endTarget
     
     // Animation state
     this.isAnimating = false
@@ -129,6 +133,10 @@ export class CameraController {
     // Store current position before animating
     this.lastManualPosition.copy(this.camera.position)
     this.lastManualTarget.copy(this.controls.target)
+    
+    // TODO: Use isPanelOpen for panel-aware camera positioning
+    // Currently unused but reserved for future panel positioning logic
+    void isPanelOpen
 
     const startPosition = this.camera.position.clone()
     const startTarget = this.controls.target.clone()
@@ -331,8 +339,9 @@ export class CameraController {
     const startPosition = this.camera.position.clone()
     const startTarget = this.controls.target.clone()
     
-    const endPosition = new THREE.Vector3(0, 2, 3)
-    const endTarget = new THREE.Vector3(0, 0, 0)
+    // Reset to intro end position using config
+    const endPosition = SceneConfig.camera.initial.clone().add(SceneConfig.animation.camera.positionOffset)
+    const endTarget = SceneConfig.camera.target.clone().add(SceneConfig.animation.camera.targetOffset)
 
     // Update manual position to default
     this.lastManualPosition.copy(endPosition)
@@ -377,6 +386,75 @@ export class CameraController {
     return this.currentAnimationId
   }
 
+  // Introduction animation - from initial position to optimal viewing angle
+  playIntroAnimation(duration = 2500, onComplete?: () => void) {
+    // Stop any existing animation first
+    this.stopAnimation()
+    
+    const startPosition = new THREE.Vector3(0, 2, 10) // Initial position
+    const startTarget = new THREE.Vector3(0, 0, 0)
+    
+    const endPosition = new THREE.Vector3(0, 5, 6) // Higher up and closer for better view
+    const endTarget = new THREE.Vector3(0, 0, 0)
+
+    // Update manual position to the intro end position
+    this.lastManualPosition.copy(endPosition)
+    this.lastManualTarget.copy(endTarget)
+
+    // Temporarily disable controls events to prevent UI interference
+    const originalEnabled = this.controls.enabled
+    this.controls.enabled = false
+
+    // Reusable vectors for performance
+    const tempCameraPos = new THREE.Vector3()
+    const tempTargetPos = new THREE.Vector3()
+
+    this.isAnimating = true
+
+    this.currentAnimationId = globalAnimator.animate(
+      'camera-intro',
+      duration,
+      (progress) => {
+        // Check if animation was interrupted
+        if (!this.isAnimating) {
+          return // Stop updating if animation was cancelled
+        }
+        
+        // Use a slower easing for cinematic feel
+        const easedProgress = easingFunctions.easeInOutBalanced(progress)
+        
+        // Interpolate camera position
+        lerpVector3(startPosition, endPosition, easedProgress, tempCameraPos)
+        this.camera.position.copy(tempCameraPos)
+        
+        // Interpolate camera target
+        lerpVector3(startTarget, endTarget, easedProgress, tempTargetPos)
+        this.controls.target.copy(tempTargetPos)
+        
+        // Ensure camera maintains consistent up direction to prevent roll
+        this.camera.lookAt(tempTargetPos)
+        this.camera.up.set(0, 1, 0)
+        
+        // Manual update without triggering events
+        this.controls.update()
+      },
+      easingFunctions.easeInOutBalanced,
+      () => {
+        this.isAnimating = false
+        this.currentAnimationId = null
+        // Re-enable controls after animation
+        this.controls.enabled = originalEnabled
+        console.log('🎬 Introduction animation complete')
+        // Call completion callback if provided
+        if (onComplete) {
+          onComplete()
+        }
+      }
+    )
+
+    return this.currentAnimationId
+  }
+
   // Stop current camera animation immediately
   stopAnimation() {
     if (this.isAnimating && this.currentAnimationId) {
@@ -403,7 +481,7 @@ export class CameraController {
   }
 
   // Set manual position (useful for initialization)
-  setManualPosition(position, target) {
+  setManualPosition(position: THREE.Vector3, target: THREE.Vector3) {
     this.lastManualPosition.copy(position)
     this.lastManualTarget.copy(target)
   }
