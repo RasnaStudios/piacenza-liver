@@ -57,17 +57,33 @@ void main() {
   
   vec3 finalColor = diffuseColor.rgb * lightIntensity;
   
-  // INSCRIPTION OVERLAY - inject base color on hover
+  // OVERLAY DISATTIVATO - solo texture base
+  /*
+  float pixelSize = 1.0 / 4096.0;
+  float borderStrength = detectBorder(vUv, pixelSize);
+  
+  if (borderStrength > 0.0 && inscriptionId > 0 && inscriptionId <= 42) {
+    vec3 regionColor = getInscriptionColor(inscriptionId);
+    
+    float glow = sin(time * 3.0) * 0.3 + 0.7;
+    vec3 borderColor = mix(regionColor, vec3(1.0, 1.0, 1.0), 0.3);
+    finalColor = mix(finalColor, borderColor, borderStrength * glow * 0.15);
+  }
+  
   if (inscriptionId > 0 && inscriptionId <= 42 && inscriptionId == hoveredInscription) {
     vec3 groupColor = getInscriptionColor(inscriptionId);
     
-    // Mix inscription color into base color
-    finalColor = mix(finalColor, groupColor, 0.3);
+    float shimmer = sin(time * 8.0) * 0.3 + 0.7;
+    vec3 shimmerColor = mix(groupColor, vec3(1.0, 1.0, 1.0), 0.5);
+    finalColor = mix(finalColor, shimmerColor, shimmer * 0.1);
     
-    // Add subtle glow effect
     float pulse = sin(time * 4.0) * 0.2 + 0.8;
-    finalColor = mix(finalColor, finalColor * pulse, 0.15);
+    finalColor = mix(finalColor, finalColor * pulse, 0.1);
+    
+    finalColor = mix(finalColor, groupColor, 0.1);
+    finalColor = mix(finalColor, groupColor * 1.8, 0.1);
   }
+  */
   
   gl_FragColor = vec4(finalColor, diffuseColor.a);
 }

@@ -1,7 +1,11 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
-import { type LiverShaderUniforms } from '../shaders/LiverInscriptionShader'
+import { 
+  liverInscriptionVertexShader, 
+  liverInscriptionFragmentShader, 
+  type LiverShaderUniforms 
+} from '../shaders/LiverInscriptionShader'
 import { easingFunctions } from './Animation'
 import { SceneConfig } from '../config/SceneConfig'
 
@@ -16,7 +20,6 @@ export class LiverModel {
   private inscriptionPositions: Map<number, THREE.Vector2> = new Map()
   private onModelReady?: () => void
   private textureData: Uint8Array | null = null
-  private currentHoveredId: number = 0
 
   constructor(scene: THREE.Scene, onProgress?: (progress: number) => void) {
     this.scene = scene
@@ -83,11 +86,44 @@ export class LiverModel {
           originalMaterial.emissive.setHex(0x000000)
           originalMaterial.emissiveIntensity = 0
           
-          // Create custom ShaderMaterial with inscription highlighting
-          const customMaterial = this.createInscriptionMaterial(originalMaterial)
-          child.material = customMaterial
+          // Add inscription system with onBeforeCompile (fixed approach)
+          originalMaterial.onBeforeCompile = (shader) => {
+            // Add our uniforms for inscriptions
+            shader.uniforms.maskTexture = this.shaderUniforms.maskTexture
+            shader.uniforms.hoveredInscription = this.shaderUniforms.hoveredInscription
+            shader.uniforms.time = this.shaderUniforms.time
+            
+            // Add uniform declarations to fragment shader
+            shader.fragmentShader = `
+              uniform sampler2D maskTexture;
+              uniform int hoveredInscription;
+              uniform float time;
+              ${shader.fragmentShader}
+            `
+            
+            // Inject inscription logic before final color output (safe approach)
+            shader.fragmentShader = shader.fragmentShader.replace(
+              'gl_FragColor = vec4( outgoingLight, diffuseColor.a );',
+              `
+                // Custom inscription emissive
+                vec2 maskUv = vec2(vUv.x, 1.0 - vUv.y);
+                vec4 maskColor = texture2D(maskTexture, maskUv);
+                float grayValue = maskColor.r;
+                int inscriptionId = int(grayValue * 255.0 + 0.5);
+                
+                vec3 finalEmissive = vec3(0.0);
+                if (inscriptionId > 0 && inscriptionId <= 42 && inscriptionId == hoveredInscription) {
+                  // Simple emissive glow for hovered inscription
+                  float pulse = sin(time * 4.0) * 0.2 + 0.8;
+                  finalEmissive = vec3(0.3, 0.15, 0.0) * pulse; // Orange glow
+                }
+                
+                gl_FragColor = vec4( outgoingLight + finalEmissive, diffuseColor.a );
+              `
+            )
+          }
           
-          console.log('🎨 Replaced with custom inscription material')
+          originalMaterial.needsUpdate = true
           
           // Configure shadows and metadata
           child.castShadow = !isMobile
@@ -151,29 +187,19 @@ export class LiverModel {
 
   updateShaderUniforms(time: number) {
     this.shaderUniforms.time.value = time
-    
-    // Debug: Log uniform values occasionally
-    if (Math.random() < 0.01) { // 1% chance to log
-      console.log('🔄 Shader uniforms:', {
-        time: this.shaderUniforms.time.value,
-        hoveredInscription: this.shaderUniforms.hoveredInscription.value,
-        maskTexture: !!this.shaderUniforms.maskTexture.value
-      })
-    }
   }
 
   setHoveredInscription(inscriptionId: number) {
-    console.log('✨ Setting hovered inscription:', inscriptionId, 'previous:', this.currentHoveredId)
+    console.log('✨ Setting hovered inscription:', inscriptionId)
     this.shaderUniforms.hoveredInscription.value = inscriptionId
-    this.currentHoveredId = inscriptionId
-    
-    if (inscriptionId > 0) {
-      console.log('🎨 Should highlight inscription', inscriptionId, 'with color group')
-    }
   }
 
   getInscriptionAtUV(u: number, v: number): number {
     if (!this.textureData || !this.maskTexture) {
+      console.log('❌ No textureData or maskTexture:', {
+        textureData: !!this.textureData,
+        maskTexture: !!this.maskTexture
+      })
       return 0
     }
 
@@ -198,175 +224,6 @@ export class LiverModel {
 
   getMaskTexture() {
     return this.maskTexture
-  }
-
-  private createInscriptionMaterial(originalMaterial: THREE.MeshStandardMaterial): THREE.ShaderMaterial {
-    const vertexShader = `
-      varying vec2 vUv;
-      varying vec3 vNormal;
-      varying vec3 vPosition;
-      varying vec3 vViewPosition;
-      
-      void main() {
-        vUv = uv;
-        vNormal = normalize(normalMatrix * normal);
-        
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        vPosition = mvPosition.xyz;
-        vViewPosition = -mvPosition.xyz;
-        
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    `
-    
-    const fragmentShader = `
-      uniform vec3 diffuse;
-      uniform sampler2D map;
-      uniform sampler2D normalMap;
-      uniform sampler2D aoMap;
-      uniform sampler2D roughnessMap;
-      uniform sampler2D metalnessMap;
-      uniform sampler2D maskTexture;
-      uniform int hoveredInscription;
-      uniform float time;
-      uniform float roughness;
-      uniform float metalness;
-      
-      varying vec2 vUv;
-      varying vec3 vNormal;
-      varying vec3 vPosition;
-      varying vec3 vViewPosition;
-      
-      vec3 getInscriptionColor(int inscriptionId) {
-        if (inscriptionId >= 1 && inscriptionId <= 4) return vec3(0.529, 0.808, 0.922); // sky
-        else if (inscriptionId >= 5 && inscriptionId <= 8) return vec3(0.0, 0.545, 0.545); // water
-        else if (inscriptionId >= 9 && inscriptionId <= 12) return vec3(0.804, 0.522, 0.247); // earth
-        else if (inscriptionId >= 13 && inscriptionId <= 16) return vec3(0.502, 0.502, 0.0); // underworld
-        else if (inscriptionId >= 17 && inscriptionId <= 24) return vec3(1.0, 0.0, 0.0); // pars_familiaris
-        else if (inscriptionId >= 25 && inscriptionId <= 28) return vec3(1.0, 0.549, 0.0); // gall_bladder
-        else if (inscriptionId >= 29 && inscriptionId <= 32) return vec3(1.0, 0.647, 0.0); // central_section
-        else if (inscriptionId >= 33 && inscriptionId <= 38) return vec3(0.576, 0.439, 0.859); // pars_hostilis
-        else if (inscriptionId >= 39 && inscriptionId <= 42) return vec3(0.502, 0.502, 0.502); // retro
-        else return vec3(0.6, 0.6, 0.6);
-      }
-      
-      // PBR lighting calculation
-      vec3 calculatePBRLighting(vec3 normal, vec3 albedo, float roughnessValue, float metalnessValue, float ao) {
-        vec3 lightDir = normalize(vec3(0.5, 1.0, 0.5));
-        vec3 viewDir = normalize(vViewPosition);
-        vec3 halfwayDir = normalize(lightDir + viewDir);
-        
-        float NdotL = max(dot(normal, lightDir), 0.0);
-        float NdotV = max(dot(normal, viewDir), 0.0);
-        float NdotH = max(dot(normal, halfwayDir), 0.0);
-        float VdotH = max(dot(viewDir, halfwayDir), 0.0);
-        
-        // Fresnel (simplified Schlick approximation)
-        vec3 F0 = mix(vec3(0.04), albedo, metalnessValue);
-        vec3 F = F0 + (1.0 - F0) * pow(1.0 - VdotH, 5.0);
-        
-        // Distribution (simplified)
-        float alpha = roughnessValue * roughnessValue;
-        float alpha2 = alpha * alpha;
-        float denom = NdotH * NdotH * (alpha2 - 1.0) + 1.0;
-        float D = alpha2 / (3.14159 * denom * denom);
-        
-        // Geometry (simplified)
-        float k = (roughnessValue + 1.0) * (roughnessValue + 1.0) / 8.0;
-        float G1L = NdotL / (NdotL * (1.0 - k) + k);
-        float G1V = NdotV / (NdotV * (1.0 - k) + k);
-        float G = G1L * G1V;
-        
-        // BRDF
-        vec3 numerator = D * G * F;
-        float denominator = 4.0 * NdotV * NdotL + 0.001;
-        vec3 specular = numerator / denominator;
-        
-        vec3 kS = F;
-        vec3 kD = vec3(1.0) - kS;
-        kD *= 1.0 - metalnessValue;
-        
-        vec3 diffuse = kD * albedo / 3.14159;
-        
-        // Ambient (increased for better visibility)
-        vec3 ambient = albedo * 0.4 * ao;
-        
-        return ambient + (diffuse + specular) * NdotL * 1.2;
-      }
-      
-      void main() {
-        // Sample base textures
-        vec4 baseColor = texture2D(map, vUv);
-        vec3 albedo = diffuse * baseColor.rgb;
-        
-        // Sample ORM texture (Occlusion, Roughness, Metallic)
-        vec3 orm = texture2D(aoMap, vUv).rgb; // Assuming ORM is in aoMap
-        float ao = orm.r;           // Occlusion in Red channel
-        float roughnessValue = orm.g * roughness; // Roughness in Green channel
-        float metalnessValue = orm.b * metalness; // Metallic in Blue channel
-        
-        // Enhanced normal mapping
-        vec3 normalMapColor = texture2D(normalMap, vUv).rgb;
-        vec3 normalMapVector = normalize(normalMapColor * 2.0 - 1.0);
-        // DirectX to OpenGL normal map conversion
-        normalMapVector.y = -normalMapVector.y;
-        
-        // Transform normal to world space (simplified)
-        vec3 finalNormal = normalize(vNormal + normalMapVector * 0.5);
-        
-        // Apply PBR lighting
-        vec3 litColor = calculatePBRLighting(finalNormal, albedo, roughnessValue, metalnessValue, ao);
-        
-        // Sample segmentation mask
-        vec4 maskColor = texture2D(maskTexture, vUv);
-        float grayValue = maskColor.r;
-        int inscriptionId = int(grayValue * 255.0 + 0.5);
-        
-        // Highlight specific inscription on hover
-        if (inscriptionId > 0 && inscriptionId <= 42 && inscriptionId == hoveredInscription) {
-          vec3 groupColor = getInscriptionColor(inscriptionId);
-          
-          // Subtle highlight with pulse
-          float pulse = sin(time * 4.0) * 0.2 + 0.8;
-          vec3 emissiveGlow = groupColor * 0.3 * pulse;
-          litColor += emissiveGlow;
-        }
-        
-        gl_FragColor = vec4(litColor, baseColor.a);
-      }
-    `
-    
-    const customMaterial = new THREE.ShaderMaterial({
-      uniforms: {
-        diffuse: { value: originalMaterial.color.clone() },
-        map: { value: originalMaterial.map },
-        normalMap: { value: originalMaterial.normalMap },
-        aoMap: { value: originalMaterial.aoMap || originalMaterial.map }, // Use ORM or fallback to diffuse
-        roughnessMap: { value: originalMaterial.roughnessMap || originalMaterial.aoMap },
-        metalnessMap: { value: originalMaterial.metalnessMap || originalMaterial.aoMap },
-        roughness: { value: originalMaterial.roughness || 0.5 },
-        metalness: { value: originalMaterial.metalness || 0.0 },
-        maskTexture: this.shaderUniforms.maskTexture,
-        hoveredInscription: this.shaderUniforms.hoveredInscription,
-        time: this.shaderUniforms.time
-      },
-      vertexShader,
-      fragmentShader,
-      transparent: false,
-      side: THREE.FrontSide
-    })
-    
-    console.log('🔧 Created custom PBR inscription material with uniforms:', {
-      diffuse: customMaterial.uniforms.diffuse.value,
-      map: !!customMaterial.uniforms.map.value,
-      normalMap: !!customMaterial.uniforms.normalMap.value,
-      aoMap: !!customMaterial.uniforms.aoMap.value,
-      roughness: customMaterial.uniforms.roughness.value,
-      metalness: customMaterial.uniforms.metalness.value,
-      maskTexture: !!customMaterial.uniforms.maskTexture.value
-    })
-    
-    return customMaterial
   }
 
   getInscriptionPositions(): Map<number, THREE.Vector2> {
