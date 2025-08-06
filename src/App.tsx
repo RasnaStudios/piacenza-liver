@@ -409,6 +409,10 @@ function PiacenzaLiverScene() {
     // Double-click handler for reset
     const handleDoubleClick = (event: MouseEvent) => {
       event.preventDefault()
+      
+      // Enable intro animation mode to prevent checkForZoom from hiding title
+      isIntroAnimationRef.current = true
+      
       cameraController.resetToDefault(800)
       
       // Smoothly reset model POSITION AND ROTATION to default
@@ -451,18 +455,26 @@ function PiacenzaLiverScene() {
             
             if (progress < 1) {
               requestAnimationFrame(animateModel)
+            } else {
+              // Animation complete - re-enable zoom detection
+              isIntroAnimationRef.current = false
             }
           }
           
           animateModel()
+        } else {
+          // No model object - re-enable zoom detection immediately
+          isIntroAnimationRef.current = false
         }
+      } else {
+        // No liver model - re-enable zoom detection immediately  
+        isIntroAnimationRef.current = false
       }
       
       setSelectedInscription(null)
       setHasInteracted(false)
       setIsInteracting(false)
       hasZoomedRef.current = false
-      isIntroAnimationRef.current = false // Clear intro flag
       if (camera) {
         initialCameraDistance.current = camera.position.length()
       }

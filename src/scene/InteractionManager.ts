@@ -180,7 +180,7 @@ export class InteractionManager {
       if (uv) {
         const inscriptionId = this.liverModel.getInscriptionAtUV(uv.x, uv.y)
         
-        if (inscriptionId > 0 && inscriptionId <= 40) {
+        if (inscriptionId > 0 && inscriptionId <= 42) {
           this.liverModel.setHoveredInscription(inscriptionId)
           
           const inscription = this.liverInscriptions.find(ins => ins.id === inscriptionId)
@@ -248,7 +248,7 @@ export class InteractionManager {
         if (uv) {
           const inscriptionId = this.liverModel.getInscriptionAtUV(uv.x, uv.y)
           
-          if (inscriptionId > 0 && inscriptionId <= 40) {
+          if (inscriptionId > 0 && inscriptionId <= 42) {
             const inscription = this.liverInscriptions.find(ins => ins.id === inscriptionId)
             if (inscription) {
               this.callbacks.onInscriptionClick(inscriptionId)

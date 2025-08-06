@@ -78,7 +78,7 @@ export const liverGroups = {
   retro: {
     id: 'retro',
     name: 'Back / Bottom',
-    positions: [39, 40], 
+    positions: [39, 40, 41, 42], 
     color: '#808080', // Gray
     description: 'The foundational cosmic anchors representing the Sun and Moon. These mark the fundamental celestial cycles underlying all divination.',
     cosmologicalMeaning: 'Cosmic foundation, solar-lunar cycles, day-night duality, and the fundamental rhythm of time.'
@@ -359,7 +359,7 @@ export const liverGods = {
   }
 }
 
-// INSCRIPTIONS: All 40 liver sections with their gods and relationships
+// INSCRIPTIONS: All 42 liver sections with their gods and relationships
 export const liverInscriptions = [
   // SKY GROUP (1-4) - Outer rim top
   {
@@ -381,7 +381,7 @@ export const liverInscriptions = [
   {
     id: 3,
     groupId: 'sky', 
-    etruscanText: '𐌕𐌉𐌍𐌔𐌕 / 𐌍𐌄𐌕',
+    etruscanText: '𐌕𐌉𐌍𐌔 / 𐌍𐌄𐌚',
     gods: ['tinia', 'nethuns'],
     relationship: 'Region dedicated to Nethuns in the (house) of Tinia',
     divinationMeaning: 'Water powers operating under divine celestial authority'
@@ -409,13 +409,13 @@ export const liverInscriptions = [
     groupId: 'water',
     etruscanText: '𐌋𐌖𐌔𐌋',
     gods: ['lusal'],
-    relationship: 'Probably Lusa',
+    relationship: 'Water deity Lusal',
     divinationMeaning: 'Mysterious water forces and purification'
   },
   {
     id: 7,
     groupId: 'water',
-    etruscanText: '𐌍𐌄𐌕',
+    etruscanText: '𐌍𐌄𐌚',
     gods: ['nethuns'],
     relationship: 'Primary water deity in his own domain',
     divinationMeaning: 'Direct water omens, sea/freshwater balance'
@@ -475,7 +475,7 @@ export const liverInscriptions = [
   {
     id: 14,
     groupId: 'underworld',
-    etruscanText: '𐌂𐌖𐌋𐌀𐌋𐌐',
+    etruscanText: '𐌂𐌖𐌋 / 𐌀𐌋𐌐',
     gods: ['culsans', 'alpans'],
     relationship: 'Culsans (Janus) paired with protective spirit Alpans',
     divinationMeaning: 'Threshold protection enhanced by benevolent spirits'
@@ -549,9 +549,9 @@ export const liverInscriptions = [
   {
     id: 23,
     groupId: 'pars_familiaris',
-    etruscanText: '𐌂𐌀𐌈𐌀',
+    etruscanText: '𐌂𐌀𐌚𐌀',
     gods: ['catha'],
-    relationship: 'Dea del Sole',
+    relationship: 'Solar goddess in familiar realm',
     divinationMeaning: 'Favorable solar transitions and illumination'
   },
   {
@@ -559,7 +559,7 @@ export const liverInscriptions = [
     groupId: 'pars_familiaris',
     etruscanText: '𐌅𐌖𐌅 / 𐌋𐌖𐌔',
     gods: ['fufluns'],
-    relationship: 'Fufluns',
+    relationship: 'Fufluns in favorable context',
     divinationMeaning: 'Favorable fertility and vegetation cycles'
   },
 
@@ -617,39 +617,23 @@ export const liverInscriptions = [
   {
     id: 31,
     groupId: 'central_section',
-    etruscanText: '𐌋𐌄𐌚𐌀𐌌𐌔𐌋 𐌌𐌄𐌕𐌋𐌖𐌌𐌕',
-    gods: ['lethams', 'metlvmth'],
-    relationship: 'Local tutelary spirit with epithet enhancement',
-    divinationMeaning: 'Enhanced central protection, strengthened genius'
+    etruscanText: '𐌔𐌄𐌋𐌅𐌀',
+    gods: ['selvans'],
+    relationship: 'Forest deity in central section',
+    divinationMeaning: 'Central boundary protection, forest wisdom'
   },
   {
     id: 32,
     groupId: 'central_section',
-    etruscanText: '𐌕𐌋𐌖𐌔𐌂𐌀𐌋 𐌌𐌀𐌓𐌖𐌕𐌋',
-    gods: ['tluscva', 'marutl'],
-    relationship: 'Water nymphs with double epithet at center',
-    divinationMeaning: 'Central water sanctity, enhanced nymph protection'
+    etruscanText: '𐌋𐌄𐌚𐌀',
+    gods: ['lethams'],
+    relationship: 'Local tutelary spirit at center',
+    divinationMeaning: 'Central local protection, genius of center'
   },
 
   // PARS HOSTILIS GROUP (33-38) - Central purple region
   {
     id: 33,
-    groupId: 'pars_hostilis',
-    etruscanText: '𐌔𐌄𐌋𐌅𐌀',
-    gods: ['selvans'],
-    relationship: 'Border god in hostile realm',
-    divinationMeaning: 'Hostile boundary challenges, territorial conflicts'
-  },
-  {
-    id: 34,
-    groupId: 'pars_hostilis',
-    etruscanText: '𐌋𐌄𐌚𐌀𐌌𐌔𐌋',
-    gods: ['lethams'],
-    relationship: 'Local spirit in unfavorable context',
-    divinationMeaning: 'Challenged local protection, tested genius'
-  },
-  {
-    id: 35,
     groupId: 'pars_hostilis',
     etruscanText: '𐌕𐌋𐌖𐌔𐌂',
     gods: ['tluscva'],
@@ -657,45 +641,77 @@ export const liverInscriptions = [
     divinationMeaning: 'Threatened water sources, challenged purity'
   },
   {
-    id: 36,
+    id: 34,
     groupId: 'pars_hostilis',
-    etruscanText: '𐌋𐌖𐌔𐌋 𐌅𐌄𐌋𐌒',
+    etruscanText: '𐌋𐌖𐌔𐌋 / 𐌅𐌄𐌋𐌒',
     gods: ['lusal', 'velch'],
     relationship: 'Lusal paired with infernal Vulcan (Velchans)',
     divinationMeaning: 'Mysterious forces combined with underworld fire'
   },
   {
-    id: 37,
+    id: 35,
     groupId: 'pars_hostilis',
-    etruscanText: '𐌔𐌀𐌕𐌓𐌄𐌔',
+    etruscanText: '𐌔𐌀𐌕𐌓 / 𐌄𐌔',
     gods: ['satres'],
     relationship: 'Underworld Saturn in hostile context',
     divinationMeaning: 'Temporal boundaries, restrictive cycles, limitation'
   },
   {
-    id: 38,
+    id: 36,
     groupId: 'pars_hostilis',
-    etruscanText: '𐌂𐌉𐌋𐌄𐌍𐌔𐌋',
+    etruscanText: '𐌂𐌉𐌋𐌄𐌍',
     gods: ['cilens'],
     relationship: 'Night god in hostile realm',
     divinationMeaning: 'Difficult passages, challenging transitions'
   },
+  {
+    id: 37,
+    groupId: 'pars_hostilis',
+    etruscanText: '𐌋𐌄𐌚𐌀𐌌',
+    gods: ['lethams'],
+    relationship: 'Local spirit in unfavorable context',
+    divinationMeaning: 'Challenged local protection, tested genius'
+  },
+  {
+    id: 38,
+    groupId: 'pars_hostilis',
+    etruscanText: '𐌌𐌄𐌕𐌋𐌖𐌌𐌚',
+    gods: ['metlvmth'],
+    relationship: 'Epithet or attribute deity in hostile realm',
+    divinationMeaning: 'Enhanced attributes under challenge'
+  },
 
-  // RETRO GROUP (39-40) - Left outer rim
+  // RETRO GROUP (39-42) - Back/foundational sections
   {
     id: 39,
     groupId: 'retro',
-    etruscanText: '𐌖𐌔𐌉𐌋𐌔',
-    gods: ['usil'],
-    relationship: 'The Sun as cosmic foundation',
-    divinationMeaning: 'Solar foundation, fundamental day cycle'
+    etruscanText: '𐌌𐌀𐌓',
+    gods: ['maris'],
+    relationship: 'Generative force in foundational context',
+    divinationMeaning: 'Foundational creative power, root generation'
   },
   {
     id: 40,
+    groupId: 'retro',
+    etruscanText: '𐌕𐌋𐌖𐌔𐌂',
+    gods: ['tluscva'],
+    relationship: 'Water nymphs as foundational spirits',
+    divinationMeaning: 'Foundational water sanctity, root purity'
+  },
+  {
+    id: 41,
     groupId: 'retro',
     etruscanText: '𐌕𐌉𐌖𐌔',
     gods: ['tiur'],
     relationship: 'The Moon as cosmic foundation',
     divinationMeaning: 'Lunar foundation, fundamental night cycle'
+  },
+  {
+    id: 42,
+    groupId: 'retro',
+    etruscanText: '𐌖𐌔𐌉𐌋𐌔',
+    gods: ['usil'],
+    relationship: 'The Sun as cosmic foundation',
+    divinationMeaning: 'Solar foundation, fundamental day cycle'
   }
 ] 

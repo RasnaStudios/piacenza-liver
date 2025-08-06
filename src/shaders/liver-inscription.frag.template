@@ -1,0 +1,73 @@
+uniform sampler2D diffuseTexture;
+uniform sampler2D normalTexture;
+uniform sampler2D maskTexture;
+uniform float time;
+uniform int hoveredInscription;
+
+varying vec2 vUv;
+varying vec3 vPosition;
+varying vec3 vNormal;
+
+{{INSCRIPTION_COLOR_FUNCTION}}
+
+float detectBorder(vec2 uv, float pixelSize) {
+  float centerId = texture2D(maskTexture, vec2(uv.x, 1.0 - uv.y)).r * 255.0;
+  
+  float neighbors[8];
+  neighbors[0] = texture2D(maskTexture, vec2(uv.x - pixelSize, 1.0 - (uv.y - pixelSize))).r * 255.0;
+  neighbors[1] = texture2D(maskTexture, vec2(uv.x, 1.0 - (uv.y - pixelSize))).r * 255.0;
+  neighbors[2] = texture2D(maskTexture, vec2(uv.x + pixelSize, 1.0 - (uv.y - pixelSize))).r * 255.0;
+  neighbors[3] = texture2D(maskTexture, vec2(uv.x - pixelSize, 1.0 - uv.y)).r * 255.0;
+  neighbors[4] = texture2D(maskTexture, vec2(uv.x + pixelSize, 1.0 - uv.y)).r * 255.0;
+  neighbors[5] = texture2D(maskTexture, vec2(uv.x - pixelSize, 1.0 - (uv.y + pixelSize))).r * 255.0;
+  neighbors[6] = texture2D(maskTexture, vec2(uv.x, 1.0 - (uv.y + pixelSize))).r * 255.0;
+  neighbors[7] = texture2D(maskTexture, vec2(uv.x + pixelSize, 1.0 - (uv.y + pixelSize))).r * 255.0;
+  
+  float borderStrength = 0.0;
+  for (int i = 0; i < 8; i++) {
+    if (abs(neighbors[i] - centerId) > 0.5) {
+      borderStrength = 1.0;
+      break;
+    }
+  }
+  
+  return borderStrength;
+}
+
+void main() {
+  vec4 diffuseColor = texture2D(diffuseTexture, vUv);
+  
+  vec4 normalColor = texture2D(normalTexture, vUv);
+  vec3 normalMap = normalColor.rgb * 2.0 - 1.0;
+  
+  // Test different normal configurations
+  // normalMap.y = -normalMap.y; // Try with Y flip if needed
+  normalMap *= 1.0; // Reduce intensity to debug mapping issues
+  
+  vec3 normal = normalize(vNormal + normalMap * 0.3); // Reduce blending
+  
+  vec3 lightDir = normalize(vec3(0.5, 1.0, 0.5));
+  float lightIntensity = max(dot(normal, lightDir), 0.3) + 0.2;
+  
+  vec2 maskUv = vec2(vUv.x, 1.0 - vUv.y);
+  vec4 maskColor = texture2D(maskTexture, maskUv);
+  
+  float grayValue = maskColor.r;
+  int inscriptionId = int(grayValue * 255.0 + 0.5);
+  
+  vec3 finalColor = diffuseColor.rgb * lightIntensity;
+  
+  // INSCRIPTION OVERLAY - inject base color on hover
+  if (inscriptionId > 0 && inscriptionId <= 42 && inscriptionId == hoveredInscription) {
+    vec3 groupColor = getInscriptionColor(inscriptionId);
+    
+    // Mix inscription color into base color
+    finalColor = mix(finalColor, groupColor, 0.3);
+    
+    // Add subtle glow effect
+    float pulse = sin(time * 4.0) * 0.2 + 0.8;
+    finalColor = mix(finalColor, finalColor * pulse, 0.15);
+  }
+  
+  gl_FragColor = vec4(finalColor, diffuseColor.a);
+}
