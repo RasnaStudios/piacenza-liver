@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 export interface InteractionCallbacks {
-  onInscriptionClick: (inscriptionId: number) => void
+  onInscriptionClick: (inscriptionId: number, clickedUV: THREE.Vector2) => void
   onBackgroundClick: () => void
   onMarkerHover: (section: any) => void
   onInteractionStart: () => void
@@ -251,7 +251,7 @@ export class InteractionManager {
           if (inscriptionId > 0 && inscriptionId <= 42) {
             const inscription = this.liverInscriptions.find(ins => ins.id === inscriptionId)
             if (inscription) {
-              this.callbacks.onInscriptionClick(inscriptionId)
+              this.callbacks.onInscriptionClick(inscriptionId, uv)
             }
           }
         }

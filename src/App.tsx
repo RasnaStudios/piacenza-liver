@@ -63,8 +63,8 @@ function PiacenzaLiverScene() {
     }
   }, [])
 
-  const handleInscriptionClick = useCallback((inscriptionId: number) => {
-    console.log(`Inscription ${inscriptionId} clicked`)
+  const handleInscriptionClick = useCallback((inscriptionId: number, clickedUV: THREE.Vector2) => {
+    console.log(`Inscription ${inscriptionId} clicked at UV:`, clickedUV)
     // Find the inscription data 
     const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
     if (inscription) {
@@ -83,30 +83,29 @@ function PiacenzaLiverScene() {
       if (cameraControllerRef.current && liverModelRef.current && cameraRef.current) {
         const liverModel = liverModelRef.current
         const camera = cameraRef.current
-        const inscriptionPositions = liverModel.getInscriptionPositions()
-        const uvPosition = inscriptionPositions.get(inscriptionId)
-        if (uvPosition) {
-          const liverMesh = liverModel.getMesh()
-          if (liverMesh) {
-            const worldPosition = getWorldPositionFromUV(liverMesh, uvPosition)
-            if (worldPosition) {
-              const cameraPosition = calculateCameraPositionFromSurface(
-                liverMesh,
-                uvPosition,
-                worldPosition,
-                camera.position
-              )
-              
-              // Start camera animation with completion callback for mobile
-              cameraControllerRef.current.focusOn(
-                worldPosition, 
-                1000, 
-                cameraPosition, 
-                true,
-                // On mobile, open panel when animation completes
-                isMobile ? () => setSelectedInscription(inscription) : undefined
-              )
-            }
+        const liverMesh = liverModel.getMesh()
+        if (liverMesh) {
+          // Use the actual clicked UV coordinates, not the pre-calculated centroid
+          const worldPosition = getWorldPositionFromUV(liverMesh, clickedUV)
+          if (worldPosition) {
+            const maskTexture = liverModel.getMaskTexture()
+            const { cameraPosition, targetPosition } = calculateCameraPositionFromSurface(
+              liverMesh,
+              clickedUV,
+              worldPosition,
+              camera.position,
+              maskTexture
+            )
+            
+            // Start camera animation with completion callback for mobile
+            cameraControllerRef.current.focusOn(
+              targetPosition, 
+              1000, 
+              cameraPosition, 
+              true,
+              // On mobile, open panel when animation completes
+              isMobile ? () => setSelectedInscription(inscription) : undefined
+            )
           }
         }
       }

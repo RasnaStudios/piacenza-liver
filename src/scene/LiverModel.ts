@@ -1,11 +1,8 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
-import { 
-  liverInscriptionVertexShader, 
-  liverInscriptionFragmentShader, 
-  type LiverShaderUniforms 
-} from '../shaders/LiverInscriptionShader'
+// Note: Custom shader approach removed in favor of onBeforeCompile for better glTF compatibility
+import type { LiverShaderUniforms } from '../shaders/LiverInscriptionShader'
 import { easingFunctions } from './Animation'
 import { SceneConfig } from '../config/SceneConfig'
 

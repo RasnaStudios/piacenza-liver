@@ -197,38 +197,128 @@ export function getSurfaceNormalAtUV(mesh: THREE.Mesh, uv: THREE.Vector2): THREE
   return null
 }
 
-// Main function to calculate camera position based on surface normal
-export function calculateCameraPositionFromSurface(
-  mesh: THREE.Mesh, 
-  uv: THREE.Vector2, 
-  worldPosition: THREE.Vector3, 
-  currentCameraPosition: THREE.Vector3
-): THREE.Vector3 {
-  // Get the surface normal at this position
-  const surfaceNormal = getSurfaceNormalAtUV(mesh, uv)
-  
-  if (surfaceNormal) {
-    // Calculate the ideal camera position based on surface normal
-    const cameraDistance = 0.8 // Distance from surface
-    const idealOffset = surfaceNormal.clone().multiplyScalar(cameraDistance)
-    const idealPosition = worldPosition.clone().add(idealOffset)
-    
-    // Calculate a position that looks toward the center of the liver
-    const liverCenter = new THREE.Vector3(0, 0, 0) // Liver is centered at origin
-    const directionToCenter = liverCenter.clone().sub(worldPosition).normalize()
-    const centerViewPosition = worldPosition.clone().add(directionToCenter.clone().multiplyScalar(cameraDistance))
-    
-    // Interpolate between ideal position and center-view position
-    // This creates a smoother animation that maintains good viewing angles
-    const interpolationFactor = 0.8 // 70% toward ideal, 30% toward center view
-    const finalPosition = idealPosition.clone()
-      .multiplyScalar(interpolationFactor)
-      .add(centerViewPosition.clone().multiplyScalar(1 - interpolationFactor))
-    
-    return finalPosition
-  } else {
-    // Fallback: position camera at a reasonable offset
-    const offset = new THREE.Vector3(0, 0.5, 1.0)
-    return worldPosition.clone().add(offset)
+// Get all triangles and their areas that belong to a specific inscription
+export function getInscriptionGeometry(
+  mesh: THREE.Mesh,
+  inscriptionId: number,
+  maskTexture: THREE.Texture
+): { triangles: Array<{vertices: THREE.Vector3[], normal: THREE.Vector3, area: number}>, totalArea: number } {
+  const geometry = mesh.geometry
+  if (!geometry || !geometry.attributes.position || !geometry.attributes.uv) {
+    return { triangles: [], totalArea: 0 }
   }
+
+  const positions = geometry.attributes.position.array as Float32Array
+  const uvs = geometry.attributes.uv.array as Float32Array
+  const indices = geometry.index?.array
+  const triangles: Array<{vertices: THREE.Vector3[], normal: THREE.Vector3, area: number}> = []
+  let totalArea = 0
+
+  // Get texture data for sampling
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+  if (!ctx || !maskTexture.image) return { triangles: [], totalArea: 0 }
+  
+  canvas.width = maskTexture.image.width
+  canvas.height = maskTexture.image.height
+  ctx.drawImage(maskTexture.image, 0, 0)
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+  const textureData = imageData.data
+
+  const sampleInscriptionAtUV = (u: number, v: number): number => {
+    const x = Math.floor(u * canvas.width)
+    const y = Math.floor(v * canvas.height)
+    if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) return 0
+    const index = (y * canvas.width + x) * 4
+    return textureData[index] // Red channel contains inscription ID
+  }
+
+  if (indices) {
+    for (let i = 0; i < indices.length; i += 3) {
+      const i1 = indices[i]
+      const i2 = indices[i + 1]
+      const i3 = indices[i + 2]
+
+      // Get UV coordinates for triangle vertices
+      const uv1 = new THREE.Vector2(uvs[i1 * 2], uvs[i1 * 2 + 1])
+      const uv2 = new THREE.Vector2(uvs[i2 * 2], uvs[i2 * 2 + 1])
+      const uv3 = new THREE.Vector2(uvs[i3 * 2], uvs[i3 * 2 + 1])
+
+      // Sample multiple points across the triangle to check if it belongs to inscription
+      const samples = [
+        uv1, uv2, uv3, // Vertices
+        uv1.clone().add(uv2).multiplyScalar(0.5), // Edge midpoints
+        uv2.clone().add(uv3).multiplyScalar(0.5),
+        uv3.clone().add(uv1).multiplyScalar(0.5),
+        uv1.clone().add(uv2).add(uv3).multiplyScalar(1/3) // Centroid
+      ]
+
+      const inscriptionSamples = samples.filter(uv => sampleInscriptionAtUV(uv.x, uv.y) === inscriptionId)
+      
+      // If majority of samples belong to this inscription, include the triangle
+      if (inscriptionSamples.length >= samples.length * 0.5) {
+        const v1 = new THREE.Vector3(positions[i1 * 3], positions[i1 * 3 + 1], positions[i1 * 3 + 2])
+        const v2 = new THREE.Vector3(positions[i2 * 3], positions[i2 * 3 + 1], positions[i2 * 3 + 2])
+        const v3 = new THREE.Vector3(positions[i3 * 3], positions[i3 * 3 + 1], positions[i3 * 3 + 2])
+        
+        // Transform to world coordinates
+        v1.applyMatrix4(mesh.matrixWorld)
+        v2.applyMatrix4(mesh.matrixWorld)
+        v3.applyMatrix4(mesh.matrixWorld)
+
+        // Calculate triangle normal and area
+        const edge1 = v2.clone().sub(v1)
+        const edge2 = v3.clone().sub(v1)
+        const normal = edge1.clone().cross(edge2).normalize()
+        const area = edge1.cross(edge2).length() * 0.5
+
+        triangles.push({ vertices: [v1, v2, v3], normal, area })
+        totalArea += area
+      }
+    }
+  }
+
+  return { triangles, totalArea }
+}
+
+// Calculate average normal weighted by triangle area
+export function calculateAverageNormal(triangles: Array<{normal: THREE.Vector3, area: number}>, totalArea: number): THREE.Vector3 {
+  const averageNormal = new THREE.Vector3(0, 0, 0)
+  
+  for (const triangle of triangles) {
+    const weight = triangle.area / totalArea
+    averageNormal.add(triangle.normal.clone().multiplyScalar(weight))
+  }
+  
+  return averageNormal.normalize()
+}
+
+// Move camera directly toward clicked point to center it
+export function calculateCameraPositionFromSurface(
+  _mesh: THREE.Mesh, 
+  _uv: THREE.Vector2, 
+  worldPosition: THREE.Vector3, 
+  currentCameraPosition: THREE.Vector3,
+  _maskTexture: THREE.Texture | null = null
+): { cameraPosition: THREE.Vector3, targetPosition: THREE.Vector3 } {
+  
+  // Calculate direction FROM camera TO the clicked point
+  const directionToPoint = worldPosition.clone().sub(currentCameraPosition).normalize()
+  
+  // Current distance from camera to clicked point
+  const currentDistance = currentCameraPosition.distanceTo(worldPosition)
+  
+  // Move significantly closer without arbitrary constraints
+  const targetDistance = currentDistance * 0.5 // Get 50% closer
+  
+  console.log(`Direct movement: current distance ${currentDistance.toFixed(2)}, target distance ${targetDistance.toFixed(2)}`)
+  
+  // Position camera closer to the clicked point along the direct line
+  const newPosition = worldPosition.clone().sub(directionToPoint.multiplyScalar(targetDistance))
+  
+  // Allow full movement for proper positioning  
+  console.log(`Final movement: ${newPosition.clone().sub(currentCameraPosition).length().toFixed(2)} units`)
+  
+  // Target the clicked point to center it
+  return { cameraPosition: newPosition, targetPosition: worldPosition }
 } 

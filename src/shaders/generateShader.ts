@@ -1,3 +1,6 @@
+// Note: This file is no longer used - inscription logic now handled directly
+// in LiverModel.ts using onBeforeCompile for better glTF material compatibility
+
 import { liverGroups } from '../scene/LiverData'
 
 function hexToVec3(hex: string): string {
@@ -10,7 +13,7 @@ function hexToVec3(hex: string): string {
 export function generateInscriptionColorFunction(): string {
   let glslFunction = 'vec3 getInscriptionColor(int inscriptionId) {\n'
   
-  for (const [groupKey, group] of Object.entries(liverGroups)) {
+  for (const [, group] of Object.entries(liverGroups)) {
     const positions = group.positions
     const minPos = Math.min(...positions)
     const maxPos = Math.max(...positions)
