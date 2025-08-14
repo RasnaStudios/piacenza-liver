@@ -2,7 +2,6 @@ import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 import { type LiverShaderUniforms } from '../shaders/LiverInscriptionShader'
-// Removed custom easing; using GSAP elsewhere. Keep simple linear timing here.
 import { SceneConfig } from '../config/SceneConfig'
 
 export class LiverModel {
@@ -10,6 +9,14 @@ export class LiverModel {
   private mesh: THREE.Mesh | null = null
   private object: THREE.Object3D | null = null
   private onProgress?: (progress: number) => void
+  private loadingManager: THREE.LoadingManager
+  private lastProgress: number = 0
+  private reportProgress(p: number) {
+    const clamped = Math.max(0, Math.min(100, Math.floor(p)))
+    const monotonic = Math.max(this.lastProgress, clamped)
+    this.lastProgress = monotonic
+    this.onProgress?.(monotonic)
+  }
   
   private shaderUniforms!: LiverShaderUniforms
   private maskTexture: THREE.Texture | null = null
@@ -20,6 +27,19 @@ export class LiverModel {
   constructor(scene: THREE.Scene, onProgress?: (progress: number) => void) {
     this.scene = scene
     this.onProgress = onProgress
+    // Centralized loading manager for accurate progress reporting
+    this.loadingManager = new THREE.LoadingManager()
+    this.loadingManager.onStart = () => {
+      this.reportProgress(0)
+    }
+    this.loadingManager.onProgress = (_url, itemsLoaded, itemsTotal) => {
+      const percent = itemsTotal > 0 ? Math.floor((itemsLoaded / itemsTotal) * 10) : 0
+      this.reportProgress(percent)
+    }
+    this.loadingManager.onLoad = () => {
+      // Only nudge if we haven't advanced beyond bootstrap range
+      if (this.lastProgress < 12) this.reportProgress(12)
+    }
     
     if (!this.checkWebGLSupport()) {
       console.error('WebGL not supported on this device')
@@ -49,25 +69,36 @@ export class LiverModel {
 
   async loadLiverModel() {
     try {
-      this.onProgress?.(10)
-
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-      
-      this.onProgress?.(20)
       
       // Load segmentation map for interactions
       const segmentationTexture = await this.loadSegmentationMap()
       this.maskTexture = segmentationTexture
       this.shaderUniforms.maskTexture.value = segmentationTexture
-      
-      this.onProgress?.(40)
 
       // Load glTF model with PBR materials
-      const gltfLoader = new GLTFLoader()
-      const gltf = await gltfLoader.loadAsync('/liver-model-gltf/Fegato_Text.glb')
+      const gltfLoader = new GLTFLoader(this.loadingManager)
+      // Use explicit load to capture xhr progress (download-level granularity)
+      let fallbackProgress = Math.max(12, this.lastProgress)
+      const gltf = await new Promise<import('three/examples/jsm/loaders/GLTFLoader.js').GLTF>((resolve, reject) => {
+        gltfLoader.load(
+          '/liver-model-gltf/Fegato_Text.glb',
+          (g) => resolve(g),
+          (xhr) => {
+            if (xhr.lengthComputable) {
+              // Map real download to 10–90%
+              const pct = 10 + Math.min(80, Math.floor((xhr.loaded / xhr.total) * 80))
+              this.reportProgress(pct)
+            } else {
+              // Unknown total: slowly ramp 12–30% to show activity without overpromising
+              fallbackProgress = Math.min(30, fallbackProgress + 1)
+              this.reportProgress(fallbackProgress)
+            }
+          },
+          (err) => reject(err)
+        )
+      })
       const object = gltf.scene
-      
-      this.onProgress?.(90)
 
       object.traverse((child) => {
         if (child instanceof THREE.Mesh) {
@@ -140,11 +171,12 @@ export class LiverModel {
       this.scene.add(object)
       this.object = object
 
-      this.onProgress?.(100)
       
       this.animateInitialRotation()
       
       
+      // Finalize progress at 100% before signaling readiness
+      this.reportProgress(100)
       if (this.onModelReady) {
         this.onModelReady()
       }
@@ -291,7 +323,7 @@ export class LiverModel {
 
   private loadSegmentationMap(): Promise<THREE.Texture> {
     return new Promise((resolve, reject) => {
-      const textureLoader = new THREE.TextureLoader()
+      const textureLoader = new THREE.TextureLoader(this.loadingManager)
       
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       
@@ -322,6 +354,7 @@ export class LiverModel {
             }
           }
         },
+        // Progress handled through LoadingManager
         undefined,
         (error) => {
           reject(error)

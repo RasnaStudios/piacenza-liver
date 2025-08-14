@@ -32,6 +32,7 @@ function PiacenzaLiverScene() {
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
   // Refs for 3D objects and controllers
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -288,76 +289,76 @@ function PiacenzaLiverScene() {
     }
     renderer.domElement.addEventListener('wheel', handleWheel, { passive: true })
 
-    // Loading progress handler
+    // Loading progress handler (readiness-driven UI will hide overlay)
     const handleLoadingProgress = (progress: number) => {
       setLoadingProgress(progress)
-      if (progress >= 100) {
-        setTimeout(() => {
-          setIsLoading(false)
-          
-          // Start simple camera animation after loading screen fades out
-          setTimeout(() => {
-            if (cameraRef.current && controlsRef.current) {
-              isIntroAnimationRef.current = true // Disable zoom detection during intro
-              
-              // Simple camera lerp animation using config (initial + offset)
-              const startPos = SceneConfig.camera.initial
-              const startTarget = SceneConfig.camera.target
-                        const endPos = startPos.clone().add(SceneConfig.animation.camera.positionOffset)
-          const endTarget = startTarget.clone().add(SceneConfig.animation.camera.targetOffset)
-              const duration = SceneConfig.animation.camera.duration
-              const startTime = Date.now()
-              
-              const animateCamera = () => {
-                const elapsed = Date.now() - startTime
-                const progress = Math.min(elapsed / duration, 1)
-                
-                // Simple lerp
-                const t = progress * progress * (3 - 2 * progress) // Smooth step
-                
-                if (cameraRef.current && controlsRef.current) {
-                  // Animate camera position
-                  cameraRef.current.position.x = startPos.x + (endPos.x - startPos.x) * t
-                  cameraRef.current.position.y = startPos.y + (endPos.y - startPos.y) * t
-                  cameraRef.current.position.z = startPos.z + (endPos.z - startPos.z) * t
-                  
-                  // Animate camera target (pan)
-                  controlsRef.current.target.x = startTarget.x + (endTarget.x - startTarget.x) * t
-                  controlsRef.current.target.y = startTarget.y + (endTarget.y - startTarget.y) * t
-                  controlsRef.current.target.z = startTarget.z + (endTarget.z - startTarget.z) * t
-                  
-                  controlsRef.current.update()
-                }
-                
-                if (progress < 1) {
-                  requestAnimationFrame(animateCamera)
-                } else {
-                  // Animation complete
-                  isIntroAnimationRef.current = false
-                  if (cameraRef.current) {
-                    initialCameraDistance.current = cameraRef.current.position.length()
-                  }
-                }
-              }
-              
-              animateCamera()
-            }
-          }, 300) // Small delay after loading screen disappears
-
-        }, 500)
-      }
     }
 
     // Initialize controllers and models
     const cameraController = new CameraController(camera, controls)
     cameraControllerRef.current = cameraController
 
-    const liverModel = new LiverModel(scene, handleLoadingProgress)
-    liverModelRef.current = liverModel
+    try {
+      const liverModel = new LiverModel(scene, handleLoadingProgress)
+      liverModelRef.current = liverModel
+    } catch (e: any) {
+      console.error('Failed to initialize LiverModel:', e)
+      setErrorMsg('Your browser or device does not support the required 3D features (WebGL). Please try updating your browser or using a different device.')
+      setIsLoading(false)
+    }
 
     // Set up callback for when liver model is ready
-    liverModel.setOnModelReady(() => {
-      // Model ready - no debug logs
+    liverModelRef.current?.setOnModelReady(() => {
+      // Hide loader based on readiness
+      setIsLoading(false)
+      // Start intro camera animation shortly after overlay fades out
+      setTimeout(() => {
+        if (cameraRef.current && controlsRef.current) {
+          isIntroAnimationRef.current = true // Disable zoom detection during intro
+          
+          // Simple camera lerp animation using config (initial + offset)
+          const startPos = SceneConfig.camera.initial
+          const startTarget = SceneConfig.camera.target
+          const endPos = startPos.clone().add(SceneConfig.animation.camera.positionOffset)
+          const endTarget = startTarget.clone().add(SceneConfig.animation.camera.targetOffset)
+          const duration = SceneConfig.animation.camera.duration
+          const startTime = Date.now()
+          
+          const animateCamera = () => {
+            const elapsed = Date.now() - startTime
+            const progress = Math.min(elapsed / duration, 1)
+            
+            // Smooth step easing
+            const t = progress * progress * (3 - 2 * progress)
+            
+            if (cameraRef.current && controlsRef.current) {
+              // Animate camera position
+              cameraRef.current.position.x = startPos.x + (endPos.x - startPos.x) * t
+              cameraRef.current.position.y = startPos.y + (endPos.y - startPos.y) * t
+              cameraRef.current.position.z = startPos.z + (endPos.z - startPos.z) * t
+              
+              // Animate camera target (pan)
+              controlsRef.current.target.x = startTarget.x + (endTarget.x - startTarget.x) * t
+              controlsRef.current.target.y = startTarget.y + (endTarget.y - startTarget.y) * t
+              controlsRef.current.target.z = startTarget.z + (endTarget.z - startTarget.z) * t
+              
+              controlsRef.current.update()
+            }
+            
+            if (progress < 1) {
+              requestAnimationFrame(animateCamera)
+            } else {
+              // Animation complete
+              isIntroAnimationRef.current = false
+              if (cameraRef.current) {
+                initialCameraDistance.current = cameraRef.current.position.length()
+              }
+            }
+          }
+          
+          animateCamera()
+        }
+      }, 300)
     })
 
     // Also keep the timeout as backup
@@ -465,8 +466,8 @@ function PiacenzaLiverScene() {
       checkForZoom(camera)
 
       // Update shader uniforms with time
-      if (liverModel) {
-        liverModel.updateShaderUniforms(performance.now() * 0.001)
+      if (liverModelRef.current) {
+        liverModelRef.current.updateShaderUniforms(performance.now() * 0.001)
       }
       
       renderer.render(scene, camera)
@@ -480,7 +481,7 @@ function PiacenzaLiverScene() {
       }
 
       cameraController?.dispose()
-      liverModel?.dispose()
+      liverModelRef.current?.dispose()
       interactionManagerRef.current?.dispose()
 
       // Remove event listeners
@@ -549,6 +550,30 @@ function PiacenzaLiverScene() {
           progress={loadingProgress} 
           isLoading={isLoading} 
         />
+
+        {/* Compatibility/Error Banner */}
+        {errorMsg && (
+          <div
+            style={{
+              position: 'fixed',
+              bottom: 12,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(0,0,0,0.8)',
+              color: '#fff',
+              padding: '10px 14px',
+              borderRadius: 6,
+              fontSize: 14,
+              zIndex: 10000,
+              maxWidth: '90vw',
+              textAlign: 'center' as const,
+              border: '1px solid #333',
+            }}
+            role="alert"
+          >
+            {errorMsg}
+          </div>
+        )}
       </div>
     </div>
   )

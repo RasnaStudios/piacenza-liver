@@ -67,7 +67,7 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
   }, [])
 
   useEffect(() => {
-    const particles: EtruscanParticle[] = Array.from({ length: 250 }, (_, i) => {
+    const particles: EtruscanParticle[] = Array.from({ length: 80 }, (_, i) => {
       // Distribute only on left and right sides with density towards borders
       const isLeft = Math.random() < 0.5
       
@@ -75,19 +75,19 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       const densityRandom = Math.random() * Math.random()
       
       const x = isLeft 
-        ? densityRandom * 25 // Left side: denser at x=0
-        : 100 - (densityRandom * 25) // Right side: denser at x=100
+        ? densityRandom * 28 // Left side band (slightly wider)
+        : 100 - (densityRandom * 28) // Right side band (slightly wider)
       
       return {
         char: etruscanChars[Math.floor(Math.random() * etruscanChars.length)],
         x,
         y: Math.random() * 100,
-        opacity: Math.random() * 0.6 + 0.2,
-        size: Math.random() * 10 + 4,
-        animationDelay: Math.random() * 25,
-        duration: Math.random() * 50 + 30,
-        vx: (Math.random() - 0.5) * 0.1,
-        vy: (Math.random() - 0.5) * 0.1,
+        opacity: Math.random() * 0.17 + 0.08, // more transparent overall
+        size: Math.random() * 14 + 10, // a bit larger base size
+        animationDelay: Math.random() * 20,
+        duration: Math.random() * 40 + 30,
+        vx: (Math.random() - 0.5) * 0.06,
+        vy: (Math.random() - 0.5) * 0.06,
         id: i
       }
     })
@@ -186,22 +186,18 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       } as React.CSSProperties
     }
     
-    const scaledSize = particle.size * (0.5 + distanceMultiplier * 2)
-    const finalOpacity = distanceMultiplier * 0.9
-    const glowIntensity = distanceMultiplier * 30
+    const scaledSize = particle.size * (0.6 + distanceMultiplier * 2.2)
+    const finalOpacity = Math.min(particle.opacity, distanceMultiplier * 0.35)
+    const glowIntensity = distanceMultiplier * 8
     
     return {
       position: 'absolute' as const,
       left: `${particle.x}%`,
       top: `${particle.y}%`,
       fontSize: `${scaledSize}px`,
-      fontWeight: '300' as const,
-      color: '#d4af37',
-      textShadow: `0 0 ${glowIntensity}px #d4af37, 0 0 ${glowIntensity * 2}px #f0d67c`,
-      background: 'linear-gradient(45deg, #d4af37 0%, #f0d67c 25%, #ffed4e 50%, #f0d67c 75%, #d4af37 100%)',
-      WebkitBackgroundClip: 'text',
-      WebkitTextFillColor: 'transparent',
-      backgroundClip: 'text',
+      fontWeight: '200' as const,
+      color: `rgba(212, 175, 55, ${Math.max(0.08, Math.min(finalOpacity, 0.28))})`,
+      textShadow: `0 0 ${Math.max(1, glowIntensity * 0.6)}px rgba(212, 175, 55, 0.22)`,
       animation: isDissolving 
         ? `dissolveParticle ${1.5 + Math.random() * 0.8}s ease-out forwards`
         : `etruscanFloat ${particle.duration}s ease-in-out infinite`,
@@ -211,7 +207,7 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       pointerEvents: 'none' as const,
       fontFamily: 'Times, serif',
       transform: 'translate(-50%, -50%)',
-      filter: `drop-shadow(0 0 ${glowIntensity}px rgba(212, 175, 55, ${distanceMultiplier}))`,
+      filter: `drop-shadow(0 0 2px rgba(212, 175, 55, 0.12))`,
       zIndex: 1,
       '--max-opacity': finalOpacity,
       '--move-x': `${particle.vx * 200}px`,
