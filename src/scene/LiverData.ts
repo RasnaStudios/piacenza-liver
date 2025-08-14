@@ -422,8 +422,8 @@ export const liverInscriptions = [
     gods: ['lusal'],
     relationship: 'Water deity Lusal',
     divinationMeaning: 'Mysterious water forces and purification',
-    cameraPosition: new THREE.Vector3(-1.569, -1.272, -0.659),
-    cameraTarget: new THREE.Vector3(-1.589, -1.433, 1.603)
+    cameraPosition: new THREE.Vector3(-1.365, -1.7185, -0.5965),
+    cameraTarget: new THREE.Vector3(-1.6015, -1.3815, 1.4875)
   },
   {
     id: 7,
