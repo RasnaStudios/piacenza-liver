@@ -1,9 +1,8 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
-// Note: Custom shader approach removed in favor of onBeforeCompile for better glTF compatibility
-import type { LiverShaderUniforms } from '../shaders/LiverInscriptionShader'
-import { easingFunctions } from './Animation'
+import { type LiverShaderUniforms } from '../shaders/LiverInscriptionShader'
+// Removed custom easing; using GSAP elsewhere. Keep simple linear timing here.
 import { SceneConfig } from '../config/SceneConfig'
 
 export class LiverModel {
@@ -187,7 +186,6 @@ export class LiverModel {
   }
 
   setHoveredInscription(inscriptionId: number) {
-    console.log('✨ Setting hovered inscription:', inscriptionId)
     this.shaderUniforms.hoveredInscription.value = inscriptionId
   }
 
@@ -213,9 +211,6 @@ export class LiverModel {
     const index = (y * width + x) * 4
     const inscriptionId = this.textureData[index]
     
-    if (inscriptionId > 0) {
-      console.log('🎯 Found inscription ID:', inscriptionId, 'at UV:', [u, v])
-    }
     return inscriptionId
   }
 
@@ -243,11 +238,8 @@ export class LiverModel {
     const animate = () => {
       const elapsed = Date.now() - startTime
       const progress = Math.min(elapsed / config.duration, 1)
-      
-      const easedProgress = easingFunctions.easeInOutBalanced(progress)
-      
       // Only scale the model - no movement
-      const currentScale = config.startScale + (config.endScale - config.startScale) * easedProgress
+      const currentScale = config.startScale + (config.endScale - config.startScale) * progress
       target.scale.setScalar(currentScale)
 
       if (progress < 1) {
@@ -368,7 +360,6 @@ export class LiverModel {
       uniqueValues.add(r)
     }
     
-    console.log('Found inscription IDs in segmentation:', Array.from(uniqueValues).sort((a, b) => a - b))
     
     // Process inscriptions 1-42 (current segmentation map range)
     for (let inscriptionId = 1; inscriptionId <= 42; inscriptionId++) {
@@ -395,10 +386,7 @@ export class LiverModel {
         const centerU = totalX / pixelCount / canvas.width
         const centerV = 1 - (totalY / pixelCount / canvas.height)
         this.inscriptionPositions.set(inscriptionId, new THREE.Vector2(centerU, centerV))
-        console.log(`Inscription ${inscriptionId} position: U=${centerU.toFixed(3)}, V=${centerV.toFixed(3)}`)
       }
     }
-    
-    console.log(`Processed ${this.inscriptionPositions.size} inscriptions from segmentation map`)
   }
 } 

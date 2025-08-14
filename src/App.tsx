@@ -4,12 +4,13 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 // Data
 import { liverInscriptions } from './scene/LiverData'
+// import { getLiverModelMatrix } from './camera/InscriptionPositions'
 
 // Core 3D logic
 import { CameraController } from './camera/Controller'
 import { LiverModel } from './scene/LiverModel'
 import { InteractionManager } from './scene/InteractionManager'
-import { calculateCameraPositionFromSurface, getWorldPositionFromUV } from './camera/Positioning'
+
 
 // UI Components
 import { DeityPanel } from './ui/DeityPanel'
@@ -63,52 +64,39 @@ function PiacenzaLiverScene() {
     }
   }, [])
 
-  const handleInscriptionClick = useCallback((inscriptionId: number, clickedUV: THREE.Vector2) => {
-    console.log(`Inscription ${inscriptionId} clicked at UV:`, clickedUV)
-    // Find the inscription data 
+  const handleInscriptionClick = useCallback((payload: {
+    inscriptionId: number
+    clickedUV: THREE.Vector2
+    cameraWorldPosition: THREE.Vector3
+    cameraWorldTarget: THREE.Vector3
+    cameraLocalPosition: THREE.Vector3
+    cameraLocalTarget: THREE.Vector3
+    modelMatrix: THREE.Matrix4
+  }) => {
+    const { inscriptionId, cameraWorldPosition, cameraWorldTarget, cameraLocalPosition, cameraLocalTarget, modelMatrix } = payload
     const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
-    if (inscription) {
-      setHasInteracted(true)
-      hasZoomedRef.current = true
-      
-      // Check if we're on mobile
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-      
-      // On desktop, open panel immediately
-      if (!isMobile) {
-        setSelectedInscription(inscription)
-      }
-      
-      // Camera animation logic
-      if (cameraControllerRef.current && liverModelRef.current && cameraRef.current) {
-        const liverModel = liverModelRef.current
-        const camera = cameraRef.current
-        const liverMesh = liverModel.getMesh()
-        if (liverMesh) {
-          // Use the actual clicked UV coordinates, not the pre-calculated centroid
-          const worldPosition = getWorldPositionFromUV(liverMesh, clickedUV)
-          if (worldPosition) {
-            const maskTexture = liverModel.getMaskTexture()
-            const { cameraPosition, targetPosition } = calculateCameraPositionFromSurface(
-              liverMesh,
-              clickedUV,
-              worldPosition,
-              camera.position,
-              maskTexture
-            )
-            
-            // Start camera animation with completion callback for mobile
-            cameraControllerRef.current.focusOn(
-              targetPosition, 
-              1000, 
-              cameraPosition, 
-              true,
-              // On mobile, open panel when animation completes
-              isMobile ? () => setSelectedInscription(inscription) : undefined
-            )
-          }
-        }
-      }
+    if (!inscription) return
+    setHasInteracted(true)
+    hasZoomedRef.current = true
+
+    // Log copy-paste friendly camera data for saving
+    console.log(`Inscription ${inscriptionId} clicked`)
+    console.log(`Camera world position: [${cameraWorldPosition.x.toFixed(3)}, ${cameraWorldPosition.y.toFixed(3)}, ${cameraWorldPosition.z.toFixed(3)}], target: [${cameraWorldTarget.x.toFixed(3)}, ${cameraWorldTarget.y.toFixed(3)}, ${cameraWorldTarget.z.toFixed(3)}]`)
+    console.log(`cameraPosition: new THREE.Vector3(${cameraLocalPosition.x.toFixed(3)}, ${cameraLocalPosition.y.toFixed(3)}, ${cameraLocalPosition.z.toFixed(3)}), cameraTarget: new THREE.Vector3(${cameraLocalTarget.x.toFixed(3)}, ${cameraLocalTarget.y.toFixed(3)}, ${cameraLocalTarget.z.toFixed(3)})`)
+
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    if (!isMobile) {
+      setSelectedInscription(inscription)
+    }
+    // Re-enable camera focus using stored poses
+    const data = inscription as any
+    if (cameraControllerRef.current && data.cameraPosition && data.cameraTarget) {
+      cameraControllerRef.current.focusOnTransformed(
+        data.cameraPosition,
+        data.cameraTarget,
+        modelMatrix,
+        1000
+      )
     }
   }, [])
 
@@ -244,7 +232,8 @@ function PiacenzaLiverScene() {
     controls.enableDamping = true
     controls.dampingFactor = 0.05
     controls.maxPolarAngle = Math.PI * 0.8
-    controls.minDistance = 3
+    // Allow very close zooming without arbitrary limits
+    controls.minDistance = 0.2
     controls.maxDistance = 20
     
     // Set initial camera target (where camera looks at)
@@ -309,7 +298,6 @@ function PiacenzaLiverScene() {
           // Start simple camera animation after loading screen fades out
           setTimeout(() => {
             if (cameraRef.current && controlsRef.current) {
-              console.log('🎬 Starting simple camera animation...')
               isIntroAnimationRef.current = true // Disable zoom detection during intro
               
               // Simple camera lerp animation using config (initial + offset)
@@ -349,7 +337,6 @@ function PiacenzaLiverScene() {
                   if (cameraRef.current) {
                     initialCameraDistance.current = cameraRef.current.position.length()
                   }
-                  console.log('🎬 Simple camera animation complete')
                 }
               }
               
@@ -370,32 +357,11 @@ function PiacenzaLiverScene() {
 
     // Set up callback for when liver model is ready
     liverModel.setOnModelReady(() => {
-      console.log('🎯 Liver model is ready! Updating camera transforms...')
-      
-      const inscriptionPositions = liverModel.getInscriptionPositions()
-      
-      // Log inscription positions for debugging
-      console.log('📍 DEITY REGION LOCATIONS:')
-      inscriptionPositions.forEach((uv: THREE.Vector2, id: number) => {
-        const inscription = liverInscriptions.find(ins => ins.id === id)
-        console.log(`  ${id}: UV(${uv.x.toFixed(3)}, ${uv.y.toFixed(3)}) - ${inscription?.etruscanText || 'Unknown'}`)
-      })
+      // Model ready - no debug logs
     })
 
     // Also keep the timeout as backup
-    setTimeout(() => {
-      console.log('⏰ Backup timeout: Checking inscription positions...')
-      const inscriptionPositions = liverModel.getInscriptionPositions()
-      if (inscriptionPositions.size > 0) {
-        console.log('📍 DEITY REGION LOCATIONS (backup):')
-        inscriptionPositions.forEach((uv: THREE.Vector2, id: number) => {
-          const inscription = liverInscriptions.find(ins => ins.id === id)
-          console.log(`  ${id}: UV(${uv.x.toFixed(3)}, ${uv.y.toFixed(3)}) - ${inscription?.etruscanText || 'Unknown'}`)
-        })
-      } else {
-        console.warn('⚠️ No inscription positions found in backup timeout')
-      }
-    }, 5000) // Increased delay as backup
+    // Removed backup timeout logging
 
     // Set up simple texture atlas interaction system
     const handleMouseMove = (event: MouseEvent) => {

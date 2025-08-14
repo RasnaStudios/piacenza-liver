@@ -1,8 +1,17 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { worldToModelSpace } from '../camera/InscriptionPositions'
 
 export interface InteractionCallbacks {
-  onInscriptionClick: (inscriptionId: number, clickedUV: THREE.Vector2) => void
+  onInscriptionClick: (payload: {
+    inscriptionId: number
+    clickedUV: THREE.Vector2
+    cameraWorldPosition: THREE.Vector3
+    cameraWorldTarget: THREE.Vector3
+    cameraLocalPosition: THREE.Vector3
+    cameraLocalTarget: THREE.Vector3
+    modelMatrix: THREE.Matrix4
+  }) => void
   onBackgroundClick: () => void
   onMarkerHover: (section: any) => void
   onInteractionStart: () => void
@@ -75,9 +84,7 @@ export class InteractionManager {
     this.controls.addEventListener('start', this.boundHandleControlsStart)
     this.controls.addEventListener('end', this.boundHandleControlsEnd)
     
-    console.log('🎮 Model Rotation Controls Active:')
-    console.log('  Hold SHIFT + drag mouse to rotate the liver model')
-    console.log('  R key: Log current rotation values')
+    // Removed setup debug logs
   }
 
   private handleMouseDown(event: MouseEvent) {
@@ -103,8 +110,6 @@ export class InteractionManager {
   private handleKeyDown(event: KeyboardEvent) {
     if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
       this.isShiftPressed = true
-    } else if (event.code === 'KeyR') {
-      this.logCurrentRotation()
     }
   }
   
@@ -117,16 +122,10 @@ export class InteractionManager {
       }
     }
   }
+
+  // Removed 'R' logging; click will provide camera data to callback
   
-  private logCurrentRotation() {
-    const liverObject = this.liverModel.getObject()
-    if (liverObject) {
-      const r = liverObject.rotation
-      console.log('📍 Current Liver Model Rotation:')
-      console.log(`  object.rotation.set(${r.x.toFixed(3)}, ${r.y.toFixed(3)}, ${r.z.toFixed(3)})`)
-      console.log(`  Degrees: X=${(r.x * 180/Math.PI).toFixed(1)}° Y=${(r.y * 180/Math.PI).toFixed(1)}° Z=${(r.z * 180/Math.PI).toFixed(1)}°`)
-    }
-  }
+
 
   private handleMouseMove(event: MouseEvent) {
     // Handle model rotation when Shift+drag is active
@@ -251,7 +250,22 @@ export class InteractionManager {
           if (inscriptionId > 0 && inscriptionId <= 42) {
             const inscription = this.liverInscriptions.find(ins => ins.id === inscriptionId)
             if (inscription) {
-              this.callbacks.onInscriptionClick(inscriptionId, uv)
+              const persp = this.camera as THREE.PerspectiveCamera
+              const worldPos = persp.position.clone()
+              const worldTgt = this.controls.target.clone()
+              const liverObject = this.liverModel.getObject && this.liverModel.getObject()
+              const modelMatrix = liverObject ? liverObject.matrixWorld.clone() : new THREE.Matrix4()
+              const localPos = worldToModelSpace(worldPos, modelMatrix)
+              const localTgt = worldToModelSpace(worldTgt, modelMatrix)
+              this.callbacks.onInscriptionClick({
+                inscriptionId,
+                clickedUV: uv.clone(),
+                cameraWorldPosition: worldPos,
+                cameraWorldTarget: worldTgt,
+                cameraLocalPosition: localPos,
+                cameraLocalTarget: localTgt,
+                modelMatrix
+              })
             }
           }
         }

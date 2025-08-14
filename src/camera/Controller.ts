@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { globalAnimator, easingFunctions, lerpVector3 } from '../scene/Animation'
+import { gsap } from 'gsap'
 import { SceneConfig } from '../config/SceneConfig'
 
 export class CameraController {
@@ -10,6 +10,11 @@ export class CameraController {
   private lastManualTarget: THREE.Vector3
   private isAnimating: boolean
   private currentAnimationId: string | null
+  private originalControlsEnabled: boolean
+  private originalEnableDamping: boolean
+  private controlsTemporarilyDisabled: boolean
+  private static readonly MIN_OFFSET_EPSILON = 1e-4
+  private currentTween: gsap.core.Tween | null = null
 
   constructor(camera: THREE.Camera, controls: OrbitControls) {
     this.camera = camera
@@ -25,6 +30,9 @@ export class CameraController {
     // Animation state
     this.isAnimating = false
     this.currentAnimationId = null
+    this.originalControlsEnabled = controls.enabled
+    this.originalEnableDamping = controls.enableDamping
+    this.controlsTemporarilyDisabled = false
     
     // Bind methods
     this.handleControlsChange = this.handleControlsChange.bind(this)
@@ -35,6 +43,45 @@ export class CameraController {
     this.controls.addEventListener('change', this.handleControlsChange)
     this.controls.addEventListener('start', this.handleControlsStart)
     this.controls.addEventListener('end', this.handleControlsEnd)
+  }
+
+  private ensureSafeEndPose(
+    startPosition: THREE.Vector3,
+    startTarget: THREE.Vector3,
+    endPosition: THREE.Vector3,
+    endTarget: THREE.Vector3
+  ): { endPosition: THREE.Vector3; endTarget: THREE.Vector3 } {
+    // Ensure numbers are finite
+    const all = [endPosition.x, endPosition.y, endPosition.z, endTarget.x, endTarget.y, endTarget.z]
+    for (const v of all) {
+      if (!Number.isFinite(v)) {
+        // Fallback to start pose to avoid corrupting controls
+        return { endPosition: startPosition.clone(), endTarget: startTarget.clone() }
+      }
+    }
+    // Ensure offset is not degenerate
+    const endOffset = endPosition.clone().sub(endTarget)
+    if (endOffset.lengthSq() < CameraController.MIN_OFFSET_EPSILON) {
+      const startOffset = startPosition.clone().sub(startTarget)
+      const safeDir = startOffset.lengthSq() > 0 ? startOffset.normalize() : new THREE.Vector3(0, 0, 1)
+      const safeDist = Math.max(0.5, startOffset.length())
+      const safeEndPos = endTarget.clone().add(safeDir.multiplyScalar(safeDist))
+      return { endPosition: safeEndPos, endTarget }
+    }
+    return { endPosition, endTarget }
+  }
+
+  // Focus using positions stored in model-local space by transforming with the given model matrix
+  focusOnTransformed(
+    localCameraPosition: THREE.Vector3,
+    localTargetPosition: THREE.Vector3,
+    modelMatrix: THREE.Matrix4,
+    duration: number = 800,
+    onComplete?: () => void
+  ) {
+    const worldCameraPos = localCameraPosition.clone().applyMatrix4(modelMatrix)
+    const worldTargetPos = localTargetPosition.clone().applyMatrix4(modelMatrix)
+    return this.focusOn(worldTargetPos, duration, worldCameraPos, true, onComplete)
   }
 
   // Handle when user starts manual control (interrupt animations)
@@ -63,61 +110,6 @@ export class CameraController {
     }
   }
 
-  // Helper method to calculate a roll-safe camera position
-  private calculateRollSafePosition(
-    startPosition: THREE.Vector3, 
-    startTarget: THREE.Vector3, 
-    endPosition: THREE.Vector3, 
-    endTarget: THREE.Vector3
-  ): THREE.Vector3 {
-    // Calculate the viewing directions
-    const startDirection = startPosition.clone().sub(startTarget).normalize()
-    const endDirection = endPosition.clone().sub(endTarget).normalize()
-    
-    // Calculate the angle between the directions
-    const angle = startDirection.angleTo(endDirection)
-    
-    // If the angle is small, use the original end position
-    if (angle < Math.PI / 4) { // Less than 45 degrees
-      return endPosition
-    }
-    
-    // For larger angles, use spherical interpolation to prevent roll
-    if (angle > Math.PI / 2) { // More than 90 degrees
-      console.log(`Large angle detected (${(angle * 180 / Math.PI).toFixed(1)}°), using conservative interpolation`)
-      
-      // Use a more conservative approach - blend the directions
-      const blendFactor = 0.6 // 60% toward target direction
-      const blendedDirection = startDirection.clone()
-        .multiplyScalar(1 - blendFactor)
-        .add(endDirection.clone().multiplyScalar(blendFactor))
-        .normalize()
-      
-      // Calculate the distance from target to maintain
-      const distance = endPosition.distanceTo(endTarget)
-      
-      // Return position that uses blended direction
-      return endTarget.clone().add(blendedDirection.multiplyScalar(distance))
-    }
-    
-    // For medium angles, use spherical interpolation
-    const t = 0.5 // Use halfway point for medium angles
-    const sinAngle = Math.sin(angle)
-    const sinT = Math.sin(t * angle)
-    const sinOneMinusT = Math.sin((1 - t) * angle)
-    
-    // Spherical interpolation formula
-    const interpolatedDirection = startDirection.clone()
-      .multiplyScalar(sinOneMinusT / sinAngle)
-      .add(endDirection.clone().multiplyScalar(sinT / sinAngle))
-      .normalize()
-    
-    // Calculate the distance from target to maintain
-    const distance = endPosition.distanceTo(endTarget)
-    
-    // Return position that uses interpolated direction
-    return endTarget.clone().add(interpolatedDirection.multiplyScalar(distance))
-  }
 
   // Animate camera to focus on a specific position with panel-aware positioning and proper text orientation
   focusOn(
@@ -142,7 +134,7 @@ export class CameraController {
     const startTarget = this.controls.target.clone()
     
     // Target is the inscription position - this centers it in the screen
-    const endTarget = targetPosition.clone()
+    let endTarget = targetPosition.clone()
     
     // Use custom camera position if provided, otherwise calculate based on target
     let endPosition: THREE.Vector3
@@ -155,190 +147,85 @@ export class CameraController {
       endPosition = endTarget.clone().add(offset)
     }
 
-    // Check for potential excessive roll and adjust if necessary
-    const startDirection = startPosition.clone().sub(startTarget).normalize()
-    const endDirection = endPosition.clone().sub(endTarget).normalize()
-    const rollAngle = startDirection.angleTo(endDirection)
-    
-    // If the roll angle would be too large, use a more conservative approach
-    if (rollAngle > Math.PI / 2) { // More than 90 degrees
-      console.log(`Large roll detected (${(rollAngle * 180 / Math.PI).toFixed(1)}°), using conservative approach`)
-      
-      // Instead of direct interpolation, use a two-step approach:
-      // 1. First move to a position that maintains current orientation
-      // 2. Then gradually adjust to the final position
-      
-      // Calculate a conservative end position that's closer to current orientation
-      const conservativeDirection = startDirection.clone()
-        .multiplyScalar(0.3) // Keep 30% of current direction
-        .add(endDirection.clone().multiplyScalar(0.7)) // Add 70% of target direction
-        .normalize()
-      
-      const conservativeEndPosition = endTarget.clone().add(conservativeDirection.multiplyScalar(endPosition.distanceTo(endTarget)))
-      endPosition = conservativeEndPosition
-    }
+    // Sanitize the target/position to avoid degenerate offsets and non-finite values
+    const safePose = this.ensureSafeEndPose(startPosition, startTarget, endPosition, endTarget)
+    endPosition = safePose.endPosition
+    endTarget = safePose.endTarget
 
-    // Use the roll-safe position calculation
-    endPosition = this.calculateRollSafePosition(startPosition, startTarget, endPosition, endTarget)
-
-    // Reusable vectors for performance
+    // Reusable vectors and rotation helpers
     const tempCameraPos = new THREE.Vector3()
     const tempTargetPos = new THREE.Vector3()
+    // We avoid quaternion slerp to keep motion softer; rely on lookAt with eased target
 
+    // Temporarily disable controls to avoid fighting during animation
+    this.originalControlsEnabled = this.controls.enabled
+    this.originalEnableDamping = this.controls.enableDamping
+    this.controls.enabled = false
+    this.controls.enableDamping = false
+    this.controlsTemporarilyDisabled = true
     this.isAnimating = true
 
-    this.currentAnimationId = globalAnimator.animate(
-      'camera-focus',
-      duration,
-      (progress: number) => {
-        // Check if animation was interrupted
-        if (!this.isAnimating) {
-          return // Stop updating if animation was cancelled
+    // Use GSAP for robust tweening of both position and target
+    const tween = gsap.to({ t: 0 }, {
+      t: 1,
+      duration: duration / 1000,
+      ease: 'sine.inOut',
+      onUpdate: () => {
+        try {
+          // Ignore updates from stale tweens
+          if (this.currentTween !== tween || !this.isAnimating) return
+          const t = (tween as any).targets()[0].t as number
+          tempCameraPos.lerpVectors(startPosition, endPosition, t)
+          tempTargetPos.lerpVectors(startTarget, endTarget, t)
+          const offset = tempCameraPos.clone().sub(tempTargetPos)
+          if (offset.lengthSq() < CameraController.MIN_OFFSET_EPSILON) {
+            const startOffset = startPosition.clone().sub(startTarget)
+            const safeDir = startOffset.lengthSq() > 0 ? startOffset.normalize() : new THREE.Vector3(0, 0, 1)
+            const safeDist = Math.max(0.5, startOffset.length())
+            tempCameraPos.copy(tempTargetPos).add(safeDir.multiplyScalar(safeDist))
+          }
+          this.camera.position.copy(tempCameraPos)
+          this.controls.target.copy(tempTargetPos)
+          this.camera.up.set(0, 1, 0)
+          this.camera.lookAt(tempTargetPos)
+          this.camera.updateMatrixWorld(true)
+          this.controls.update()
+        } catch (_e) {
+          this.stopAnimation()
+          tween.kill()
         }
-        
-        // Interpolate camera position
-        lerpVector3(startPosition, endPosition, progress, tempCameraPos)
-        this.camera.position.copy(tempCameraPos)
-        
-        // Interpolate camera target
-        lerpVector3(startTarget, endTarget, progress, tempTargetPos)
-        this.controls.target.copy(tempTargetPos)
-        
-        // Ensure camera maintains consistent up direction to prevent roll
-        // Use lookAt with a fixed up vector (0, 1, 0) to eliminate roll
-        this.camera.lookAt(tempTargetPos)
-        
-        // Force the camera's up vector to be (0, 1, 0) to prevent roll
-        this.camera.up.set(0, 1, 0)
-        
-        this.controls.update()
       },
-      easingFunctions.easeInOutBalanced, // Balanced ease in/out with same speed
-      () => {
+      onComplete: () => {
+        if (this.currentTween !== tween) return
         this.isAnimating = false
         this.currentAnimationId = null
-        // Call the completion callback if provided
-        if (onComplete) {
-          onComplete()
+        if (this.controlsTemporarilyDisabled) {
+          this.controls.enabled = this.originalControlsEnabled
+          this.controls.enableDamping = this.originalEnableDamping
+          this.controlsTemporarilyDisabled = false
         }
+        this.controls.target.copy(endTarget)
+        this.camera.up.set(0, 1, 0)
+        this.camera.lookAt(endTarget)
+        this.controls.update()
+        if (onComplete) onComplete()
       }
-    )
+    })
 
-    return this.currentAnimationId
-  }
-
-  // Return to user's last manual position
-  returnToManualPosition(duration = 1000) {
-    // Stop any existing animation first
-    this.stopAnimation()
-    
-    const startPosition = this.camera.position.clone()
-    const startTarget = this.controls.target.clone()
-    
-    const endPosition = this.lastManualPosition.clone()
-    const endTarget = this.lastManualTarget.clone()
-
-    // Reusable vectors for performance
-    const tempCameraPos = new THREE.Vector3()
-    const tempTargetPos = new THREE.Vector3()
-
+    // Track animation state
     this.isAnimating = true
-
-    this.currentAnimationId = globalAnimator.animate(
-      'camera-return',
-      duration,
-      (progress) => {
-        // Check if animation was interrupted
-        if (!this.isAnimating) {
-          return // Stop updating if animation was cancelled
-        }
-        
-        // Interpolate camera position
-        lerpVector3(startPosition, endPosition, progress, tempCameraPos)
-        this.camera.position.copy(tempCameraPos)
-        
-        // Interpolate camera target
-        lerpVector3(startTarget, endTarget, progress, tempTargetPos)
-        this.controls.target.copy(tempTargetPos)
-        
-        // Ensure camera maintains consistent up direction to prevent roll
-        this.camera.lookAt(tempTargetPos)
-        this.camera.up.set(0, 1, 0)
-        
-        this.controls.update()
-      },
-      easingFunctions.easeInOutBalanced, // Balanced ease in/out with same speed
-      () => {
-        this.isAnimating = false
-        this.currentAnimationId = null
-      }
-    )
-
-    return this.currentAnimationId
-  }
-
-  // Center liver in full screen (when panel closes)
-  centerLiver(duration = 600) {
-    // Stop any existing animation first
-    this.stopAnimation()
-    
-    const startPosition = this.camera.position.clone()
-    const startTarget = this.controls.target.clone()
-    
-    // Position liver at center of screen
-    const endTarget = new THREE.Vector3(0, 0, 0)
-    // Keep camera at a good viewing distance but center the target
-    const cameraDirection = startPosition.clone().normalize()
-    const distance = Math.max(1.5, startPosition.length())
-    const endPosition = cameraDirection.multiplyScalar(distance)
-
-    // Reusable vectors for performance
-    const tempCameraPos = new THREE.Vector3()
-    const tempTargetPos = new THREE.Vector3()
-
-    this.isAnimating = true
-
-    this.currentAnimationId = globalAnimator.animate(
-      'camera-center',
-      duration,
-      (progress) => {
-        // Check if animation was interrupted
-        if (!this.isAnimating) {
-          return // Stop updating if animation was cancelled
-        }
-        
-        // Interpolate camera position
-        lerpVector3(startPosition, endPosition, progress, tempCameraPos)
-        this.camera.position.copy(tempCameraPos)
-        
-        // Interpolate camera target
-        lerpVector3(startTarget, endTarget, progress, tempTargetPos)
-        this.controls.target.copy(tempTargetPos)
-        
-        // Ensure camera maintains consistent up direction to prevent roll
-        this.camera.lookAt(tempTargetPos)
-        this.camera.up.set(0, 1, 0)
-        
-        this.controls.update()
-      },
-      easingFunctions.easeInOutBalanced, // Balanced ease in/out with same speed
-      () => {
-        this.isAnimating = false
-        this.currentAnimationId = null
-      }
-    )
-
-    return this.currentAnimationId
+    this.currentTween = tween
+    return 'camera-focus-gsap'
   }
 
   // Reset to default position
   resetToDefault(duration = 1000) {
     // Stop any existing animation first
     this.stopAnimation()
-    
+
     const startPosition = this.camera.position.clone()
     const startTarget = this.controls.target.clone()
-    
+
     // Reset to intro end position using config
     const endPosition = SceneConfig.camera.initial.clone().add(SceneConfig.animation.camera.positionOffset)
     const endTarget = SceneConfig.camera.target.clone().add(SceneConfig.animation.camera.targetOffset)
@@ -347,144 +234,54 @@ export class CameraController {
     this.lastManualPosition.copy(endPosition)
     this.lastManualTarget.copy(endTarget)
 
-    // Reusable vectors for performance
-    const tempCameraPos = new THREE.Vector3()
-    const tempTargetPos = new THREE.Vector3()
-
     this.isAnimating = true
-
-    this.currentAnimationId = globalAnimator.animate(
-      'camera-reset',
-      duration,
-      (progress) => {
-        // Check if animation was interrupted
-        if (!this.isAnimating) {
-          return // Stop updating if animation was cancelled
-        }
-        
-        // Interpolate camera position
-        lerpVector3(startPosition, endPosition, progress, tempCameraPos)
+    const tween = gsap.to({ t: 0 }, {
+      t: 1,
+      duration: duration / 1000,
+      ease: 'power1.inOut',
+      onUpdate: () => {
+        if (this.currentTween !== tween || !this.isAnimating) return
+        const t = (tween as any).targets()[0].t as number
+        const tempCameraPos = new THREE.Vector3().lerpVectors(startPosition, endPosition, t)
+        const tempTargetPos = new THREE.Vector3().lerpVectors(startTarget, endTarget, t)
         this.camera.position.copy(tempCameraPos)
-        
-        // Interpolate camera target
-        lerpVector3(startTarget, endTarget, progress, tempTargetPos)
         this.controls.target.copy(tempTargetPos)
-        
-        // Ensure camera maintains consistent up direction to prevent roll
-        this.camera.lookAt(tempTargetPos)
         this.camera.up.set(0, 1, 0)
-        
+        this.camera.lookAt(tempTargetPos)
         this.controls.update()
       },
-      easingFunctions.easeInOutBalanced, // Balanced ease in/out with same speed
-      () => {
+      onComplete: () => {
+        if (this.currentTween !== tween) return
         this.isAnimating = false
-        this.currentAnimationId = null
+        this.currentTween = null
       }
-    )
-
-    return this.currentAnimationId
+    })
+    this.currentTween = tween
+    this.currentAnimationId = 'camera-reset-gsap'
+    return 'camera-reset-gsap'
   }
 
-  // Introduction animation - from initial position to optimal viewing angle
-  playIntroAnimation(duration = 2500, onComplete?: () => void) {
-    // Stop any existing animation first
-    this.stopAnimation()
-    
-    const startPosition = new THREE.Vector3(0, 2, 10) // Initial position
-    const startTarget = new THREE.Vector3(0, 0, 0)
-    
-    const endPosition = new THREE.Vector3(0, 5, 6) // Higher up and closer for better view
-    const endTarget = new THREE.Vector3(0, 0, 0)
-
-    // Update manual position to the intro end position
-    this.lastManualPosition.copy(endPosition)
-    this.lastManualTarget.copy(endTarget)
-
-    // Temporarily disable controls events to prevent UI interference
-    const originalEnabled = this.controls.enabled
-    this.controls.enabled = false
-
-    // Reusable vectors for performance
-    const tempCameraPos = new THREE.Vector3()
-    const tempTargetPos = new THREE.Vector3()
-
-    this.isAnimating = true
-
-    this.currentAnimationId = globalAnimator.animate(
-      'camera-intro',
-      duration,
-      (progress) => {
-        // Check if animation was interrupted
-        if (!this.isAnimating) {
-          return // Stop updating if animation was cancelled
-        }
-        
-        // Use a slower easing for cinematic feel
-        const easedProgress = easingFunctions.easeInOutBalanced(progress)
-        
-        // Interpolate camera position
-        lerpVector3(startPosition, endPosition, easedProgress, tempCameraPos)
-        this.camera.position.copy(tempCameraPos)
-        
-        // Interpolate camera target
-        lerpVector3(startTarget, endTarget, easedProgress, tempTargetPos)
-        this.controls.target.copy(tempTargetPos)
-        
-        // Ensure camera maintains consistent up direction to prevent roll
-        this.camera.lookAt(tempTargetPos)
-        this.camera.up.set(0, 1, 0)
-        
-        // Manual update without triggering events
-        this.controls.update()
-      },
-      easingFunctions.easeInOutBalanced,
-      () => {
-        this.isAnimating = false
-        this.currentAnimationId = null
-        // Re-enable controls after animation
-        this.controls.enabled = originalEnabled
-        console.log('🎬 Introduction animation complete')
-        // Call completion callback if provided
-        if (onComplete) {
-          onComplete()
-        }
-      }
-    )
-
-    return this.currentAnimationId
-  }
 
   // Stop current camera animation immediately
   stopAnimation() {
-    if (this.isAnimating && this.currentAnimationId) {
-      globalAnimator.stop(this.currentAnimationId)
-      this.isAnimating = false
-      this.currentAnimationId = null
-      
-      // Ensure controls are properly updated after stopping
-      this.controls.update()
+    if (this.currentTween) {
+      this.currentTween.kill()
+      this.currentTween = null
     }
-  }
+    this.isAnimating = false
+    this.currentAnimationId = null
 
-  // Check if camera is currently animating
-  isCurrentlyAnimating() {
-    return this.isAnimating
-  }
-
-  // Get current manual position
-  getManualPosition() {
-    return {
-      position: this.lastManualPosition.clone(),
-      target: this.lastManualTarget.clone()
+    // Always restore controls state if we temporarily disabled them
+    if (this.controlsTemporarilyDisabled) {
+      this.controls.enabled = this.originalControlsEnabled
+      this.controls.enableDamping = this.originalEnableDamping
+      this.controlsTemporarilyDisabled = false
     }
+
+    // Ensure controls are properly updated after stopping
+    this.controls.update()
   }
 
-  // Set manual position (useful for initialization)
-  setManualPosition(position: THREE.Vector3, target: THREE.Vector3) {
-    this.lastManualPosition.copy(position)
-    this.lastManualTarget.copy(target)
-  }
 
   // Cleanup
   dispose() {
