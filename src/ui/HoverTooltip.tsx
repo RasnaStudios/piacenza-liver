@@ -1,8 +1,8 @@
 import { 
-  Paper, 
-  Badge
+  Paper
 } from '@mantine/core'
 import { liverGroups, liverGods } from '../scene/LiverData'
+import { NumberBadge } from './NumberBadge'
 
 interface HoverTooltipProps {
   hoveredSection: any
@@ -77,32 +77,7 @@ export function HoverTooltip({ hoveredSection, mousePosition }: HoverTooltipProp
     <Paper style={tooltipStyles}>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <div style={contentStyles}>
-          <Badge 
-            size="sm" 
-            variant="filled"
-            style={{ 
-              backgroundColor: group?.color,
-              color: '#000',
-              border: '2px solid rgba(0, 0, 0, 0.3)',
-              boxShadow: '0 3px 8px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              minWidth: '28px',
-              width: 'auto',
-              height: '28px',
-              borderRadius: '50%',
-              fontSize: '13px',
-              fontWeight: '900',
-              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
-              textShadow: '0 1px 2px rgba(255, 255, 255, 0.5)',
-              padding: '0 4px',
-              lineHeight: '1',
-              flexShrink: 0,
-            }}
-          >
-            {hoveredSection.id}
-          </Badge>
+          <NumberBadge value={hoveredSection.id} size={28} />
           
           <span style={etruscanTextStyles}>
             {hoveredSection.etruscanText}

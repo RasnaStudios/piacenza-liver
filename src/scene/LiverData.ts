@@ -96,7 +96,7 @@ export const liverGods = {
     greekEquivalent: 'Zeus', 
     domain: 'Sky, Thunder, Divine Authority',
     description: 'Supreme sky god and father of the gods in the Etruscan pantheon.',
-    divinationMeaning: 'Divine authority, favorable celestial omens, cosmic order'
+    
   },
   cilens: {
     id: 'cilens',
@@ -105,7 +105,7 @@ export const liverGods = {
     romanEquivalent: 'Nocturnus',
     domain: 'Night, Psychopomp',
     description: 'God of the night and guide of souls between worlds.',
-    divinationMeaning: 'Night omens, soul transitions, death passages'
+    
   },
   thufltha: {
     id: 'thufltha', 
@@ -114,7 +114,7 @@ export const liverGods = {
     romanEquivalent: 'Fortuna',
     domain: 'Fate, Healing, Oracles',
     description: 'Goddess of fate, healing, and oracular wisdom.',
-    divinationMeaning: 'Fate determination, healing omens, oracular guidance'
+    
   },
   nethuns: {
     id: 'nethuns',
@@ -124,7 +124,7 @@ export const liverGods = {
     greekEquivalent: 'Poseidon',
     domain: 'Water, Sea, Atmospheric Humidity',
     description: 'God of fresh water, sea, and atmospheric moisture.',
-    divinationMeaning: 'Water omens, purification, life force flow'
+    
   },
   uni: {
     id: 'uni',
@@ -134,7 +134,7 @@ export const liverGods = {
     greekEquivalent: 'Hera',
     domain: 'Marriage, Fertility, Cities',
     description: 'Wife of Tinia, guardian of marriage, fertility, birth, and cities.',
-    divinationMeaning: 'Marital harmony, fertility, civic protection'
+    
   },
   mae: {
     id: 'mae',
@@ -142,7 +142,7 @@ export const liverGods = {
     etruscanScript: '𐌌𐌀𐌄',
     domain: 'Maternal, Generative',
     description: 'Possibly maternal or generative attribute deity.',
-    divinationMeaning: 'Maternal protection, generative power'
+    
   },
   tecvm: {
     id: 'tecvm',
@@ -151,7 +151,7 @@ export const liverGods = {
     romanEquivalent: 'Tece Sans (Father)',
     domain: 'Paternal Water Spirit',
     description: 'Paternal water-spirit, possibly ancestral water deity.',
-    divinationMeaning: 'Ancestral water protection, paternal guidance'
+    
   },
   lusal: {
     id: 'lusal',
@@ -159,7 +159,7 @@ export const liverGods = {
     etruscanScript: '𐌋𐌖𐌔𐌋',
     domain: 'Water (unidentified)',
     description: 'Unidentified water deity, possibly related to light or purification.',
-    divinationMeaning: 'Water purification, luminous guidance'
+    
   },
   catha: {
     id: 'catha',
@@ -168,7 +168,7 @@ export const liverGods = {
     romanEquivalent: 'Kore',
     domain: 'Sun, Solar-Nymph',
     description: 'Goddess of the sun in her solar-nymph form.',
-    divinationMeaning: 'Solar transitions, dawn/dusk omens, illumination'
+    
   },
   fufluns: {
     id: 'fufluns',
@@ -178,7 +178,7 @@ export const liverGods = {
     greekEquivalent: 'Dionysus',
     domain: 'Wine, Vegetation, Inebriation',
     description: 'God of wine, inebriation, and vegetation cycles.',
-    divinationMeaning: 'Fertility, ecstatic transformation, vegetation cycles'
+    
   },
   selvans: {
     id: 'selvans',
@@ -187,7 +187,7 @@ export const liverGods = {
     romanEquivalent: 'Silvanus',
     domain: 'Forests, Borders',
     description: 'God of borders and forest boundaries.',
-    divinationMeaning: 'Boundary protection, forest omens, territorial limits'
+    
   },
   lethns: {
     id: 'lethns',
@@ -196,7 +196,7 @@ export const liverGods = {
     romanEquivalent: 'Lethams',
     domain: 'Local Spirit, Genius',
     description: 'Genius or local spirit, possibly related to memory/forgetfulness.',
-    divinationMeaning: 'Local protection, memory transitions, genius loci'
+    
   },
   tluscva: {
     id: 'tluscva',
@@ -204,7 +204,7 @@ export const liverGods = {
     etruscanScript: '𐌕𐌋𐌖𐌔𐌂',
     domain: 'Water Nymphs, Sacred Water',
     description: 'Nymphs tied to water cult and sacred offerings.',
-    divinationMeaning: 'Sacred water rituals, nymph protection, ritual purity'
+    
   },
   cels: {
     id: 'cels',
@@ -213,7 +213,7 @@ export const liverGods = {
     romanEquivalent: 'Gea',
     domain: 'Earth Goddess',
     description: 'Goddess of the earth and chthonic forces.',
-    divinationMeaning: 'Earth power, foundational stability, chthonic wisdom'
+    
   },
   culsans: {
     id: 'culsans',
@@ -222,7 +222,7 @@ export const liverGods = {
     romanEquivalent: 'Janus',
     domain: 'Doors, Protection',
     description: 'Benevolent protector of doors and thresholds.',
-    divinationMeaning: 'Threshold protection, doorway blessings, transitions'
+    
   },
   alpans: {
     id: 'alpans',
@@ -230,7 +230,7 @@ export const liverGods = {
     etruscanScript: '𐌀𐌋𐌐',
     domain: 'Protective Spirit',
     description: 'Protective spirit associated with Culsans.',
-    divinationMeaning: 'Divine protection, spiritual guardianship'
+    
   },
   vetlsi: {
     id: 'vetlsi',
@@ -239,7 +239,7 @@ export const liverGods = {
     romanEquivalent: 'Veiovis',
     domain: 'Underworld Apollo',
     description: 'Underworld "Apollo", chthonic version of the light god.',
-    divinationMeaning: 'Underworld illumination, chthonic prophecy, dark wisdom'
+    
   },
   pul: {
     id: 'pul',
@@ -247,7 +247,7 @@ export const liverGods = {
     etruscanScript: '𐌐𐌖𐌋',
     domain: 'Uncertain',
     description: 'Uncertain deity, possibly related to purification.',
-    divinationMeaning: 'Uncertain omens, purification needs'
+    
   },
   lasl: {
     id: 'lasl',
@@ -256,7 +256,7 @@ export const liverGods = {
     romanEquivalent: 'Lasi',
     domain: 'Household Spirit',
     description: 'Household female spirit, domestic protection.',
-    divinationMeaning: 'Household harmony, domestic protection, family spirits'
+    
   },
   maris: {
     id: 'maris',
@@ -264,7 +264,7 @@ export const liverGods = {
     etruscanScript: '𐌌𐌀𐌓',
     domain: 'Generative Force, Youth',
     description: 'Generative force and generating power of all the gods.',
-    divinationMeaning: 'Youth renewal, generative power, divine regeneration'
+    
   },
   laran: {
     id: 'laran',
@@ -273,7 +273,7 @@ export const liverGods = {
     romanEquivalent: 'Ares',
     domain: 'War, Fire',
     description: 'God of war and fire, representing martial force.',
-    divinationMeaning: 'Martial conflicts, fiery energy, warrior protection'
+    
   },
   letams: {
     id: 'letams',
@@ -281,7 +281,7 @@ export const liverGods = {
     etruscanScript: '𐌋𐌄𐌕𐌀',
     domain: 'Local Spirit',
     description: 'Local spirit or genius, memory-related deity.',
-    divinationMeaning: 'Memory preservation, local guidance, ancestral wisdom'
+    
   },
   tvnth: {
     id: 'tvnth',
@@ -289,7 +289,7 @@ export const liverGods = {
     etruscanScript: '𐌕𐌖𐌍𐌚',
     domain: 'Uncertain',
     description: 'Uncertain deity in the gall bladder zone.',
-    divinationMeaning: 'Concentrated energy, uncertain manifestation'
+    
   },
   hercle: {
     id: 'hercle',
@@ -298,7 +298,7 @@ export const liverGods = {
     romanEquivalent: 'Hercules', 
     domain: 'Heroic Protection',
     description: 'Hero-protector, divine strength and protection.',
-    divinationMeaning: 'Heroic intervention, protective strength, noble courage'
+    
   },
   metlvmth: {
     id: 'metlvmth',
@@ -306,7 +306,7 @@ export const liverGods = {
     etruscanScript: '𐌌𐌄𐌕𐌋𐌖𐌌𐌚',
     domain: 'Epithet/Attribute',
     description: 'Epithet or attribute associated with Lethams.',
-    divinationMeaning: 'Enhanced local protection, strengthened genius'
+    
   },
   marutl: {
     id: 'marutl',
@@ -314,7 +314,7 @@ export const liverGods = {
     etruscanScript: '𐌌𐌀𐌓𐌖𐌕𐌋',
     domain: 'Epithet/Attribute',
     description: 'Double epithet associated with Tluscva.',
-    divinationMeaning: 'Enhanced water nymph power, sacred ritual strength'
+    
   },
   lethams: {
     id: 'lethams',
@@ -322,7 +322,7 @@ export const liverGods = {
     etruscanScript: '𐌋𐌄𐌚𐌀𐌌',
     domain: 'Local Spirit',
     description: 'Local tutelary spirit, genius of place.',
-    divinationMeaning: 'Local divine protection, genius loci, territorial blessing'
+    
   },
   velch: {
     id: 'velch',
@@ -331,7 +331,7 @@ export const liverGods = {
     romanEquivalent: 'Vulcan',
     domain: 'Fire, Underworld',
     description: 'Infernal form of Sethlans (Vulcan), fire deity.',
-    divinationMeaning: 'Infernal fire, transformative power, underworld craftsmanship'
+    
   },
   satres: {
     id: 'satres',
@@ -340,7 +340,7 @@ export const liverGods = {
     romanEquivalent: 'Saturn',
     domain: 'Underworld, Time',
     description: 'God of the underworld and temporal cycles.',
-    divinationMeaning: 'Temporal boundaries, underworld authority, cyclical time'
+    
   },
   usil: {
     id: 'usil',
@@ -348,7 +348,7 @@ export const liverGods = {
     etruscanScript: '𐌖𐌔𐌉𐌋',
     domain: 'Sun',
     description: 'The sun god, representing solar power and illumination.',
-    divinationMeaning: 'Solar cycles, illumination, divine light'
+    
   },
   tiur: {
     id: 'tiur',
@@ -356,11 +356,11 @@ export const liverGods = {
     etruscanScript: '𐌕𐌉𐌖𐌓',
     domain: 'Moon',
     description: 'The moon god, representing lunar cycles and night illumination.',
-    divinationMeaning: 'Lunar cycles, nocturnal wisdom, cyclical time'
+    
   }
 }
 
-// INSCRIPTIONS: All 42 liver sections with their gods and relationships
+// INSCRIPTIONS: All 42 liver sections with their gods and descriptions
 export const liverInscriptions = [
   // SKY GROUP (1-4) - Outer rim top
   {
@@ -368,8 +368,7 @@ export const liverInscriptions = [
     groupId: 'sky',
     etruscanText: '𐌕𐌉𐌍 / 𐌂𐌉𐌋 / 𐌄𐌍', 
     gods: ['tinia', 'cilens'],
-    relationship: 'Region shared by Tinia, father of the gods, and Cilens, god of the night',
-    divinationMeaning: 'Divine authority governing both day and night realms',
+    description: 'Region shared by Tinia, father of the gods, and Cilens, god of the night',
     cameraPosition: new THREE.Vector3(-2.491, 0.722, -1.246),
     cameraTarget: new THREE.Vector3(-2.357, 0.865, 1.013)
   },
@@ -378,8 +377,7 @@ export const liverInscriptions = [
     groupId: 'sky',
     etruscanText: '𐌕𐌉𐌍 / 𐌚𐌖𐌐',
     gods: ['tinia', 'thufltha'],
-    relationship: 'Tinia flanked by Thufltha, goddess of fate',
-    divinationMeaning: 'Divine authority guided by fate and oracular wisdom',
+    description: 'Tinia flanked by Thufltha, goddess of fate',
     cameraPosition: new THREE.Vector3(-2.608, 0.055, -1.174),
     cameraTarget: new THREE.Vector3(-2.567, 0.305, 1.079)
   },
@@ -388,8 +386,7 @@ export const liverInscriptions = [
     groupId: 'sky', 
     etruscanText: '𐌕𐌉𐌍𐌔 / 𐌍𐌄𐌚',
     gods: ['tinia', 'nethuns'],
-    relationship: 'Region dedicated to Nethuns in the (house) of Tinia',
-    divinationMeaning: 'Water powers operating under divine celestial authority',
+    description: 'Region dedicated to Nethuns in the (house) of Tinia',
     cameraPosition: new THREE.Vector3(-2.517, -0.611, -1.069),
     cameraTarget: new THREE.Vector3(-2.609, -0.247, 1.167)
   },
@@ -398,8 +395,7 @@ export const liverInscriptions = [
     groupId: 'sky',
     etruscanText: '𐌖𐌍𐌉 / 𐌌𐌀𐌄',
     gods: ['uni', 'mae'],
-    relationship: 'Uni with possible maternal/generative attribute Mae',
-    divinationMeaning: 'Divine feminine power, marriage and maternal protection',
+    description: 'Uni with possible maternal/generative attribute Mae',
     cameraPosition: new THREE.Vector3(-2.220, -1.169, -0.953),
     cameraTarget: new THREE.Vector3(-2.480, -0.819, 1.272)
   },
@@ -410,8 +406,7 @@ export const liverInscriptions = [
     groupId: 'water',
     etruscanText: '𐌕𐌄𐌂 / 𐌖𐌌',
     gods: ['tecvm'],
-    relationship: 'Tece Sans, "Father"',
-    divinationMeaning: 'Ancestral water protection and paternal guidance',
+    description: 'Tece Sans, "Father"',
     cameraPosition: new THREE.Vector3(-1.838, -1.580, -0.839),
     cameraTarget: new THREE.Vector3(-2.221, -1.297, 1.377)
   },
@@ -420,8 +415,7 @@ export const liverInscriptions = [
     groupId: 'water',
     etruscanText: '𐌋𐌖𐌔𐌋',
     gods: ['lusal'],
-    relationship: 'Water deity Lusal',
-    divinationMeaning: 'Mysterious water forces and purification',
+    description: 'Water deity Lusal',
     cameraPosition: new THREE.Vector3(-1.365, -1.7185, -0.5965),
     cameraTarget: new THREE.Vector3(-1.6015, -1.3815, 1.4875)
   },
@@ -430,8 +424,7 @@ export const liverInscriptions = [
     groupId: 'water',
     etruscanText: '𐌍𐌄𐌚',
     gods: ['nethuns'],
-    relationship: 'Primary water deity in his own domain',
-    divinationMeaning: 'Direct water omens, sea/freshwater balance',
+    description: 'Primary water deity in his own domain',
     cameraPosition: new THREE.Vector3(-0.892, -1.857, -0.354),
     cameraTarget: new THREE.Vector3(-0.982, -1.466, 1.598)
   },
@@ -440,8 +433,7 @@ export const liverInscriptions = [
     groupId: 'water',
     etruscanText: '𐌂𐌀𐌚',
     gods: ['catha'],
-    relationship: 'Solar goddess in water context (solar-nymph form)',
-    divinationMeaning: 'Solar reflection in water, light-water interaction',
+    description: 'Solar goddess in water context (solar-nymph form)',
     cameraPosition: new THREE.Vector3(-0.191, -1.726, -0.265),
     cameraTarget: new THREE.Vector3(-0.573, -1.313, 1.647)
   },
@@ -452,8 +444,7 @@ export const liverInscriptions = [
     groupId: 'earth',
     etruscanText: '𐌅𐌖𐌅𐌋𐌖 / 𐌍𐌔',
     gods: ['fufluns'],
-    relationship: 'Vegetation deity in earth domain',
-    divinationMeaning: 'Earth fertility, vegetation cycles, wine harvest',
+    description: 'Vegetation deity in earth domain',
     cameraPosition: new THREE.Vector3(0.066, -1.213, -0.702),
     cameraTarget: new THREE.Vector3(0.068, -1.275, 1.659)
   },
@@ -462,8 +453,7 @@ export const liverInscriptions = [
     groupId: 'earth',
     etruscanText: '𐌔𐌄𐌋𐌅𐌀',
     gods: ['selvans'],
-    relationship: 'Forest boundary guardian in earth realm',
-    divinationMeaning: 'Forest boundaries, territorial limits, wild spaces',
+    description: 'Forest boundary guardian in earth realm',
     cameraPosition: new THREE.Vector3(0.896, -1.509, -0.514),
     cameraTarget: new THREE.Vector3(0.869, -1.426, 1.657)
   },
@@ -472,8 +462,7 @@ export const liverInscriptions = [
     groupId: 'earth',
     etruscanText: '𐌋𐌄𐌚𐌍𐌔',
     gods: ['lethns'],
-    relationship: 'Local earth spirit/genius',
-    divinationMeaning: 'Local earth protection, genius loci, memory of place',
+    description: 'Local earth spirit/genius',
     cameraPosition: new THREE.Vector3(1.577, -1.542, -0.604),
     cameraTarget: new THREE.Vector3(1.348, -1.245, 1.654)
   },
@@ -482,8 +471,7 @@ export const liverInscriptions = [
     groupId: 'earth',
     etruscanText: '𐌕𐌋𐌖𐌔𐌂𐌖',
     gods: ['tluscva'],
-    relationship: 'Water nymphs in earth context (springs, sacred groves)',
-    divinationMeaning: 'Sacred water sources, spring protection, ritual purity',
+    description: 'Water nymphs in earth context (springs, sacred groves)',
     cameraPosition: new THREE.Vector3(2.352, -0.992, -0.521),
     cameraTarget: new THREE.Vector3(1.938, -1.027, 1.731)
   },
@@ -494,8 +482,7 @@ export const liverInscriptions = [
     groupId: 'underworld',
     etruscanText: '𐌂𐌄𐌋𐌔',
     gods: ['cels'],
-    relationship: 'Earth goddess in underworld domain',
-    divinationMeaning: 'Chthonic earth power, foundational stability',
+    description: 'Earth goddess in underworld domain',
     cameraPosition: new THREE.Vector3(2.485, -0.088, -0.881),
     cameraTarget: new THREE.Vector3(2.241, -0.444, 1.854)
   },
@@ -504,8 +491,7 @@ export const liverInscriptions = [
     groupId: 'underworld',
     etruscanText: '𐌂𐌖𐌋 / 𐌀𐌋𐌐',
     gods: ['culsans', 'alpans'],
-    relationship: 'Culsans (Janus) paired with protective spirit Alpans',
-    divinationMeaning: 'Threshold protection enhanced by benevolent spirits',
+    description: 'Culsans (Janus) paired with protective spirit Alpans',
     cameraPosition: new THREE.Vector3(1.721, 0.508, -0.842),
     cameraTarget: new THREE.Vector3(1.529, 0.078, 1.886)
   },
@@ -514,8 +500,7 @@ export const liverInscriptions = [
     groupId: 'underworld',
     etruscanText: '𐌅𐌄𐌕𐌉𐌔𐌋',
     gods: ['vetlsi'],
-    relationship: 'Underworld "Apollo" as solitary chthonic light',
-    divinationMeaning: 'Underworld illumination, dark prophecy, chthonic wisdom',
+    description: 'Underworld "Apollo" as solitary chthonic light',
     cameraPosition: new THREE.Vector3(0.986, 1.042, -0.812),
     cameraTarget: new THREE.Vector3(0.946, 0.628, 1.925)
   },
@@ -524,8 +509,7 @@ export const liverInscriptions = [
     groupId: 'underworld',
     etruscanText: '𐌂𐌉𐌋𐌄𐌍𐌔𐌋',
     gods: ['cilens'],
-    relationship: 'Night god in underworld context',
-    divinationMeaning: 'Underworld night passages, soul guidance',
+    description: 'Night god in underworld context',
     cameraPosition: new THREE.Vector3(-0.213, 1.456, -1.461),
     cameraTarget: new THREE.Vector3(-0.241, 0.723, 1.922)
   },
@@ -536,8 +520,7 @@ export const liverInscriptions = [
     groupId: 'pars_familiaris',
     etruscanText: '𐌐𐌖𐌋',
     gods: ['pul'],
-    relationship: 'Uncertain deity in favorable realm',
-    divinationMeaning: 'Uncertain but favorable divine presence',
+    description: 'Uncertain deity in favorable realm',
     cameraPosition: new THREE.Vector3(-1.679, -1.661, -0.829),
     cameraTarget: new THREE.Vector3(-1.672, -0.941, 2.223)
   },
@@ -546,8 +529,7 @@ export const liverInscriptions = [
     groupId: 'pars_familiaris',
     etruscanText: '𐌋𐌄𐌚𐌍',
     gods: ['lethns'],
-    relationship: 'Local spirit in familiar context',
-    divinationMeaning: 'Familiar local protection, household genius',
+    description: 'Local spirit in familiar context',
     cameraPosition: new THREE.Vector3(-1.664, -1.309, -0.891),
     cameraTarget: new THREE.Vector3(-1.672, -0.941, 2.223)
   },
@@ -556,8 +538,7 @@ export const liverInscriptions = [
     groupId: 'pars_familiaris',
     etruscanText: '𐌋𐌀 / 𐌔𐌋',
     gods: ['lasl'],
-    relationship: 'Household female spirit',
-    divinationMeaning: 'Domestic harmony, household divine protection',
+    description: 'Household female spirit',
     cameraPosition: new THREE.Vector3(-1.492, -1.157, -0.908),
     cameraTarget: new THREE.Vector3(-1.486, -0.807, 2.208)
   },
@@ -566,8 +547,7 @@ export const liverInscriptions = [
     groupId: 'pars_familiaris',
     etruscanText: '𐌕𐌉𐌍𐌔 / 𐌚𐌖𐌐',
     gods: ['tinia', 'thufltha'],
-    relationship: 'Tinia under Thufltha\'s protection',
-    divinationMeaning: 'Divine authority guided by protective fate',
+    description: 'Tinia under Thufltha\'s protection',
     cameraPosition: new THREE.Vector3(-1.909, -1.121, -0.911),
     cameraTarget: new THREE.Vector3(-1.902, -0.772, 2.204)
   },
@@ -576,8 +556,7 @@ export const liverInscriptions = [
     groupId: 'pars_familiaris',
     etruscanText: '𐌚𐌖𐌐𐌋 / 𐌚𐌀𐌔',
     gods: ['thufltha'],
-    relationship: 'Fate goddess as solitary favorable force',
-    divinationMeaning: 'Favorable fate, healing protection, oracular guidance',
+    description: 'Fate goddess as solitary favorable force',
     cameraPosition: new THREE.Vector3(-2.003, -0.707, -0.958),
     cameraTarget: new THREE.Vector3(-1.996, -0.357, 2.158)
   },
@@ -586,8 +565,7 @@ export const liverInscriptions = [
     groupId: 'pars_familiaris',
     etruscanText: '𐌕𐌉𐌍𐌔𐌚 / 𐌍𐌄𐌚',
     gods: ['tinia', 'nethuns'],
-    relationship: 'Nethuns in Tinia\'s house - atmospheric humidity',
-    divinationMeaning: 'Favorable water omens under divine protection',
+    description: 'Nethuns in Tinia\'s house - atmospheric humidity',
     cameraPosition: new THREE.Vector3(-1.989, -0.296, -1.004),
     cameraTarget: new THREE.Vector3(-1.982, 0.051, 2.112)
   },
@@ -596,8 +574,7 @@ export const liverInscriptions = [
     groupId: 'pars_familiaris',
     etruscanText: '𐌂𐌀𐌚𐌀',
     gods: ['catha'],
-    relationship: 'Solar goddess in familiar realm',
-    divinationMeaning: 'Favorable solar transitions and illumination',
+    description: 'Solar goddess in familiar realm',
     cameraPosition: new THREE.Vector3(-1.397, -0.335, -1.004),
     cameraTarget: new THREE.Vector3(-1.382, -0.056, 2.119)
   },
@@ -606,8 +583,7 @@ export const liverInscriptions = [
     groupId: 'pars_familiaris',
     etruscanText: '𐌅𐌖𐌅 / 𐌋𐌖𐌔',
     gods: ['fufluns'],
-    relationship: 'Fufluns in favorable context',
-    divinationMeaning: 'Favorable fertility and vegetation cycles',
+    description: 'Fufluns in favorable context',
     cameraPosition: new THREE.Vector3(-1.322, -0.636, -0.977),
     cameraTarget: new THREE.Vector3(-1.307, -0.356, 2.146)
   },
@@ -618,8 +594,7 @@ export const liverInscriptions = [
     groupId: 'gall_bladder',
     etruscanText: '𐌕𐌖𐌍𐌚',
     gods: ['tvnth'],
-    relationship: 'Uncertain deity in concentrated energy zone',
-    divinationMeaning: 'Concentrated unknown force, powerful uncertainty',
+    description: 'Uncertain deity in concentrated energy zone',
     cameraPosition: new THREE.Vector3(-1.014, -1.772, -0.893),
     cameraTarget: new THREE.Vector3(-1.078, -0.796, 2.086)
   },
@@ -628,8 +603,7 @@ export const liverInscriptions = [
     groupId: 'gall_bladder',
     etruscanText: '𐌌𐌀𐌓𐌉𐌔𐌋 / 𐌋𐌀𐌚',
     gods: ['maris', 'laran'],
-    relationship: 'Maris (generative force) paired with Laran (war & fire)',
-    divinationMeaning: 'Creative force combined with martial energy',
+    description: 'Maris (generative force) paired with Laran (war & fire)',
     cameraPosition: new THREE.Vector3(-1.023, -1.475, -0.974),
     cameraTarget: new THREE.Vector3(-1.078, -0.796, 2.086)
   },
@@ -638,8 +612,7 @@ export const liverInscriptions = [
     groupId: 'gall_bladder',
     etruscanText: '𐌋𐌄𐌕𐌀',
     gods: ['letams'],
-    relationship: 'Local spirit in concentrated form',
-    divinationMeaning: 'Intensified local protection, concentrated genius',
+    description: 'Local spirit in concentrated form',
     cameraPosition: new THREE.Vector3(-1.048, -0.807, -1.049),
     cameraTarget: new THREE.Vector3(-1.078, -0.796, 2.086)
   },
@@ -648,8 +621,7 @@ export const liverInscriptions = [
     groupId: 'gall_bladder',
     etruscanText: '𐌍𐌄𐌚',
     gods: ['nethuns'],
-    relationship: 'Water god in concentrated energy context',
-    divinationMeaning: 'Concentrated water power, intense purification',
+    description: 'Water god in concentrated energy context',
     cameraPosition: new THREE.Vector3(-1.039, -0.547, -1.039),
     cameraTarget: new THREE.Vector3(-1.065, -0.744, 2.090)
   },
@@ -660,8 +632,7 @@ export const liverInscriptions = [
     groupId: 'central_section',
     etruscanText: '𐌇𐌄𐌓𐌂',
     gods: ['hercle'],
-    relationship: 'Hero-protector at cosmic center',
-    divinationMeaning: 'Central heroic protection, cosmic balance guardian',
+    description: 'Hero-protector at cosmic center',
     cameraPosition: new THREE.Vector3(-0.098, -1.144, -0.839),
     cameraTarget: new THREE.Vector3(-0.232, -1.333, 1.801)
   },
@@ -670,8 +641,7 @@ export const liverInscriptions = [
     groupId: 'central_section',
     etruscanText: '𐌌𐌀𐌓',
     gods: ['maris'],
-    relationship: 'Generating power of all the gods at center',
-    divinationMeaning: 'Central generative force, divine creative power',
+    description: 'Generating power of all the gods at center',
     cameraPosition: new THREE.Vector3(-0.142, -0.576, -0.801),
     cameraTarget: new THREE.Vector3(-0.277, -0.766, 1.839)
   },
@@ -680,8 +650,7 @@ export const liverInscriptions = [
     groupId: 'central_section',
     etruscanText: '𐌔𐌄𐌋𐌅𐌀',
     gods: ['selvans'],
-    relationship: 'Forest deity in central section',
-    divinationMeaning: 'Central boundary protection, forest wisdom',
+    description: 'Forest deity in central section',
     cameraPosition: new THREE.Vector3(1.435, -1.285, -1.024),
     cameraTarget: new THREE.Vector3(1.115, -1.547, 2.084)
   },
@@ -690,8 +659,7 @@ export const liverInscriptions = [
     groupId: 'central_section',
     etruscanText: '𐌋𐌄𐌚𐌀',
     gods: ['lethams'],
-    relationship: 'Local tutelary spirit at center',
-    divinationMeaning: 'Central local protection, genius of center',
+    description: 'Local tutelary spirit at center',
     cameraPosition: new THREE.Vector3(2.274, -0.693, -1.106),
     cameraTarget: new THREE.Vector3(2.115, -1.196, 2.204)
   },
@@ -702,8 +670,7 @@ export const liverInscriptions = [
     groupId: 'pars_hostilis',
     etruscanText: '𐌕𐌋𐌖𐌔𐌂',
     gods: ['tluscva'],
-    relationship: 'Water nymphs in hostile realm',
-    divinationMeaning: 'Threatened water sources, challenged purity',
+    description: 'Water nymphs in hostile realm',
     cameraPosition: new THREE.Vector3(2.009, 0.291, -0.858),
     cameraTarget: new THREE.Vector3(2.299, -0.550, 2.372)
   },
@@ -712,8 +679,7 @@ export const liverInscriptions = [
     groupId: 'pars_hostilis',
     etruscanText: '𐌋𐌖𐌔𐌋 / 𐌅𐌄𐌋𐌒',
     gods: ['lusal', 'velch'],
-    relationship: 'Lusal paired with infernal Vulcan (Velchans)',
-    divinationMeaning: 'Mysterious forces combined with underworld fire',
+    description: 'Lusal paired with infernal Vulcan (Velchans)',
     cameraPosition: new THREE.Vector3(0.747, 0.573, -0.982),
     cameraTarget: new THREE.Vector3(1.194, 0.643, 2.630)
   },
@@ -722,8 +688,7 @@ export const liverInscriptions = [
     groupId: 'pars_hostilis',
     etruscanText: '𐌔𐌀𐌕𐌓 / 𐌄𐌔',
     gods: ['satres'],
-    relationship: 'Underworld Saturn in hostile context',
-    divinationMeaning: 'Temporal boundaries, restrictive cycles, limitation',
+    description: 'Underworld Saturn in hostile context',
     cameraPosition: new THREE.Vector3(0.287, -0.133, -0.900),
     cameraTarget: new THREE.Vector3(0.396, -0.013, 2.737)
   },
@@ -732,8 +697,7 @@ export const liverInscriptions = [
     groupId: 'pars_hostilis',
     etruscanText: '𐌂𐌉𐌋𐌄𐌍',
     gods: ['cilens'],
-    relationship: 'Night god in hostile realm',
-    divinationMeaning: 'Difficult passages, challenging transitions',
+    description: 'Night god in hostile realm',
     cameraPosition: new THREE.Vector3(0.291, -1.060, -0.761),
     cameraTarget: new THREE.Vector3(0.233, -1.186, 1.885)
   },
@@ -742,8 +706,7 @@ export const liverInscriptions = [
     groupId: 'pars_hostilis',
     etruscanText: '𐌋𐌄𐌚𐌀𐌌',
     gods: ['lethams'],
-    relationship: 'Local spirit in unfavorable context',
-    divinationMeaning: 'Challenged local protection, tested genius',
+    description: 'Local spirit in unfavorable context',
     cameraPosition: new THREE.Vector3(0.165, -0.612, -0.787),
     cameraTarget: new THREE.Vector3(0.030, -0.801, 1.852)
   },
@@ -752,8 +715,7 @@ export const liverInscriptions = [
     groupId: 'pars_hostilis',
     etruscanText: '𐌌𐌄𐌕𐌋𐌖𐌌𐌚',
     gods: ['metlvmth'],
-    relationship: 'Epithet or attribute deity in hostile realm',
-    divinationMeaning: 'Enhanced attributes under challenge',
+    description: 'Epithet or attribute deity in hostile realm',
     cameraPosition: new THREE.Vector3(0.854, 0.717, -0.798),
     cameraTarget: new THREE.Vector3(0.731, -0.071, 2.781)
   },
@@ -764,8 +726,7 @@ export const liverInscriptions = [
     groupId: 'retro',
     etruscanText: '𐌌𐌀𐌓',
     gods: ['maris'],
-    relationship: 'Generative force in foundational context',
-    divinationMeaning: 'Foundational creative power, root generation',
+    description: 'Generative force in foundational context',
     cameraPosition: new THREE.Vector3(-0.382, 0.398, -0.719),
     cameraTarget: new THREE.Vector3(-0.723, 0.132, 1.503)
   },
@@ -774,8 +735,7 @@ export const liverInscriptions = [
     groupId: 'retro',
     etruscanText: '𐌕𐌋𐌖𐌔𐌂',
     gods: ['tluscva'],
-    relationship: 'Water nymphs as foundational spirits',
-    divinationMeaning: 'Foundational water sanctity, root purity',
+    description: 'Water nymphs as foundational spirits',
     cameraPosition: new THREE.Vector3(-0.741, 0.125, -1.025),
     cameraTarget: new THREE.Vector3(-0.804, -0.067, 1.464)
   },
@@ -784,16 +744,16 @@ export const liverInscriptions = [
     groupId: 'retro',
     etruscanText: '𐌕𐌉𐌖𐌔',
     gods: ['tiur'],
-    relationship: 'The Moon as cosmic foundation',
-    divinationMeaning: 'Lunar foundation, fundamental night cycle'
+    description: 'The Moon as cosmic foundation',
+    
   },
   {
     id: 42,
     groupId: 'retro',
     etruscanText: '𐌖𐌔𐌉𐌋𐌔',
     gods: ['usil'],
-    relationship: 'The Sun as cosmic foundation',
-    divinationMeaning: 'Solar foundation, fundamental day cycle'
+    description: 'The Sun as cosmic foundation',
+    
   }
 ]
 
