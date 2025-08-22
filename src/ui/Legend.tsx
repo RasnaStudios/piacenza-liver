@@ -27,16 +27,23 @@ export function Legend({ hasInteracted = false }: LegendProps) {
   }, [])
 
   const getControlsText = () => {
-    switch (platform) {
-      case 'mac':
-        return 'Mouse: rotate • ⌘ + mouse: pan • scroll: zoom'
-      case 'windows':
-        return 'Mouse: rotate • Alt + mouse: pan • scroll: zoom'
-      case 'linux':
-        return 'Mouse: rotate • Alt + mouse: pan • scroll: zoom'
-      default:
-        return 'Mouse: rotate • Alt + mouse: pan • scroll: zoom'
-    }
+    const modifier = platform === 'mac' ? '⌘' : 'Alt'
+    const shift = '⇧'
+    return [
+      'Mouse: rotate',
+      `${modifier} + mouse: pan`,
+      'Scroll: zoom',
+      'Double-click: reset view',
+      `${shift} + drag: move model`
+    ]
+  }
+  
+  const getMobileControlsText = () => {
+    return [
+      'Touch: rotate',
+      'Pinch: zoom', 
+      'Double-tap: reset view'
+    ]
   }
 
   const legendStyles = isMobile ? {
@@ -48,12 +55,12 @@ export function Legend({ hasInteracted = false }: LegendProps) {
     width: '100vw',
     color: 'rgba(196, 168, 118, 0.6)',
     fontFamily: 'Georgia, serif',
-    fontSize: '12px',
+    fontSize: '14px',
     lineHeight: 1.3,
     pointerEvents: 'none' as const,
     userSelect: 'none' as const,
     zIndex: 100,
-    padding: '16px 20px',
+    padding: '14px 18px',
     background: 'rgba(0, 0, 0, 0.4)',
     backdropFilter: 'blur(8px)',
     borderTop: '1px solid rgba(139, 101, 65, 0.3)',
@@ -66,12 +73,12 @@ export function Legend({ hasInteracted = false }: LegendProps) {
     left: 20,
     color: 'rgba(196, 168, 118, 0.6)',
     fontFamily: 'Georgia, serif',
-    fontSize: '13px',
+    fontSize: '14px',
     lineHeight: 1.4,
     pointerEvents: 'none' as const,
     userSelect: 'none' as const,
     zIndex: 100,
-    padding: '12px 16px',
+    padding: '14px 18px',
     background: 'rgba(0, 0, 0, 0.2)',
     borderRadius: '8px',
     backdropFilter: 'blur(4px)',
@@ -100,35 +107,48 @@ export function Legend({ hasInteracted = false }: LegendProps) {
 
   return (
     <Box style={legendStyles}>
-      <Box style={{ marginBottom: '10px' }}>
-        <Text 
+      <Box style={{ marginBottom: '8px' }}>
+        {/* Credits Section */}
+        <Box style={{ marginBottom: '6px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+          <Text style={{ fontWeight: 500, color: 'rgba(196, 168, 118, 0.9)', fontSize: isMobile ? '14px' : '15px' }}>
+            <Anchor 
+              href="https://github.com/andraghetti" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              style={linkStyles}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = linkHoverStyles.color
+                e.currentTarget.style.textShadow = linkHoverStyles.textShadow
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'inherit'
+                e.currentTarget.style.textShadow = 'none'
+              }}
+            >
+              Lorenzo Andraghetti
+            </Anchor>
+            <Text component="span" style={{ fontSize: isMobile ? '12px' : '13px', color: 'rgba(196, 168, 118, 0.6)', fontStyle: 'italic', marginLeft: '8px' }}>
+              Website Programmer
+            </Text>
+          </Text>
+          <Text style={{ fontWeight: 500, color: 'rgba(196, 168, 118, 0.9)', fontSize: isMobile ? '14px' : '15px' }}>
+            Luca Tampieri
+            <Text component="span" style={{ fontSize: isMobile ? '12px' : '13px', color: 'rgba(196, 168, 118, 0.6)', fontStyle: 'italic', marginLeft: '8px' }}>
+              3D Model Creation
+            </Text>
+          </Text>
+        </Box>
+        
+        {/* Footer Section */}
+        <Box
           style={{
-            marginBottom: '4px',
-            fontWeight: 500,
-            color: 'rgba(196, 168, 118, 0.8)',
-          }}
-        >
-          <Anchor 
-            href="https://github.com/andraghetti" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            style={linkStyles}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = linkHoverStyles.color
-              e.currentTarget.style.textShadow = linkHoverStyles.textShadow
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'inherit'
-              e.currentTarget.style.textShadow = 'none'
-            }}
-          >
-            Lorenzo Andraghetti
-          </Anchor>
-        </Text>
-        <Text 
-          style={{
-            marginBottom: '4px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: '6px',
+            borderTop: '1px solid rgba(139, 101, 65, 0.2)',
             color: 'rgba(196, 168, 118, 0.7)',
+            fontSize: isMobile ? '12px' : '13px',
           }}
         >
           <Anchor 
@@ -147,19 +167,7 @@ export function Legend({ hasInteracted = false }: LegendProps) {
           >
             Rasna Studios © 2025
           </Anchor>
-        </Text>
-        <Box
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            marginBottom: '4px',
-            marginTop: isMobile ? '6px' : '8px',
-            paddingTop: isMobile ? '4px' : '6px',
-            borderTop: '1px solid rgba(139, 101, 65, 0.2)',
-            color: 'rgba(196, 168, 118, 0.6)',
-          }}
-        >
+          
           <Anchor 
             href="https://github.com/rasnastudios/piacenza-liver" 
             target="_blank" 
@@ -168,7 +176,7 @@ export function Legend({ hasInteracted = false }: LegendProps) {
               ...linkStyles,
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '4px',
               opacity: 0.8,
             }}
             onMouseEnter={(e) => {
@@ -184,25 +192,34 @@ export function Legend({ hasInteracted = false }: LegendProps) {
           >
             Contribute
             <svg style={githubIconStyles} viewBox="0 0 24 24">
-              <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+              <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
             </svg>
           </Anchor>
         </Box>
       </Box>
-      {!isMobile && (
-        <Text
-          style={{
-            color: 'rgba(196, 168, 118, 0.5)',
-            fontSize: '11px',
-            fontStyle: 'italic',
-            marginTop: '8px',
-            borderTop: '1px solid rgba(139, 101, 65, 0.2)',
-            paddingTop: '8px',
-          }}
-        >
-          {getControlsText()}
-        </Text>
-      )}
+      
+      {/* Controls Section */}
+      <Box
+        style={{
+          borderTop: '1px solid rgba(139, 101, 65, 0.2)',
+          paddingTop: '8px',
+        }}
+      >
+        {(isMobile ? getMobileControlsText() : getControlsText()).map((control, index) => (
+          <Text
+            key={index}
+            style={{
+              color: 'rgba(196, 168, 118, 0.7)',
+              fontSize: isMobile ? '12px' : '13px',
+              fontStyle: 'bold',
+              display: 'block',
+              marginBottom: index === (isMobile ? getMobileControlsText() : getControlsText()).length - 1 ? 0 : '2px',
+            }}
+          >
+            {control}
+          </Text>
+        ))}
+      </Box>
     </Box>
   )
 } 

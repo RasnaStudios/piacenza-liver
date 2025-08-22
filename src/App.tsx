@@ -199,8 +199,8 @@ function PiacenzaLiverScene() {
     controls.enableDamping = true
     controls.dampingFactor = 0.05
     controls.maxPolarAngle = Math.PI * 0.8
-    controls.minDistance = 0.2
-    controls.maxDistance = 20
+    controls.minDistance = 2.5
+    controls.maxDistance = 10
     controls.target.copy(SceneConfig.camera.target)
     controlsRef.current = controls
     setupLighting(scene)
@@ -337,7 +337,7 @@ function PiacenzaLiverScene() {
           isModifierKeyPressed={isModifierKeyPressed}
         />
         
-        <Legend hasInteracted={hasInteracted} />
+        {!isLoading && <Legend hasInteracted={hasInteracted} />}
         
         {/* Loading Screen */}
         <LoadingScreen 
