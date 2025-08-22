@@ -12,9 +12,10 @@ export default defineConfig({
         enabled: true
       },
       workbox: {
-        // Precache typical static assets; model assets covered by includeAssets below
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,jpg,jpeg}'],
-        navigateFallback: '/index.html',
+        // Allow precaching large GLTF textures and assets
+        maximumFileSizeToCacheInBytes: 25 * 1024 * 1024,
+        // Do not precache app code (JS/CSS/HTML); only explicit includeAssets below
+        globPatterns: [],
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.origin === self.location.origin && url.pathname.startsWith('/liver-model-gltf/'),
@@ -29,7 +30,8 @@ export default defineConfig({
           }
         ]
       },
-      includeAssets: ['liver-model-gltf/**', 'icons/**'],
+      // Explicitly precache only the model assets
+      includeAssets: ['liver-model-gltf/**'],
       manifest: {
         name: 'Piacenza Liver',
         short_name: 'Liver3D',
@@ -52,6 +54,7 @@ export default defineConfig({
     }
   },
   build: {
+    chunkSizeWarningLimit: 1024,
     rollupOptions: {
       output: {
         manualChunks: {

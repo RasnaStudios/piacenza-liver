@@ -30,7 +30,7 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       // Remove from DOM after dissolve animation completes
       const timer = setTimeout(() => {
         setShouldRender(false)
-      }, 2000) // 2 second dissolve animation
+      }, 2800) // extended to 2.8s to avoid snapping
       
       return () => clearTimeout(timer)
     }
@@ -100,24 +100,27 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       @keyframes etruscanFloat {
         0% { 
           transform: translate(-50%, -50%) scale(1) rotate(0deg);
-          opacity: var(--max-opacity);
         }
         25% {
           transform: translate(calc(-50% + var(--move-x, 0px) * 0.25), calc(-50% + var(--move-y, 0px) * 0.25)) scale(1.1) rotate(90deg);
-          opacity: var(--max-opacity);
         }
         50% {
           transform: translate(calc(-50% + var(--move-x, 0px) * 0.5), calc(-50% + var(--move-y, 0px) * 0.5)) scale(1) rotate(180deg);
-          opacity: var(--max-opacity);
         }
         75% {
           transform: translate(calc(-50% + var(--move-x, 0px) * 0.75), calc(-50% + var(--move-y, 0px) * 0.75)) scale(1.1) rotate(270deg);
-          opacity: var(--max-opacity);
         }
         100% { 
           transform: translate(calc(-50% + var(--move-x, 0px)), calc(-50% + var(--move-y, 0px))) scale(1) rotate(360deg);
-          opacity: var(--max-opacity);
         }
+      }
+
+      /* Calmer firefly-like opacity pulsing (subtle amplitude) */
+      @keyframes fireflyPulse {
+        0%   { opacity: 0.72; }
+        35%  { opacity: 0.88; }
+        70%  { opacity: 0.75; }
+        100% { opacity: 0.86; }
       }
       
       @keyframes shimmer {
@@ -133,16 +136,19 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       
       @keyframes dissolveParticle {
         0% { 
-          opacity: var(--max-opacity);
+          /* keep current computed opacity */
           transform: translate(-50%, -50%) scale(1);
+          filter: blur(0px);
         }
         70% {
-          opacity: var(--max-opacity);
-          transform: translate(-50%, -50%) scale(1.2);
+          opacity: 0.5;
+          transform: translate(calc(-50% + var(--move-x, 0px) * 0.1), calc(-50% + var(--move-y, 0px) * 0.1)) scale(1.02);
+          filter: blur(1px);
         }
         100% { 
           opacity: 0;
-          transform: translate(-50%, -50%) scale(0.3);
+          transform: translate(calc(-50% + var(--move-x, 0px) * 0.15), calc(-50% + var(--move-y, 0px) * 0.15)) translateY(8px) scale(0.92);
+          filter: blur(2px);
         }
       }
     `
@@ -165,9 +171,19 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
     background: 'black',
     zIndex: 5,
     opacity: isDissolving ? 0 : 1,
-    transition: 'opacity 2s ease-out',
+    transition: 'opacity 2.8s cubic-bezier(0.22, 0.61, 0.36, 1)',
     overflow: 'hidden',
     pointerEvents: isDissolving ? 'none' as const : 'auto' as const,
+    willChange: 'opacity',
+    // Edge gradient mask to make the disappearance feel more natural
+    WebkitMaskImage: isDissolving 
+      ? 'radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)' 
+      : undefined,
+    maskImage: isDissolving 
+      ? 'radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)' 
+      : undefined,
+    WebkitMaskSize: isDissolving ? '100% 100%' : undefined,
+    maskSize: isDissolving ? '100% 100%' : undefined,
   }
 
 
@@ -189,6 +205,10 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
     const scaledSize = particle.size * (0.6 + distanceMultiplier * 2.2)
     const finalOpacity = Math.min(particle.opacity, distanceMultiplier * 0.35)
     const glowIntensity = distanceMultiplier * 8
+    // Deterministic pseudo-random based on id for stable pulse per particle
+    const seed = ((particle.id * 9301 + 49297) % 233280) / 233280
+    const pulseDuration = 3.8 + (seed * 3.4) // 3.8s - 7.2s
+    const pulseDelay = (seed * 3.5) // 0 - 3.5s
     
     return {
       position: 'absolute' as const,
@@ -199,8 +219,9 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       color: `rgba(212, 175, 55, ${Math.max(0.08, Math.min(finalOpacity, 0.28))})`,
       textShadow: `0 0 ${Math.max(1, glowIntensity * 0.6)}px rgba(212, 175, 55, 0.22)`,
       animation: isDissolving 
-        ? `dissolveParticle ${1.5 + Math.random() * 0.8}s ease-out forwards`
-        : `etruscanFloat ${particle.duration}s ease-in-out infinite`,
+        ? `dissolveParticle ${1.5 + Math.random() * 0.8}s cubic-bezier(0.22, 0.61, 0.36, 1) forwards`
+        : `etruscanFloat ${particle.duration}s ease-in-out infinite, fireflyPulse ${pulseDuration}s ease-in-out ${pulseDelay}s infinite`,
+      animationTimingFunction: undefined,
       animationDelay: isDissolving 
         ? `${Math.random() * 0.5}s`
         : `${particle.animationDelay}s`,
@@ -212,6 +233,7 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       '--max-opacity': finalOpacity,
       '--move-x': `${particle.vx * 200}px`,
       '--move-y': `${particle.vy * 200}px`,
+      willChange: 'opacity, transform',
     } as React.CSSProperties
   }
 
@@ -275,6 +297,7 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
     fontFamily: 'Cinzel, Times New Roman, serif',
     textAlign: 'center' as const,
     width: '100%',
+    transition: 'opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), filter 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), transform 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)',
   }
 
   const loadingTextStyles = {
@@ -286,7 +309,13 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
     letterSpacing: '1px',
     fontFamily: 'Cormorant Garamond, serif',
     animation: 'fadeInOut 3s ease-in-out infinite',
+    transition: 'opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), filter 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), transform 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)',
   }
+
+  // Shared dissolve styles for text elements
+  const dissolveText = isDissolving 
+    ? { opacity: 0, filter: 'blur(1.2px)', transform: 'translateY(6px)' } as React.CSSProperties
+    : {} as React.CSSProperties
 
   return (
     <div style={containerStyles}>
@@ -298,21 +327,18 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
           {particle.char}
         </div>
       ))}
-      
-
-      
       <div style={contentStyles}>
         <p style={subtitleStyles}>Ancient Etruscan Divination</p>
         
         <div style={progressContainerStyles}>
-          <div style={progressBarStyles}>
-            <div style={progressFillStyles} />
-          </div>
-          <div style={percentageStyles}>{Math.round(progress)}%</div>
+          <div style={{ ...progressBarStyles, transition: 'opacity 1.2s ease', opacity: isDissolving ? 0 : 1 }}>
+          <div style={{ ...progressFillStyles, transition: 'opacity 1.2s ease', opacity: isDissolving ? 0 : 1 }} />
+        </div>
+          <div style={{ ...percentageStyles, ...dissolveText }}>{Math.round(progress)}%</div>
         </div>
         
-        <div style={loadingTextStyles}>{loadingText}</div>
+        <div style={{ ...loadingTextStyles, ...dissolveText }}>{loadingText}</div>
       </div>
     </div>
   )
-} 
+}

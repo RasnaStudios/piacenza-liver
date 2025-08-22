@@ -33,12 +33,13 @@ export class LiverModel {
       this.reportProgress(0)
     }
     this.loadingManager.onProgress = (_url, itemsLoaded, itemsTotal) => {
-      const percent = itemsTotal > 0 ? Math.floor((itemsLoaded / itemsTotal) * 10) : 0
+      // Unified progress across ALL resources (gltf, bin, textures, segmentation)
+      const percent = itemsTotal > 0 ? Math.min(95, Math.round((itemsLoaded / itemsTotal) * 95)) : 0
       this.reportProgress(percent)
     }
     this.loadingManager.onLoad = () => {
-      // Only nudge if we haven't advanced beyond bootstrap range
-      if (this.lastProgress < 12) this.reportProgress(12)
+      // Manager finished loading all tracked resources
+      if (this.lastProgress < 95) this.reportProgress(95)
     }
     
     if (!this.checkWebGLSupport()) {
@@ -76,26 +77,14 @@ export class LiverModel {
 
       // Load glTF model with PBR materials
       const gltfLoader = new GLTFLoader(this.loadingManager)
-      // Use explicit load to capture xhr progress (download-level granularity)
-      let fallbackProgress = Math.max(12, this.lastProgress)
-      const gltf = await new Promise<import('three/examples/jsm/loaders/GLTFLoader.js').GLTF>((resolve, reject) => {
-        gltfLoader.load(
-          '/liver-model-gltf/Fegato_Text.glb',
-          (g) => resolve(g),
-          (xhr) => {
-            if (xhr.lengthComputable) {
-              // Map real download to 10–90%
-              const pct = 10 + Math.min(80, Math.floor((xhr.loaded / xhr.total) * 80))
-              this.reportProgress(pct)
-            } else {
-              // Unknown total: slowly ramp 12–30% to show activity without overpromising
-              fallbackProgress = Math.min(30, fallbackProgress + 1)
-              this.reportProgress(fallbackProgress)
-            }
-          },
-          (err) => reject(err)
-        )
-      })
+      // Ensure external textures (when using .gltf) resolve from this folder
+      gltfLoader.setResourcePath('/liver-model-gltf/')
+
+      // Load using the shared LoadingManager so all subresources contribute to progress
+      const loadWithProgress = (url: string) => gltfLoader.loadAsync(url)
+
+      // Load .gltf (JSON + bin + external textures)
+      const gltf = await loadWithProgress('/liver-model-gltf/Fegato_Text.gltf')
       const object = gltf.scene
 
       object.traverse((child) => {

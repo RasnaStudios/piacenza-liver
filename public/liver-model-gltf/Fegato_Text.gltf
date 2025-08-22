@@ -1,0 +1,198 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 75420,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 49425,
+      "max": [
+        2.48584890365601,
+        1.28738296031952,
+        1.05000805854797
+      ],
+      "min": [
+        -2.25227665901184,
+        -1.67322599887848,
+        -0.502947926521301
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 49425,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 49425,
+      "type": "VEC4"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5126,
+      "count": 49425,
+      "type": "VEC2"
+    }
+  ],
+  "asset": {
+    "generator": "Adobe Substance 3D Painter 9.0.1",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 301680,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 593100,
+      "byteOffset": 301680,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 593100,
+      "byteOffset": 894780,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 790800,
+      "byteOffset": 1487880,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 395400,
+      "byteOffset": 2278680,
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 2674080,
+      "uri": "Fegato_Text.bin"
+    }
+  ],
+  "images": [
+    {
+      "uri": "Fegato_baseColor.png"
+    },
+    {
+      "uri": "Fegato_occlusionRoughnessMetallic.png"
+    },
+    {
+      "uri": "Fegato_normal.png"
+    },
+    {
+      "uri": "Fegato_emissive.png"
+    }
+  ],
+  "materials": [
+    {
+      "alphaMode": "OPAQUE",
+      "emissiveFactor": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "emissiveTexture": {
+        "index": 3
+      },
+      "name": "Fegato",
+      "normalTexture": {
+        "index": 2
+      },
+      "occlusionTexture": {
+        "index": 1
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0
+        },
+        "metallicRoughnessTexture": {
+          "index": 1
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Fegato_UV:polySurface2",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 2,
+            "POSITION": 1,
+            "TANGENT": 3,
+            "TEXCOORD_0": 4
+          },
+          "indices": 0,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "name": "Fegato_UV_2.obj"
+    },
+    {
+      "children": [
+        2
+      ],
+      "name": "Fegato_UV:polySurface2"
+    },
+    {
+      "mesh": 0,
+      "name": "Fegato_UV:polySurface2"
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9985,
+      "wrapS": 10497,
+      "wrapT": 10497
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    },
+    {
+      "sampler": 0,
+      "source": 3
+    }
+  ]
+}
