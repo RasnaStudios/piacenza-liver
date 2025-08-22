@@ -35,6 +35,10 @@ export class InteractionManager {
   private isShiftPressed = false
   private lastMousePosition = { x: 0, y: 0 }
   
+  // Touch state
+  private touchStartPosition: { x: number, y: number } | null = null
+  private touchMovedDuringTouch = false
+  
   private boundHandleMouseMove: (event: MouseEvent) => void
   private boundHandleClick: (event: MouseEvent) => void
   private boundHandleMouseDown: (event: MouseEvent) => void
@@ -43,6 +47,9 @@ export class InteractionManager {
   private boundHandleKeyUp: (event: KeyboardEvent) => void
   private boundHandleControlsStart: () => void
   private boundHandleControlsEnd: () => void
+  private boundHandleTouchStart: (event: TouchEvent) => void
+  private boundHandleTouchMove: (event: TouchEvent) => void
+  private boundHandleTouchEnd: (event: TouchEvent) => void
 
   constructor(
     renderer: THREE.WebGLRenderer,
@@ -67,6 +74,9 @@ export class InteractionManager {
     this.boundHandleKeyUp = this.handleKeyUp.bind(this)
     this.boundHandleControlsStart = this.handleControlsStart.bind(this)
     this.boundHandleControlsEnd = this.handleControlsEnd.bind(this)
+    this.boundHandleTouchStart = this.handleTouchStart.bind(this)
+    this.boundHandleTouchMove = this.handleTouchMove.bind(this)
+    this.boundHandleTouchEnd = this.handleTouchEnd.bind(this)
     
     this.setupEventListeners()
   }
@@ -76,6 +86,11 @@ export class InteractionManager {
     this.renderer.domElement.addEventListener('click', this.boundHandleClick)
     this.renderer.domElement.addEventListener('mousedown', this.boundHandleMouseDown)
     this.renderer.domElement.addEventListener('mouseup', this.boundHandleMouseUp)
+    
+    // Touch events for mobile
+    this.renderer.domElement.addEventListener('touchstart', this.boundHandleTouchStart, { passive: false })
+    this.renderer.domElement.addEventListener('touchmove', this.boundHandleTouchMove, { passive: false })
+    this.renderer.domElement.addEventListener('touchend', this.boundHandleTouchEnd, { passive: false })
     
     // Keyboard events for Shift detection
     window.addEventListener('keydown', this.boundHandleKeyDown)
@@ -228,10 +243,59 @@ export class InteractionManager {
     this.mouseDownPosition = null
     this.mouseMovedDuringClick = false
     
+    this.processClick(event.clientX, event.clientY)
+  }
+
+  private handleTouchStart(event: TouchEvent) {
+    if (event.touches.length === 1) {
+      const touch = event.touches[0]
+      this.touchStartPosition = { x: touch.clientX, y: touch.clientY }
+      this.touchMovedDuringTouch = false
+    }
+  }
+
+  private handleTouchMove(event: TouchEvent) {
+    if (this.touchStartPosition && event.touches.length === 1) {
+      const touch = event.touches[0]
+      const deltaX = Math.abs(touch.clientX - this.touchStartPosition.x)
+      const deltaY = Math.abs(touch.clientY - this.touchStartPosition.y)
+      const moveThreshold = 10 // Slightly higher threshold for touch
+      
+      if (deltaX > moveThreshold || deltaY > moveThreshold) {
+        this.touchMovedDuringTouch = true
+      }
+    }
+  }
+
+  private handleTouchEnd(event: TouchEvent) {
+    if (this.isPanningOrRotating) {
+      this.touchStartPosition = null
+      this.touchMovedDuringTouch = false
+      return
+    }
+    
+    if (this.touchMovedDuringTouch || !this.touchStartPosition) {
+      this.touchStartPosition = null
+      this.touchMovedDuringTouch = false
+      return
+    }
+    
+    // Use the touch start position for more accurate raycasting
+    const touch = this.touchStartPosition
+    this.touchStartPosition = null
+    this.touchMovedDuringTouch = false
+    
+    // Prevent default to avoid mouse events
+    event.preventDefault()
+    
+    this.processClick(touch.x, touch.y)
+  }
+
+  private processClick(clientX: number, clientY: number) {
     const rect = this.renderer.domElement.getBoundingClientRect()
     const mouse = new THREE.Vector2()
-    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1
-    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1
+    mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1
+    mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1
     
     const raycaster = new THREE.Raycaster()
     raycaster.setFromCamera(mouse, this.camera)
@@ -286,6 +350,10 @@ export class InteractionManager {
     this.renderer.domElement.removeEventListener('click', this.boundHandleClick)
     this.renderer.domElement.removeEventListener('mousedown', this.boundHandleMouseDown)
     this.renderer.domElement.removeEventListener('mouseup', this.boundHandleMouseUp)
+    
+    this.renderer.domElement.removeEventListener('touchstart', this.boundHandleTouchStart)
+    this.renderer.domElement.removeEventListener('touchmove', this.boundHandleTouchMove)
+    this.renderer.domElement.removeEventListener('touchend', this.boundHandleTouchEnd)
     
     window.removeEventListener('keydown', this.boundHandleKeyDown)
     window.removeEventListener('keyup', this.boundHandleKeyUp)
