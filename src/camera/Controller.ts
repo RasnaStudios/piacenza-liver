@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { gsap } from 'gsap'
+import { isMobile } from 'react-device-detect'
 import { SceneConfig } from '../config/SceneConfig'
 
 export class CameraController {
@@ -87,9 +88,7 @@ export class CameraController {
   // Handle when user starts manual control (interrupt animations)
   handleControlsStart() {
     if (this.isAnimating) {
-      // User started manual control during animation - stop it immediately
       this.stopAnimation()
-      console.log('Animation interrupted by user interaction')
     }
   }
 
@@ -149,7 +148,6 @@ export class CameraController {
 
     // Mobile-only: true screen-space pan LEFT (translate camera AND target together, no orbit)
     try {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       if (isMobile) {
         const persp = this.camera as any
         if (persp && (persp.isPerspectiveCamera === true)) {
@@ -242,21 +240,90 @@ export class CameraController {
     return 'camera-focus-gsap'
   }
 
-  // Reset to default position
-  resetToDefault(duration = 1000) {
-    // Stop any existing animation first
+  // Intro camera animation
+  playIntroAnimation(onComplete?: () => void) {
+    this.stopAnimation()
+    
+    const startPos = SceneConfig.camera.initial
+    const startTarget = SceneConfig.camera.target
+    const endPos = startPos.clone().add(SceneConfig.animation.camera.positionOffset)
+    const endTarget = startTarget.clone().add(SceneConfig.animation.camera.targetOffset)
+    const duration = SceneConfig.animation.camera.duration
+    
+    this.isAnimating = true
+    const tween = gsap.to({ t: 0 }, {
+      t: 1,
+      duration: duration / 1000,
+      ease: 'power2.inOut',
+      onUpdate: () => {
+        if (this.currentTween !== tween || !this.isAnimating) return
+        const t = (tween as any).targets()[0].t as number
+        
+        const tempCameraPos = new THREE.Vector3().lerpVectors(startPos, endPos, t)
+        const tempTargetPos = new THREE.Vector3().lerpVectors(startTarget, endTarget, t)
+        
+        this.camera.position.copy(tempCameraPos)
+        this.controls.target.copy(tempTargetPos)
+        this.controls.update()
+      },
+      onComplete: () => {
+        if (this.currentTween !== tween) return
+        this.isAnimating = false
+        this.currentTween = null
+        this.lastManualPosition.copy(endPos)
+        this.lastManualTarget.copy(endTarget)
+        if (onComplete) onComplete()
+      }
+    })
+    this.currentTween = tween
+    this.currentAnimationId = 'camera-intro-gsap'
+    return 'camera-intro-gsap'
+  }
+  
+  // Reset camera and model to default positions
+  resetToDefault(liverModel: any, duration = 1000, onComplete?: () => void) {
     this.stopAnimation()
 
     const startPosition = this.camera.position.clone()
     const startTarget = this.controls.target.clone()
 
-    // Reset to intro end position using config
     const endPosition = SceneConfig.camera.initial.clone().add(SceneConfig.animation.camera.positionOffset)
     const endTarget = SceneConfig.camera.target.clone().add(SceneConfig.animation.camera.targetOffset)
 
-    // Update manual position to default
     this.lastManualPosition.copy(endPosition)
     this.lastManualTarget.copy(endTarget)
+
+    let modelAnimation: ((t: number) => void) | null = null
+    
+    if (liverModel) {
+      const liverObject = liverModel.getObject()
+      if (liverObject) {
+        const startModelPosition = {
+          x: liverObject.position.x,
+          y: liverObject.position.y,
+          z: liverObject.position.z
+        }
+        const startModelRotation = {
+          x: liverObject.rotation.x,
+          y: liverObject.rotation.y, 
+          z: liverObject.rotation.z
+        }
+        const endModelPosition = SceneConfig.model.position
+        const endModelRotation = SceneConfig.model.rotation
+        
+        modelAnimation = (t: number) => {
+          if (liverObject) {
+            liverObject.position.x = startModelPosition.x + (endModelPosition.x - startModelPosition.x) * t
+            liverObject.position.y = startModelPosition.y + (endModelPosition.y - startModelPosition.y) * t
+            liverObject.position.z = startModelPosition.z + (endModelPosition.z - startModelPosition.z) * t
+            
+            liverObject.rotation.x = startModelRotation.x + (endModelRotation.x - startModelRotation.x) * t
+            liverObject.rotation.y = startModelRotation.y + (endModelRotation.y - startModelRotation.y) * t
+            liverObject.rotation.z = startModelRotation.z + (endModelRotation.z - startModelRotation.z) * t
+          }
+        }
+      }
+    }
 
     this.isAnimating = true
     const tween = gsap.to({ t: 0 }, {
@@ -266,6 +333,7 @@ export class CameraController {
       onUpdate: () => {
         if (this.currentTween !== tween || !this.isAnimating) return
         const t = (tween as any).targets()[0].t as number
+        
         const tempCameraPos = new THREE.Vector3().lerpVectors(startPosition, endPosition, t)
         const tempTargetPos = new THREE.Vector3().lerpVectors(startTarget, endTarget, t)
         this.camera.position.copy(tempCameraPos)
@@ -273,11 +341,16 @@ export class CameraController {
         this.camera.up.set(0, 1, 0)
         this.camera.lookAt(tempTargetPos)
         this.controls.update()
+        
+        if (modelAnimation) {
+          modelAnimation(t)
+        }
       },
       onComplete: () => {
         if (this.currentTween !== tween) return
         this.isAnimating = false
         this.currentTween = null
+        if (onComplete) onComplete()
       }
     })
     this.currentTween = tween
@@ -305,8 +378,18 @@ export class CameraController {
     // Ensure controls are properly updated after stopping
     this.controls.update()
   }
+  
+  // Get current animation ID for external checks
+  getCurrentAnimationId(): string | null {
+    return this.currentAnimationId
+  }
 
 
+  // Check if currently animating
+  isCurrentlyAnimating(): boolean {
+    return this.isAnimating
+  }
+  
   // Cleanup
   dispose() {
     this.controls.removeEventListener('change', this.handleControlsChange)

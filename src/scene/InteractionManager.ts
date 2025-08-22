@@ -14,8 +14,10 @@ export interface InteractionCallbacks {
   }) => void
   onBackgroundClick: () => void
   onMarkerHover: (section: any) => void
-  onInteractionStart: () => void
-  onInteractionEnd: () => void
+  onZoomDetected: () => void
+  onMouseMove: (position: { x: number; y: number }) => void
+  onModifierKeyChange: (isPressed: boolean) => void
+  onReset: () => void
 }
 
 export class InteractionManager {
@@ -25,6 +27,7 @@ export class InteractionManager {
   private liverModel: any
   private liverInscriptions: any[]
   private callbacks: InteractionCallbacks
+  private cameraController: any
   
   private isPanningOrRotating = false
   private mouseDownPosition: { x: number, y: number } | null = null
@@ -33,11 +36,18 @@ export class InteractionManager {
   // Model rotation state
   private isRotatingModel = false
   private isShiftPressed = false
+  private isMetaPressed = false
   private lastMousePosition = { x: 0, y: 0 }
   
   // Touch state
   private touchStartPosition: { x: number, y: number } | null = null
   private touchMovedDuringTouch = false
+  private lastTapTime = 0
+  
+  // Zoom detection
+  private initialCameraDistance: number | null = null
+  private hasZoomed = false
+  private isIntroAnimation = false
   
   private boundHandleMouseMove: (event: MouseEvent) => void
   private boundHandleClick: (event: MouseEvent) => void
@@ -50,6 +60,7 @@ export class InteractionManager {
   private boundHandleTouchStart: (event: TouchEvent) => void
   private boundHandleTouchMove: (event: TouchEvent) => void
   private boundHandleTouchEnd: (event: TouchEvent) => void
+  private boundHandleDoubleClick: (event: MouseEvent) => void
 
   constructor(
     renderer: THREE.WebGLRenderer,
@@ -57,7 +68,8 @@ export class InteractionManager {
     controls: OrbitControls,
     liverModel: any,
     liverInscriptions: any[],
-    callbacks: InteractionCallbacks
+    callbacks: InteractionCallbacks,
+    cameraController: any
   ) {
     this.renderer = renderer
     this.camera = camera
@@ -65,6 +77,7 @@ export class InteractionManager {
     this.liverModel = liverModel
     this.liverInscriptions = liverInscriptions
     this.callbacks = callbacks
+    this.cameraController = cameraController
     
     this.boundHandleMouseMove = this.handleMouseMove.bind(this)
     this.boundHandleClick = this.handleClick.bind(this)
@@ -77,6 +90,7 @@ export class InteractionManager {
     this.boundHandleTouchStart = this.handleTouchStart.bind(this)
     this.boundHandleTouchMove = this.handleTouchMove.bind(this)
     this.boundHandleTouchEnd = this.handleTouchEnd.bind(this)
+    this.boundHandleDoubleClick = this.handleDoubleClick.bind(this)
     
     this.setupEventListeners()
   }
@@ -86,11 +100,15 @@ export class InteractionManager {
     this.renderer.domElement.addEventListener('click', this.boundHandleClick)
     this.renderer.domElement.addEventListener('mousedown', this.boundHandleMouseDown)
     this.renderer.domElement.addEventListener('mouseup', this.boundHandleMouseUp)
+    this.renderer.domElement.addEventListener('dblclick', this.boundHandleDoubleClick)
     
     // Touch events for mobile
     this.renderer.domElement.addEventListener('touchstart', this.boundHandleTouchStart, { passive: false })
     this.renderer.domElement.addEventListener('touchmove', this.boundHandleTouchMove, { passive: false })
     this.renderer.domElement.addEventListener('touchend', this.boundHandleTouchEnd, { passive: false })
+    
+    // Mouse and wheel events
+    this.renderer.domElement.addEventListener('wheel', this.handleWheel.bind(this), { passive: true })
     
     // Keyboard events for Shift detection
     window.addEventListener('keydown', this.boundHandleKeyDown)
@@ -123,26 +141,48 @@ export class InteractionManager {
   }
   
   private handleKeyDown(event: KeyboardEvent) {
+    let modifierChanged = false
+    
     if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
       this.isShiftPressed = true
+      modifierChanged = true
+    }
+    if (event.metaKey) {
+      this.isMetaPressed = true
+      modifierChanged = true
+    }
+    
+    if (modifierChanged) {
+      this.callbacks.onModifierKeyChange(this.isShiftPressed || this.isMetaPressed)
     }
   }
   
   private handleKeyUp(event: KeyboardEvent) {
+    let modifierChanged = false
+    
     if (event.code === 'ShiftLeft' || event.code === 'ShiftRight') {
       this.isShiftPressed = false
+      modifierChanged = true
       if (this.isRotatingModel) {
         this.isRotatingModel = false
         this.controls.enabled = true
       }
     }
+    if (!event.metaKey) {
+      this.isMetaPressed = false
+      modifierChanged = true
+    }
+    
+    if (modifierChanged) {
+      this.callbacks.onModifierKeyChange(this.isShiftPressed || this.isMetaPressed)
+    }
   }
-
-  // Removed 'R' logging; click will provide camera data to callback
-  
 
 
   private handleMouseMove(event: MouseEvent) {
+    // Update mouse position for callbacks
+    this.callbacks.onMouseMove({ x: event.clientX, y: event.clientY })
+    
     // Handle model rotation when Shift+drag is active
     if (this.isRotatingModel && this.isShiftPressed) {
       const deltaX = event.clientX - this.lastMousePosition.x
@@ -221,12 +261,35 @@ export class InteractionManager {
 
   private handleControlsStart() {
     this.isPanningOrRotating = true
-    this.callbacks.onInteractionStart()
   }
 
   private handleControlsEnd() {
     this.isPanningOrRotating = false
-    this.callbacks.onInteractionEnd()
+    this.checkForZoom()
+  }
+  
+  private handleWheel(_event: WheelEvent) {
+    this.checkForZoom()
+  }
+  
+  private checkForZoom() {
+    if (this.isIntroAnimation) return
+    
+    const camera = this.camera as THREE.PerspectiveCamera
+    if (!camera) return
+    
+    if (this.initialCameraDistance === null) {
+      this.initialCameraDistance = camera.position.length()
+      return
+    }
+    
+    const currentDistance = camera.position.length()
+    const initialDistance = this.initialCameraDistance
+    
+    if (currentDistance < initialDistance * 0.8 && !this.hasZoomed) {
+      this.hasZoomed = true
+      this.callbacks.onZoomDetected()
+    }
   }
 
   private handleClick(event: MouseEvent) {
@@ -280,6 +343,20 @@ export class InteractionManager {
       return
     }
     
+    // Check for double tap
+    const currentTime = new Date().getTime()
+    const tapLength = currentTime - this.lastTapTime
+    if (tapLength < 500 && tapLength > 0) {
+      // Double tap detected
+      event.preventDefault()
+      this.performReset()
+      this.touchStartPosition = null
+      this.touchMovedDuringTouch = false
+      this.lastTapTime = 0
+      return
+    }
+    this.lastTapTime = currentTime
+    
     // Use the touch start position for more accurate raycasting
     const touch = this.touchStartPosition
     this.touchStartPosition = null
@@ -289,6 +366,11 @@ export class InteractionManager {
     event.preventDefault()
     
     this.processClick(touch.x, touch.y)
+  }
+
+  private handleDoubleClick(event: MouseEvent) {
+    event.preventDefault()
+    this.performReset()
   }
 
   private processClick(clientX: number, clientY: number) {
@@ -344,16 +426,41 @@ export class InteractionManager {
   public isCurrentlyPanningOrRotating(): boolean {
     return this.isPanningOrRotating
   }
+  
+  public setInitialCameraDistance(distance: number) {
+    this.initialCameraDistance = distance
+  }
+  
+  public setIntroAnimationMode(enabled: boolean) {
+    this.isIntroAnimation = enabled
+  }
+  
+  public getIsIntroAnimation(): boolean {
+    return this.isIntroAnimation
+  }
+  
+  public resetZoomState() {
+    this.hasZoomed = false
+    if (this.camera) {
+      this.initialCameraDistance = (this.camera as THREE.PerspectiveCamera).position.length()
+    }
+  }
+  
+  private performReset() {
+    this.callbacks.onReset()
+  }
 
   public dispose() {
     this.renderer.domElement.removeEventListener('mousemove', this.boundHandleMouseMove)
     this.renderer.domElement.removeEventListener('click', this.boundHandleClick)
     this.renderer.domElement.removeEventListener('mousedown', this.boundHandleMouseDown)
     this.renderer.domElement.removeEventListener('mouseup', this.boundHandleMouseUp)
+    this.renderer.domElement.removeEventListener('dblclick', this.boundHandleDoubleClick)
     
     this.renderer.domElement.removeEventListener('touchstart', this.boundHandleTouchStart)
     this.renderer.domElement.removeEventListener('touchmove', this.boundHandleTouchMove)
     this.renderer.domElement.removeEventListener('touchend', this.boundHandleTouchEnd)
+    this.renderer.domElement.removeEventListener('wheel', this.handleWheel.bind(this))
     
     window.removeEventListener('keydown', this.boundHandleKeyDown)
     window.removeEventListener('keyup', this.boundHandleKeyUp)

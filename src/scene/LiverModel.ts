@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-
-import { type LiverShaderUniforms } from '../shaders/LiverInscriptionShader'
+import { isMobile } from 'react-device-detect'
+import { LiverShaderUniforms } from '../shaders/LiverInscriptionShader'
 import { SceneConfig } from '../config/SceneConfig'
 
 export class LiverModel {
@@ -69,8 +69,6 @@ export class LiverModel {
 
   async loadLiverModel() {
     try {
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-      
       // Load segmentation map for interactions
       const segmentationTexture = await this.loadSegmentationMap()
       this.maskTexture = segmentationTexture
@@ -357,8 +355,6 @@ export class LiverModel {
   private loadSegmentationMap(): Promise<THREE.Texture> {
     return new Promise((resolve, reject) => {
       const textureLoader = new THREE.TextureLoader(this.loadingManager)
-      
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       
       if (isMobile) {
         textureLoader.setCrossOrigin('anonymous')

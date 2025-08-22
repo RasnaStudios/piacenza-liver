@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { isMobile } from 'react-device-detect'
 
 // Data
 import { liverInscriptions } from './scene/LiverData'
@@ -50,42 +51,34 @@ function PiacenzaLiverScene() {
   // Animation frame ref
   const animationIdRef = useRef<number | null>(null)
   
-  // Title hiding timeout
-  const titleTimeoutRef = useRef<number | null>(null)
-  
-  // Zoom detection refs
-  const initialCameraDistance = useRef<number | null>(null)
-  const hasZoomedRef = useRef(false)
-  const isIntroAnimationRef = useRef(false) // Flag to disable zoom detection during intro
 
-  // Keyboard event handlers for modifier keys
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.metaKey || event.shiftKey) {
-        setIsModifierKeyPressed(true)
-      }
-    }
-
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (!event.metaKey && !event.shiftKey) {
-        setIsModifierKeyPressed(false)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-    window.addEventListener('keyup', handleKeyUp)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-      window.removeEventListener('keyup', handleKeyUp)
-    }
-  }, [])
 
   // Optimized callback handlers
   const handleMarkerHover = useCallback((section: any) => {
     setHoveredSection(section)
     if (liverModelRef.current && section?.id) {
       liverModelRef.current.setHoveredInscription(section.id)
+    }
+  }, [])
+
+  const handleReset = useCallback(() => {
+    if (!cameraControllerRef.current) return
+    
+    if (interactionManagerRef.current) {
+      interactionManagerRef.current.setIntroAnimationMode(true)
+    }
+    
+    cameraControllerRef.current.resetToDefault(liverModelRef.current, 800, () => {
+      if (interactionManagerRef.current) {
+        interactionManagerRef.current.setIntroAnimationMode(false)
+      }
+    })
+    
+    setSelectedInscription(null)
+    setHasInteracted(false)
+    setIsInteracting(false)
+    if (interactionManagerRef.current) {
+      interactionManagerRef.current.resetZoomState()
     }
   }, [])
 
@@ -102,14 +95,10 @@ function PiacenzaLiverScene() {
     const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
     if (!inscription) return
     setHasInteracted(true)
-    hasZoomedRef.current = true
 
-    // Log copy-paste friendly camera data for saving
     console.log(`Inscription ${inscriptionId} clicked`)
     console.log(`Camera world position: [${cameraWorldPosition.x.toFixed(3)}, ${cameraWorldPosition.y.toFixed(3)}, ${cameraWorldPosition.z.toFixed(3)}], target: [${cameraWorldTarget.x.toFixed(3)}, ${cameraWorldTarget.y.toFixed(3)}, ${cameraWorldTarget.z.toFixed(3)}]`)
     console.log(`cameraPosition: new THREE.Vector3(${cameraLocalPosition.x.toFixed(3)}, ${cameraLocalPosition.y.toFixed(3)}, ${cameraLocalPosition.z.toFixed(3)}), cameraTarget: new THREE.Vector3(${cameraLocalTarget.x.toFixed(3)}, ${cameraLocalTarget.y.toFixed(3)}, ${cameraLocalTarget.z.toFixed(3)})`)
-
-    // Re-enable camera focus using stored poses
     const data = inscription as any
     if (cameraControllerRef.current && data.cameraPosition && data.cameraTarget) {
       cameraControllerRef.current.focusOnTransformed(
@@ -118,20 +107,16 @@ function PiacenzaLiverScene() {
         modelMatrix,
         1000
       )
-      // Wait for camera animation to complete before opening panel
       setTimeout(() => {
         setSelectedInscription(inscription)
       }, 1000)
     } else {
-      // No camera animation, open panel immediately
       setSelectedInscription(inscription)
     }
   }, [])
 
   const handleBackgroundClick = useCallback(() => {
     setSelectedInscription(null)
-    
-    // Clear hover effect
     if (liverModelRef.current) {
       liverModelRef.current.setHoveredInscription(0)
     }
@@ -140,66 +125,27 @@ function PiacenzaLiverScene() {
   const handlePanelClose = useCallback(() => {
     setSelectedInscription(null)
     
-    // Check if we're on mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    
-    // Use camera controller for smooth animation back to default (only on desktop)
     if (cameraControllerRef.current && !isMobile) {
       cameraControllerRef.current.resetToDefault(800)
     }
     
-    // Clear hover effect
     if (liverModelRef.current) {
       liverModelRef.current.setHoveredInscription(0)
     }
     
-    // Don't reset title visibility if user has already interacted
-    // Only reset interaction state, not the permanent interacted state
     setIsInteracting(false)
-    
-    // Keep hasInteracted and hasZoomedRef as they are
-    // This prevents title from reappearing when closing panels
   }, [])
 
-  // Handle camera interaction for title visibility
-  const handleInteractionStart = useCallback(() => {
-    setIsInteracting(true)
-    if (titleTimeoutRef.current) {
-      clearTimeout(titleTimeoutRef.current)
-    }
+  const handleZoomDetected = useCallback(() => {
+    setHasInteracted(true)
   }, [])
-
-  const handleInteractionEnd = useCallback(() => {
-    // Show title again after 2 seconds of no interaction
-    if (titleTimeoutRef.current) {
-      clearTimeout(titleTimeoutRef.current)
-    }
-    titleTimeoutRef.current = window.setTimeout(() => {
-      setIsInteracting(false)
-    }, 2000)
+  
+  const handleMouseMove = useCallback((position: { x: number; y: number }) => {
+    setMousePosition(position)
   }, [])
-
-  // Check for zoom and hide title if user zoomed in
-  const checkForZoom = useCallback((camera: THREE.PerspectiveCamera) => {
-    // Skip zoom detection during intro animation
-    if (isIntroAnimationRef.current) {
-      return
-    }
-
-    if (initialCameraDistance.current === null) {
-      // Store initial distance
-      initialCameraDistance.current = camera.position.length()
-      return
-    }
-
-    const currentDistance = camera.position.length()
-    const initialDistance = initialCameraDistance.current
-    
-    // If user has zoomed in significantly and hasn't already marked as zoomed
-    if (currentDistance < initialDistance * 0.8 && !hasZoomedRef.current) {
-      hasZoomedRef.current = true
-      setHasInteracted(true) // Hide title permanently only on zoom
-    }
+  
+  const handleModifierKeyChange = useCallback((isPressed: boolean) => {
+    setIsModifierKeyPressed(isPressed)
   }, [])
 
   // Update container class based on interaction state
@@ -226,22 +172,17 @@ function PiacenzaLiverScene() {
     const container = containerRef.current
     if (!container) return
 
-    // Scene setup
     const scene = new THREE.Scene()
     scene.background = new THREE.Color(0x000000)
     sceneRef.current = scene
-
-    // Camera setup
     const camera = new THREE.PerspectiveCamera(
       60, 
       container.clientWidth / container.clientHeight,
       0.1,
       1000
     )
-            camera.position.copy(SceneConfig.camera.initial)
+    camera.position.copy(SceneConfig.camera.initial)
     cameraRef.current = camera
-
-    // Renderer setup
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
       alpha: true,
@@ -254,55 +195,16 @@ function PiacenzaLiverScene() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
     container.appendChild(renderer.domElement)
     rendererRef.current = renderer
-
-    // Controls setup
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
     controls.dampingFactor = 0.05
     controls.maxPolarAngle = Math.PI * 0.8
-    // Allow very close zooming without arbitrary limits
     controls.minDistance = 0.2
     controls.maxDistance = 20
-    
-    // Set initial camera target (where camera looks at)
-            controls.target.copy(SceneConfig.camera.target)
-    
+    controls.target.copy(SceneConfig.camera.target)
     controlsRef.current = controls
-
-    // Add event listeners for pan/rotate detection
-    const handleControlsStart = () => {
-      // Stop any ongoing camera animation immediately when user starts interacting
-      if (cameraControllerRef.current) {
-        cameraControllerRef.current.stopAnimation()
-      }
-    }
-    
-    const handleControlsEnd = () => {
-      // Only check for zoom after controls end, don't hide title for general interaction
-      checkForZoom(camera)
-    }
-    
-    controls.addEventListener('start', handleControlsStart)
-    controls.addEventListener('end', handleControlsEnd)
-
-    // Store initial camera distance after setup
-    setTimeout(() => {
-      if (camera) {
-        initialCameraDistance.current = camera.position.length()
-      }
-    }, 100)
-
-    // Set up lighting
     setupLighting(scene)
 
-    // Mouse wheel handling for zoom detection (desktop only)
-    const handleWheel = (_event: WheelEvent) => {
-      checkForZoom(camera)
-    }
-    
-    renderer.domElement.addEventListener('wheel', handleWheel, { passive: true })
-
-    // Loading progress handler (readiness-driven UI will hide overlay)
     const handleLoadingProgress = (progress: number) => {
       setLoadingProgress(progress)
     }
@@ -320,54 +222,17 @@ function PiacenzaLiverScene() {
       setIsLoading(false)
     }
 
-    // Set up callback for when liver model is ready
     liverModelRef.current?.setOnModelReady(() => {
-      // Hide loader based on readiness
       setIsLoading(false)
-      // Start intro camera animation shortly after overlay fades out
       setTimeout(() => {
-        if (cameraRef.current && controlsRef.current) {
-          isIntroAnimationRef.current = true // Disable zoom detection during intro
-          
-          // Simple camera lerp animation using config (initial + offset)
-          const startPos = SceneConfig.camera.initial
-          const startTarget = SceneConfig.camera.target
-          const endPos = startPos.clone().add(SceneConfig.animation.camera.positionOffset)
-          const endTarget = startTarget.clone().add(SceneConfig.animation.camera.targetOffset)
-          const duration = SceneConfig.animation.camera.duration
-          const startTime = Date.now()
-          
-          const animateCamera = () => {
-            const elapsed = Date.now() - startTime
-            const progress = Math.min(elapsed / duration, 1)
-            
-            // Smooth step easing
-            const t = progress * progress * (3 - 2 * progress)
-            
-            if (cameraRef.current && controlsRef.current) {
-              // Animate camera position
-              cameraRef.current.position.x = startPos.x + (endPos.x - startPos.x) * t
-              cameraRef.current.position.y = startPos.y + (endPos.y - startPos.y) * t
-              cameraRef.current.position.z = startPos.z + (endPos.z - startPos.z) * t
-              
-              // Animate camera target (pan)
-              controlsRef.current.target.x = startTarget.x + (endTarget.x - startTarget.x) * t
-              controlsRef.current.target.y = startTarget.y + (endTarget.y - startTarget.y) * t
-              controlsRef.current.target.z = startTarget.z + (endTarget.z - startTarget.z) * t
-              
-              controlsRef.current.update()
-            }
-            
-            if (progress < 1) {
-              requestAnimationFrame(animateCamera)
-            } else {
-              isIntroAnimationRef.current = false // Re-enable zoom detection after intro
-            }
-          }
-          
-          requestAnimationFrame(animateCamera)
+        if (cameraControllerRef.current && interactionManagerRef.current) {
+          interactionManagerRef.current.setIntroAnimationMode(true)
+          cameraControllerRef.current.playIntroAnimation(() => {
+            interactionManagerRef.current!.setIntroAnimationMode(false)
+            interactionManagerRef.current!.setInitialCameraDistance(cameraRef.current!.position.length())
+          })
         }
-      }, 800) // Wait for loading screen fade
+      }, 800)
     })
 
     // Add WebGL context loss handling
@@ -387,90 +252,6 @@ function PiacenzaLiverScene() {
     renderer.domElement.addEventListener('webglcontextlost', handleContextLoss)
     renderer.domElement.addEventListener('webglcontextrestored', handleContextRestore)
 
-    // Mouse wheel handling for zoom detection
-    const handleMouseMove = (event: MouseEvent) => {
-      setMousePosition({ x: event.clientX, y: event.clientY })
-    }
-    
-    // Add event listeners
-    renderer.domElement.addEventListener('mousemove', handleMouseMove, { passive: true })
-
-    // Double-click handler for reset
-    const handleDoubleClick = (event: MouseEvent) => {
-      event.preventDefault()
-      
-      // Enable intro animation mode to prevent checkForZoom from hiding title
-      isIntroAnimationRef.current = true
-      
-      cameraController.resetToDefault(800)
-      
-      // Smoothly reset model POSITION AND ROTATION to default
-      if (liverModelRef.current) {
-        const liverObject = liverModelRef.current.getObject()
-        if (liverObject) {
-          const startPosition = {
-            x: liverObject.position.x,
-            y: liverObject.position.y,
-            z: liverObject.position.z
-          }
-          const startRotation = {
-            x: liverObject.rotation.x,
-            y: liverObject.rotation.y, 
-            z: liverObject.rotation.z
-          }
-          const endPosition = SceneConfig.model.position
-          const endRotation = SceneConfig.model.rotation
-          const duration = SceneConfig.reset.duration
-          const startTime = Date.now()
-          
-          const animateModel = () => {
-            const elapsed = Date.now() - startTime
-            const progress = Math.min(elapsed / duration, 1)
-            
-            // Smooth step easing
-            const t = progress * progress * (3 - 2 * progress)
-            
-            if (liverObject) {
-              // Animate POSITION
-              liverObject.position.x = startPosition.x + (endPosition.x - startPosition.x) * t
-              liverObject.position.y = startPosition.y + (endPosition.y - startPosition.y) * t
-              liverObject.position.z = startPosition.z + (endPosition.z - startPosition.z) * t
-              
-              // Animate ROTATION
-              liverObject.rotation.x = startRotation.x + (endRotation.x - startRotation.x) * t
-              liverObject.rotation.y = startRotation.y + (endRotation.y - startRotation.y) * t
-              liverObject.rotation.z = startRotation.z + (endRotation.z - startRotation.z) * t
-            }
-            
-            if (progress < 1) {
-              requestAnimationFrame(animateModel)
-            } else {
-              // Animation complete - re-enable zoom detection
-              isIntroAnimationRef.current = false
-            }
-          }
-          
-          animateModel()
-        } else {
-          // No model object - re-enable zoom detection immediately
-          isIntroAnimationRef.current = false
-        }
-      } else {
-        // No liver model - re-enable zoom detection immediately  
-        isIntroAnimationRef.current = false
-      }
-      
-      setSelectedInscription(null)
-      setHasInteracted(false)
-      setIsInteracting(false)
-      hasZoomedRef.current = false
-      if (camera) {
-        initialCameraDistance.current = camera.position.length()
-      }
-    }
-    renderer.domElement.addEventListener('dblclick', handleDoubleClick)
-
-    // Resize handler
     const handleResize = () => {
       const width = container.clientWidth
       const height = container.clientHeight
@@ -480,15 +261,10 @@ function PiacenzaLiverScene() {
     }
     window.addEventListener('resize', handleResize)
 
-    // Animation loop with shader updates
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate)
       controls.update()
       
-      // Check for zoom changes
-      checkForZoom(camera)
-
-      // Update shader uniforms with time
       if (liverModelRef.current) {
         liverModelRef.current.updateShaderUniforms(performance.now() * 0.001)
       }
@@ -497,7 +273,6 @@ function PiacenzaLiverScene() {
     }
     animate()
 
-    // Cleanup function
     return () => {
       if (animationIdRef.current) {
         cancelAnimationFrame(animationIdRef.current)
@@ -507,32 +282,22 @@ function PiacenzaLiverScene() {
       liverModelRef.current?.dispose()
       interactionManagerRef.current?.dispose()
 
-      // Remove event listeners
-      renderer.domElement.removeEventListener('mousemove', handleMouseMove)
-      renderer.domElement.removeEventListener('dblclick', handleDoubleClick)
-      renderer.domElement.removeEventListener('wheel', handleWheel)
-
       renderer.dispose()
       scene.clear()
 
       window.removeEventListener('resize', handleResize)
-      renderer.domElement.removeEventListener('wheel', handleWheel)
       
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement)
       }
     }
-  }, [handleMarkerHover, handleInscriptionClick, handleBackgroundClick, checkForZoom, handleInteractionStart, handleInteractionEnd])
-
-  // Initialize InteractionManager after 3D scene is set up
+  }, [handleMarkerHover, handleInscriptionClick, handleBackgroundClick])
   useEffect(() => {
     if (rendererRef.current && cameraRef.current && controlsRef.current && liverModelRef.current) {
-      // Dispose of existing interaction manager if it exists
       if (interactionManagerRef.current) {
         interactionManagerRef.current.dispose()
       }
 
-      // Create new interaction manager
       const interactionManager = new InteractionManager(
         rendererRef.current,
         cameraRef.current,
@@ -543,13 +308,16 @@ function PiacenzaLiverScene() {
           onInscriptionClick: handleInscriptionClick,
           onBackgroundClick: handleBackgroundClick,
           onMarkerHover: handleMarkerHover,
-          onInteractionStart: handleInteractionStart,
-          onInteractionEnd: handleInteractionEnd
-        }
+          onZoomDetected: handleZoomDetected,
+          onMouseMove: handleMouseMove,
+          onModifierKeyChange: handleModifierKeyChange,
+          onReset: handleReset
+        },
+        cameraControllerRef.current
       )
       interactionManagerRef.current = interactionManager
     }
-  }, [handleInscriptionClick, handleBackgroundClick, handleMarkerHover, handleInteractionStart, handleInteractionEnd])
+  }, [handleInscriptionClick, handleBackgroundClick, handleMarkerHover, handleZoomDetected, handleMouseMove, handleModifierKeyChange, handleReset])
 
   return (
     <div className="piacenza-liver-app">
