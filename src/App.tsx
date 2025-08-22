@@ -312,8 +312,7 @@ function PiacenzaLiverScene() {
           onMouseMove: handleMouseMove,
           onModifierKeyChange: handleModifierKeyChange,
           onReset: handleReset
-        },
-        cameraControllerRef.current
+        }
       )
       interactionManagerRef.current = interactionManager
     }

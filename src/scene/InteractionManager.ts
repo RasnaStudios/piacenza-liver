@@ -27,7 +27,6 @@ export class InteractionManager {
   private liverModel: any
   private liverInscriptions: any[]
   private callbacks: InteractionCallbacks
-  private cameraController: any
   
   private isPanningOrRotating = false
   private mouseDownPosition: { x: number, y: number } | null = null
@@ -68,8 +67,7 @@ export class InteractionManager {
     controls: OrbitControls,
     liverModel: any,
     liverInscriptions: any[],
-    callbacks: InteractionCallbacks,
-    cameraController: any
+    callbacks: InteractionCallbacks
   ) {
     this.renderer = renderer
     this.camera = camera
@@ -77,7 +75,6 @@ export class InteractionManager {
     this.liverModel = liverModel
     this.liverInscriptions = liverInscriptions
     this.callbacks = callbacks
-    this.cameraController = cameraController
     
     this.boundHandleMouseMove = this.handleMouseMove.bind(this)
     this.boundHandleClick = this.handleClick.bind(this)
