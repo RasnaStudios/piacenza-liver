@@ -108,7 +108,13 @@ function PiacenzaLiverScene() {
         modelMatrix,
         1000
       )
-      setSelectedInscription(inscription)
+      if (isMobile) {
+        setTimeout(() => {
+          setSelectedInscription(inscription)
+        }, 1000)
+      } else {
+        setSelectedInscription(inscription)
+      }
     } else {
       setSelectedInscription(inscription)
     }
@@ -129,7 +135,13 @@ function PiacenzaLiverScene() {
         800,
         () => {
           // Open panel after camera animation completes
-          setSelectedInscription(inscription)
+          if (isMobile) {
+            setTimeout(() => {
+              setSelectedInscription(inscription)
+            }, 1000)
+          } else {
+            setSelectedInscription(inscription)
+          }
         }
       )
     } else {
@@ -246,15 +258,17 @@ function PiacenzaLiverScene() {
 
     liverModelRef.current?.setOnModelReady(() => {
       setIsLoading(false)
-      setTimeout(() => {
-        if (cameraControllerRef.current && interactionManagerRef.current) {
-          interactionManagerRef.current.setIntroAnimationMode(true)
-          cameraControllerRef.current.playIntroAnimation(() => {
-            interactionManagerRef.current!.setIntroAnimationMode(false)
-            interactionManagerRef.current!.setInitialCameraDistance(cameraRef.current!.position.length())
-          })
-        }
-      }, 800)
+      if (!isMobile) {
+        setTimeout(() => {
+          if (cameraControllerRef.current && interactionManagerRef.current) {
+            interactionManagerRef.current.setIntroAnimationMode(true)
+            cameraControllerRef.current.playIntroAnimation(() => {
+              interactionManagerRef.current!.setIntroAnimationMode(false)
+              interactionManagerRef.current!.setInitialCameraDistance(cameraRef.current!.position.length())
+            })
+          }
+        }, 800)
+      }
     })
 
     // Add WebGL context loss handling
