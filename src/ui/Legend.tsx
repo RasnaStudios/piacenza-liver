@@ -16,6 +16,10 @@ export function Legend({ hasInteracted }: LegendProps) {
   const [platform, setPlatform] = useState('mac')
   const [isHovered, setIsHovered] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  // Mobile drag state
+  const [touchStartY, setTouchStartY] = useState<number | null>(null)
+  const [dragY, setDragY] = useState(0)
+  const [isDragging, setIsDragging] = useState(false)
 
   // Auto-open on first load if user hasn't interacted yet
   useEffect(() => {
@@ -92,11 +96,11 @@ export function Legend({ hasInteracted }: LegendProps) {
   const legendStyles = isMobile ? {
     // Mobile: full-width bottom panel
     position: 'absolute' as const,
-    bottom: (isOpen || isHovered) ? 0 : -300,
+    bottom: isOpen ? 0 : -300,
     left: '50%',
     transform: 'translateX(-50%)',
     width: '90vw',
-    maxWidth: '340px',
+    maxWidth: '460px',
     zIndex: 1,
     color: 'rgba(196, 168, 118, 0.6)',
     fontFamily: 'Georgia, serif',
@@ -109,7 +113,8 @@ export function Legend({ hasInteracted }: LegendProps) {
     backdropFilter: 'blur(8px)',
     border: '1px solid rgba(139, 101, 65, 0.4)',
     borderRadius: '8px 8px 0 0',
-    transition: 'bottom 0.3s ease-out',
+    transition: isDragging ? 'none' : 'bottom 0.3s ease-out, transform 0.2s ease-out, opacity 0.2s ease-out',
+    transformOrigin: 'bottom center',
     overflow: 'visible' as const,
   } : {
     // Desktop: bottom center panel
@@ -156,8 +161,8 @@ export function Legend({ hasInteracted }: LegendProps) {
       {/* Thumbnail Tab (panel slides over this) */}
       <Box 
         style={thumbnailStyles}
-        onClick={() => setIsOpen(true)}
-        onTouchStart={() => setIsOpen(true)}
+        onClick={() => setIsOpen((v) => !v)}
+        onTouchStart={() => setIsOpen((v) => !v)}
         onMouseEnter={(e) => {
           setIsHovered(true)
           e.currentTarget.style.background = 'rgba(0, 0, 0, 0.9)'
@@ -174,9 +179,51 @@ export function Legend({ hasInteracted }: LegendProps) {
       </Box>
 
       <Box 
-        style={legendStyles}
+        style={{
+          ...legendStyles,
+          // Apply drag transform only on mobile when dragging
+          transform: isMobile
+            ? `translate(-50%, ${isOpen ? dragY : 0}px)`
+            : 'translateX(-50%)',
+          opacity: isMobile && isOpen ? Math.max(0.6, 1 - dragY / 600) : undefined,
+        }}
         onMouseLeave={() => { if (!isOpen) setIsHovered(false) }}
+        onTouchStart={(e) => {
+          if (!isMobile) return
+          setIsDragging(true)
+          setTouchStartY(e.touches[0].clientY)
+          setDragY(0)
+        }}
+        onTouchMove={(e) => {
+          if (!isMobile || !isDragging || touchStartY === null) return
+          const currentY = e.touches[0].clientY
+          const dy = Math.max(0, currentY - touchStartY)
+          setDragY(dy)
+        }}
+        onTouchEnd={() => {
+          if (!isMobile) return
+          const threshold = 120
+          if (dragY > threshold) {
+            setIsOpen(false)
+            setIsHovered(false)
+          }
+          setIsDragging(false)
+          setTouchStartY(null)
+          setDragY(0)
+        }}
       >
+      {isMobile && (
+        <Box style={{
+          position: 'absolute',
+          top: 6,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: 36,
+          height: 4,
+          borderRadius: 2,
+          background: 'rgba(196, 168, 118, 0.35)'
+        }} />
+      )}
       <Box style={{ 
         display: isMobile ? 'flex' : 'grid',
         gridTemplateColumns: isMobile ? undefined : '1fr 1px minmax(160px, max-content)',
