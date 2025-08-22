@@ -282,6 +282,39 @@ export class LiverModel {
     animate()
   }
 
+  isModelVisible(): boolean {
+    if (!this.object || !this.mesh) return false
+    
+    // Check if object is in scene
+    if (!this.scene.children.includes(this.object)) return false
+    
+    // Check if mesh has geometry and material
+    if (!this.mesh.geometry || !this.mesh.material) return false
+    
+    // Check if material is ready
+    const material = this.mesh.material as THREE.MeshStandardMaterial
+    if (material.onBeforeCompile && !material.userData.shaderReady) return false
+    
+    return true
+  }
+
+  ensureModelVisible(): void {
+    if (!this.isModelVisible() && this.object) {
+      console.warn('Model not visible, attempting recovery...')
+      
+      // Re-add to scene if missing
+      if (!this.scene.children.includes(this.object)) {
+        this.scene.add(this.object)
+      }
+      
+      // Force material update
+      if (this.mesh && this.mesh.material) {
+        const material = this.mesh.material as THREE.MeshStandardMaterial
+        material.needsUpdate = true
+      }
+    }
+  }
+
   dispose() {
     if (this.shaderUniforms.diffuseTexture.value) {
       this.shaderUniforms.diffuseTexture.value.dispose()

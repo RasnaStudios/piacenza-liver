@@ -85,10 +85,6 @@ function PiacenzaLiverScene() {
     console.log(`Camera world position: [${cameraWorldPosition.x.toFixed(3)}, ${cameraWorldPosition.y.toFixed(3)}, ${cameraWorldPosition.z.toFixed(3)}], target: [${cameraWorldTarget.x.toFixed(3)}, ${cameraWorldTarget.y.toFixed(3)}, ${cameraWorldTarget.z.toFixed(3)}]`)
     console.log(`cameraPosition: new THREE.Vector3(${cameraLocalPosition.x.toFixed(3)}, ${cameraLocalPosition.y.toFixed(3)}, ${cameraLocalPosition.z.toFixed(3)}), cameraTarget: new THREE.Vector3(${cameraLocalTarget.x.toFixed(3)}, ${cameraLocalTarget.y.toFixed(3)}, ${cameraLocalTarget.z.toFixed(3)})`)
 
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    if (!isMobile) {
-      setSelectedInscription(inscription)
-    }
     // Re-enable camera focus using stored poses
     const data = inscription as any
     if (cameraControllerRef.current && data.cameraPosition && data.cameraTarget) {
@@ -98,6 +94,13 @@ function PiacenzaLiverScene() {
         modelMatrix,
         1000
       )
+      // Wait for camera animation to complete before opening panel
+      setTimeout(() => {
+        setSelectedInscription(inscription)
+      }, 1000)
+    } else {
+      // No camera animation, open panel immediately
+      setSelectedInscription(inscription)
     }
   }, [])
 
@@ -348,23 +351,33 @@ function PiacenzaLiverScene() {
             if (progress < 1) {
               requestAnimationFrame(animateCamera)
             } else {
-              // Animation complete
-              isIntroAnimationRef.current = false
-              if (cameraRef.current) {
-                initialCameraDistance.current = cameraRef.current.position.length()
-              }
+              isIntroAnimationRef.current = false // Re-enable zoom detection after intro
             }
           }
           
-          animateCamera()
+          requestAnimationFrame(animateCamera)
         }
-      }, 300)
+      }, 800) // Wait for loading screen fade
     })
 
-    // Also keep the timeout as backup
-    // Removed backup timeout logging
+    // Add WebGL context loss handling
+    const handleContextLoss = (event: Event) => {
+      event.preventDefault()
+      console.warn('WebGL context lost')
+      setErrorMsg('3D rendering context was lost. Please refresh the page.')
+    }
 
-    // Set up simple texture atlas interaction system
+    const handleContextRestore = () => {
+      console.log('WebGL context restored')
+      setErrorMsg(null)
+      // Reload the scene
+      window.location.reload()
+    }
+
+    renderer.domElement.addEventListener('webglcontextlost', handleContextLoss)
+    renderer.domElement.addEventListener('webglcontextrestored', handleContextRestore)
+
+    // Mouse wheel handling for zoom detection
     const handleMouseMove = (event: MouseEvent) => {
       setMousePosition({ x: event.clientX, y: event.clientY })
     }

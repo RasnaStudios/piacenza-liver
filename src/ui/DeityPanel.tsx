@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { liverGroups, liverGods } from '../scene/LiverData'
 import { NumberBadge } from './NumberBadge'
 
@@ -8,6 +8,92 @@ interface DeityPanelProps {
 }
 
 export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStartY, setDragStartY] = useState(0)
+  const [isClosing, setIsClosing] = useState(false)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+
+  // Reset states when panel opens with new inscription
+  useEffect(() => {
+    setIsDragging(false)
+    setIsClosing(false)
+    setDragStartY(0)
+    if (panelRef.current) {
+      panelRef.current.style.transition = 'none'
+      panelRef.current.style.transform = 'translateY(0)'
+    }
+  }, [selectedInscription?.id])
+
+  const closePanel = () => {
+    setIsClosing(true)
+    if (panelRef.current) {
+      panelRef.current.style.transition = 'transform 0.3s ease-out'
+      panelRef.current.style.transform = 'translateY(100%)'
+    }
+    setTimeout(() => {
+      // Reset all states when closing
+      setIsDragging(false)
+      setIsClosing(false)
+      setDragStartY(0)
+      if (panelRef.current) {
+        panelRef.current.style.transition = 'none'
+        panelRef.current.style.transform = 'translateY(0)'
+      }
+      onClose()
+    }, 300)
+  }
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (!isMobile || isClosing) return
+    const contentElement = e.target as HTMLElement
+    const scrollableContent = contentElement.closest('.panel-content')
+    
+    // Only allow panel drag if we're at the top of scrollable content
+    if (scrollableContent && scrollableContent.scrollTop > 0) {
+      return // Let normal scrolling happen
+    }
+    
+    setIsDragging(true)
+    setDragStartY(e.touches[0].clientY)
+  }
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (!isMobile || !isDragging || isClosing) return
+    
+    const currentY = e.touches[0].clientY
+    const deltaY = Math.max(0, currentY - dragStartY)
+    
+    // Only drag panel if moving downward
+    if (deltaY > 0 && panelRef.current) {
+      e.preventDefault() // Prevent scrolling while dragging panel
+      panelRef.current.style.transform = `translateY(${deltaY}px)`
+    }
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!isMobile || !isDragging || isClosing) return
+    setIsDragging(false)
+    
+    const currentY = e.changedTouches[0].clientY
+    const deltaY = currentY - dragStartY
+    
+    if (deltaY > 100) {
+      // Close panel with slide animation
+      closePanel()
+    } else {
+      // Snap back to top
+      if (panelRef.current) {
+        panelRef.current.style.transition = 'transform 0.2s ease-out'
+        panelRef.current.style.transform = 'translateY(0px)'
+        setTimeout(() => {
+          if (panelRef.current) {
+            panelRef.current.style.transition = 'none'
+          }
+        }, 200)
+      }
+    }
+  }
   useEffect(() => {
     // Inject CSS for animations and scrollbar
     const style = document.createElement('style')
@@ -33,6 +119,15 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
       }
 
       @media (max-width: 768px) {
+        @keyframes panelSlideInMobile {
+          0% {
+            transform: translateY(100%);
+          }
+          100% {
+            transform: translateY(0);
+          }
+        }
+        
         @keyframes panelSlideIn {
           0% {
             opacity: 0;
@@ -80,9 +175,17 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
           bottom: 0 !important;
           width: 100vw !important;
           height: 100vh !important;
+          max-width: 100vw !important;
           max-height: 100vh !important;
+          min-width: 100vw !important;
+          min-height: 100vh !important;
           border-radius: 0 !important;
           z-index: 9999 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          border: none !important;
+          box-shadow: none !important;
+          animation: panelSlideInMobile 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
         }
         
         .deity-panel-mobile .panel-header {
@@ -144,7 +247,6 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     return null
   }
 
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   
   const group = (liverGroups as any)[selectedInscription.groupId]
   const gods = selectedInscription.gods.map((godId: string) => (liverGods as any)[godId]).filter(Boolean)
@@ -183,7 +285,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     padding: isMobile ? '16px' : '24px',
     paddingBottom: isMobile ? '32px' : '48px',
     position: 'relative' as const,
-    height: isMobile ? 'calc(100vh - 120px)' : undefined,
+    height: isMobile ? 'calc(100vh - 100px)' : undefined,
     overflowX: 'hidden' as const,
     overflowY: 'auto' as const,
     background: '#0a0806',
@@ -358,18 +460,47 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     }
   }
 
-  const panelStyles = {
+  const panelStyles = isMobile ? {
     position: 'fixed' as const,
-    top: isMobile ? 0 : 20,
-    right: isMobile ? 0 : 20,
-    left: isMobile ? 0 : undefined,
-    bottom: isMobile ? 0 : 20,
-    width: isMobile ? '100vw' : 500,
-    height: isMobile ? '100vh' : 'calc(100vh - 40px)',
+    top: 0,
+    right: 0,
+    left: 0,
+    bottom: 0,
+    width: '100vw',
+    height: '100vh',
+    maxWidth: '100vw',
+    maxHeight: '100vh',
+    minWidth: '100vw',
+    minHeight: '100vh',
+    background: '#0a0806',
+    backgroundImage: 'none',
+    border: 'none',
+    borderRadius: 0,
+    color: '#f4e6d3',
+    fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+    transform: 'translateY(0)',
+    transition: 'none',
+    overflowY: 'hidden' as const,
+    overflowX: 'hidden' as const,
+    backdropFilter: 'none',
+    boxShadow: 'none',
+    zIndex: 9999,
+    animation: 'panelSlideInMobile 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+    display: 'flex',
+    flexDirection: 'column' as const,
+    margin: 0,
+    padding: 0,
+  } : {
+    position: 'fixed' as const,
+    top: 20,
+    right: 20,
+    bottom: 20,
+    width: 500,
+    height: 'calc(100vh - 40px)',
     background: '#0a0806',
     backgroundImage: 'none',
     border: '1px solid rgba(139, 101, 65, 0.2)',
-    borderRadius: isMobile ? 0 : '12px',
+    borderRadius: '12px',
     color: '#f4e6d3',
     fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
     opacity: 1,
@@ -379,7 +510,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     overflowX: 'hidden' as const,
     backdropFilter: 'none',
     boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)',
-    zIndex: isMobile ? 9999 : 1000,
+    zIndex: 1000,
     animation: 'panelSlideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
     display: 'flex',
     flexDirection: 'column' as const,
@@ -389,8 +520,8 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    padding: isMobile ? 12 : 16,
-    paddingTop: isMobile ? 16 : 20,
+    padding: isMobile ? '20px 16px 16px 16px' : 16,
+    paddingTop: isMobile ? 20 : 20,
     borderBottom: '1px solid rgba(139, 101, 65, 0.2)',
     background: 'linear-gradient(135deg, #100c08 0%, #181410 50%, #201a14 100%)',
     boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.05), inset 0 -1px 2px rgba(0, 0, 0, 0.1)',
@@ -411,7 +542,14 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     ''
 
   return (
-    <div style={panelStyles} className={`deity-panel-scrollbar ${isMobile ? 'deity-panel-mobile' : ''}`}>
+    <div 
+      ref={panelRef}
+      style={panelStyles} 
+      className={`deity-panel-scrollbar ${isMobile ? 'deity-panel-mobile' : ''}`}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       <div style={headerStyles} className="panel-header">
         <div style={headerLeftStyles}>
           <NumberBadge value={selectedInscription.id} size={28} />
@@ -444,7 +582,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
           </span>
         </div>
         <button
-          onClick={onClose}
+          onClick={closePanel}
           aria-label="Close panel"
           title="Close panel"
           style={closeButtonStyles}

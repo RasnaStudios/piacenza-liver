@@ -11,7 +11,11 @@ interface HoverTooltipProps {
 
 export function HoverTooltip({ hoveredSection, mousePosition }: HoverTooltipProps) {
   // Disable hover tooltip completely on mobile devices
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+  const isMobile = typeof window !== 'undefined' && (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    'ontouchstart' in window ||
+    navigator.maxTouchPoints > 0
+  )
   
   if (!hoveredSection || isMobile) {
     return null
