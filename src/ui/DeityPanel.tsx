@@ -170,22 +170,19 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
         .deity-panel-mobile {
           position: fixed !important;
           top: 0 !important;
-          right: 0 !important;
           left: 0 !important;
+          right: 0 !important;
           bottom: 0 !important;
           width: 100vw !important;
           height: 100vh !important;
-          max-width: 100vw !important;
-          max-height: 100vh !important;
-          min-width: 100vw !important;
-          min-height: 100vh !important;
-          border-radius: 0 !important;
-          z-index: 9999 !important;
+          max-width: none !important;
+          max-height: none !important;
           margin: 0 !important;
           padding: 0 !important;
           border: none !important;
-          box-shadow: none !important;
-          animation: panelSlideInMobile 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+          border-radius: 0 !important;
+          z-index: 9999 !important;
+          background: #0a0806 !important;
         }
         
         .deity-panel-mobile .panel-header {
@@ -194,9 +191,27 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
         }
         
         .deity-panel-mobile .panel-content {
-          padding: 16px !important;
-          height: calc(100vh - 120px) !important;
-          overflow-y: auto !important;
+          scrollbar-width: thin;
+          scrollbar-color: rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2);
+        }
+        
+        .panel-content::-webkit-scrollbar {
+          width: 6px;
+        }
+        .panel-content::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.2);
+          border-radius: 3px;
+        }
+        .panel-content::-webkit-scrollbar-thumb {
+          background: rgba(196, 168, 118, 0.4);
+          border-radius: 3px;
+        }
+        .panel-content::-webkit-scrollbar-thumb:hover {
+          background: rgba(196, 168, 118, 0.6);
+        }
+        .panel-content {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2);
         }
 
         /* Mobile Font Overrides - Much Larger Fonts */
@@ -265,7 +280,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
-    transition: 'all 0.2s ease-in-out',
+    transition: 'all 0.3s ease-in-out',
     padding: 0,
     margin: 0,
     marginLeft: 16,
@@ -288,6 +303,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     height: isMobile ? 'calc(100vh - 100px)' : undefined,
     overflowX: 'hidden' as const,
     overflowY: 'auto' as const,
+    // Custom scrollbar styles will be applied via CSS
     background: '#0a0806',
     flex: 1,
   }
@@ -492,15 +508,15 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     padding: 0,
   } : {
     position: 'fixed' as const,
-    top: 20,
-    right: 20,
-    bottom: 20,
+    top: 0,
+    right: 0,
+    bottom: 0,
     width: 500,
-    height: 'calc(100vh - 40px)',
+    height: '100vh',
     background: '#0a0806',
     backgroundImage: 'none',
     border: '1px solid rgba(139, 101, 65, 0.2)',
-    borderRadius: '12px',
+    borderRadius: '12px 0 0 12px',
     color: '#f4e6d3',
     fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
     opacity: 1,
@@ -525,7 +541,7 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
     borderBottom: '1px solid rgba(139, 101, 65, 0.2)',
     background: 'linear-gradient(135deg, #100c08 0%, #181410 50%, #201a14 100%)',
     boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.05), inset 0 -1px 2px rgba(0, 0, 0, 0.1)',
-    borderRadius: isMobile ? 0 : '12px 12px 0 0',
+    borderRadius: isMobile ? 0 : '12px 0 0 0',
   }
   const headerLeftStyles = {
     display: 'grid',

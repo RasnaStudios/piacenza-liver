@@ -18,6 +18,7 @@ import { DeityPanel } from './ui/DeityPanel'
 import { HoverTooltip } from './ui/HoverTooltip'
 import { Legend } from './ui/Legend'
 import { LoadingScreen } from './ui/LoadingScreen'
+import { InscriptionList } from './ui/InscriptionList'
 import { SceneConfig } from './config/SceneConfig'
 
 import { MantineProvider } from '@mantine/core'
@@ -107,9 +108,30 @@ function PiacenzaLiverScene() {
         modelMatrix,
         1000
       )
-      setTimeout(() => {
-        setSelectedInscription(inscription)
-      }, 1000)
+      setSelectedInscription(inscription)
+    } else {
+      setSelectedInscription(inscription)
+    }
+  }, [])
+
+  const handleInscriptionListClick = useCallback((inscription: any) => {
+    if (!cameraControllerRef.current || !liverModelRef.current) return
+    
+    setHasInteracted(true)
+    console.log(`Inscription ${inscription.id} selected from list`)
+    
+    // Focus camera on inscription
+    if (inscription.cameraPosition && inscription.cameraTarget) {
+      cameraControllerRef.current.focusOnTransformed(
+        inscription.cameraPosition,
+        inscription.cameraTarget,
+        liverModelRef.current.getModelMatrix(),
+        800,
+        () => {
+          // Open panel after camera animation completes
+          setSelectedInscription(inscription)
+        }
+      )
     } else {
       setSelectedInscription(inscription)
     }
@@ -338,7 +360,13 @@ function PiacenzaLiverScene() {
         
         {!isLoading && <Legend hasInteracted={hasInteracted} />}
         
-        {/* Loading Screen */}
+        <InscriptionList 
+          onInscriptionSelect={handleInscriptionListClick}
+          selectedInscription={selectedInscription}
+          isLoading={isLoading}
+          hasInteracted={hasInteracted}
+        />
+        
         <LoadingScreen 
           progress={loadingProgress} 
           isLoading={isLoading} 

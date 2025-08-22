@@ -248,8 +248,12 @@ export class LiverModel {
     return this.maskTexture
   }
 
-  getInscriptionPositions(): Map<number, THREE.Vector2> {
-    return this.inscriptionPositions
+  getInscriptionPosition(inscriptionId: number): THREE.Vector2 | null {
+    return this.inscriptionPositions.get(inscriptionId) || null
+  }
+
+  getModelMatrix(): THREE.Matrix4 {
+    return this.object?.matrix || new THREE.Matrix4()
   }
 
   setOnModelReady(callback: () => void) {
