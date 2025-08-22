@@ -1,5 +1,6 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { liverGroups, liverGods } from '../scene/LiverData'
+import { isMobile } from 'react-device-detect'
 import { NumberBadge } from './NumberBadge'
 
 interface DeityPanelProps {
@@ -12,7 +13,6 @@ export function DeityPanel({ selectedInscription, onClose }: DeityPanelProps) {
   const [dragStartY, setDragStartY] = useState(0)
   const [isClosing, setIsClosing] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
   // Reset states when panel opens with new inscription
   useEffect(() => {

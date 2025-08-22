@@ -258,7 +258,7 @@ function PiacenzaLiverScene() {
     
     const handleControlsEnd = () => {
       setIsInteracting(false)
-      
+
       handleInteractionEnd()
     }
     
@@ -275,7 +275,7 @@ function PiacenzaLiverScene() {
     // Set up lighting
     setupLighting(scene)
 
-    // Mouse wheel handling for zoom detection
+    // Mouse wheel handling for zoom detection (desktop only)
     const handleWheel = (_event: WheelEvent) => {
       checkForZoom(camera)
       
@@ -290,6 +290,7 @@ function PiacenzaLiverScene() {
         handleInteractionEnd()
       }, 100)
     }
+    
     renderer.domElement.addEventListener('wheel', handleWheel, { passive: true })
 
     // Loading progress handler (readiness-driven UI will hide overlay)
@@ -500,6 +501,7 @@ function PiacenzaLiverScene() {
       // Remove event listeners
       renderer.domElement.removeEventListener('mousemove', handleMouseMove)
       renderer.domElement.removeEventListener('dblclick', handleDoubleClick)
+      renderer.domElement.removeEventListener('wheel', handleWheel)
 
       renderer.dispose()
       scene.clear()

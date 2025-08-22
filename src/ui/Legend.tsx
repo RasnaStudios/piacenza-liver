@@ -4,6 +4,7 @@ import {
   Box,
   Anchor
 } from '@mantine/core'
+import { isMobile } from 'react-device-detect'
 
 interface LegendProps {
   hasInteracted?: boolean
@@ -11,6 +12,7 @@ interface LegendProps {
 
 export function Legend({ hasInteracted = false }: LegendProps) {
   const [platform, setPlatform] = useState('mac')
+
 
   useEffect(() => {
     // Detect platform
@@ -37,7 +39,28 @@ export function Legend({ hasInteracted = false }: LegendProps) {
     }
   }
 
-  const legendStyles = {
+  const legendStyles = isMobile ? {
+    // Mobile: full-width bottom panel
+    position: 'fixed' as const,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    width: '100vw',
+    color: 'rgba(196, 168, 118, 0.6)',
+    fontFamily: 'Georgia, serif',
+    fontSize: '12px',
+    lineHeight: 1.3,
+    pointerEvents: 'none' as const,
+    userSelect: 'none' as const,
+    zIndex: 100,
+    padding: '16px 20px',
+    background: 'rgba(0, 0, 0, 0.4)',
+    backdropFilter: 'blur(8px)',
+    borderTop: '1px solid rgba(139, 101, 65, 0.3)',
+    opacity: hasInteracted ? 0 : 1,
+    transition: 'opacity 0.8s ease-out',
+  } : {
+    // Desktop: corner panel
     position: 'fixed' as const,
     bottom: 20,
     left: 20,
@@ -131,8 +154,8 @@ export function Legend({ hasInteracted = false }: LegendProps) {
             alignItems: 'center',
             gap: '6px',
             marginBottom: '4px',
-            marginTop: '8px',
-            paddingTop: '6px',
+            marginTop: isMobile ? '6px' : '8px',
+            paddingTop: isMobile ? '4px' : '6px',
             borderTop: '1px solid rgba(139, 101, 65, 0.2)',
             color: 'rgba(196, 168, 118, 0.6)',
           }}
@@ -166,18 +189,20 @@ export function Legend({ hasInteracted = false }: LegendProps) {
           </Anchor>
         </Box>
       </Box>
-      <Text
-        style={{
-          color: 'rgba(196, 168, 118, 0.5)',
-          fontSize: '11px',
-          fontStyle: 'italic',
-          marginTop: '8px',
-          borderTop: '1px solid rgba(139, 101, 65, 0.2)',
-          paddingTop: '8px',
-        }}
-      >
-        {getControlsText()}
-      </Text>
+      {!isMobile && (
+        <Text
+          style={{
+            color: 'rgba(196, 168, 118, 0.5)',
+            fontSize: '11px',
+            fontStyle: 'italic',
+            marginTop: '8px',
+            borderTop: '1px solid rgba(139, 101, 65, 0.2)',
+            paddingTop: '8px',
+          }}
+        >
+          {getControlsText()}
+        </Text>
+      )}
     </Box>
   )
 } 

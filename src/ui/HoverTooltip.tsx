@@ -3,6 +3,7 @@ import {
 } from '@mantine/core'
 import { liverGroups, liverGods } from '../scene/LiverData'
 import { NumberBadge } from './NumberBadge'
+import { isMobile } from 'react-device-detect'
 
 interface HoverTooltipProps {
   hoveredSection: any
@@ -11,12 +12,6 @@ interface HoverTooltipProps {
 }
 
 export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = false }: HoverTooltipProps) {
-  // Disable hover tooltip completely on mobile devices
-  const isMobile = typeof window !== 'undefined' && (
-    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-    'ontouchstart' in window ||
-    navigator.maxTouchPoints > 0
-  )
   
   // Don't show tooltip if mobile, no hovered section, or panel is open
   if (!hoveredSection || isMobile || isPanelOpen) {
