@@ -5,6 +5,8 @@ import {
   Anchor
 } from '@mantine/core'
 import { isMobile } from 'react-device-detect'
+import { FaLinkedin, FaGithub, FaInstagram } from 'react-icons/fa'
+import { SiArtstation } from 'react-icons/si'
 
 interface LegendProps {
   hasInteracted: boolean
@@ -111,31 +113,34 @@ export function Legend({ hasInteracted }: LegendProps) {
             <Text style={{ 
               color: 'rgba(255, 255, 255, 0.9)', 
               fontSize: isMobile ? '13px' : '14px',
-              fontWeight: 500
+              fontWeight: 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
             }}>
-              <Anchor 
+              <span>Lorenzo Andraghetti</span>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <Anchor 
+                  href="https://linkedin.com/in/andraghetti" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: '#0077b5', fontSize: '14px', textDecoration: 'none' }}
+                >
+                  <FaLinkedin />
+                </Anchor>
+                <Anchor 
                 href="https://github.com/andraghetti" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{
-                  ...linkStyles,
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  fontWeight: 500
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = 'rgba(212, 175, 55, 0.9)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)'
-                }}
-              >
-                Lorenzo Andraghetti
-              </Anchor>
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: '#333', fontSize: '14px', textDecoration: 'none' }}
+                >
+                  <FaGithub />
+                </Anchor>
+              </div>
               <Text component="span" style={{ 
                 color: 'rgba(196, 168, 118, 0.7)', 
                 fontSize: isMobile ? '11px' : '12px',
-                fontStyle: 'italic',
-                marginLeft: '6px'
+                fontStyle: 'italic'
               }}>
                 Developer
               </Text>
@@ -144,29 +149,42 @@ export function Legend({ hasInteracted }: LegendProps) {
             <Text style={{ 
               color: 'rgba(255, 255, 255, 0.9)', 
               fontSize: isMobile ? '13px' : '14px',
-              fontWeight: 500
+              fontWeight: 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
             }}>
-              <Anchor 
-                href="https://www.artstation.com/lukedt" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                style={{
-                  ...linkStyles,
-                  color: 'rgba(255, 255, 255, 0.9)',
-                  fontWeight: 500
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.color = 'rgba(212, 175, 55, 0.9)'
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.color = 'rgba(255, 255, 255, 0.9)'
-                }}
-              >Luca Tampieri</Anchor>
+              <span>Luca Tampieri</span>
+              <div style={{ display: 'flex', gap: '6px' }}>
+                <Anchor 
+                  href="https://linkedin.com/in/luca-tampieri" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: '#0077b5', fontSize: '14px', textDecoration: 'none' }}
+                >
+                  <FaLinkedin />
+                </Anchor>
+                <Anchor 
+                  href="https://www.artstation.com/lukedt" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: '#13aff0', fontSize: '14px', textDecoration: 'none' }}
+                >
+                  <SiArtstation />
+                </Anchor>
+                <Anchor 
+                  href="https://www.instagram.com/heythereluke/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{ color: '#e4405f', fontSize: '14px', textDecoration: 'none' }}
+                >
+                  <FaInstagram />
+                </Anchor>
+              </div>
               <Text component="span" style={{ 
                 color: 'rgba(196, 168, 118, 0.7)', 
                 fontSize: isMobile ? '11px' : '12px',
-                fontStyle: 'italic',
-                marginLeft: '6px'
+                fontStyle: 'italic'
               }}>
                 3D Artist
               </Text>

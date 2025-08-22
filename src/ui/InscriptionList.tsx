@@ -25,7 +25,7 @@ export function InscriptionList({ onInscriptionSelect, selectedInscription, isLo
   }
 
   // Always use single column
-  const totalWidth = '220px'
+  const totalWidth = '200px'
   
   // Always allow scrolling for full height
   
