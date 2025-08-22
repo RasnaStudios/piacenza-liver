@@ -7,9 +7,10 @@ import { NumberBadge } from './NumberBadge'
 interface HoverTooltipProps {
   hoveredSection: any
   mousePosition: { x: number; y: number }
+  isPanelOpen?: boolean
 }
 
-export function HoverTooltip({ hoveredSection, mousePosition }: HoverTooltipProps) {
+export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = false }: HoverTooltipProps) {
   // Disable hover tooltip completely on mobile devices
   const isMobile = typeof window !== 'undefined' && (
     /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
@@ -17,7 +18,8 @@ export function HoverTooltip({ hoveredSection, mousePosition }: HoverTooltipProp
     navigator.maxTouchPoints > 0
   )
   
-  if (!hoveredSection || isMobile) {
+  // Don't show tooltip if mobile, no hovered section, or panel is open
+  if (!hoveredSection || isMobile || isPanelOpen) {
     return null
   }
 

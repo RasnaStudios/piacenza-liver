@@ -554,6 +554,7 @@ function PiacenzaLiverScene() {
         <HoverTooltip 
           hoveredSection={hoveredSection}
           mousePosition={mousePosition}
+          isPanelOpen={!!selectedInscription}
         />
         
         <Legend hasInteracted={hasInteracted} />
