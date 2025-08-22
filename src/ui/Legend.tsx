@@ -14,6 +14,13 @@ interface LegendProps {
 
 export function Legend({ hasInteracted }: LegendProps) {
   const [platform, setPlatform] = useState('mac')
+  const [isHovered, setIsHovered] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+
+  // Auto-open on first load if user hasn't interacted yet
+  useEffect(() => {
+    setIsOpen(!hasInteracted)
+  }, [hasInteracted])
 
 
   useEffect(() => {
@@ -48,46 +55,83 @@ export function Legend({ hasInteracted }: LegendProps) {
     ]
   }
 
-  const legendStyles = isMobile ? {
-    // Mobile: full-width bottom panel
+  const containerStyles = {
     position: 'fixed' as const,
     bottom: 0,
-    left: 0,
-    right: 0,
-    width: '100vw',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 100,
+    pointerEvents: 'auto' as const,
+  }
+
+  const thumbnailStyles = {
+    position: 'absolute' as const,
+    bottom: 0,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 0,
+    background: 'rgba(0, 0, 0, 0.85)',
+    backdropFilter: 'blur(4px)',
+    border: '1px solid rgba(139, 101, 65, 0.4)',
+    borderBottom: 'none',
+    borderRadius: '8px 8px 0 0',
+    padding: '8px 14px 6px 14px',
+    color: 'rgba(196, 168, 118, 0.9)',
+    fontSize: '12px',
+    fontWeight: 600,
+    fontFamily: 'Georgia, serif',
+    letterSpacing: '0.3px',
+    cursor: 'pointer',
+    transition: 'background 0.2s ease, color 0.2s ease, border-color 0.2s ease',
+    userSelect: 'none' as const,
+    textAlign: 'center' as const,
+    minWidth: '200px',
+    boxShadow: '0 2px 10px rgba(0,0,0,0.25)',
+  }
+
+  const legendStyles = isMobile ? {
+    // Mobile: full-width bottom panel
+    position: 'absolute' as const,
+    bottom: (isOpen || isHovered) ? 0 : -300,
+    left: '50%',
+    transform: 'translateX(-50%)',
+    width: '90vw',
+    maxWidth: '340px',
+    zIndex: 1,
     color: 'rgba(196, 168, 118, 0.6)',
     fontFamily: 'Georgia, serif',
     fontSize: '14px',
     lineHeight: 1.3,
-    pointerEvents: 'none' as const,
+    pointerEvents: 'auto' as const,
     userSelect: 'none' as const,
-    zIndex: 100,
     padding: '14px 18px',
-    background: 'rgba(0, 0, 0, 0.4)',
+    background: 'rgba(0, 0, 0, 0.9)',
     backdropFilter: 'blur(8px)',
-    borderTop: '1px solid rgba(139, 101, 65, 0.3)',
-    opacity: hasInteracted ? 0 : 1,
-    transition: 'opacity 0.8s ease-out',
+    border: '1px solid rgba(139, 101, 65, 0.4)',
+    borderRadius: '8px 8px 0 0',
+    transition: 'bottom 0.3s ease-out',
+    overflow: 'visible' as const,
   } : {
     // Desktop: bottom center panel
-    position: 'fixed' as const,
-    bottom: 20,
+    position: 'absolute' as const,
+    bottom: (isOpen || isHovered) ? 0 : -300,
     left: '50%',
     transform: 'translateX(-50%)',
+    width: '440px',
+    zIndex: 1,
     color: 'rgba(196, 168, 118, 0.6)',
     fontFamily: 'Georgia, serif',
     fontSize: '14px',
     lineHeight: 1.4,
-    pointerEvents: hasInteracted ? 'none' as const : 'auto' as const,
+    pointerEvents: 'auto' as const,
     userSelect: 'none' as const,
-    zIndex: 100,
     padding: '14px 18px',
-    background: 'rgba(0, 0, 0, 0.2)',
-    borderRadius: '8px',
-    backdropFilter: 'blur(4px)',
-    border: '1px solid rgba(139, 101, 65, 0.2)',
-    opacity: hasInteracted ? 0 : 1,
-    transition: 'opacity 0.8s ease-out',
+    background: 'rgba(0, 0, 0, 0.9)',
+    borderRadius: '8px 8px 0 0',
+    backdropFilter: 'blur(8px)',
+    border: '1px solid rgba(139, 101, 65, 0.4)',
+    transition: 'bottom 0.3s ease-out',
+    overflow: 'visible' as const,
   }
 
   const linkStyles = {
@@ -105,8 +149,41 @@ export function Legend({ hasInteracted }: LegendProps) {
   }
 
   return (
-    <Box style={legendStyles}>
-      <Box style={{ display: 'flex', alignItems: 'flex-start', gap: '20px' }}>
+    <Box 
+      style={containerStyles}
+      onDoubleClick={() => setIsOpen((v) => !v)}
+    >
+      {/* Thumbnail Tab (panel slides over this) */}
+      <Box 
+        style={thumbnailStyles}
+        onClick={() => setIsOpen(true)}
+        onTouchStart={() => setIsOpen(true)}
+        onMouseEnter={(e) => {
+          setIsHovered(true)
+          e.currentTarget.style.background = 'rgba(0, 0, 0, 0.9)'
+          e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.6)'
+          e.currentTarget.style.color = 'rgba(212, 175, 55, 0.95)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'rgba(0, 0, 0, 0.85)'
+          e.currentTarget.style.borderColor = 'rgba(139, 101, 65, 0.4)'
+          e.currentTarget.style.color = 'rgba(196, 168, 118, 0.9)'
+        }}
+      >
+        Credits and Controls
+      </Box>
+
+      <Box 
+        style={legendStyles}
+        onMouseLeave={() => { if (!isOpen) setIsHovered(false) }}
+      >
+      <Box style={{ 
+        display: isMobile ? 'flex' : 'grid',
+        gridTemplateColumns: isMobile ? undefined : '1fr 1px minmax(160px, max-content)',
+        alignItems: 'flex-start',
+        gap: isMobile ? '12px' : '20px',
+        flexDirection: isMobile ? 'column' as const : undefined,
+      }}>
         {/* Left side: Names */}
         <Box style={{ flex: 1 }}>
           <Box style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
@@ -118,7 +195,7 @@ export function Legend({ hasInteracted }: LegendProps) {
               alignItems: 'center',
               gap: '8px'
             }}>
-              <span>Lorenzo Andraghetti</span>
+              <span style={{ whiteSpace: 'nowrap' }}>Lorenzo Andraghetti</span>
               <div style={{ display: 'flex', gap: '6px' }}>
                 <Anchor 
                   href="https://linkedin.com/in/andraghetti" 
@@ -154,7 +231,7 @@ export function Legend({ hasInteracted }: LegendProps) {
               alignItems: 'center',
               gap: '8px'
             }}>
-              <span>Luca Tampieri</span>
+              <span style={{ whiteSpace: 'nowrap' }}>Luca Tampieri</span>
               <div style={{ display: 'flex', gap: '6px' }}>
                 <Anchor 
                   href="https://linkedin.com/in/luca-tampieri" 
@@ -245,16 +322,18 @@ export function Legend({ hasInteracted }: LegendProps) {
           </Box>
         </Box>
         
-        {/* Vertical separator */}
-        <Box style={{ 
-          width: '1px', 
-          height: '50px', 
-          backgroundColor: 'rgba(139, 101, 65, 0.4)', 
-          flexShrink: 0 
-        }} />
-        
+        {/* Vertical separator (desktop only) */}
+        {!isMobile && (
+          <Box style={{ 
+            width: '1px',
+            height: '50px',
+            backgroundColor: 'rgba(139, 101, 65, 0.4)',
+            alignSelf: 'center'
+          }} />
+        )}
+
         {/* Right side: Controls */}
-        <Box style={{ flexShrink: 0, minWidth: '120px' }}>
+        <Box style={{ flexShrink: 0, minWidth: '160px', width: 'max-content' }}>
           <Text style={{
             color: 'rgba(212, 175, 55, 0.9)',
             fontSize: isMobile ? '12px' : '13px',
@@ -281,6 +360,7 @@ export function Legend({ hasInteracted }: LegendProps) {
             </Text>
           ))}
         </Box>
+      </Box>
       </Box>
     </Box>
   )
