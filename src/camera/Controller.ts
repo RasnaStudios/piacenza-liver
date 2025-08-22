@@ -147,6 +147,30 @@ export class CameraController {
       endPosition = endTarget.clone().add(offset)
     }
 
+    // Mobile-only: true screen-space pan LEFT (translate camera AND target together, no orbit)
+    try {
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      if (isMobile) {
+        const persp = this.camera as any
+        if (persp && (persp.isPerspectiveCamera === true)) {
+          const forwardVec = endTarget.clone().sub(endPosition)
+          const distance = forwardVec.length()
+          const fov = THREE.MathUtils.degToRad(persp.fov)
+          const halfWidth = Math.tan(fov * 0.5) * distance * persp.aspect
+          const fraction = 0.4 // tune as needed; portion of half-screen width to pan
+          const worldShift = halfWidth * fraction
+          const forward = forwardVec.clone().normalize()
+          const right = new THREE.Vector3().crossVectors(forward, this.camera.up).normalize()
+          const leftShift = right.multiplyScalar(-worldShift)
+          // Pan both position and target equally to avoid rotation
+          endPosition.add(leftShift)
+          endTarget.add(leftShift)
+        }
+      }
+    } catch (_e) {
+      // ignore
+    }
+
     // Sanitize the target/position to avoid degenerate offsets and non-finite values
     const safePose = this.ensureSafeEndPose(startPosition, startTarget, endPosition, endTarget)
     endPosition = safePose.endPosition
