@@ -33,6 +33,7 @@ function PiacenzaLiverScene() {
   const [isLoading, setIsLoading] = useState(true)
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [isModifierKeyPressed, setIsModifierKeyPressed] = useState(false)
 
   // Refs for 3D objects and controllers
   const containerRef = useRef<HTMLDivElement | null>(null)
@@ -56,6 +57,29 @@ function PiacenzaLiverScene() {
   const initialCameraDistance = useRef<number | null>(null)
   const hasZoomedRef = useRef(false)
   const isIntroAnimationRef = useRef(false) // Flag to disable zoom detection during intro
+
+  // Keyboard event handlers for modifier keys
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.metaKey || event.shiftKey) {
+        setIsModifierKeyPressed(true)
+      }
+    }
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      if (!event.metaKey && !event.shiftKey) {
+        setIsModifierKeyPressed(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('keyup', handleKeyUp)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('keyup', handleKeyUp)
+    }
+  }, [])
 
   // Optimized callback handlers
   const handleMarkerHover = useCallback((section: any) => {
@@ -247,9 +271,6 @@ function PiacenzaLiverScene() {
 
     // Add event listeners for pan/rotate detection
     const handleControlsStart = () => {
-      setIsInteracting(true)
-      handleInteractionStart()
-      
       // Stop any ongoing camera animation immediately when user starts interacting
       if (cameraControllerRef.current) {
         cameraControllerRef.current.stopAnimation()
@@ -257,9 +278,8 @@ function PiacenzaLiverScene() {
     }
     
     const handleControlsEnd = () => {
-      setIsInteracting(false)
-
-      handleInteractionEnd()
+      // Only check for zoom after controls end, don't hide title for general interaction
+      checkForZoom(camera)
     }
     
     controls.addEventListener('start', handleControlsStart)
@@ -278,17 +298,6 @@ function PiacenzaLiverScene() {
     // Mouse wheel handling for zoom detection (desktop only)
     const handleWheel = (_event: WheelEvent) => {
       checkForZoom(camera)
-      
-      // Always mark as interacting on wheel
-      handleInteractionStart()
-      
-      // Debounced interaction end
-      if (titleTimeoutRef.current) {
-        clearTimeout(titleTimeoutRef.current)
-      }
-      titleTimeoutRef.current = window.setTimeout(() => {
-        handleInteractionEnd()
-      }, 100)
     }
     
     renderer.domElement.addEventListener('wheel', handleWheel, { passive: true })
@@ -557,6 +566,7 @@ function PiacenzaLiverScene() {
           hoveredSection={hoveredSection}
           mousePosition={mousePosition}
           isPanelOpen={!!selectedInscription}
+          isModifierKeyPressed={isModifierKeyPressed}
         />
         
         <Legend hasInteracted={hasInteracted} />

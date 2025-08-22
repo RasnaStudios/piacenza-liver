@@ -9,12 +9,13 @@ interface HoverTooltipProps {
   hoveredSection: any
   mousePosition: { x: number; y: number }
   isPanelOpen?: boolean
+  isModifierKeyPressed?: boolean
 }
 
-export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = false }: HoverTooltipProps) {
+export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = false, isModifierKeyPressed = false }: HoverTooltipProps) {
   
-  // Don't show tooltip if mobile, no hovered section, or panel is open
-  if (!hoveredSection || isMobile || isPanelOpen) {
+  // Don't show tooltip if mobile, no hovered section, panel is open, or modifier keys are pressed
+  if (!hoveredSection || isMobile || isPanelOpen || isModifierKeyPressed) {
     return null
   }
 
