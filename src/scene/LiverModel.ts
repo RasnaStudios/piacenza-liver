@@ -100,6 +100,16 @@ export class LiverModel {
           originalMaterial.emissive.setHex(0x000000)
           originalMaterial.emissiveIntensity = 0
           
+          // Ensure proper face culling and depth to avoid light leaking through
+          originalMaterial.side = THREE.FrontSide
+          ;(originalMaterial as any).shadowSide = THREE.FrontSide
+          originalMaterial.transparent = false
+          originalMaterial.depthWrite = true
+          originalMaterial.depthTest = true
+          
+          // Ensure UVs are available for our custom sampling, even if no maps are present
+          originalMaterial.defines = { ...(originalMaterial.defines || {}), USE_UV: '' }
+          
           // Add inscription system with onBeforeCompile (fixed approach)
           originalMaterial.onBeforeCompile = (shader) => {
             // Add our uniforms for inscriptions
