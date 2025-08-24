@@ -234,7 +234,7 @@ export function Legend({ hasInteracted }: LegendProps) {
         {/* Left side: Names */}
         <Box style={{ flex: 1 }}>
           <Box style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <Text style={{ 
+            <Text component="div" style={{ 
               color: 'rgba(255, 255, 255, 0.9)', 
               fontSize: isMobile ? '13px' : '14px',
               fontWeight: 500,
@@ -270,7 +270,7 @@ export function Legend({ hasInteracted }: LegendProps) {
               </Text>
             </Text>
             
-            <Text style={{ 
+            <Text component="div" style={{ 
               color: 'rgba(255, 255, 255, 0.9)', 
               fontSize: isMobile ? '13px' : '14px',
               fontWeight: 500,
