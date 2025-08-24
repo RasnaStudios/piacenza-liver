@@ -2,7 +2,9 @@ import * as THREE from 'three'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { isMobile } from 'react-device-detect'
 import { SceneConfig } from '../config/SceneConfig'
-// Removed inscription->emissive mapping; keep inscription data usage out to avoid lint warnings
+import vertSource from '../shaders/liver-inscription.vert?raw'
+import fragTemplate from '../shaders/liver-inscription.frag.template?raw'
+import { generateInscriptionColorFunction } from '../shaders/generateShader'
 
 export class LiverModel {
   private scene: THREE.Scene
@@ -25,14 +27,8 @@ export class LiverModel {
   private maskHeight = 0
   
   private onModelReady?: () => void
-  private shaderUniforms!: {
-    diffuseTexture: { value: THREE.Texture | null }
-    normalTexture: { value: THREE.Texture | null }
-    maskTexture: { value: THREE.Texture | null }
-    ormTexture: { value: THREE.Texture | null }
-    time: { value: number }
-    hoveredInscription: { value: number }
-  }
+  private shaderUniforms!: Record<string, THREE.IUniform>
+
 
   constructor(scene: THREE.Scene, onProgress?: (progress: number) => void) {
     this.scene = scene
@@ -65,6 +61,14 @@ export class LiverModel {
       ormTexture: { value: null },
       time: { value: 0 },
       hoveredInscription: { value: 0 },
+      selectedInscription: { value: 0 },
+      uvMode: { value: 1 }, // flip V in shader to match CPU sampling
+      normalScale: { value: 1.0 },
+      flipNormalY: { value: 1.0 },
+      useNormal: { value: 1 },
+      ambientStrength: { value: 0.25 },
+      lightDirectionWorld: { value: new THREE.Vector3(0, -1, -0.5).normalize() },
+      useORM: { value: 1 },
     }
 
     this.loadLiverModel()
@@ -88,7 +92,7 @@ export class LiverModel {
       const [baseColor, normalTex, maskTex, ormTex] = await Promise.all([
         textureLoader.loadAsync('/liver-model/Fegato_baseColor.png'),
         textureLoader.loadAsync('/liver-model/Fegato_normal.png'),
-        textureLoader.loadAsync('/liver-model-gltf/segmentation.png'),
+        textureLoader.loadAsync('/segmentation.png'),
         textureLoader.loadAsync('/liver-model/Fegato_occlusionRoughnessMetallic.png'),
       ])
 
@@ -101,7 +105,7 @@ export class LiverModel {
       maskTex.generateMipmaps = false
       maskTex.wrapS = THREE.ClampToEdgeWrapping
       maskTex.wrapT = THREE.ClampToEdgeWrapping
-      // Force segmentation to no flip (most baked masks are un-flipped)
+      // Segmentation loaded from /public root; keep flipY=false to match CPU sampling path
       maskTex.flipY = false
       maskTex.needsUpdate = true
       baseColor.wrapS = baseColor.wrapT = THREE.ClampToEdgeWrapping
@@ -110,8 +114,15 @@ export class LiverModel {
       ormTex.wrapS = ormTex.wrapT = THREE.ClampToEdgeWrapping
       maskTex.magFilter = THREE.NearestFilter
       maskTex.minFilter = THREE.NearestFilter
+      // Ensure no automatic GPU sRGB decode; we handle conversion in shader
+      baseColor.colorSpace = THREE.LinearSRGBColorSpace
+      normalTex.colorSpace = THREE.LinearSRGBColorSpace
+      ormTex.colorSpace = THREE.LinearSRGBColorSpace
       baseColor.needsUpdate = true
+      normalTex.flipY = baseColor.flipY
       normalTex.needsUpdate = true
+      // Align ORM orientation with base/normal
+      ormTex.flipY = baseColor.flipY
       ormTex.needsUpdate = true
 
       // Assign uniforms
@@ -134,79 +145,21 @@ export class LiverModel {
         }
       }
 
-      // Use standard PBR material with full PBR maps (baseColor, normal, ORM)
-      const material = new THREE.MeshStandardMaterial({
-        map: baseColor,
-        normalMap: normalTex,
-        roughness: 0.6,
-        metalness: 0.1,
+      // Build ShaderMaterial from templates
+      const colorFunc = generateInscriptionColorFunction()
+      const fragmentShader = fragTemplate.replace('{{INSCRIPTION_COLOR_FUNCTION}}', colorFunc)
+
+      const material = new THREE.ShaderMaterial({
+        uniforms: this.shaderUniforms,
+        vertexShader: vertSource,
+        fragmentShader,
+        lights: false,
+        transparent: false,
+        depthWrite: true,
         side: THREE.FrontSide,
       })
-      material.normalScale = new THREE.Vector2(1, 1)
-      material.aoMap = ormTex
-      material.roughnessMap = ormTex
-      material.metalnessMap = ormTex
-      material.aoMapIntensity = 1.0
-      material.transparent = false
-      material.depthWrite = true
-      material.color = new THREE.Color(0xffffff)
-      material.needsUpdate = true
-
-      // Inject hover glow fill using onBeforeCompile, sampling the segmentation mask
-      // and blending a group-colored glow over the hovered region.
-      const { generateInscriptionColorFunction } = await import('../shaders/generateShader')
-      const colorFunc = generateInscriptionColorFunction()
-
-      material.onBeforeCompile = (shader) => {
-        // Expose shader to instance for runtime uniform updates
-        ;(material as any).userData = (material as any).userData || {}
-        ;(material as any).userData.shader = shader
-
-        // Add custom uniforms
-        shader.uniforms.maskTexture = { value: maskTex }
-        shader.uniforms.hoveredInscription = { value: this.shaderUniforms.hoveredInscription.value }
-        shader.uniforms.time = { value: this.shaderUniforms.time.value }
-        shader.uniforms.maskDebug = { value: 4 } // Show segmentation map as solid colors
-
-        // Inject function + uniforms into fragment shader
-        shader.fragmentShader = shader.fragmentShader.replace(
-          '#include <common>',
-          `#include <common>\n` +
-            `uniform sampler2D maskTexture;\n` +
-            `uniform int hoveredInscription;\n` +
-            `uniform float time;\n` +
-            `uniform int maskDebug;\n` +
-            `${colorFunc}\n`
-        )
-
-        // Inject right before final output through the standard include hook
-        const hook = '#include <output_fragment>'
-        const injection =
-          `\n` +
-          `#ifdef USE_UV\n` +
-          `  vec2 glowUv = vUv;\n` +
-          `  float grayValue = texture2D( maskTexture, glowUv ).r;\n` +
-          `  int insId = int(grayValue * 255.0 + 0.5);\n` +
-          `  if (maskDebug == 1) {\n` +
-          `    outgoingLight = vec3(grayValue);\n` +
-          `  } else if (maskDebug == 2) {\n` +
-          `    if (insId > 0 && insId <= 42 && insId == hoveredInscription) { outgoingLight = vec3(1.0); }\n` +
-          `  } else if (maskDebug == 3) {\n` +
-          `    if (insId > 0 && insId <= 42 && insId == hoveredInscription) { outgoingLight = getInscriptionColor(insId); }\n` +
-          `  } else if (maskDebug == 4) {\n` +
-          `    if (insId > 0 && insId <= 42) { outgoingLight = getInscriptionColor(insId); } else { outgoingLight = vec3(0.0); }\n` +
-          `  }\n` +
-          `  if (insId > 0 && insId <= 42 && insId == hoveredInscription) {\n` +
-          `    vec3 groupColor = getInscriptionColor(insId);\n` +
-          `    float pulse = sin(time * 4.0) * 0.25 + 0.75;\n` +
-          `    float intensity = 0.35 * pulse;\n` +
-          `    outgoingLight = mix(outgoingLight, groupColor * 1.5, intensity);\n` +
-          `  }\n` +
-          `#endif\n` +
-          hook
-
-        shader.fragmentShader = shader.fragmentShader.replace(hook, injection)
-      }
+      // Enable derivatives (dFdx/dFdy) for WebGL1; safe no-op in WebGL2
+      ;(material as any).extensions = { ...(material as any).extensions, derivatives: true }
 
       // Load OBJ geometry
       const objLoader = new OBJLoader(this.loadingManager)
@@ -260,35 +213,10 @@ export class LiverModel {
     }
   }
 
-  updateMaterial(properties: any) {
-    if (this.mesh && this.mesh.material) {
-      Object.assign(this.mesh.material, properties)
-    }
-  }
-
   getMesh() {
     return this.mesh
   }
 
-  // Force-use the segmentation image as the diffuse map for visual verification
-  // Call with true to show the raw mask image, false to restore the PBR baseColor
-  setShowSegmentationAsDiffuse(show: boolean) {
-    const mesh = this.mesh
-    if (!mesh) return
-    const mat = mesh.material as THREE.MeshStandardMaterial
-    const diffuse = this.shaderUniforms.diffuseTexture.value as THREE.Texture | null
-    const mask = this.shaderUniforms.maskTexture.value as THREE.Texture | null
-    if (!mat) return
-    if (show && mask) {
-      mat.map = mask
-      mat.color.set(0xffffff)
-      mat.needsUpdate = true
-    } else if (!show && diffuse) {
-      mat.map = diffuse
-      mat.color.set(0xffffff)
-      mat.needsUpdate = true
-    }
-  }
 
   getObject() {
     return this.object
@@ -296,48 +224,33 @@ export class LiverModel {
 
   updateShaderUniforms(time: number) {
     this.shaderUniforms.time.value = time
-    // Push to material shader if available
-    const mat = this.mesh?.material as THREE.MeshStandardMaterial | undefined
-    const shader = (mat as any)?.userData?.shader
-    if (shader && shader.uniforms && shader.uniforms.time) {
-      shader.uniforms.time.value = time
-    }
+  }
+  setNormalScale(scale: number) {
+    this.shaderUniforms.normalScale.value = scale
+  }
+  setUseNormal(enabled: boolean) {
+    this.shaderUniforms.useNormal.value = enabled ? 1.0 : 0.0
+  }
+  setFlipNormalY(sign: 1.0 | -1.0) {
+    this.shaderUniforms.flipNormalY.value = sign
+  }
+  setAmbientStrength(strength: number) {
+    this.shaderUniforms.ambientStrength.value = Math.max(0, strength)
+  }
+  setLightDirectionWorld(dir: THREE.Vector3) {
+    const v = dir.clone().normalize()
+    this.shaderUniforms.lightDirectionWorld.value.copy(v)
+  }
+  setUseORM(enabled: boolean) {
+    this.shaderUniforms.useORM.value = enabled ? 1.0 : 0.0
   }
   setHoveredInscription(inscriptionId: number) {
     this.shaderUniforms.hoveredInscription.value = inscriptionId
-    const mat = this.mesh?.material as THREE.MeshStandardMaterial | undefined
-    const shader = (mat as any)?.userData?.shader
-    if (shader && shader.uniforms && shader.uniforms.hoveredInscription) {
-      shader.uniforms.hoveredInscription.value = inscriptionId
-      // Keep maskDebug unchanged (we default to 4 for full segmentation color view)
-    }
   }
 
-  // Enable/disable shader mask debug visualization (0=off,1=mask grayscale,2=hovered white,3=hovered group color)
-  setMaskDebugMode(mode: 0 | 1 | 2 | 3) {
-    const mat = this.mesh?.material as THREE.MeshStandardMaterial | undefined
-    const shader = (mat as any)?.userData?.shader
-    if (shader && shader.uniforms && shader.uniforms.maskDebug) {
-      shader.uniforms.maskDebug.value = mode
-    }
+  setSelectedInscription(inscriptionId: number) {
+    this.shaderUniforms.selectedInscription.value = inscriptionId
   }
-
-  // Simple full-model hover effect: toggle emissive without relying on mask/inscriptions
-  setModelHovered(active: boolean) {
-    const mat = this.mesh?.material as THREE.MeshStandardMaterial | undefined
-    if (!mat) return
-    if (active) {
-      // Soft white emissive for a subtle glow
-      mat.emissive.set(0xffffff)
-      mat.emissiveIntensity = 0.35
-    } else {
-      // Reset to no emissive
-      mat.emissive.set(0x000000)
-      mat.emissiveIntensity = 1.0
-    }
-    mat.needsUpdate = true
-  }
-
 
   getInscriptionAtUV(_u: number, _v: number): number {
     if (!this.maskCtx || !this.maskCanvas || this.maskWidth === 0 || this.maskHeight === 0) return 0
@@ -356,71 +269,12 @@ export class LiverModel {
     return this.shaderUniforms?.maskTexture?.value
   }
 
-  getInscriptionPosition(_inscriptionId: number): THREE.Vector2 | null {
-    return null
-  }
-
   getModelMatrix(): THREE.Matrix4 {
     return this.object?.matrix || new THREE.Matrix4()
   }
 
   setOnModelReady(callback: () => void) {
     this.onModelReady = callback
-  }
-
-  animateInitialRotation() {
-    const target = this.object || this.mesh
-    if (!target) return
-
-    const config = SceneConfig.animation.model.scaleAnimation
-    const startTime = Date.now()
-
-    target.scale.setScalar(config.startScale)
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime
-      const progress = Math.min(elapsed / config.duration, 1)
-      // Only scale the model - no movement
-      const currentScale = config.startScale + (config.endScale - config.startScale) * progress
-      target.scale.setScalar(currentScale)
-
-      if (progress < 1) {
-        requestAnimationFrame(animate)
-      }
-    }
-
-    animate()
-  }
-
-  isModelVisible(): boolean {
-    if (!this.object || !this.mesh) return false
-    
-    // Check if object is in scene
-    if (!this.scene.children.includes(this.object)) return false
-    
-    // Check if mesh has geometry and material
-    if (!this.mesh.geometry || !this.mesh.material) return false
-    
-    // No custom shader path in OBJ-only mode
-    
-    return true
-  }
-
-  ensureModelVisible(): void {
-    if (!this.isModelVisible() && this.object) {
-      console.warn('Model not visible, attempting recovery...')
-      
-      // Re-add to scene if missing
-      if (!this.scene.children.includes(this.object)) {
-        this.scene.add(this.object)
-      }
-      
-      // Force material update
-      if (this.mesh && this.mesh.material) {
-        const material = this.mesh.material as THREE.MeshStandardMaterial
-        material.needsUpdate = true
-      }
-    }
   }
 
   dispose() {
