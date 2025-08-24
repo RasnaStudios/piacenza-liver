@@ -66,6 +66,30 @@ The live website is available at: [liver.rasna.dev](https://liver.rasna.dev)
   pnpm lint
   ```
 
+## 🗺️ Segmentation Map Generation
+
+To regenerate the segmentation map and atlas from CVAT annotations:
+
+```bash
+python3 create_segmentation_map.py
+```
+
+This will generate both:
+- `public/segmentation.png` - 4K segmentation map for UV picking
+- `public/segmentation_atlas.png` - 256px tile atlas for highlights
+- `public/segmentation_atlas.json` - Atlas metadata with tile positions
+
+**Default settings (optimized):**
+- Input: `public/annotations.xml`
+- Segmentation: 4096×4096 pixels
+- Atlas: 256px tiles, 8 columns, anti-aliased borders
+- Output: Both segmentation map and atlas generated automatically
+
+**Custom options:**
+```bash
+python3 create_segmentation_map.py --size 2048 --tile 512 --no-atlas
+```
+
 ## 🛠️ Built With
 
 - **React** - UI framework

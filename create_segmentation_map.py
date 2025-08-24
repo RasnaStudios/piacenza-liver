@@ -1,15 +1,38 @@
 #!/usr/bin/env python3
 """
-Create a 4K square segmentation map PNG from CVAT annotations.xml file.
+Create a square segmentation map PNG from CVAT annotations.xml file.
 Each class (1-42) gets a grayscale value equal to its class number.
-Output is a 4096x4096 square image.
+
+Optionally, also generate a texture atlas where each tile contains the alpha
+mask for a single class (RGB=white, A=mask). A JSON index is written alongside
+with atlas layout and class->tile mapping.
 """
 
 import xml.etree.ElementTree as ET
 import numpy as np
 from PIL import Image, ImageDraw
+import json
 import argparse
 import os
+from scipy import ndimage
+
+def smooth_mask(mask_array, blur_radius=2, dilate_iterations=1):
+    """Apply gaussian blur and dilation to smooth mask borders."""
+    # Convert to float for processing
+    mask_float = mask_array.astype(np.float32) / 255.0
+    
+    # Apply gaussian blur for smooth edges
+    if blur_radius > 0:
+        mask_float = ndimage.gaussian_filter(mask_float, sigma=blur_radius)
+    
+    # Apply dilation to expand regions slightly
+    if dilate_iterations > 0:
+        structure = ndimage.generate_binary_structure(2, 1)  # 4-connected
+        for _ in range(dilate_iterations):
+            mask_float = ndimage.binary_dilation(mask_float > 0.1, structure=structure).astype(np.float32)
+    
+    # Convert back to 0-255 range
+    return (mask_float * 255).astype(np.uint8)
 
 def parse_annotations(xml_file):
     """Parse the CVAT annotations XML file and extract polylines."""
@@ -92,18 +115,103 @@ def create_segmentation_map(polylines, output_path, size=1024):
     print(f"Total classes: {len(unique_values) - (1 if 0 in unique_values else 0)}")  # Subtract background
     print(f"Image size: {img.size}")
 
+
+def create_mask_atlas(polylines, atlas_path, meta_path, tile_size=512, cols=8, source_size=4096):
+    """Generate an RGBA atlas with one tile per label: RGB=white, A=mask.
+    The atlas packs tiles row-wise with given cols and tile_size.
+    Outputs a JSON meta with cols, rows, tileSize and label->index mapping.
+    """
+    # Determine labels and rows - use consecutive 1-42 range instead of sorted existing labels
+    existing_labels = set(p['label'] for p in polylines)
+    if not existing_labels:
+        raise ValueError("No labels found for atlas generation")
+    
+    # Use full 1-42 range to match expected segmentation IDs (including future 41, 42)
+    labels = list(range(1, 43))  # 1, 2, 3, ..., 42 (always generate 42 tiles)
+    count = len(labels)
+    rows = (count + cols - 1) // cols
+
+    atlas_w = cols * tile_size
+    atlas_h = rows * tile_size
+    print(f"Creating mask atlas {atlas_w}x{atlas_h} with {cols} cols, {rows} rows, {count} tiles")
+
+    # Prepare drawing groups
+    polylines_by_label = {}
+    for polyline in polylines:
+        polylines_by_label.setdefault(polyline['label'], []).append(polyline['points'])
+
+    atlas = Image.new('RGBA', (atlas_w, atlas_h), (0, 0, 0, 0))
+
+    index_map = {}
+    for idx, label in enumerate(labels):
+        r = idx // cols
+        c = idx % cols
+        x0 = c * tile_size
+        y0 = r * tile_size
+
+        # Create full-size mask aligned to segmentation UV space, then downscale
+        full_mask = Image.new('L', (source_size, source_size), 0)
+        draw_full = ImageDraw.Draw(full_mask)
+        for points in polylines_by_label.get(label, []):
+            if not points:
+                continue
+            poly = [(int(x), int(y)) for (x, y) in points]
+            if len(poly) >= 3:
+                draw_full.polygon(poly, fill=255)
+
+        # Downscale with NEAREST to preserve hard edges
+        tile_mask = full_mask.resize((tile_size, tile_size), Image.NEAREST)
+        # Binarize to 0/255 to avoid gray bleed when sampling
+        tile_mask = tile_mask.point(lambda v: 255 if v >= 128 else 0, mode='L')
+        
+        # Apply minimal smoothing to borders for anti-aliased highlights
+        tile_array = np.array(tile_mask)
+        tile_array = smooth_mask(tile_array, blur_radius=1, dilate_iterations=0)
+        tile_mask = Image.fromarray(tile_array, mode='L')
+
+        # Compose tile with RGB = mask (grayscale), alpha = 255 (opaque)
+        tile_rgb = Image.merge('RGB', (tile_mask, tile_mask, tile_mask))
+        opaque_alpha = Image.new('L', (tile_size, tile_size), 255)
+        tile_rgba = Image.merge('RGBA', (*tile_rgb.split(), opaque_alpha))
+        atlas.paste(tile_rgba, (x0, y0))
+
+        index_map[int(label)] = {
+            'index': idx,
+            'row': r,
+            'col': c
+        }
+
+    atlas.save(atlas_path)
+    print(f"Mask atlas saved to: {atlas_path}")
+
+    meta = {
+        'cols': cols,
+        'rows': rows,
+        'tileSize': tile_size,
+        'labels': index_map
+    }
+    with open(meta_path, 'w') as f:
+        json.dump(meta, f, indent=2)
+    print(f"Atlas metadata saved to: {meta_path}")
+
 def main():
-    parser = argparse.ArgumentParser(description='Create 4K square segmentation map from CVAT annotations')
+    parser = argparse.ArgumentParser(description='Create square segmentation map and optional mask atlas from CVAT annotations')
     parser.add_argument('--input', '-i', 
-                       default='public/liver-model-gltf/annotations.xml',
+                       default='public/annotations.xml',
                        help='Input annotations.xml file')
     parser.add_argument('--output', '-o',
-                       default='public/liver-model-gltf/segmentation.png',
+                       default='public/segmentation.png',
                        help='Output segmentation map PNG file')
     parser.add_argument('--size', '-s',
                        type=int,
                        default=4096,
                        help='Size of square output image (default: 4096 for 4K)')
+    parser.add_argument('--atlas', action='store_true', default=True, help='Generate a mask atlas and JSON metadata (default: True)')
+    parser.add_argument('--no-atlas', action='store_false', dest='atlas', help='Skip atlas generation')
+    parser.add_argument('--atlas-output', default='public/segmentation_atlas.png', help='Output path for atlas PNG')
+    parser.add_argument('--atlas-meta', default='public/segmentation_atlas.json', help='Output path for atlas JSON metadata')
+    parser.add_argument('--tile', type=int, default=256, help='Atlas tile size in pixels (default: 256)')
+    parser.add_argument('--cols', type=int, default=8, help='Atlas number of columns (default: 8)')
     
     args = parser.parse_args()
     
@@ -122,6 +230,9 @@ def main():
         
         print(f"Creating {args.size}x{args.size} segmentation map...")
         create_segmentation_map(polylines, args.output, args.size)
+
+        if args.atlas:
+            create_mask_atlas(polylines, args.atlas_output, args.atlas_meta, tile_size=args.tile, cols=args.cols)
         
         print("Done!")
         return 0

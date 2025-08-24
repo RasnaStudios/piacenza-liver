@@ -153,7 +153,6 @@ function PiacenzaLiverScene() {
     setSelectedInscription(null)
     if (liverModelRef.current) {
       liverModelRef.current.setHoveredInscription(0)
-      liverModelRef.current.setSelectedInscription(0)
     }
   }, [])
 
@@ -166,7 +165,6 @@ function PiacenzaLiverScene() {
     
     if (liverModelRef.current) {
       liverModelRef.current.setHoveredInscription(0)
-      liverModelRef.current.setSelectedInscription(0)
     }
     
     setIsInteracting(false)
@@ -203,12 +201,6 @@ function PiacenzaLiverScene() {
     }
   }, [isInteracting, hasInteracted])
 
-  // Keep shader's selectedInscription uniform in sync with UI selection
-  useEffect(() => {
-    if (!liverModelRef.current) return
-    const id = selectedInscription?.id || 0
-    liverModelRef.current.setSelectedInscription(id)
-  }, [selectedInscription])
 
   // Initialize 3D scene
   useEffect(() => {
@@ -259,8 +251,6 @@ function PiacenzaLiverScene() {
     try {
       const liverModel = new LiverModel(scene, handleLoadingProgress)
       liverModelRef.current = liverModel
-      // Align shader light direction from above toward the model
-      liverModel.setLightDirectionWorld(new THREE.Vector3(0, 1, 0.5).normalize())
     } catch (e: any) {
       console.error('Failed to initialize LiverModel:', e)
       setErrorMsg('Your browser or device does not support the required 3D features (WebGL). Please try updating your browser or using a different device.')
@@ -311,10 +301,6 @@ function PiacenzaLiverScene() {
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate)
       controls.update()
-      
-      if (liverModelRef.current) {
-        liverModelRef.current.updateShaderUniforms(performance.now() * 0.001)
-      }
       
       renderer.render(scene, camera)
     }

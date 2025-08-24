@@ -2,9 +2,7 @@ import * as THREE from 'three'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import { isMobile } from 'react-device-detect'
 import { SceneConfig } from '../config/SceneConfig'
-import vertSource from '../shaders/liver-inscription.vert?raw'
-import fragTemplate from '../shaders/liver-inscription.frag.template?raw'
-import { generateInscriptionColorFunction } from '../shaders/generateShader'
+import { liverInscriptions, liverGroups } from './LiverData'
 
 export class LiverModel {
   private scene: THREE.Scene
@@ -20,6 +18,18 @@ export class LiverModel {
     this.onProgress?.(monotonic)
   }
 
+  setAtlasTweak(partial: Partial<typeof this.atlasTweak>) {
+    this.atlasTweak = { ...this.atlasTweak, ...partial }
+    // Re-apply current hover if active
+    if (this.currentHoveredId) {
+      this.setHoveredInscription(this.currentHoveredId)
+    }
+  }
+
+  getAtlasTweak() {
+    return { ...this.atlasTweak }
+  }
+
   // Offscreen canvas for CPU-side sampling of the segmentation mask
   private maskCanvas: HTMLCanvasElement | null = null
   private maskCtx: CanvasRenderingContext2D | null = null
@@ -27,7 +37,53 @@ export class LiverModel {
   private maskHeight = 0
   
   private onModelReady?: () => void
-  private shaderUniforms!: Record<string, THREE.IUniform>
+  private atlasTexture: THREE.Texture | null = null
+  private overlayMaterial: THREE.MeshStandardMaterial | null = null
+  private overlayMesh: THREE.Mesh | null = null
+  private atlasCols = 1
+  private atlasRows = 1
+  private labelToTile: Record<number, { row: number; col: number }> = {}
+  private atlasTweak: {
+    flipX: boolean
+    flipY: boolean
+    repeatScaleX: number
+    repeatScaleY: number
+    offsetX: number
+    offsetY: number
+    idOffset: number
+    idMap: Record<number, number>
+  } = { 
+    flipX: false, 
+    flipY: true, 
+    repeatScaleX: 1, 
+    repeatScaleY: 1, 
+    offsetX: 0, 
+    offsetY: 0, 
+    idOffset: 0, 
+    idMap: {
+      // Row 0 (1-8) should map to Row 4 (33-40)
+      1: 33, 2: 34, 3: 35, 4: 36, 5: 37, 6: 38, 7: 39, 8: 40,
+      // Row 1 (9-16) should map to Row 3 (25-32)  
+      9: 25, 10: 26, 11: 27, 12: 28, 13: 29, 14: 30, 15: 31, 16: 32,
+      // Row 3 (25-32) should map to Row 1 (9-16)
+      25: 9, 26: 10, 27: 11, 28: 12, 29: 13, 30: 14, 31: 15, 32: 16,
+      // Row 4 (33-40) should map to Row 0 (1-8)
+      33: 1, 34: 2, 35: 3, 36: 4, 37: 5, 38: 6, 39: 7, 40: 8
+    }
+  }
+
+  private currentHoveredId: number = 0
+
+  private getHighlightColor(id: number): THREE.Color {
+    const ins = liverInscriptions.find((i) => i.id === id)
+    if (ins) {
+      const group = (liverGroups as any)[ins.groupId]
+      if (group?.color) {
+        return new THREE.Color(group.color)
+      }
+    }
+    return new THREE.Color(0xffc107)
+  }
 
 
   constructor(scene: THREE.Scene, onProgress?: (progress: number) => void) {
@@ -52,24 +108,6 @@ export class LiverModel {
       console.error('WebGL not supported on this device')
       throw new Error('WebGL not supported')
     }
-    
-    // Init shader uniforms
-    this.shaderUniforms = {
-      diffuseTexture: { value: null },
-      normalTexture: { value: null },
-      maskTexture: { value: null },
-      ormTexture: { value: null },
-      time: { value: 0 },
-      hoveredInscription: { value: 0 },
-      selectedInscription: { value: 0 },
-      uvMode: { value: 1 }, // flip V for mask in shader; maskTex.flipY=false, OBJ UVs expect V flip
-      normalScale: { value: 1.0 },
-      flipNormalY: { value: 1.0 },
-      useNormal: { value: 1 },
-      ambientStrength: { value: 0.25 },
-      lightDirectionWorld: { value: new THREE.Vector3(0, -1, -0.5).normalize() },
-      useORM: { value: 1 },
-    }
 
     this.loadLiverModel()
   }
@@ -84,83 +122,102 @@ export class LiverModel {
     }
   }
 
-  async loadLiverModel() {
+  private async loadLiverModel() {
     try {
       // Load PBR textures available in /public/liver-model
       const textureLoader = new THREE.TextureLoader(this.loadingManager)
 
       const cacheBust = typeof window !== 'undefined' ? `?v=${(window as any).__BUILD_HASH__ || Date.now()}` : ''
-      const [baseColor, normalTex, maskTex, ormTex] = await Promise.all([
+      const [baseColor, normalTex, maskTex, ormTex, atlasTex, atlasMeta] = await Promise.all([
         textureLoader.loadAsync('/liver-model/Fegato_baseColor.png'),
         textureLoader.loadAsync('/liver-model/Fegato_normal.png'),
         textureLoader.loadAsync(`/segmentation.png${cacheBust}`),
         textureLoader.loadAsync('/liver-model/Fegato_occlusionRoughnessMetallic.png'),
+        textureLoader.loadAsync(`/segmentation_atlas.png${cacheBust}`),
+        fetch(`/segmentation_atlas.json${cacheBust}`).then(r => r.json()),
       ])
 
-      // Configure texture properties
-      // Segmentation MUST be sampled as nearest without mipmaps to avoid ID bleeding
+      // Configure segmentation mask texture
+      Object.assign(maskTex, {
+        minFilter: THREE.NearestFilter,
+        magFilter: THREE.NearestFilter,
+        generateMipmaps: false,
+        wrapS: THREE.ClampToEdgeWrapping,
+        wrapT: THREE.ClampToEdgeWrapping,
+        flipY: false,
+        needsUpdate: true
+      })
+      
+      // Configure PBR textures
+      ;[baseColor, normalTex, ormTex].forEach(tex => {
+        Object.assign(tex, {
+          wrapS: THREE.ClampToEdgeWrapping,
+          wrapT: THREE.ClampToEdgeWrapping,
+          colorSpace: THREE.LinearSRGBColorSpace,
+          flipY: baseColor.flipY,
+          needsUpdate: true
+        })
+      })
 
-      // Prevent ID bleeding from interpolation/mipmaps on the segmentation texture
-      maskTex.minFilter = THREE.NearestFilter
-      maskTex.magFilter = THREE.NearestFilter
-      maskTex.generateMipmaps = false
-      maskTex.wrapS = THREE.ClampToEdgeWrapping
-      maskTex.wrapT = THREE.ClampToEdgeWrapping
-      // Segmentation loaded from /public root; keep flipY=false to match CPU sampling path
-      maskTex.flipY = false
-      maskTex.needsUpdate = true
-      baseColor.wrapS = baseColor.wrapT = THREE.ClampToEdgeWrapping
-      normalTex.wrapS = normalTex.wrapT = THREE.ClampToEdgeWrapping
-      maskTex.wrapS = maskTex.wrapT = THREE.ClampToEdgeWrapping
-      ormTex.wrapS = ormTex.wrapT = THREE.ClampToEdgeWrapping
-      maskTex.magFilter = THREE.NearestFilter
-      maskTex.minFilter = THREE.NearestFilter
-      // Ensure no automatic GPU sRGB decode; we handle conversion in shader
-      baseColor.colorSpace = THREE.LinearSRGBColorSpace
-      normalTex.colorSpace = THREE.LinearSRGBColorSpace
-      ormTex.colorSpace = THREE.LinearSRGBColorSpace
-      baseColor.needsUpdate = true
-      normalTex.flipY = baseColor.flipY
-      normalTex.needsUpdate = true
-      // Align ORM orientation with base/normal
-      ormTex.flipY = baseColor.flipY
-      ormTex.needsUpdate = true
+      // Configure atlas texture for smooth highlights
+      Object.assign(atlasTex, {
+        minFilter: THREE.LinearMipmapLinearFilter,
+        magFilter: THREE.LinearFilter,
+        generateMipmaps: true,
+        wrapS: THREE.ClampToEdgeWrapping,
+        wrapT: THREE.ClampToEdgeWrapping,
+        flipY: false,
+        colorSpace: THREE.NoColorSpace,
+        needsUpdate: true
+      })
+      this.atlasTexture = atlasTex
 
-      // Assign uniforms
-      this.shaderUniforms.diffuseTexture.value = baseColor
-      this.shaderUniforms.normalTexture.value = normalTex
-      this.shaderUniforms.maskTexture.value = maskTex
-      this.shaderUniforms.ormTexture.value = ormTex
+      // Parse atlas meta
+      this.atlasCols = (atlasMeta as any).cols || 1
+      this.atlasRows = (atlasMeta as any).rows || 1
+      const labelsObj = (atlasMeta as any).labels || {}
+      this.labelToTile = {}
+      Object.keys(labelsObj).forEach(k => {
+        const n = Number(k)
+        this.labelToTile[n] = { row: labelsObj[k].row, col: labelsObj[k].col }
+      })
 
-      // Prepare offscreen canvas for mask sampling (for raycast picking)
-      const img: HTMLImageElement | undefined = maskTex.image as any
-      if (img && img.width && img.height) {
+      // Prepare offscreen canvas for mask sampling
+      const img = maskTex.image as HTMLImageElement
+      if (img?.width && img?.height) {
         this.maskCanvas = document.createElement('canvas')
-        this.maskCanvas.width = img.width
-        this.maskCanvas.height = img.height
-        this.maskWidth = img.width
-        this.maskHeight = img.height
-        this.maskCtx = this.maskCanvas.getContext('2d', { willReadFrequently: true } as any) as CanvasRenderingContext2D | null
-        if (this.maskCtx) {
-          this.maskCtx.drawImage(img, 0, 0, img.width, img.height)
-        }
+        this.maskCanvas.width = this.maskWidth = img.width
+        this.maskCanvas.height = this.maskHeight = img.height
+        this.maskCtx = this.maskCanvas.getContext('2d', { willReadFrequently: true })
+        this.maskCtx?.drawImage(img, 0, 0, img.width, img.height)
       }
 
-      // Build ShaderMaterial from templates
-      const colorFunc = generateInscriptionColorFunction()
-      const fragmentShader = fragTemplate.replace('{{INSCRIPTION_COLOR_FUNCTION}}', colorFunc)
-
-      const material = new THREE.ShaderMaterial({
-        uniforms: this.shaderUniforms,
-        vertexShader: vertSource,
-        fragmentShader,
-        lights: false,
+      // Create materials
+      const baseMaterial = new THREE.MeshStandardMaterial({
+        map: baseColor,
+        normalMap: normalTex,
+        aoMap: ormTex,
+        roughnessMap: ormTex,
+        metalnessMap: ormTex,
+        side: THREE.FrontSide,
         transparent: false,
         depthWrite: true,
-        side: THREE.FrontSide,
+        depthTest: true
       })
-      // Enable derivatives (dFdx/dFdy) for WebGL1; safe no-op in WebGL2
-      ;(material as any).extensions = { ...(material as any).extensions, derivatives: true }
+      
+      // Ensure proper face culling and depth to avoid light leaking through
+      ;(baseMaterial as any).shadowSide = THREE.FrontSide
+
+      this.overlayMaterial = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(0xffc107),
+        transparent: true,
+        opacity: 0.0,
+        alphaMap: this.atlasTexture,
+        depthWrite: false,
+        alphaTest: 0.0,
+        blending: THREE.AdditiveBlending,
+        depthTest: true
+      })
 
       // Load OBJ geometry
       const objLoader = new OBJLoader(this.loadingManager)
@@ -169,7 +226,7 @@ export class LiverModel {
       object.traverse((child) => {
         if ((child as any).isMesh) {
           const mesh = child as THREE.Mesh
-          mesh.material = material
+          mesh.material = baseMaterial
           const geom = mesh.geometry as THREE.BufferGeometry
           // Ensure uv2 exists so aoMap can work; duplicate uv if missing
           const uv = geom.getAttribute('uv') as THREE.BufferAttribute
@@ -181,6 +238,21 @@ export class LiverModel {
           mesh.receiveShadow = !isMobile
           mesh.userData = { type: 'liver' }
           if (!this.mesh) this.mesh = mesh
+
+          // Create and add overlay mesh aligned to base
+          if (!this.overlayMesh && this.overlayMaterial) {
+            const overlayMesh = new THREE.Mesh(geom, this.overlayMaterial)
+            overlayMesh.position.copy(mesh.position)
+            overlayMesh.rotation.copy(mesh.rotation)
+            overlayMesh.scale.copy(mesh.scale)
+            overlayMesh.renderOrder = (mesh.renderOrder || 0) + 1
+            if (mesh.parent) {
+              mesh.parent.add(overlayMesh)
+            } else {
+              this.scene.add(overlayMesh)
+            }
+            this.overlayMesh = overlayMesh
+          }
         }
       })
 
@@ -189,8 +261,14 @@ export class LiverModel {
       object.position.copy(SceneConfig.model.position)
       object.rotation.setFromVector3(SceneConfig.model.rotation)
 
-      this.scene.add(object)
       this.object = object
+      this.scene.add(object)
+
+      const self = this
+      ;(window as any).liverAtlas = {
+        set: (t: any) => self.setAtlasTweak(t),
+        get: () => self.getAtlasTweak(),
+      }
 
       // Complete load
       this.reportProgress(100)
@@ -223,35 +301,43 @@ export class LiverModel {
     return this.object
   }
 
-  updateShaderUniforms(time: number) {
-    this.shaderUniforms.time.value = time
-  }
-  setNormalScale(scale: number) {
-    this.shaderUniforms.normalScale.value = scale
-  }
-  setUseNormal(enabled: boolean) {
-    this.shaderUniforms.useNormal.value = enabled ? 1.0 : 0.0
-  }
-  setFlipNormalY(sign: 1.0 | -1.0) {
-    this.shaderUniforms.flipNormalY.value = sign
-  }
-  setAmbientStrength(strength: number) {
-    this.shaderUniforms.ambientStrength.value = Math.max(0, strength)
-  }
-  setLightDirectionWorld(dir: THREE.Vector3) {
-    const v = dir.clone().normalize()
-    this.shaderUniforms.lightDirectionWorld.value.copy(v)
-  }
-  setUseORM(enabled: boolean) {
-    this.shaderUniforms.useORM.value = enabled ? 1.0 : 0.0
-  }
-  setHoveredInscription(inscriptionId: number) {
-    this.shaderUniforms.hoveredInscription.value = inscriptionId
+  getMaskTexture() {
+    // Return the segmentation mask texture used for UV-based inscription picking
+    return this.maskCanvas ? { image: this.maskCanvas } : null
   }
 
-  setSelectedInscription(inscriptionId: number) {
-    this.shaderUniforms.selectedInscription.value = inscriptionId
+  setHoveredInscription(inscriptionId: number) {
+    this.currentHoveredId = inscriptionId
+    if (!this.atlasTexture || !this.overlayMaterial) return
+
+    // Remap incoming id if configured
+    const map = this.atlasTweak.idMap || {}
+    let labelId = (map as any)[inscriptionId] ?? inscriptionId
+    labelId = Math.round(labelId + (this.atlasTweak.idOffset || 0))
+
+    if (!labelId || !this.labelToTile[labelId]) {
+      this.overlayMaterial.opacity = 0.0
+      this.overlayMaterial.needsUpdate = true
+      return
+    }
+
+    const tile = this.labelToTile[labelId]
+    const baseU = 1 / Math.max(1, this.atlasCols)
+    const baseV = 1 / Math.max(1, this.atlasRows)
+    const { flipX, flipY, repeatScaleX, repeatScaleY, offsetX, offsetY } = this.atlasTweak
+    const uRep = (flipX ? -1 : 1) * baseU * (repeatScaleX || 1)
+    const vRep = (flipY ? -1 : 1) * baseV * (repeatScaleY || 1)
+    const offX = (flipX ? (tile.col + 1) * baseU : tile.col * baseU) + offsetX
+    const offY = (flipY ? 1 - (tile.row + 1) * baseV : tile.row * baseV) + offsetY
+    this.atlasTexture.repeat.set(uRep, vRep)
+    this.atlasTexture.offset.set(offX, offY)
+    this.atlasTexture.needsUpdate = true
+    this.overlayMaterial.alphaMap = this.atlasTexture
+    this.overlayMaterial.color.copy(this.getHighlightColor(labelId))
+    this.overlayMaterial.opacity = 0.6
+    this.overlayMaterial.needsUpdate = true
   }
+
 
   getInscriptionAtUV(_u: number, _v: number): number {
     if (!this.maskCtx || !this.maskCanvas || this.maskWidth === 0 || this.maskHeight === 0) return 0
@@ -266,9 +352,6 @@ export class LiverModel {
     return id
   }
 
-  getMaskTexture() {
-    return this.shaderUniforms?.maskTexture?.value
-  }
 
   getModelMatrix(): THREE.Matrix4 {
     return this.object?.matrix || new THREE.Matrix4()
@@ -279,9 +362,18 @@ export class LiverModel {
   }
 
   dispose() {
-    if (this.shaderUniforms?.diffuseTexture?.value) this.shaderUniforms.diffuseTexture.value.dispose()
-    if (this.shaderUniforms?.normalTexture?.value) this.shaderUniforms.normalTexture.value.dispose()
-    if (this.shaderUniforms?.maskTexture?.value) this.shaderUniforms.maskTexture.value.dispose()
+    if (this.overlayMaterial) {
+      this.overlayMaterial.dispose()
+      this.overlayMaterial = null
+    }
+    if (this.atlasTexture) {
+      this.atlasTexture.dispose()
+      this.atlasTexture = null
+    }
+    if (this.overlayMesh) {
+      this.scene.remove(this.overlayMesh)
+      this.overlayMesh = null
+    }
     
     if (this.mesh && this.mesh.material) {
       if (Array.isArray(this.mesh.material)) {
