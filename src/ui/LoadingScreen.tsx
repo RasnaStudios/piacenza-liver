@@ -210,6 +210,25 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
     const pulseDuration = 3.8 + (seed * 3.4) // 3.8s - 7.2s
     const pulseDelay = (seed * 3.5) // 0 - 3.5s
     
+    // Build animation styles without using shorthand to avoid conflicts
+    const animationStyles: React.CSSProperties = isDissolving
+      ? {
+          animationName: 'dissolveParticle',
+          animationDuration: `${1.5 + Math.random() * 0.8}s`,
+          animationTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
+          animationIterationCount: '1',
+          animationDelay: `${Math.random() * 0.5}s`,
+          animationFillMode: 'forwards',
+        }
+      : {
+          animationName: 'etruscanFloat, fireflyPulse',
+          animationDuration: `${particle.duration}s, ${pulseDuration}s`,
+          animationTimingFunction: 'ease-in-out, ease-in-out',
+          animationIterationCount: 'infinite, infinite',
+          animationDelay: `${particle.animationDelay}s, ${pulseDelay}s`,
+          animationFillMode: 'none, none',
+        }
+
     return {
       position: 'absolute' as const,
       left: `${particle.x}%`,
@@ -218,13 +237,7 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       fontWeight: '200' as const,
       color: `rgba(212, 175, 55, ${Math.max(0.08, Math.min(finalOpacity, 0.28))})`,
       textShadow: `0 0 ${Math.max(1, glowIntensity * 0.6)}px rgba(212, 175, 55, 0.22)`,
-      animation: isDissolving 
-        ? `dissolveParticle ${1.5 + Math.random() * 0.8}s cubic-bezier(0.22, 0.61, 0.36, 1) forwards`
-        : `etruscanFloat ${particle.duration}s ease-in-out infinite, fireflyPulse ${pulseDuration}s ease-in-out ${pulseDelay}s infinite`,
-      animationTimingFunction: undefined,
-      animationDelay: isDissolving 
-        ? `${Math.random() * 0.5}s`
-        : `${particle.animationDelay}s`,
+      ...animationStyles,
       pointerEvents: 'none' as const,
       fontFamily: 'Times, serif',
       transform: 'translate(-50%, -50%)',
