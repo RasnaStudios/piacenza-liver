@@ -62,7 +62,7 @@ export class LiverModel {
       time: { value: 0 },
       hoveredInscription: { value: 0 },
       selectedInscription: { value: 0 },
-      uvMode: { value: 1 }, // flip V in shader to match CPU sampling
+      uvMode: { value: 1 }, // flip V for mask in shader; maskTex.flipY=false, OBJ UVs expect V flip
       normalScale: { value: 1.0 },
       flipNormalY: { value: 1.0 },
       useNormal: { value: 1 },
@@ -89,10 +89,11 @@ export class LiverModel {
       // Load PBR textures available in /public/liver-model
       const textureLoader = new THREE.TextureLoader(this.loadingManager)
 
+      const cacheBust = typeof window !== 'undefined' ? `?v=${(window as any).__BUILD_HASH__ || Date.now()}` : ''
       const [baseColor, normalTex, maskTex, ormTex] = await Promise.all([
         textureLoader.loadAsync('/liver-model/Fegato_baseColor.png'),
         textureLoader.loadAsync('/liver-model/Fegato_normal.png'),
-        textureLoader.loadAsync('/segmentation.png'),
+        textureLoader.loadAsync(`/segmentation.png${cacheBust}`),
         textureLoader.loadAsync('/liver-model/Fegato_occlusionRoughnessMetallic.png'),
       ])
 
@@ -257,7 +258,7 @@ export class LiverModel {
     // Clamp uv to [0,1]
     const u = Math.min(1, Math.max(0, _u))
     const v = Math.min(1, Math.max(0, _v))
-    // Texture has flipY = true; canvas origin is top-left => use (1 - v)
+    // Canvas origin is top-left; OBJ UV v=0 is bottom => use (1 - v)
     const x = Math.min(this.maskWidth - 1, Math.max(0, Math.floor(u * this.maskWidth)))
     const y = Math.min(this.maskHeight - 1, Math.max(0, Math.floor((1 - v) * this.maskHeight)))
     const data = this.maskCtx.getImageData(x, y, 1, 1).data
