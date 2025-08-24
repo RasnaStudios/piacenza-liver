@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { CameraController } from './Controller';
 
 export class SceneManager {
@@ -25,8 +25,17 @@ export class SceneManager {
     );
     this.camera.position.set(0, 0, 8); // Moved further back for larger model
 
-    // Renderer setup
-    this.renderer = new THREE.WebGLRenderer({ antialias: true });
+    // Renderer setup: create a dedicated fresh canvas to avoid 2D/WebGL context conflicts
+    const canvas = document.createElement('canvas');
+    // Ensure container is clean (no pre-existing canvas with 2D context)
+    while (container.firstChild) container.removeChild(container.firstChild);
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: false,
+      powerPreference: 'high-performance',
+      preserveDrawingBuffer: false,
+    });
     this.renderer.setSize(container.clientWidth, container.clientHeight);
     this.renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(this.renderer.domElement);
@@ -90,6 +99,11 @@ export class SceneManager {
       cancelAnimationFrame(this.animationId);
     }
     window.removeEventListener('resize', this.handleResize);
+    // Remove canvas from DOM and dispose renderer
+    const canvas = this.renderer.domElement;
+    if (canvas && canvas.parentElement) {
+      canvas.parentElement.removeChild(canvas);
+    }
     this.renderer.dispose();
     this.controls.dispose();
   }

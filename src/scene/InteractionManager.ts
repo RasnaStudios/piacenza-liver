@@ -222,7 +222,8 @@ export class InteractionManager {
     const raycaster = new THREE.Raycaster()
     raycaster.setFromCamera(mouse, this.camera)
     
-    const intersects = raycaster.intersectObjects([liverMesh])
+    // Only test the base mesh, not its children (e.g., overlay)
+    const intersects = raycaster.intersectObject(liverMesh, false)
     
     if (intersects.length > 0) {
       const intersection = intersects[0]
@@ -381,7 +382,8 @@ export class InteractionManager {
     
     const liverMesh = this.liverModel.getMesh()
     if (liverMesh) {
-      const intersects = raycaster.intersectObjects([liverMesh])
+      // Only test the base mesh, not its children (e.g., overlay)
+      const intersects = raycaster.intersectObject(liverMesh, false)
       
       if (intersects.length > 0) {
         const intersection = intersects[0]
