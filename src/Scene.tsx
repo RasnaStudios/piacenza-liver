@@ -429,16 +429,18 @@ function setupLighting(scene: THREE.Scene) {
   keyLight.position.set(0, 6, 3)
   keyLight.target.position.set(0, 0, 0)
   keyLight.angle = Math.PI / 6
-  keyLight.penumbra = 0.5
+  keyLight.penumbra = 0.9
   keyLight.decay = 2
   keyLight.distance = 15
   keyLight.castShadow = true
-  keyLight.shadow.mapSize.width = 4096
-  keyLight.shadow.mapSize.height = 4096
+  keyLight.shadow.mapSize.width = 256
+  keyLight.shadow.mapSize.height = 256
   keyLight.shadow.camera.near = 0.1
   keyLight.shadow.camera.far = 15
   keyLight.shadow.camera.fov = 30
   keyLight.shadow.bias = -0.0001
+  keyLight.shadow.normalBias = 0.02
+  ;(keyLight.shadow as any).radius = 8
   scene.add(keyLight)
   scene.add(keyLight.target)
   
