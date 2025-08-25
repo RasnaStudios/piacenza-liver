@@ -38,8 +38,10 @@ export class LiverModel {
   
   private onModelReady?: () => void
   private atlasTexture: THREE.Texture | null = null
-  private overlayMaterial: THREE.MeshStandardMaterial | null = null
-  private overlayMesh: THREE.Mesh | null = null
+  private selectedMaterial: THREE.MeshStandardMaterial | null = null
+  private selectedMesh: THREE.Mesh | null = null
+  private hoveredMaterial: THREE.MeshStandardMaterial | null = null
+  private hoveredMesh: THREE.Mesh | null = null
   private atlasCols = 1
   private atlasRows = 1
   private labelToTile: Record<number, { row: number; col: number }> = {}
@@ -73,6 +75,7 @@ export class LiverModel {
   }
 
   private currentHoveredId: number = 0
+  private currentSelectedId: number = 0
 
   private getHighlightColor(id: number): THREE.Color {
     const ins = liverInscriptions.find((i) => i.id === id)
@@ -202,13 +205,29 @@ export class LiverModel {
         side: THREE.FrontSide,
         transparent: false,
         depthWrite: true,
-        depthTest: true
+        depthTest: true,
+        // Set base material property values
+        metalness: 1.0,      // Use full metalness from texture
+        roughness: 1.0,      // Use full roughness from texture
+        aoMapIntensity: 1.0  // Use full ambient occlusion from texture
       })
       
       // Ensure proper face culling and depth to avoid light leaking through
       ;(baseMaterial as any).shadowSide = THREE.FrontSide
 
-      this.overlayMaterial = new THREE.MeshStandardMaterial({
+      // Create separate materials for selected and hovered states
+      this.selectedMaterial = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(0xffc107),
+        transparent: true,
+        opacity: 0.0,
+        alphaMap: this.atlasTexture,
+        depthWrite: false,
+        alphaTest: 0.0,
+        blending: THREE.AdditiveBlending,
+        depthTest: true
+      })
+      
+      this.hoveredMaterial = new THREE.MeshStandardMaterial({
         color: new THREE.Color(0xffc107),
         transparent: true,
         opacity: 0.0,
@@ -239,19 +258,34 @@ export class LiverModel {
           mesh.userData = { type: 'liver' }
           if (!this.mesh) this.mesh = mesh
 
-          // Create and add overlay mesh aligned to base
-          if (!this.overlayMesh && this.overlayMaterial) {
-            const overlayMesh = new THREE.Mesh(geom, this.overlayMaterial)
-            overlayMesh.position.copy(mesh.position)
-            overlayMesh.rotation.copy(mesh.rotation)
-            overlayMesh.scale.copy(mesh.scale)
-            overlayMesh.renderOrder = (mesh.renderOrder || 0) + 1
+          // Create and add selected overlay mesh
+          if (!this.selectedMesh && this.selectedMaterial) {
+            const selectedMesh = new THREE.Mesh(geom, this.selectedMaterial)
+            selectedMesh.position.copy(mesh.position)
+            selectedMesh.rotation.copy(mesh.rotation)
+            selectedMesh.scale.copy(mesh.scale)
+            selectedMesh.renderOrder = (mesh.renderOrder || 0) + 1
             if (mesh.parent) {
-              mesh.parent.add(overlayMesh)
+              mesh.parent.add(selectedMesh)
             } else {
-              this.scene.add(overlayMesh)
+              this.scene.add(selectedMesh)
             }
-            this.overlayMesh = overlayMesh
+            this.selectedMesh = selectedMesh
+          }
+          
+          // Create and add hovered overlay mesh
+          if (!this.hoveredMesh && this.hoveredMaterial) {
+            const hoveredMesh = new THREE.Mesh(geom, this.hoveredMaterial)
+            hoveredMesh.position.copy(mesh.position)
+            hoveredMesh.rotation.copy(mesh.rotation)
+            hoveredMesh.scale.copy(mesh.scale)
+            hoveredMesh.renderOrder = (mesh.renderOrder || 0) + 2
+            if (mesh.parent) {
+              mesh.parent.add(hoveredMesh)
+            } else {
+              this.scene.add(hoveredMesh)
+            }
+            this.hoveredMesh = hoveredMesh
           }
         }
       })
@@ -308,16 +342,54 @@ export class LiverModel {
 
   setHoveredInscription(inscriptionId: number) {
     this.currentHoveredId = inscriptionId
-    if (!this.atlasTexture || !this.overlayMaterial) return
+    this.updateHoveredHighlight()
+  }
 
+  setSelectedInscription(inscriptionId: number) {
+    this.currentSelectedId = inscriptionId
+    // Clear hover state when selecting to prevent overlap
+    if (inscriptionId > 0) {
+      this.currentHoveredId = 0
+      this.updateHoveredHighlight()
+    }
+    this.updateSelectedHighlight()
+  }
+
+  private updateSelectedHighlight() {
+    if (!this.atlasTexture || !this.selectedMaterial) return
+
+    if (!this.currentSelectedId) {
+      this.selectedMaterial.opacity = 0.0
+      this.selectedMaterial.needsUpdate = true
+      return
+    }
+
+    this.applyHighlightToMaterial(this.currentSelectedId, this.selectedMaterial, 0.4)
+  }
+
+  private updateHoveredHighlight() {
+    if (!this.atlasTexture || !this.hoveredMaterial) return
+
+    // Don't show hovered highlight if hovering over selected inscription to avoid overlap
+    if (!this.currentHoveredId || this.currentHoveredId === this.currentSelectedId) {
+      this.hoveredMaterial.opacity = 0.0
+      this.hoveredMaterial.needsUpdate = true
+      return
+    }
+
+    // Only show hovered highlight for different inscriptions
+    this.applyHighlightToMaterial(this.currentHoveredId, this.hoveredMaterial, 0.3)
+  }
+
+  private applyHighlightToMaterial(inscriptionId: number, material: THREE.MeshStandardMaterial, opacity: number) {
     // Remap incoming id if configured
     const map = this.atlasTweak.idMap || {}
     let labelId = (map as any)[inscriptionId] ?? inscriptionId
     labelId = Math.round(labelId + (this.atlasTweak.idOffset || 0))
 
     if (!labelId || !this.labelToTile[labelId]) {
-      this.overlayMaterial.opacity = 0.0
-      this.overlayMaterial.needsUpdate = true
+      material.opacity = 0.0
+      material.needsUpdate = true
       return
     }
 
@@ -329,13 +401,17 @@ export class LiverModel {
     const vRep = (flipY ? -1 : 1) * baseV * (repeatScaleY || 1)
     const offX = (flipX ? (tile.col + 1) * baseU : tile.col * baseU) + offsetX
     const offY = (flipY ? 1 - (tile.row + 1) * baseV : tile.row * baseV) + offsetY
-    this.atlasTexture.repeat.set(uRep, vRep)
-    this.atlasTexture.offset.set(offX, offY)
-    this.atlasTexture.needsUpdate = true
-    this.overlayMaterial.alphaMap = this.atlasTexture
-    this.overlayMaterial.color.copy(this.getHighlightColor(labelId))
-    this.overlayMaterial.opacity = 0.6
-    this.overlayMaterial.needsUpdate = true
+    
+    // Create a clone of the atlas texture for this material
+    const textureClone = this.atlasTexture!.clone()
+    textureClone.repeat.set(uRep, vRep)
+    textureClone.offset.set(offX, offY)
+    textureClone.needsUpdate = true
+    
+    material.alphaMap = textureClone
+    material.color.copy(this.getHighlightColor(labelId))
+    material.opacity = opacity
+    material.needsUpdate = true
   }
 
 
@@ -362,17 +438,25 @@ export class LiverModel {
   }
 
   dispose() {
-    if (this.overlayMaterial) {
-      this.overlayMaterial.dispose()
-      this.overlayMaterial = null
+    if (this.selectedMaterial) {
+      this.selectedMaterial.dispose()
+      this.selectedMaterial = null
+    }
+    if (this.hoveredMaterial) {
+      this.hoveredMaterial.dispose()
+      this.hoveredMaterial = null
     }
     if (this.atlasTexture) {
       this.atlasTexture.dispose()
       this.atlasTexture = null
     }
-    if (this.overlayMesh) {
-      this.scene.remove(this.overlayMesh)
-      this.overlayMesh = null
+    if (this.selectedMesh) {
+      this.scene.remove(this.selectedMesh)
+      this.selectedMesh = null
+    }
+    if (this.hoveredMesh) {
+      this.scene.remove(this.hoveredMesh)
+      this.hoveredMesh = null
     }
     
     if (this.mesh && this.mesh.material) {

@@ -97,6 +97,11 @@ function PiacenzaLiverScene() {
     if (!inscription) return
     setHasInteracted(true)
 
+    // Set highlighting immediately for better visual feedback
+    if (liverModelRef.current) {
+      liverModelRef.current.setSelectedInscription(inscriptionId)
+    }
+    
     console.log(`Inscription ${inscriptionId} clicked`)
     console.log(`Camera world position: [${cameraWorldPosition.x.toFixed(3)}, ${cameraWorldPosition.y.toFixed(3)}, ${cameraWorldPosition.z.toFixed(3)}], target: [${cameraWorldTarget.x.toFixed(3)}, ${cameraWorldTarget.y.toFixed(3)}, ${cameraWorldTarget.z.toFixed(3)}]`)
     console.log(`cameraPosition: new THREE.Vector3(${cameraLocalPosition.x.toFixed(3)}, ${cameraLocalPosition.y.toFixed(3)}, ${cameraLocalPosition.z.toFixed(3)}), cameraTarget: new THREE.Vector3(${cameraLocalTarget.x.toFixed(3)}, ${cameraLocalTarget.y.toFixed(3)}, ${cameraLocalTarget.z.toFixed(3)})`)
@@ -125,6 +130,9 @@ function PiacenzaLiverScene() {
     
     setHasInteracted(true)
     console.log(`Inscription ${inscription.id} selected from list`)
+    
+    // Set highlighting immediately for better visual feedback
+    liverModelRef.current.setSelectedInscription(inscription.id)
     
     // Focus camera on inscription
     if (inscription.cameraPosition && inscription.cameraTarget) {

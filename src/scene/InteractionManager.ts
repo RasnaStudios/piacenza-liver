@@ -368,6 +368,11 @@ export class InteractionManager {
 
   private handleDoubleClick(event: MouseEvent) {
     event.preventDefault()
+    
+    // Clear selection highlighting on double-click
+    this.liverModel.setSelectedInscription(0)
+    
+    // Also perform reset for camera/UI
     this.performReset()
   }
 
