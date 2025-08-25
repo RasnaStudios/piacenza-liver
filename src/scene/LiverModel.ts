@@ -206,10 +206,10 @@ export class LiverModel {
         transparent: false,
         depthWrite: true,
         depthTest: true,
-        // Set base material property values
-        metalness: 1.0,      // Use full metalness from texture
-        roughness: 1.0,      // Use full roughness from texture
-        aoMapIntensity: 1.0  // Use full ambient occlusion from texture
+        // Set base material property values for more metallic appearance
+        metalness: 1.0,
+        roughness: 1.0,
+        aoMapIntensity: 1.0
       })
       
       // Ensure proper face culling and depth to avoid light leaking through

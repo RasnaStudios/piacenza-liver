@@ -217,6 +217,7 @@ function PiacenzaLiverScene() {
 
     const scene = new THREE.Scene()
     scene.background = new THREE.Color(0x000000)
+    scene.fog = new THREE.FogExp2(0x000000, 0.03)
     sceneRef.current = scene
     const camera = new THREE.PerspectiveCamera(
       60, 
@@ -421,47 +422,47 @@ function PiacenzaLiverScene() {
 
 // Lighting setup function
 function setupLighting(scene: THREE.Scene) {
-  // Clean spotlight setup
-  const spotlight = new THREE.SpotLight(0xfff4e6, 100.0)
-  spotlight.position.set(0, 6, 3)
-  spotlight.target.position.set(0, 0, 0)
-  spotlight.angle = Math.PI / 6
-  spotlight.penumbra = 0.5
-  spotlight.decay = 2
-  spotlight.distance = 15
+  // 3-Point Lighting Setup
   
-  // High quality shadows
-  spotlight.castShadow = true
-  spotlight.shadow.mapSize.width = 4096
-  spotlight.shadow.mapSize.height = 4096
-  spotlight.shadow.camera.near = 0.1
-  spotlight.shadow.camera.far = 15
-  spotlight.shadow.camera.fov = 30
-  spotlight.shadow.bias = -0.0001
+  // 1. KEY LIGHT - Spotlight for dramatic shadows on floor
+  const keyLight = new THREE.SpotLight(0xfff4e6, 80.0)
+  keyLight.position.set(0, 6, 3)
+  keyLight.target.position.set(0, 0, 0)
+  keyLight.angle = Math.PI / 6
+  keyLight.penumbra = 0.5
+  keyLight.decay = 2
+  keyLight.distance = 15
+  keyLight.castShadow = true
+  keyLight.shadow.mapSize.width = 4096
+  keyLight.shadow.mapSize.height = 4096
+  keyLight.shadow.camera.near = 0.1
+  keyLight.shadow.camera.far = 15
+  keyLight.shadow.camera.fov = 30
+  keyLight.shadow.bias = -0.0001
+  scene.add(keyLight)
+  scene.add(keyLight.target)
   
-  scene.add(spotlight)
-  scene.add(spotlight.target)
+  // 2. FILL LIGHT - Softer light to fill shadows (front-left, lower intensity)
+  const fillLight = new THREE.DirectionalLight(0xfff4e6, 0.8)
+  fillLight.position.set(-6, 4, 4)
+  fillLight.target.position.set(0, 0, 0)
+  fillLight.castShadow = false
+  scene.add(fillLight)
+  scene.add(fillLight.target)
   
-  // Bottom lights for reading inscriptions on underside
-  const bottomLight1 = new THREE.PointLight(0xfff4e6, 25, 15, 2)
-  bottomLight1.position.set(-6, -8, 4)
-  bottomLight1.castShadow = false
-  scene.add(bottomLight1)
+  // 3. BACK LIGHT - Rim lighting from behind (creates separation)
+  const backLight = new THREE.DirectionalLight(0xfff4e6, 0.4)
+  backLight.position.set(-2, 6, -8)
+  backLight.target.position.set(0, 0, 0)
+  backLight.castShadow = false
+  scene.add(backLight)
+  scene.add(backLight.target)
   
-  const bottomLight2 = new THREE.PointLight(0xfff4e6, 25, 15, 2)
-  bottomLight2.position.set(6, -8, -4)
-  bottomLight2.castShadow = false
-  scene.add(bottomLight2)
-  
-  const bottomLight3 = new THREE.PointLight(0xfff4e6, 25, 15, 2)
-  bottomLight3.position.set(-2, -10, -5)
-  bottomLight3.castShadow = false
-  scene.add(bottomLight3)
-  
-  const bottomLight4 = new THREE.PointLight(0xfff4e6, 25, 15, 2)
-  bottomLight4.position.set(2, -10, 5)
-  bottomLight4.castShadow = false
-  scene.add(bottomLight4)
+  // Subtle bottom fill for inscription visibility
+  const bottomFill = new THREE.PointLight(0xfff4e6, 8, 12, 2)
+  bottomFill.position.set(0, -6, 0)
+  bottomFill.castShadow = false
+  scene.add(bottomFill)
   
   // Extremely subtle dust particles
   const particleCount = 40
@@ -530,15 +531,14 @@ function setupLighting(scene: THREE.Scene) {
   const ambientLight = new THREE.AmbientLight(0x1a1611, 1)
   scene.add(ambientLight)
   
-  // Large museum floor plane (invisible edges)
-  const floorGeometry = new THREE.PlaneGeometry(50, 50)
-  const floorMaterial = new THREE.MeshPhongMaterial({ 
-    color: 0x2a2a2a,
-    transparent: true,
-    opacity: 0.9
+  // Large museum floor plane - dark but receives shadows
+  const floorGeometry = new THREE.PlaneGeometry(5000, 5000)
+  const floorMaterial = new THREE.MeshLambertMaterial({ 
+    color: 0x222222,
+    transparent: false
   })
   const floor = new THREE.Mesh(floorGeometry, floorMaterial)
-  floor.rotation.x = -Math.PI / 2 // Rotate to be horizontal
+  floor.rotation.x = -Math.PI / 2
   floor.position.set(0, -3.0, 0)
   floor.receiveShadow = true
   scene.add(floor)
