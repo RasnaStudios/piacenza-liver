@@ -195,25 +195,34 @@ export class LiverModel {
         this.maskCtx?.drawImage(img, 0, 0, img.width, img.height)
       }
 
-      // Create materials
+      // Configure texture properties
+      this.configureTexture(baseColor, { flipY: true })
+      this.configureTexture(normalTex, { flipY: true })
+      this.configureTexture(ormTex, { flipY: true })
+
+      // Create base material with PBR settings
       const baseMaterial = new THREE.MeshStandardMaterial({
+        // Texture maps
         map: baseColor,
         normalMap: normalTex,
         aoMap: ormTex,
         roughnessMap: ormTex,
         metalnessMap: ormTex,
+        
+        // Rendering properties
         side: THREE.FrontSide,
         transparent: false,
         depthWrite: true,
         depthTest: true,
-        // Set base material property values for more metallic appearance
+        
+        // Material properties
         metalness: 1.0,
         roughness: 1.0,
-        aoMapIntensity: 1.0
+        aoMapIntensity: 1.0,
+        flatShading: true // Smooth shading helps hide mesh topology
       })
       
-      // Ensure proper face culling and depth to avoid light leaking through
-      ;(baseMaterial as any).shadowSide = THREE.FrontSide
+      baseMaterial.shadowSide = THREE.FrontSide
 
       // Create separate materials for selected and hovered states
       this.selectedMaterial = new THREE.MeshStandardMaterial({
@@ -245,18 +254,15 @@ export class LiverModel {
       object.traverse((child) => {
         if ((child as any).isMesh) {
           const mesh = child as THREE.Mesh
-          mesh.material = baseMaterial
           const geom = mesh.geometry as THREE.BufferGeometry
+          
+          // Compute vertex normals to smooth out grid artifacts from OBJ model
+          geom.computeVertexNormals()
+          
+          mesh.material = baseMaterial
+          this.mesh = mesh
+          
           // Ensure uv2 exists so aoMap can work; duplicate uv if missing
-          const uv = geom.getAttribute('uv') as THREE.BufferAttribute
-          if (uv && !geom.getAttribute('uv2')) {
-            geom.setAttribute('uv2', new THREE.BufferAttribute(uv.array, 2))
-          }
-          // Ensure aoMap works (requires uv2)
-          mesh.castShadow = !isMobile
-          mesh.receiveShadow = !isMobile
-          mesh.userData = { type: 'liver' }
-          if (!this.mesh) this.mesh = mesh
 
           // Create and add selected overlay mesh
           if (!this.selectedMesh && this.selectedMaterial) {
@@ -437,19 +443,37 @@ export class LiverModel {
     this.onModelReady = callback
   }
 
+  private configureTexture(texture: THREE.Texture, options: { flipY?: boolean } = {}) {
+    texture.anisotropy = 4  // Reduce anisotropy to minimize artifacts
+    texture.minFilter = THREE.LinearFilter  // Use simpler filtering
+    texture.magFilter = THREE.LinearFilter
+    texture.wrapS = THREE.RepeatWrapping  // Try repeat wrapping
+    texture.wrapT = THREE.RepeatWrapping
+    texture.generateMipmaps = false  // Disable mipmaps to avoid compression artifacts
+    texture.flipY = options.flipY ?? false
+    texture.needsUpdate = true
+  }
+
   dispose() {
-    if (this.selectedMaterial) {
-      this.selectedMaterial.dispose()
-      this.selectedMaterial = null
+    // Clean up mesh and geometry
+    if (this.mesh) {
+      this.scene.remove(this.mesh)
+      this.mesh.geometry?.dispose()
+      if (Array.isArray(this.mesh.material)) {
+        this.mesh.material.forEach(mat => mat.dispose())
+      } else {
+        this.mesh.material?.dispose()
+      }
+      this.mesh = null
     }
-    if (this.hoveredMaterial) {
-      this.hoveredMaterial.dispose()
-      this.hoveredMaterial = null
+
+    // Clean up object
+    if (this.object) {
+      this.scene.remove(this.object)
+      this.object = null
     }
-    if (this.atlasTexture) {
-      this.atlasTexture.dispose()
-      this.atlasTexture = null
-    }
+
+    // Clean up highlight meshes
     if (this.selectedMesh) {
       this.scene.remove(this.selectedMesh)
       this.selectedMesh = null
@@ -458,29 +482,17 @@ export class LiverModel {
       this.scene.remove(this.hoveredMesh)
       this.hoveredMesh = null
     }
-    
-    if (this.mesh && this.mesh.material) {
-      if (Array.isArray(this.mesh.material)) {
-        this.mesh.material.forEach(material => material.dispose())
-      } else {
-        this.mesh.material.dispose()
-      }
-    }
-    
-    if (this.mesh && this.mesh.geometry) {
-      this.mesh.geometry.dispose()
-    }
-    
-    if (this.object) {
-      this.scene.remove(this.object)
-    }
-    if (this.mesh && this.mesh !== this.object) {
-      this.scene.remove(this.mesh)
-    }
-    
-    this.mesh = null
-    this.object = null
-    
+
+    // Clean up materials and textures
+    this.selectedMaterial?.dispose()
+    this.selectedMaterial = null
+    this.hoveredMaterial?.dispose()
+    this.hoveredMaterial = null
+    this.atlasTexture?.dispose()
+    this.atlasTexture = null
+
+    // Clean up canvas resources
+    this.maskCanvas = null
+    this.maskCtx = null
   }
-  
-} 
+}
