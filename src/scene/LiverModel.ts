@@ -131,11 +131,11 @@ export class LiverModel {
       const textureLoader = new THREE.TextureLoader(this.loadingManager)
 
       const cacheBust = typeof window !== 'undefined' ? `?v=${(window as any).__BUILD_HASH__ || Date.now()}` : ''
-      const [baseColor, normalTex, maskTex, ormTex, atlasTex, atlasMeta] = await Promise.all([
-        textureLoader.loadAsync('/liver-model/Fegato_baseColor.png'),
-        textureLoader.loadAsync('/liver-model/Fegato_normal.png'),
+      const [baseColor, normalTex, ormTex, maskTex, atlasTex, atlasMeta] = await Promise.all([
+        textureLoader.loadAsync('/liver-model/Fegato_baseColor.jpg'),
+        textureLoader.loadAsync('/liver-model/Fegato_normal.jpg'),
+        textureLoader.loadAsync('/liver-model/Fegato_occlusionRoughnessMetallic.jpg'),
         textureLoader.loadAsync(`/segmentation.png${cacheBust}`),
-        textureLoader.loadAsync('/liver-model/Fegato_occlusionRoughnessMetallic.png'),
         textureLoader.loadAsync(`/segmentation_atlas.png${cacheBust}`),
         fetch(`/segmentation_atlas.json${cacheBust}`).then(r => r.json()),
       ])
