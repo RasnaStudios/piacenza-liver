@@ -3,44 +3,54 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  assetsInclude: ['**/*.obj'],
   plugins: [
     react(),
     VitePWA({
-      injectRegister: 'auto',
       registerType: 'autoUpdate',
-      devOptions: {
-        enabled: true
-      },
+      injectRegister: 'auto',
+      includeAssets: ['icon.svg'],
       workbox: {
-        // Allow precaching large GLTF textures and assets
-        maximumFileSizeToCacheInBytes: 25 * 1024 * 1024,
-        // Do not precache app code (JS/CSS/HTML); only explicit includeAssets below
-        globPatterns: [],
+        cleanupOutdatedCaches: true,
+        navigateFallback: 'index.html',
+        // Precache app shell and static assets including images/OBJ/JSON
+        globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,gif,svg,webp,obj,json}'],
+        // Allow large assets (textures / OBJ) to be precached
+        maximumFileSizeToCacheInBytes: 150 * 1024 * 1024,
+        // Optional runtime caching for images/OBJ/JSON
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.origin === self.location.origin && url.pathname.startsWith('/liver-model-gltf/'),
+            urlPattern: /\.(?:png|jpg|jpeg|gif|svg|webp)$/,
             handler: 'CacheFirst',
             options: {
-              cacheName: 'liver-assets',
-              expiration: {
-                maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-              }
+              cacheName: 'images',
+              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 }
             }
+          },
+          {
+            urlPattern: /\.(?:obj)$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'models',
+              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 30 }
+            }
+          },
+          {
+            urlPattern: /segmentation_atlas\.json$/,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'json' }
           }
         ]
       },
-      // Explicitly precache only the model assets
-      includeAssets: ['liver-model-gltf/**'],
       manifest: {
         name: 'Piacenza Liver',
-        short_name: 'Liver3D',
+        short_name: 'Liver',
         start_url: '/',
         display: 'standalone',
-        background_color: '#111111',
-        theme_color: '#111111',
+        background_color: '#000000',
+        theme_color: '#000000',
         icons: [
-          { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }
+          { src: 'icon.svg', sizes: 'any', type: 'image/svg+xml' }
         ]
       }
     })

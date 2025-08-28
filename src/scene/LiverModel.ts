@@ -1,6 +1,12 @@
 import * as THREE from 'three'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
-import { isMobile } from 'react-device-detect'
+import objUrl from '../assets/liver-model/Fegato.obj'
+import baseColorUrl from '../assets/liver-model/Fegato_baseColor.jpg'
+import normalUrl from '../assets/liver-model/Fegato_normal.jpg'
+import ormUrl from '../assets/liver-model/Fegato_occlusionRoughnessMetallic.jpg'
+import maskUrl from '../assets/segmentation.png'
+import atlasPngUrl from '../assets/segmentation_atlas.png'
+import atlasMeta from '../assets/segmentation_atlas.json'
 import { SceneConfig } from '../config/SceneConfig'
 import { liverInscriptions, liverGroups } from './LiverData'
 
@@ -129,15 +135,12 @@ export class LiverModel {
     try {
       // Load PBR textures available in /public/liver-model
       const textureLoader = new THREE.TextureLoader(this.loadingManager)
-
-      const cacheBust = typeof window !== 'undefined' ? `?v=${(window as any).__BUILD_HASH__ || Date.now()}` : ''
-      const [baseColor, normalTex, ormTex, maskTex, atlasTex, atlasMeta] = await Promise.all([
-        textureLoader.loadAsync('/liver-model/Fegato_baseColor.jpg'),
-        textureLoader.loadAsync('/liver-model/Fegato_normal.jpg'),
-        textureLoader.loadAsync('/liver-model/Fegato_occlusionRoughnessMetallic.jpg'),
-        textureLoader.loadAsync(`/segmentation.png${cacheBust}`),
-        textureLoader.loadAsync(`/segmentation_atlas.png${cacheBust}`),
-        fetch(`/segmentation_atlas.json${cacheBust}`).then(r => r.json()),
+      const [baseColor, normalTex, ormTex, maskTex, atlasTex] = await Promise.all([
+        textureLoader.loadAsync(baseColorUrl),
+        textureLoader.loadAsync(normalUrl),
+        textureLoader.loadAsync(ormUrl),
+        textureLoader.loadAsync(maskUrl),
+        textureLoader.loadAsync(atlasPngUrl),
       ])
 
       // Configure segmentation mask texture
@@ -249,7 +252,7 @@ export class LiverModel {
 
       // Load OBJ geometry
       const objLoader = new OBJLoader(this.loadingManager)
-      const object = await objLoader.loadAsync('/liver-model/Fegato.obj')
+      const object = await objLoader.loadAsync(objUrl)
 
       object.traverse((child) => {
         if ((child as any).isMesh) {
