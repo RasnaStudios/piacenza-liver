@@ -1,7 +1,7 @@
 import { 
   Paper
 } from '@mantine/core'
-import { liverGroups, liverGods } from '../scene/LiverData'
+import { liverGods } from '../scene/LiverData'
 import { NumberBadge } from './NumberBadge'
 import { isMobile } from 'react-device-detect'
 
@@ -15,11 +15,10 @@ interface HoverTooltipProps {
 export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = false, isModifierKeyPressed = false }: HoverTooltipProps) {
   
   // Don't show tooltip if mobile, no hovered section, panel is open, or modifier keys are pressed
-  if (!hoveredSection || isMobile || isPanelOpen || isModifierKeyPressed) {
+  if (!hoveredSection || isMobile || isModifierKeyPressed) {
     return null
   }
 
-  const group = (liverGroups as any)[hoveredSection.groupId]
   const gods = hoveredSection.gods.map((godId: string) => (liverGods as any)[godId]).filter(Boolean)
   const deityNames = gods.map((god: any) => god.name).join(' + ')
 
@@ -67,11 +66,10 @@ export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = fals
 
   const deityNamesStyles = {
     color: '#f4e6d3',
-    fontSize: '0.85em',
+    fontSize: '1em',
     fontWeight: 600,
     lineHeight: 1.2,
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
-    fontFamily: 'Cinzel, Times New Roman, serif',
     letterSpacing: '0.3px',
   }
 
@@ -80,15 +78,11 @@ export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = fals
       <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         <div style={contentStyles}>
           <NumberBadge value={hoveredSection.id} size={28} />
-          
-          <span style={etruscanTextStyles}>
-            {hoveredSection.etruscanText}
-          </span>
+          <div style={deityNamesStyles}>{deityNames}</div>
         </div>
-        
-        <div style={deityNamesStyles}>
-          {deityNames}
-        </div>
+        {isPanelOpen ? null :
+        <span style={etruscanTextStyles}>{hoveredSection.etruscanText}</span>
+        }
       </div>
     </Paper>
   )
