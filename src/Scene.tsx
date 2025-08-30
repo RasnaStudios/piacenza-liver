@@ -368,7 +368,13 @@ function PiacenzaLiverScene() {
         {/* Modular UI components */}
         <DeityPanel 
           selectedInscription={selectedInscription} 
-          onClose={handlePanelClose} 
+          onClose={handlePanelClose}
+          onInscriptionClick={(inscriptionId) => {
+            const inscription = liverInscriptions.find(ins => ins.id === inscriptionId)
+            if (inscription) {
+              handleInscriptionListClick(inscription)
+            }
+          }}
         />
         
         <HoverTooltip 
