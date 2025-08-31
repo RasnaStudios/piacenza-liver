@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Box, Text } from '@mantine/core'
 import { isMobile } from 'react-device-detect'
+import { useMediaQuery } from '@mantine/hooks'
 import { liverInscriptions, liverGroups, liverGods } from '../scene/LiverData'
 
 interface InscriptionListProps {
@@ -15,6 +16,7 @@ export function InscriptionList({ onInscriptionSelect, selectedInscription, isLo
   const [isVisible, setIsVisible] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   const inscriptionRefs = useRef<{ [key: number]: HTMLDivElement | null }>({})
+  const isPortrait = useMediaQuery('(orientation: portrait)')
 
   const getGroupColor = (groupId: string) => {
     return liverGroups[groupId as keyof typeof liverGroups]?.color || '#888'
@@ -24,13 +26,12 @@ export function InscriptionList({ onInscriptionSelect, selectedInscription, isLo
     return gods.map(godId => liverGods[godId as keyof typeof liverGods]?.name || godId).join(' & ')
   }
 
-  // Always use single column
-  const totalWidth = '200px'
+  // Smaller width to avoid blocking model
+  const totalWidth = '160px'
   
-  // Always allow scrolling for full height
-  
-  const listStyles = (isMobile || isLoading || !hasInteracted) ? {
-    display: 'none' // Hide on mobile, during loading, and before interaction
+  // Hide on mobile, portrait mode, during loading, and before interaction
+  const listStyles = (isMobile || isPortrait || isLoading || !hasInteracted) ? {
+    display: 'none'
   } : {
     position: 'fixed' as const,
     top: 20,
@@ -94,12 +95,12 @@ export function InscriptionList({ onInscriptionSelect, selectedInscription, isLo
 
   // Handle visibility animation - show immediately when interacted
   useEffect(() => {
-    if (!isMobile && !isLoading && hasInteracted) {
+    if (!isMobile && !isPortrait && !isLoading && hasInteracted) {
       setIsVisible(true)
     } else {
       setIsVisible(false)
     }
-  }, [isMobile, isLoading, hasInteracted])
+  }, [isMobile, isPortrait, isLoading, hasInteracted])
 
   // Auto-scroll to selected inscription
   useEffect(() => {
@@ -114,7 +115,7 @@ export function InscriptionList({ onInscriptionSelect, selectedInscription, isLo
     }
   }, [selectedInscription])
 
-  if (isMobile || isLoading || !hasInteracted) {
+  if (isMobile || isPortrait || isLoading || !hasInteracted) {
     return null
   }
 

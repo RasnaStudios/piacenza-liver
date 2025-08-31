@@ -27,6 +27,8 @@ export function PanelHeader({ selectedInscription, deityNames, onClose, getTextC
           {selectedInscription.etruscanText}
         </span>
       </div>
+      
+      
       <button
         onClick={onClose}
         aria-label="Close panel"

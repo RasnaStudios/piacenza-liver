@@ -63,14 +63,12 @@ export const getPanelStyles = () => ({
 // Header styles
 export const getHeaderStyles = () => ({
   display: 'flex',
+  alignItems: 'center',
   justifyContent: 'space-between',
-  alignItems: 'flex-start',
-  padding: isMobile ? '20px 16px 16px 16px' : 16,
-  paddingTop: isMobile ? 20 : 20,
+  padding: '20px 24px 16px 24px',
   borderBottom: '1px solid rgba(139, 101, 65, 0.2)',
-  background: 'linear-gradient(135deg, #100c08 0%, #181410 50%, #201a14 100%)',
-  boxShadow: 'inset 0 1px 2px rgba(255, 255, 255, 0.05), inset 0 -1px 2px rgba(0, 0, 0, 0.1)',
-  borderRadius: isMobile ? 0 : '12px 0 0 0',
+  background: 'transparent',
+  position: 'relative' as const,
 })
 
 export const getHeaderLeftStyles = () => ({
@@ -357,16 +355,71 @@ export const CSS_ANIMATIONS = `
     }
   }
 
+  @keyframes panelSlideInPortrait {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
   @media (max-width: 768px) {
     @keyframes panelSlideInMobile {
-      0% {
+      from {
         transform: translateY(100%);
+        opacity: 0;
       }
-      100% {
+      to {
         transform: translateY(0);
+        opacity: 1;
       }
     }
+
+    @keyframes panelSlideInPortrait {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    /* Responsive typography for small screens */
+    .mobile-title {
+      font-size: clamp(1.1rem, 4vw, 1.4rem) !important;
+      line-height: 1.3 !important;
+    }
     
+    .mobile-subtitle {
+      font-size: clamp(0.9rem, 3vw, 1.1rem) !important;
+      line-height: 1.4 !important;
+    }
+    
+    .mobile-section-title {
+      font-size: clamp(0.85rem, 2.5vw, 1rem) !important;
+      line-height: 1.4 !important;
+    }
+    
+    .mobile-body-text {
+      font-size: clamp(0.8rem, 2.2vw, 0.9rem) !important;
+      line-height: 1.5 !important;
+    }
+    
+    .mobile-label-text {
+      font-size: clamp(0.75rem, 2vw, 0.85rem) !important;
+      line-height: 1.4 !important;
+    }
+    
+    .mobile-etruscan-text {
+      font-size: clamp(0.9rem, 2.8vw, 1.1rem) !important;
+      line-height: 1.3 !important;
+    }
+  }  
     @keyframes panelSlideIn {
       0% {
         opacity: 0;

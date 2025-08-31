@@ -4,6 +4,11 @@ import { gsap } from 'gsap'
 import { isMobile } from 'react-device-detect'
 import { SceneConfig } from '../config/SceneConfig'
 
+// Helper function to detect portrait orientation with improved detection
+const isPortraitOrientation = () => {
+  return window.innerHeight > window.innerWidth
+}
+
 export class CameraController {
   private camera: THREE.Camera
   private controls: OrbitControls
@@ -146,7 +151,7 @@ export class CameraController {
       endPosition = endTarget.clone().add(offset)
     }
 
-    // Mobile-only: true screen-space pan LEFT (translate camera AND target together, no orbit)
+    // Mobile-only: adjust camera positioning based on orientation
     try {
       if (isMobile) {
         const persp = this.camera as any
@@ -154,15 +159,41 @@ export class CameraController {
           const forwardVec = endTarget.clone().sub(endPosition)
           const distance = forwardVec.length()
           const fov = THREE.MathUtils.degToRad(persp.fov)
-          const halfWidth = Math.tan(fov * 0.5) * distance * persp.aspect
-          const fraction = 0.4 // tune as needed; portion of half-screen width to pan
-          const worldShift = halfWidth * fraction
-          const forward = forwardVec.clone().normalize()
-          const right = new THREE.Vector3().crossVectors(forward, this.camera.up).normalize()
-          const leftShift = right.multiplyScalar(-worldShift)
-          // Pan both position and target equally to avoid rotation
-          endPosition.add(leftShift)
-          endTarget.add(leftShift)
+          
+          if (isPortraitOrientation()) {
+            // Portrait mode: zoom out + shift camera UP to account for responsive bottom panel
+            const halfHeight = Math.tan(fov * 0.5) * distance
+            
+            // 1. Zoom out by moving camera further back
+            const zoomOutFactor = 1.3 // Zoom out by 30% (reduced from 40%)
+            const forward = forwardVec.clone().normalize()
+            const zoomOffset = forward.multiplyScalar(-distance * (zoomOutFactor - 1))
+            endPosition.add(zoomOffset)
+            
+            // 2. Shift UP to center the visible area (accounting for responsive panel height)
+            // Panel takes min(50vh, 400px) with minHeight 280px
+            const viewportHeight = window.innerHeight
+            const panelHeight = Math.min(viewportHeight * 0.5, 400)
+            const actualPanelHeight = Math.max(panelHeight, 280)
+            const panelFraction = (actualPanelHeight / viewportHeight) * 0.4 // Adjust shift based on actual panel size
+            
+            const worldShiftUp = halfHeight * zoomOutFactor * panelFraction
+            const up = this.camera.up.clone().normalize()
+            
+            endPosition.add(up.multiplyScalar(worldShiftUp))
+            endTarget.add(up.multiplyScalar(worldShiftUp))
+          } else {
+            // Landscape mode: pan LEFT for side panel
+            const halfWidth = Math.tan(fov * 0.5) * distance * persp.aspect
+            const fraction = 0.4 // tune as needed; portion of half-screen width to pan
+            const worldShift = halfWidth * fraction
+            const forward = forwardVec.clone().normalize()
+            const right = new THREE.Vector3().crossVectors(forward, this.camera.up).normalize()
+            const leftShift = right.multiplyScalar(-worldShift)
+            // Pan both position and target equally to avoid rotation
+            endPosition.add(leftShift)
+            endTarget.add(leftShift)
+          }
         }
       }
     } catch (_e) {
