@@ -132,8 +132,6 @@ export function InscriptionList({
         bottom: 20,
         left: isVisible ? 0 : -300,
         width: 200,
-        height: 'calc(100vh - 40px)',
-        maxHeight: 'calc(100vh - 40px)',
         background: '#0a0806',
         border: '1px solid rgba(139, 101, 65, 0.2)',
         borderRadius: '0 12px 12px 0',
@@ -141,16 +139,24 @@ export function InscriptionList({
         fontFamily: 'Georgia, serif',
         transition: 'left 0.3s ease-out',
         padding: 8,
+        display: 'flex',
+        flexDirection: 'column',
       }}
     >
       <div
         style={{
-          height: '100%',
-          overflowY: 'auto',
+          flex: 1,
+          overflowY: 'scroll',
+          overflowX: 'hidden',
           scrollbarWidth: 'thin',
           scrollbarColor: 'rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2)',
+          WebkitOverflowScrolling: 'touch',
+          pointerEvents: 'auto',
         }}
         className="custom-scrollbar"
+        onWheel={(e) => {
+          e.stopPropagation()
+        }}
       >
         <style>
           {`

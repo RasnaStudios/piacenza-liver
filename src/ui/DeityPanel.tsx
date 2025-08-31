@@ -53,21 +53,22 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
   const panelStyles = getPanelStyles()
   const contentStyles = getContentStyles()
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (!isMobile || !isPortrait) return
+  const handleDragStart = (e: React.TouchEvent) => {
     setIsDragging(true)
     dragStartY.current = e.touches[0].clientY
+    e.stopPropagation()
   }
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging || !isMobile || !isPortrait) return
+  const handleDragMove = (e: React.TouchEvent) => {
+    if (!isDragging) return
     const currentY = e.touches[0].clientY
     const deltaY = currentY - dragStartY.current
     setDragOffset(deltaY)
+    e.stopPropagation()
   }
 
-  const handleTouchEnd = () => {
-    if (!isDragging || !isMobile || !isPortrait) return
+  const handleDragEnd = (e: React.TouchEvent) => {
+    if (!isDragging) return
     setIsDragging(false)
     
     // Calculate actual panel position relative to viewport bottom
@@ -94,7 +95,9 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
     }
     
     setDragOffset(0)
+    e.stopPropagation()
   }
+
 
   const getCurrentHeight = () => {
     if (isDragging) {
@@ -133,19 +136,23 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
           transition: isDragging ? 'none' : 'all 0.3s ease-out',
           display: 'flex',
           flexDirection: 'column',
+          pointerEvents: 'auto',
         }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
       >
         {/* Drag handle */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: '8px 0 4px 0',
-          cursor: 'grab',
-        }}>
+        <div 
+          className="drag-handle"
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: '8px 0 4px 0',
+            cursor: 'grab',
+          }}
+          onTouchStart={handleDragStart}
+          onTouchMove={handleDragMove}
+          onTouchEnd={handleDragEnd}
+        >
           <div style={{
             width: '40px',
             height: '4px',
@@ -167,12 +174,18 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
             onClose={onClose}
             getTextClass={getTextClass}
           />
-        <div style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '16px 24px',
-          color: '#f4e6d3',
-        }}>
+        <div 
+          className="deity-panel-scrollbar"
+          style={{
+            flex: 1,
+            overflowY: 'scroll',
+            overflowX: 'hidden',
+            padding: '16px 24px',
+            color: '#f4e6d3',
+            WebkitOverflowScrolling: 'touch',
+            minHeight: 0,
+            touchAction: 'pan-y',
+          }}>
           <div style={{ marginBottom: 24 }}>
             <div style={{ marginBottom: 12 }}>
               <h5 style={{
@@ -255,7 +268,14 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
         onClose={onClose}
         getTextClass={getTextClass}
       />
-      <div style={contentStyles}>
+      <div 
+        className="deity-panel-scrollbar"
+        style={{
+          ...contentStyles,
+          overflowY: 'scroll',
+          overflowX: 'hidden',
+          minHeight: 0,
+        }}>
         <div style={{ marginBottom: 24 }}>
           <div style={{ marginBottom: 12 }}>
             <h5 style={{
@@ -275,6 +295,12 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
                 god={god}
                 getTextClass={getTextClass}
                 selectedInscriptionId={selectedInscription.id}
+                onInscriptionClick={(inscriptionId) => {
+                  const inscription = liverInscriptions.find((ins: any) => ins.id === inscriptionId)
+                  if (inscription && onInscriptionSelect) {
+                    onInscriptionSelect(inscription)
+                  }
+                }}
               />
             ))}
           </div>

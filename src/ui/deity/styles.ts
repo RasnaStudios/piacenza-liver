@@ -125,10 +125,12 @@ export const getCloseButtonStyles = () => ({
 // Content styles
 export const getContentStyles = () => ({
   flex: 1,
-  overflowY: 'auto' as const,
+  overflowY: 'scroll' as const,
+  overflowX: 'hidden' as const,
   padding: isMobile ? '20px' : '25px',
   scrollbarWidth: 'thin' as const,
   scrollbarColor: 'rgba(244, 230, 211, 0.3) transparent',
+  minHeight: 0,
 })
 
 export const getInvolvedDeitiesTextStyles = () => ({
