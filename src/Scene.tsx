@@ -14,11 +14,11 @@ import { InteractionManager } from './scene/InteractionManager'
 
 
 // UI Components
-import { ResponsiveDeityPanel } from './ui/ResponsiveDeityPanel'
+import { DeityPanel } from './ui/DeityPanel'
 import { HoverTooltip } from './ui/HoverTooltip'
 import { Legend } from './ui/Legend'
 import { LoadingScreen } from './ui/LoadingScreen'
-import { ResponsiveInscriptionList } from './ui/ResponsiveInscriptionList'
+import { InscriptionList } from './ui/InscriptionList'
 import { SceneConfig } from './config/SceneConfig'
 
 import { MantineProvider } from '@mantine/core'
@@ -362,7 +362,7 @@ function PiacenzaLiverScene() {
         <div ref={containerRef} className="three-container" />
         
         {/* Modular UI components */}
-        <ResponsiveDeityPanel 
+        <DeityPanel 
           selectedInscription={selectedInscription} 
           onClose={handlePanelClose}
           onInscriptionSelect={handleInscriptionListClick}
@@ -377,7 +377,7 @@ function PiacenzaLiverScene() {
         
         {!isLoading && <Legend hasInteracted={hasInteracted} />}
         
-        <ResponsiveInscriptionList 
+        <InscriptionList 
           onInscriptionSelect={handleInscriptionListClick}
           selectedInscription={selectedInscription}
           isLoading={isLoading}
