@@ -7,15 +7,16 @@ import { isMobile } from 'react-device-detect'
 
 interface HoverTooltipProps {
   hoveredSection: any
-  mousePosition: { x: number; y: number }
+  mousePosition: { x: number; y: number; isOverCanvas?: boolean }
   isPanelOpen?: boolean
   isModifierKeyPressed?: boolean
+  isMouseOverPanel?: boolean
 }
 
-export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = false, isModifierKeyPressed = false }: HoverTooltipProps) {
+export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = false, isModifierKeyPressed = false, isMouseOverPanel = false }: HoverTooltipProps) {
   
-  // Don't show tooltip if mobile, no hovered section, panel is open, or modifier keys are pressed
-  if (!hoveredSection || isMobile || isModifierKeyPressed) {
+  // Don't show tooltip if mobile, no hovered section, modifier keys are pressed, cursor is outside canvas, or cursor is over panel
+  if (!hoveredSection || isMobile || isModifierKeyPressed || mousePosition.isOverCanvas === false || isMouseOverPanel) {
     return null
   }
 

@@ -15,7 +15,7 @@ export interface InteractionCallbacks {
   onBackgroundClick: () => void
   onMarkerHover: (section: any) => void
   onZoomDetected: () => void
-  onMouseMove: (position: { x: number; y: number }) => void
+  onMouseMove: (position: { x: number; y: number }, isOverCanvas: boolean) => void
   onModifierKeyChange: (isPressed: boolean) => void
   onReset: () => void
 }
@@ -177,8 +177,16 @@ export class InteractionManager {
 
 
   private handleMouseMove(event: MouseEvent) {
+    // Check if mouse is over the canvas element
+    const canvas = this.renderer.domElement
+    const canvasRect = canvas.getBoundingClientRect()
+    const isOverCanvas = event.clientX >= canvasRect.left && 
+                        event.clientX <= canvasRect.right && 
+                        event.clientY >= canvasRect.top && 
+                        event.clientY <= canvasRect.bottom
+    
     // Update mouse position for callbacks
-    this.callbacks.onMouseMove({ x: event.clientX, y: event.clientY })
+    this.callbacks.onMouseMove({ x: event.clientX, y: event.clientY }, isOverCanvas)
     
     // Handle model rotation when Shift+drag is active
     if (this.isRotatingModel && this.isShiftPressed) {

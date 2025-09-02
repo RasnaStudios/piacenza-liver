@@ -33,7 +33,8 @@ function PiacenzaLiverScene() {
   const [hasInteracted, setHasInteracted] = useState(false)
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [isLoading, setIsLoading] = useState(true)
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0, isOverCanvas: true })
+  const [isMouseOverPanel, setIsMouseOverPanel] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [isModifierKeyPressed, setIsModifierKeyPressed] = useState(false)
 
@@ -52,6 +53,9 @@ function PiacenzaLiverScene() {
   // Animation frame ref
   const animationIdRef = useRef<number | null>(null)
   
+  // Timeout refs to prevent panel re-opening after reset
+  const panelTimeoutRef = useRef<number | null>(null)
+  
 
 
   // Optimized callback handlers
@@ -64,6 +68,12 @@ function PiacenzaLiverScene() {
 
   const handleReset = useCallback(() => {
     if (!cameraControllerRef.current) return
+    
+    // Clear any pending panel timeout to prevent re-opening after reset
+    if (panelTimeoutRef.current) {
+      clearTimeout(panelTimeoutRef.current)
+      panelTimeoutRef.current = null
+    }
     
     if (interactionManagerRef.current) {
       interactionManagerRef.current.setIntroAnimationMode(true)
@@ -113,8 +123,13 @@ function PiacenzaLiverScene() {
         modelMatrix,
         1000
       )
-      setTimeout(() => {
+      // Clear any existing timeout before setting a new one
+      if (panelTimeoutRef.current) {
+        clearTimeout(panelTimeoutRef.current)
+      }
+      panelTimeoutRef.current = window.setTimeout(() => {
         setSelectedInscription(inscription)
+        panelTimeoutRef.current = null
       }, 1000)
     } else {
       setSelectedInscription(inscription)
@@ -140,8 +155,13 @@ function PiacenzaLiverScene() {
         () => {
           // Open panel after camera animation completes
           if (isMobile) {
-            setTimeout(() => {
+            // Clear any existing timeout before setting a new one
+            if (panelTimeoutRef.current) {
+              clearTimeout(panelTimeoutRef.current)
+            }
+            panelTimeoutRef.current = window.setTimeout(() => {
               setSelectedInscription(inscription)
+              panelTimeoutRef.current = null
             }, 1000)
           } else {
             setSelectedInscription(inscription)
@@ -178,8 +198,8 @@ function PiacenzaLiverScene() {
     setHasInteracted(true)
   }, [])
   
-  const handleMouseMove = useCallback((position: { x: number; y: number }) => {
-    setMousePosition(position)
+  const handleMouseMove = useCallback((position: { x: number; y: number }, isOverCanvas: boolean) => {
+    setMousePosition({ ...position, isOverCanvas })
   }, [])
   
   const handleModifierKeyChange = useCallback((isPressed: boolean) => {
@@ -315,6 +335,12 @@ function PiacenzaLiverScene() {
         cancelAnimationFrame(animationIdRef.current)
       }
 
+      // Clear any pending panel timeout
+      if (panelTimeoutRef.current) {
+        clearTimeout(panelTimeoutRef.current)
+        panelTimeoutRef.current = null
+      }
+
       cameraController?.dispose()
       liverModelRef.current?.dispose()
       interactionManagerRef.current?.dispose()
@@ -361,17 +387,23 @@ function PiacenzaLiverScene() {
         <div ref={containerRef} className="three-container" />
         
         {/* Modular UI components */}
-        <DeityPanel 
-          selectedInscription={selectedInscription} 
-          onClose={handlePanelClose}
-          onInscriptionSelect={handleInscriptionListClick}
-        />
+        <div 
+          onMouseEnter={() => setIsMouseOverPanel(true)}
+          onMouseLeave={() => setIsMouseOverPanel(false)}
+        >
+          <DeityPanel 
+            selectedInscription={selectedInscription} 
+            onClose={handlePanelClose}
+            onInscriptionSelect={handleInscriptionListClick}
+          />
+        </div>
         
         <HoverTooltip 
           hoveredSection={hoveredSection}
           mousePosition={mousePosition}
           isPanelOpen={!!selectedInscription}
           isModifierKeyPressed={isModifierKeyPressed}
+          isMouseOverPanel={isMouseOverPanel}
         />
         
         {!isLoading && <Legend hasInteracted={hasInteracted} />}
