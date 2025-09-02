@@ -58,7 +58,7 @@ export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = fals
     WebkitBackgroundClip: 'text',
     WebkitTextFillColor: 'transparent',
     backgroundClip: 'text',
-    fontSize: '0.8em',
+    fontSize: '1.2em',
     fontStyle: 'italic',
     textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
     letterSpacing: '0.5px',
@@ -80,9 +80,7 @@ export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = fals
           <NumberBadge value={hoveredSection.id} size={28} />
           <div style={deityNamesStyles}>{deityNames}</div>
         </div>
-        {isPanelOpen ? null :
         <span style={etruscanTextStyles}>{hoveredSection.etruscanText}</span>
-        }
       </div>
     </Paper>
   )
