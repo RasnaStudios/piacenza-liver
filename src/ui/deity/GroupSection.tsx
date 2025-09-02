@@ -1,4 +1,4 @@
-import { liverGroups } from '../../scene/LiverData'
+import { getInscriptionGroup } from '../../utils/liverUtils'
 import { getGroupSectionStyles, getGroupHeaderStyles, getGroupColorDotStyles, getGroupTitleStyles, getGroupDescriptionStyles, getCosmologicalTitleStyles, getCosmologicalTextStyles } from './styles'
 
 interface GroupSectionProps {
@@ -7,7 +7,7 @@ interface GroupSectionProps {
 }
 
 export function GroupSection({ selectedInscription, getTextClass }: GroupSectionProps) {
-  const group = (liverGroups as any)[selectedInscription.groupId]
+  const group = getInscriptionGroup(selectedInscription.id)
 
   if (!group) {
     return null

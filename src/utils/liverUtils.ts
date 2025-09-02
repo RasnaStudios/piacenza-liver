@@ -1,5 +1,15 @@
 import { liverInscriptions, liverGroups, liverGods } from '../scene/LiverData'
 
+// Get group for an inscription by checking which group's positions array contains the inscription ID
+export function getInscriptionGroup(inscriptionId: number) {
+  for (const group of Object.values(liverGroups)) {
+    if (group.positions.includes(inscriptionId)) {
+      return group
+    }
+  }
+  return null
+}
+
 // Get all inscriptions where a specific god appears
 export function getGodInscriptions(godId: string) {
   return liverInscriptions.filter(inscription => 
@@ -105,7 +115,7 @@ export function getGodInscriptionData(godId: string) {
 
   // Create godInscriptions with group color and other god data
   const godInscriptions = inscriptions.map(inscription => {
-    const group = (liverGroups as any)[inscription.groupId]
+    const group = getInscriptionGroup(inscription.id)
     const otherGods = inscription.gods.filter(id => id !== godId)
     
     return {
@@ -127,7 +137,7 @@ export function getGodInscriptionData(godId: string) {
 export function getGreekEquivalent(etruscanScript: string): string {
   // Find god by etruscan script and return their transcription
   const god = Object.values(liverGods as any).find((g: any) => g.etruscanScript === etruscanScript)
-  return god?.transcription || ''
+  return (god as any)?.transcription || ''
 }
 
 // Get all gods that appear with a specific god

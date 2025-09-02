@@ -1,5 +1,6 @@
 import { Badge } from '@mantine/core'
-import { liverInscriptions, liverGroups } from '../scene/LiverData'
+import { liverInscriptions } from '../scene/LiverData'
+import { getInscriptionGroup } from '../utils/liverUtils'
 
 interface NumberBadgeProps {
   value: number | string
@@ -18,7 +19,7 @@ export function NumberBadge({ value, color, size = 28 }: NumberBadgeProps) {
     if (!Number.isNaN(numericId)) {
       const ins = (liverInscriptions as any[]).find((i: any) => i.id === numericId)
       if (ins) {
-        const group = (liverGroups as any)[ins.groupId]
+        const group = getInscriptionGroup(ins.id)
         resolvedColor = group?.color || resolvedColor
       }
     }

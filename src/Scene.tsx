@@ -264,17 +264,16 @@ function PiacenzaLiverScene() {
 
     liverModelRef.current?.setOnModelReady(() => {
       setIsLoading(false)
-      if (!isMobile) {
-        setTimeout(() => {
-          if (cameraControllerRef.current && interactionManagerRef.current) {
-            interactionManagerRef.current.setIntroAnimationMode(true)
-            cameraControllerRef.current.playIntroAnimation(() => {
-              interactionManagerRef.current!.setIntroAnimationMode(false)
-              interactionManagerRef.current!.setInitialCameraDistance(cameraRef.current!.position.length())
-            })
-          }
-        }, 800)
-      }
+      setTimeout(() => {
+        if (cameraControllerRef.current && interactionManagerRef.current) {
+          interactionManagerRef.current.setIntroAnimationMode(true)
+          liverModelRef.current?.pulseAllInscriptions()
+          cameraControllerRef.current.playIntroAnimation(() => {
+            interactionManagerRef.current!.setIntroAnimationMode(false)
+            interactionManagerRef.current!.setInitialCameraDistance(cameraRef.current!.position.length())
+          })
+        }
+      }, 800)
     })
 
     // Add WebGL context loss handling

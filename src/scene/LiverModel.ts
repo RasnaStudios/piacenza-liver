@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { gsap } from 'gsap'
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js'
 import objUrl from '../assets/liver-model/Fegato.obj'
 import baseColorUrl from '../assets/liver-model/Fegato_baseColor.jpg'
@@ -8,7 +9,8 @@ import maskUrl from '../assets/segmentation.png'
 import atlasPngUrl from '../assets/segmentation_atlas.png'
 import atlasMeta from '../assets/segmentation_atlas.json'
 import { SceneConfig } from '../config/SceneConfig'
-import { liverInscriptions, liverGroups } from './LiverData'
+import { liverInscriptions } from './LiverData'
+import { getInscriptionGroup } from '../utils/liverUtils'
 
 export class LiverModel {
   private scene: THREE.Scene
@@ -67,7 +69,7 @@ export class LiverModel {
     repeatScaleY: 1, 
     offsetX: 0, 
     offsetY: 0, 
-    idOffset: 0, 
+    idOffset: 0,
     idMap: {
       // Row 0 (1-8) should map to Row 4 (33-40)
       1: 33, 2: 34, 3: 35, 4: 36, 5: 37, 6: 38, 7: 39, 8: 40,
@@ -84,9 +86,14 @@ export class LiverModel {
   private currentSelectedId: number = 0
 
   private getHighlightColor(id: number): THREE.Color {
-    const ins = liverInscriptions.find((i) => i.id === id)
+    // Apply the same ID remapping as the highlighting system
+    const map = this.atlasTweak.idMap || {}
+    let remappedId = (map as any)[id] ?? id
+    remappedId = Math.round(remappedId + (this.atlasTweak.idOffset || 0))
+    
+    const ins = liverInscriptions.find((i) => i.id === remappedId)
     if (ins) {
-      const group = (liverGroups as any)[ins.groupId]
+      const group = getInscriptionGroup(ins.id)
       if (group?.color) {
         return new THREE.Color(group.color)
       }
@@ -133,7 +140,7 @@ export class LiverModel {
 
   private async loadLiverModel() {
     try {
-      // Load PBR textures available in /public/liver-model
+      // Load PBR textures available in /src/assets/liver-model
       const textureLoader = new THREE.TextureLoader(this.loadingManager)
       const [baseColor, normalTex, ormTex, maskTex, atlasTex] = await Promise.all([
         textureLoader.loadAsync(baseColorUrl),
@@ -497,5 +504,53 @@ export class LiverModel {
     // Clean up canvas resources
     this.maskCanvas = null
     this.maskCtx = null
+  }
+
+  // Pulse animation - only runs once on initial load
+  pulseAllInscriptions() {
+    if (!this.mesh || !this.hoveredMaterial) return
+    
+    const inscriptions = liverInscriptions.slice()
+    const overlays: THREE.Mesh[] = []
+    let index = 0
+    
+    const addNext = () => {
+      if (index >= inscriptions.length) {
+        // Final pulse all together
+        gsap.timeline()
+          .to(overlays.map(m => m.material), { opacity: 0.5, duration: 0.6, ease: "power2.out" })
+          .to(overlays.map(m => m.material), { opacity: 0, duration: 0.6, ease: "power2.in", onComplete: () => {
+            overlays.forEach(mesh => {
+              mesh.parent?.remove(mesh) || this.scene.remove(mesh)
+              if (Array.isArray(mesh.material)) {
+                mesh.material.forEach(mat => mat.dispose())
+              } else {
+                mesh.material.dispose()
+              }
+            })
+          }})
+        return
+      }
+      
+      // Create overlay for current inscription
+      const material = this.hoveredMaterial!.clone()
+      material.opacity = 0.6
+      this.applyHighlightToMaterial(inscriptions[index].id, material, 0.4)
+      
+      const mesh = new THREE.Mesh(this.mesh!.geometry, material)
+      mesh.position.copy(this.mesh!.position)
+      mesh.rotation.copy(this.mesh!.rotation) 
+      mesh.scale.copy(this.mesh!.scale)
+      
+      this.mesh!.parent?.add(mesh) || this.scene.add(mesh)
+      overlays.push(mesh)
+      
+      // Accelerate: 100ms -> 10ms
+      const delay = 100 - (90 * index / inscriptions.length)
+      setTimeout(addNext, delay)
+      index++
+    }
+    
+    addNext()
   }
 }

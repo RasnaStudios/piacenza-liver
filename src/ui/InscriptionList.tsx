@@ -1,7 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
 import { useMediaQuery } from '@mantine/hooks'
 import { isMobile } from 'react-device-detect'
-import { liverInscriptions, liverGroups, liverGods } from '../scene/LiverData'
+import { liverInscriptions, liverGods } from '../scene/LiverData'
+import { getInscriptionGroup } from '../utils/liverUtils'
 
 interface InscriptionListProps {
   onInscriptionSelect: (inscription: any) => void
@@ -21,8 +22,9 @@ export function InscriptionList({
   const inscriptionRefs = useRef<{ [key: number]: HTMLDivElement | null }>({})
   const isPortrait = useMediaQuery('(orientation: portrait)')
   
-  const getGroupColor = (groupId: string) => {
-    return liverGroups[groupId as keyof typeof liverGroups]?.color || '#888'
+  const getGroupColor = (inscriptionId: number) => {
+    const group = getInscriptionGroup(inscriptionId)
+    return group?.color || '#888'
   }
 
   const getGodNames = (gods: string[]) => {
@@ -74,7 +76,7 @@ export function InscriptionList({
           cursor: 'pointer',
           transition: 'all 0.15s ease',
           background: isSelected 
-            ? `${getGroupColor(inscription.groupId)}30`
+            ? `${getGroupColor(inscription.id)}30`
             : isHovered 
               ? 'rgba(196, 168, 118, 0.12)'
               : 'transparent',
@@ -94,7 +96,7 @@ export function InscriptionList({
             width: 24,
             height: 24,
             borderRadius: '50%',
-            backgroundColor: getGroupColor(inscription.groupId),
+            backgroundColor: getGroupColor(inscription.id),
             color: 'white',
             fontSize: 11,
             fontWeight: 600,

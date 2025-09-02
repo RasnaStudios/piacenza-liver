@@ -197,10 +197,10 @@ def create_mask_atlas(polylines, atlas_path, meta_path, tile_size=512, cols=8, s
 def main():
     parser = argparse.ArgumentParser(description='Create square segmentation map and optional mask atlas from CVAT annotations')
     parser.add_argument('--input', '-i', 
-                       default='public/annotations.xml',
+                       default='src/assets/annotations.xml',
                        help='Input annotations.xml file')
     parser.add_argument('--output', '-o',
-                       default='public/segmentation.png',
+                       default='src/assets/segmentation.png',
                        help='Output segmentation map PNG file')
     parser.add_argument('--size', '-s',
                        type=int,
@@ -208,8 +208,8 @@ def main():
                        help='Size of square output image (default: 4096 for 4K)')
     parser.add_argument('--atlas', action='store_true', default=True, help='Generate a mask atlas and JSON metadata (default: True)')
     parser.add_argument('--no-atlas', action='store_false', dest='atlas', help='Skip atlas generation')
-    parser.add_argument('--atlas-output', default='public/segmentation_atlas.png', help='Output path for atlas PNG')
-    parser.add_argument('--atlas-meta', default='public/segmentation_atlas.json', help='Output path for atlas JSON metadata')
+    parser.add_argument('--atlas-output', default='src/assets/segmentation_atlas.png', help='Output path for atlas PNG')
+    parser.add_argument('--atlas-meta', default='src/assets/segmentation_atlas.json', help='Output path for atlas JSON metadata')
     parser.add_argument('--tile', type=int, default=256, help='Atlas tile size in pixels (default: 256)')
     parser.add_argument('--cols', type=int, default=8, help='Atlas number of columns (default: 8)')
     

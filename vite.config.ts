@@ -7,6 +7,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
+      disable: true, // Disable for now, to prevent caching issues
       registerType: 'autoUpdate',
       injectRegister: 'auto',
       includeAssets: ['icon.svg'],
