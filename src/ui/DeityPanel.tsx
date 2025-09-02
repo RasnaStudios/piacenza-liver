@@ -168,12 +168,19 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
           display: 'flex',
           flexDirection: 'column'
         }}>
-          <PanelHeader 
-            selectedInscription={selectedInscription}
-            deityNames={deityNames}
-            onClose={onClose}
-            getTextClass={getTextClass}
-          />
+          <div
+            onTouchStart={handleDragStart}
+            onTouchMove={handleDragMove}
+            onTouchEnd={handleDragEnd}
+            style={{ cursor: 'grab' }}
+          >
+            <PanelHeader 
+              selectedInscription={selectedInscription}
+              deityNames={deityNames}
+              onClose={onClose}
+              getTextClass={getTextClass}
+            />
+          </div>
         <div 
           className="deity-panel-scrollbar"
           style={{
