@@ -245,9 +245,10 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
       withOverlay={false}
       withCloseButton={false}
       styles={{
-        drawer: {
+        content: {
           ...panelStyles.desktop,
-          maxWidth: '45vw',
+          maxWidth: '600px',
+          width: 'min(45vw, 600px)',
         },
         body: {
           padding: 0,
