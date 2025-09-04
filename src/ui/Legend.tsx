@@ -1,9 +1,4 @@
 import { useEffect, useState } from 'react'
-import { 
-  Text, 
-  Box,
-  Anchor
-} from '@mantine/core'
 import { isMobile } from 'react-device-detect'
 import { FaLinkedin, FaGithub, FaInstagram } from 'react-icons/fa'
 import { SiArtstation } from 'react-icons/si'
@@ -154,12 +149,12 @@ export function Legend({ hasInteracted }: LegendProps) {
   }
 
   return (
-    <Box 
+    <div 
       style={containerStyles}
       onDoubleClick={() => setIsOpen((v) => !v)}
     >
       {/* Thumbnail Tab (panel slides over this) */}
-      <Box 
+      <div 
         style={thumbnailStyles}
         onClick={() => setIsOpen((v) => !v)}
         onTouchStart={() => setIsOpen((v) => !v)}
@@ -176,9 +171,9 @@ export function Legend({ hasInteracted }: LegendProps) {
         }}
       >
         Credits and Controls
-      </Box>
+      </div>
 
-      <Box 
+      <div 
         style={{
           ...legendStyles,
           // Apply drag transform only on mobile when dragging
@@ -213,7 +208,7 @@ export function Legend({ hasInteracted }: LegendProps) {
         }}
       >
       {isMobile && (
-        <Box style={{
+        <div style={{
           position: 'absolute',
           top: 6,
           left: '50%',
@@ -224,7 +219,7 @@ export function Legend({ hasInteracted }: LegendProps) {
           background: 'rgba(196, 168, 118, 0.35)'
         }} />
       )}
-      <Box style={{ 
+      <div style={{ 
         display: isMobile ? 'flex' : 'grid',
         gridTemplateColumns: isMobile ? undefined : '1fr 1px minmax(160px, max-content)',
         alignItems: 'flex-start',
@@ -232,9 +227,9 @@ export function Legend({ hasInteracted }: LegendProps) {
         flexDirection: isMobile ? 'column' as const : undefined,
       }}>
         {/* Left side: Names */}
-        <Box style={{ flex: 1 }}>
-          <Box style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <Text component="div" style={{ 
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <div style={{ 
               color: 'rgba(255, 255, 255, 0.9)', 
               fontSize: isMobile ? '13px' : '14px',
               fontWeight: 500,
@@ -244,33 +239,33 @@ export function Legend({ hasInteracted }: LegendProps) {
             }}>
               <span style={{ whiteSpace: 'nowrap' }}>Lorenzo Andraghetti</span>
               <div style={{ display: 'flex', gap: '6px' }}>
-                <Anchor 
+                <a 
                   href="https://linkedin.com/in/andraghetti" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   style={{ color: '#0077b5', fontSize: '14px', textDecoration: 'none' }}
                 >
                   <FaLinkedin />
-                </Anchor>
-                <Anchor 
+                </a>
+                <a 
                 href="https://github.com/andraghetti" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   style={{ color: '#333', fontSize: '14px', textDecoration: 'none' }}
                 >
                   <FaGithub />
-                </Anchor>
+                </a>
               </div>
-              <Text component="span" style={{ 
+              <span style={{ 
                 color: 'rgba(196, 168, 118, 0.7)', 
                 fontSize: isMobile ? '11px' : '12px',
                 fontStyle: 'italic'
               }}>
                 Developer
-              </Text>
-            </Text>
+              </span>
+            </div>
             
-            <Text component="div" style={{ 
+            <div style={{ 
               color: 'rgba(255, 255, 255, 0.9)', 
               fontSize: isMobile ? '13px' : '14px',
               fontWeight: 500,
@@ -280,42 +275,42 @@ export function Legend({ hasInteracted }: LegendProps) {
             }}>
               <span style={{ whiteSpace: 'nowrap' }}>Luca Tampieri</span>
               <div style={{ display: 'flex', gap: '6px' }}>
-                <Anchor 
+                <a 
                   href="https://linkedin.com/in/luca-tampieri" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   style={{ color: '#0077b5', fontSize: '14px', textDecoration: 'none' }}
                 >
                   <FaLinkedin />
-                </Anchor>
-                <Anchor 
+                </a>
+                <a 
                   href="https://www.artstation.com/lukedt" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   style={{ color: '#13aff0', fontSize: '14px', textDecoration: 'none' }}
                 >
                   <SiArtstation />
-                </Anchor>
-                <Anchor 
+                </a>
+                <a 
                   href="https://www.instagram.com/heythereluke/" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   style={{ color: '#e4405f', fontSize: '14px', textDecoration: 'none' }}
                 >
                   <FaInstagram />
-                </Anchor>
+                </a>
               </div>
-              <Text component="span" style={{ 
+              <span style={{ 
                 color: 'rgba(196, 168, 118, 0.7)', 
                 fontSize: isMobile ? '11px' : '12px',
                 fontStyle: 'italic'
               }}>
                 3D Artist
-              </Text>
-            </Text>
-          </Box>
+              </span>
+            </div>
+          </div>
           
-          <Box style={{
+          <div style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -323,7 +318,7 @@ export function Legend({ hasInteracted }: LegendProps) {
             paddingTop: '6px',
             borderTop: '1px solid rgba(139, 101, 65, 0.3)'
           }}>
-            <Anchor 
+            <a 
               href="https://github.com/rasnastudios" 
               target="_blank" 
               rel="noopener noreferrer"
@@ -340,9 +335,9 @@ export function Legend({ hasInteracted }: LegendProps) {
               }}
             >
               Rasna Studios
-            </Anchor>
+            </a>
             
-            <Anchor 
+            <a 
               href="https://github.com/rasnastudios/piacenza-liver" 
               target="_blank" 
               rel="noopener noreferrer"
@@ -365,13 +360,13 @@ export function Legend({ hasInteracted }: LegendProps) {
               <svg style={githubIconStyles} viewBox="0 0 24 24">
                 <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
               </svg>
-            </Anchor>
-          </Box>
-        </Box>
+            </a>
+          </div>
+        </div>
         
         {/* Vertical separator (desktop only) */}
         {!isMobile && (
-          <Box style={{ 
+          <div style={{ 
             width: '1px',
             height: '50px',
             backgroundColor: 'rgba(139, 101, 65, 0.4)',
@@ -380,8 +375,8 @@ export function Legend({ hasInteracted }: LegendProps) {
         )}
 
         {/* Right side: Controls */}
-        <Box style={{ flexShrink: 0, minWidth: '160px', width: 'max-content' }}>
-          <Text style={{
+        <div style={{ flexShrink: 0, minWidth: '160px', width: 'max-content' }}>
+          <div style={{
             color: 'rgba(212, 175, 55, 0.9)',
             fontSize: isMobile ? '12px' : '13px',
             fontWeight: 600,
@@ -390,10 +385,10 @@ export function Legend({ hasInteracted }: LegendProps) {
             letterSpacing: '0.5px'
           }}>
             Controls
-          </Text>
+          </div>
           
           {(isMobile ? getMobileControlsText() : getControlsText()).map((control, index) => (
-            <Text
+            <div
               key={index}
               style={{
                 color: 'rgba(196, 168, 118, 0.8)',
@@ -404,11 +399,11 @@ export function Legend({ hasInteracted }: LegendProps) {
               }}
             >
               {control}
-            </Text>
+            </div>
           ))}
-        </Box>
-      </Box>
-      </Box>
-    </Box>
+        </div>
+      </div>
+      </div>
+    </div>
   )
 } 

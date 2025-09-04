@@ -1,0 +1,415 @@
+@import "tailwindcss";
+
+/* Import fonts suitable for ancient inscriptions */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:wght@400;500;600;700&family=Noto+Sans+Old+Italic:wght@400;700&display=swap');
+
+/* Custom CSS variables */
+:root {
+  --color-dark-bg: #0a0806;
+  --color-dark-text: #f4e6d3;
+  --color-accent: #ff6b35;
+  --color-accent-hover: #e55a2b;
+  --color-bronze-600: #8b6541;
+  --color-etruscan-gradient: linear-gradient(45deg, #d4af37 0%, #f0d67c 25%, #ffed4e 50%, #f0d67c 75%, #d4af37 100%);
+  --font-family-garamond: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  --font-family-italic: 'Noto Sans Old Italic', 'Aegean', serif;
+  --shadow-panel: 0 -4px 20px rgba(0, 0, 0, 0.3);
+  --shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-badge: 0 3px 8px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Component classes */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(139, 101, 65, 0.2);
+  background: transparent;
+}
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px;
+  min-height: 0;
+}
+
+.deity-card {
+  background-color: rgba(244, 230, 211, 0.05);
+  border: 1px solid rgba(244, 230, 211, 0.15);
+  border-left: 4px solid rgba(139, 101, 65, 0.6);
+  backdrop-filter: blur(4px);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.deity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(244, 230, 211, 0.15);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.section-label {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: rgba(139, 101, 65, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.panel-section-header {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: rgba(139, 101, 65, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.section-text {
+  font-size: 18px;
+  color: rgba(244, 230, 211, 0.9);
+  line-height: 1.7;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.group-section {
+  margin-top: 24px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background-color: rgba(139, 101, 65, 0.05);
+  border: 1px solid rgba(139, 101, 65, 0.1);
+  border-radius: 12px;
+}
+
+.group-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.text-group-title {
+  color: var(--color-dark-text);
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.text-group-description {
+  color: rgba(244, 230, 211, 0.85);
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+
+.text-cosmological-title {
+  color: rgba(212, 175, 55, 0.9);
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.text-cosmological-text {
+  color: rgba(244, 230, 211, 0.85);
+  line-height: 1.6;
+}
+
+.close-button {
+  background-color: rgba(244, 230, 211, 0.1);
+  border: 1px solid rgba(244, 230, 211, 0.3);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: rgba(244, 230, 211, 0.9);
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+}
+
+.close-button:hover {
+  background-color: rgba(244, 230, 211, 0.2);
+}
+
+.mobile-close-button {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+
+.deity-panel-desktop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(45vw, 600px);
+  height: 100vh;
+  background-color: rgba(10, 8, 6, 0.9);
+  border: 1px solid rgba(139, 101, 65, 0.3);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  scrollbar-color: var(--bronze-600-40) var(--dark-bg-20);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transform: translateX(100%);
+  transition: transform 0.4s ease;
+}
+
+.deity-panel-desktop.open {
+  transform: translateX(0);
+}
+
+.deities-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.text-etruscan {
+  background: var(--color-etruscan-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-family: var(--font-family-italic);
+  font-style: italic;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  letter-spacing: 0.5px;
+}
+
+.text-deity-name {
+  background: var(--color-etruscan-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 300;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.text-shadow-bronze {
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 2px 6px rgba(0, 0, 0, 0.9);
+}
+
+.text-shadow-subtle {
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.deity-panel-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bronze-600-40) var(--dark-bg-20);
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+.deity-panel-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.deity-panel-scrollbar::-webkit-scrollbar-track {
+  background: rgba(139, 101, 65, 0.1);
+  border-radius: 4px;
+}
+
+.deity-panel-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.6) 0%, rgba(139, 101, 65, 0.6) 100%);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.deity-panel-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.8) 0%, rgba(139, 101, 65, 0.8) 100%);
+}
+
+/* Global reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Georgia, serif;
+  color: #f4e6d3;
+  background: #000000;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.piacenza-liver-app {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.scene-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.three-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #000000;
+}
+
+.three-container canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Dynamic centered title overlay - hides permanently after first interaction */
+.three-container::before {
+  content: 'Piacenza Liver';
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cinzel', 'Trajan Pro', 'Times New Roman', serif;
+  font-size: clamp(28px, 4.5vw, 60px);
+  font-weight: 100;
+  letter-spacing: 6px;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.8s ease-out;
+  
+  background: linear-gradient(
+    45deg,
+    #2c2c2c 0%,
+    #4a4a4a 10%,
+    #6b6b6b 20%,
+    #8b6541 30%,
+    #a67c52 40%,
+    #c9a876 50%,
+    #a67c52 60%,
+    #8b6541 70%,
+    #6b6b6b 80%,
+    #4a4a4a 90%,
+    #2c2c2c 100%
+  );
+  
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))
+          drop-shadow(0 0 15px rgba(139, 101, 65, 0.3))
+          drop-shadow(0 0 30px rgba(201, 168, 118, 0.1));
+  
+  -webkit-text-stroke: 0.5px rgba(139, 101, 65, 0.2);
+}
+
+/* Hide title permanently after first interaction */
+.three-container.interacted::before {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .three-container::before {
+    font-size: clamp(20px, 6vw, 40px);
+    letter-spacing: 3px;
+  }
+  
+  .three-container.interacted::before {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-out;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .three-container::before {
+    font-size: clamp(16px, 4.5vw, 30px);
+    top: 5%;
+  }
+}
+
+/* Responsive typography */
+@media (max-width: 768px) {
+  .mobile-title {
+    font-size: clamp(1.1rem, 4vw, 1.4rem) !important;
+    line-height: 1.3 !important;
+  }
+  
+  .mobile-subtitle {
+    font-size: clamp(0.9rem, 3vw, 1.1rem) !important;
+    line-height: 1.4 !important;
+  }
+  
+  .mobile-section-title {
+    font-size: clamp(0.85rem, 2.5vw, 1rem) !important;
+    line-height: 1.4 !important;
+  }
+  
+  .mobile-body-text {
+    font-size: clamp(0.8rem, 2.2vw, 0.9rem) !important;
+    line-height: 1.5 !important;
+  }
+  
+  .mobile-label-text {
+    font-size: clamp(0.75rem, 2vw, 0.85rem) !important;
+    line-height: 1.4 !important;
+  }
+}
+
+.dark-chip {
+  background-color: rgba(10, 8, 6, 0.9);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.dark-chip-padded {
+  background-color: rgba(10, 8, 6, 0.9);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  padding: 8px;
+  margin: 4px;
+  border-radius: 12px;
+}
+
+.inscription-chip {
+  background-color: rgba(10, 8, 6, 0.9);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  padding: 6px 8px;
+  margin: 2px;
+  border-radius: 12px;
+}
+
+.inscription-selected {
+  background-color: rgba(139, 101, 65, 0.2) !important;
+  border: 2px solid #8b6541 !important;
+  box-shadow: 0 0 20px rgba(139, 101, 65, 0.4), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  transform: scale(1.02);
+}

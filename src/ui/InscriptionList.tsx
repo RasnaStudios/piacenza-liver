@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import { useMediaQuery } from '@mantine/hooks'
 import { isMobile } from 'react-device-detect'
 import { liverInscriptions, liverGods } from '../scene/LiverData'
 import { getInscriptionGroup } from '../utils/liverUtils'
+import { NumberBadge } from './NumberBadge'
 
 interface InscriptionListProps {
   onInscriptionSelect: (inscription: any) => void
@@ -17,19 +17,22 @@ export function InscriptionList({
   isLoading, 
   hasInteracted 
 }: InscriptionListProps) {
-  const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [isVisible, setIsVisible] = useState(false)
   const inscriptionRefs = useRef<{ [key: number]: HTMLDivElement | null }>({})
-  const isPortrait = useMediaQuery('(orientation: portrait)')
-  
-  const getGroupColor = (inscriptionId: number) => {
-    const group = getInscriptionGroup(inscriptionId)
-    return group?.color || '#888'
-  }
+  const [isPortrait, setIsPortrait] = useState(false)
 
-  const getGodNames = (gods: string[]) => {
-    return gods.map(godId => liverGods[godId as keyof typeof liverGods]?.name || godId).join(' & ')
-  }
+  useEffect(() => {
+    const checkOrientation = () => {
+      setIsPortrait(window.matchMedia('(orientation: portrait)').matches)
+    }
+    
+    checkOrientation()
+    const mediaQuery = window.matchMedia('(orientation: portrait)')
+    mediaQuery.addEventListener('change', checkOrientation)
+    
+    return () => mediaQuery.removeEventListener('change', checkOrientation)
+  }, [])
+  
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -62,64 +65,22 @@ export function InscriptionList({
   }
 
   const renderInscription = (inscription: any) => {
-    const isHovered = hoveredId === inscription.id
-    const isSelected = selectedInscription?.id === inscription.id
     
     return (
       <div
         key={inscription.id}
         ref={(el: HTMLDivElement | null) => { inscriptionRefs.current[inscription.id] = el }}
-        style={{
-          padding: '6px 8px',
-          marginBottom: 2,
-          borderRadius: 8,
-          cursor: 'pointer',
-          transition: 'all 0.15s ease',
-          background: isSelected 
-            ? `${getGroupColor(inscription.id)}30`
-            : isHovered 
-              ? 'rgba(196, 168, 118, 0.12)'
-              : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          minHeight: 32,
-        }}
-        onMouseEnter={() => setHoveredId(inscription.id)}
-        onMouseLeave={() => setHoveredId(null)}
+        className={`dark-chip-padded cursor-pointer transition-all duration-200 flex items-center gap-2 ${
+          inscription.id === selectedInscription?.id 
+            ? 'inscription-selected' 
+            : 'hover:ring-1 hover:ring-bronze-600/40'
+        }`}
         onClick={() => onInscriptionSelect(inscription)}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 24,
-            height: 24,
-            borderRadius: '50%',
-            backgroundColor: getGroupColor(inscription.id),
-            color: 'white',
-            fontSize: 11,
-            fontWeight: 600,
-            marginRight: 8,
-            flexShrink: 0,
-          }}
-        >
-          {inscription.id}
-        </div>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-          <span
-            style={{
-              color: 'rgba(196, 168, 118, 0.9)',
-              fontWeight: 400,
-              lineHeight: 1.3,
-              fontFamily: 'Georgia, serif',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              fontSize: '14px',
-            }}
-          >
-            {getGodNames(inscription.gods)}
+        <NumberBadge value={inscription.id} size={24} color={getInscriptionGroup(inscription.id)?.color} />
+        <div className="flex-1 flex items-center">
+          <span className="text-bronze-600/90 font-normal leading-tight font-serif whitespace-nowrap overflow-hidden text-ellipsis text-sm">
+            {inscription.gods.map((godId: string) => (liverGods as any)[godId]?.name).filter(Boolean).join(', ')}
           </span>
         </div>
       </div>
@@ -127,57 +88,14 @@ export function InscriptionList({
   }
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: 20,
-        bottom: 20,
-        left: isVisible ? 0 : -300,
-        width: 200,
-        background: '#0a0806',
-        border: '1px solid rgba(139, 101, 65, 0.2)',
-        borderRadius: '0 12px 12px 0',
-        zIndex: 50,
-        fontFamily: 'Georgia, serif',
-        transition: 'left 0.3s ease-out',
-        padding: 8,
-        display: 'flex',
-        flexDirection: 'column',
-      }}
-    >
+    <div className="dark-chip fixed top-0 bottom-0 left-0 w-50 rounded-r-xl z-[1000] flex flex-col p-3">
       <div
-        style={{
-          flex: 1,
-          overflowY: 'scroll',
-          overflowX: 'hidden',
-          scrollbarWidth: 'thin',
-          scrollbarColor: 'rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2)',
-          WebkitOverflowScrolling: 'touch',
-          pointerEvents: 'auto',
-        }}
-        className="custom-scrollbar"
+        className="deity-panel-scrollbar flex-1 overflow-y-scroll overflow-x-hidden touch-pan-y pointer-events-auto"
+        style={{ WebkitOverflowScrolling: 'touch' }}
         onWheel={(e) => {
           e.stopPropagation()
         }}
       >
-        <style>
-          {`
-            .custom-scrollbar::-webkit-scrollbar {
-              width: 6px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-              background: rgba(0, 0, 0, 0.2);
-              border-radius: 3px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-              background: rgba(196, 168, 118, 0.4);
-              border-radius: 3px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-              background: rgba(196, 168, 118, 0.6);
-            }
-          `}
-        </style>
         {liverInscriptions.map(renderInscription)}
       </div>
     </div>

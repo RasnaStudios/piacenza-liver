@@ -21,9 +21,6 @@ import { InscriptionList } from './ui/InscriptionList'
 import { BraveDisclaimer } from './components/BraveDisclaimer'
 import { SceneConfig } from './config/SceneConfig'
 
-import { MantineProvider } from '@mantine/core'
-import '@mantine/core/styles.css'
-import './styles/global.css'
 
 function PiacenzaLiverScene() {
   // State management
@@ -580,9 +577,5 @@ function setupLighting(scene: THREE.Scene) {
 }
 
 export default function App() {
-  return (
-    <MantineProvider>
-      <PiacenzaLiverScene />
-    </MantineProvider>
-  )
+  return <PiacenzaLiverScene />
 }

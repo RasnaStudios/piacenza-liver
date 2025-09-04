@@ -14,10 +14,7 @@ export function TranscriptionText({ transcription, className, style }: Transcrip
       {parts.map((part, index) => (
         <span
           key={index}
-          style={{
-            color: part.isReconstructed ? 'rgba(244, 230, 211, 0.4)' : 'rgba(244, 230, 211, 0.95)',
-            fontWeight: part.isReconstructed ? 400 : 500,
-          }}
+          className={part.isReconstructed ? 'text-dark-text/40 font-normal' : 'text-dark-text/95 font-medium'}
         >
           {part.text}
         </span>

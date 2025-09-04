@@ -1,6 +1,3 @@
-import { 
-  Paper
-} from '@mantine/core'
 import { liverGods } from '../scene/LiverData'
 import { NumberBadge } from './NumberBadge'
 import { isMobile } from 'react-device-detect'
@@ -15,8 +12,8 @@ interface HoverTooltipProps {
 
 export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = false, isModifierKeyPressed = false, isMouseOverPanel = false }: HoverTooltipProps) {
   
-  // Don't show tooltip if mobile, no hovered section, modifier keys are pressed, cursor is outside canvas, or cursor is over panel
-  if (!hoveredSection || isMobile || isModifierKeyPressed || mousePosition.isOverCanvas === false || isMouseOverPanel) {
+  // Don't show tooltip if mobile, no hovered section, modifier keys are pressed, cursor is outside canvas, panel is open, or cursor is over panel
+  if (!hoveredSection || isMobile || isModifierKeyPressed || mousePosition.isOverCanvas === false || isPanelOpen || isMouseOverPanel) {
     return null
   }
 
@@ -46,43 +43,20 @@ export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = fals
     pointerEvents: 'none' as const,
   }
 
-  const contentStyles = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 6,
-    flexWrap: 'wrap' as const,
-  }
-
-  const etruscanTextStyles = {
-    fontFamily: 'Noto Sans Old Italic, Aegean, serif',
-    background: 'linear-gradient(45deg, #d4af37 0%, #f0d67c 25%, #ffed4e 50%, #f0d67c 75%, #d4af37 100%)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
-    fontSize: '1.2em',
-    fontStyle: 'italic',
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
-    letterSpacing: '0.5px',
-  }
-
-  const deityNamesStyles = {
-    color: '#f4e6d3',
-    fontSize: '1em',
-    fontWeight: 600,
-    lineHeight: 1.2,
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
-    letterSpacing: '0.3px',
-  }
 
   return (
-    <Paper style={tooltipStyles}>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <div style={contentStyles}>
+    <div className="dark-chip-padded fixed z-[9999] pointer-events-none max-w-xs"
+         style={{
+           left: tooltipStyles.left,
+           top: tooltipStyles.top,
+         }}>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-3">
           <NumberBadge value={hoveredSection.id} size={28} />
-          <div style={deityNamesStyles}>{deityNames}</div>
+          <div className="text-deity-name font-medium text-sm leading-tight">{deityNames}</div>
         </div>
-        <span style={etruscanTextStyles}>{hoveredSection.etruscanText}</span>
+        <span className="text-etruscan text-xs italic opacity-90">{hoveredSection.etruscanText}</span>
       </div>
-    </Paper>
+    </div>
   )
 } 

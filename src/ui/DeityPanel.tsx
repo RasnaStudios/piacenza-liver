@@ -1,15 +1,9 @@
-import { Drawer } from '@mantine/core'
 import { useState, useRef } from 'react'
 import { isMobile } from 'react-device-detect'
 import { liverGods, liverInscriptions } from '../scene/LiverData'
 import { GroupSection } from './deity/GroupSection'
 import { DeityCard } from './deity/DeityCard'
 import { PanelHeader } from './deity/PanelHeader'
-import { 
-  getPanelStyles, 
-  getContentStyles,
-  getDeitiesSectionStyles
-} from './deity/styles'
 
 interface DeityPanelProps {
   selectedInscription: any
@@ -50,8 +44,6 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
     }
   }
   
-  const panelStyles = getPanelStyles()
-  const contentStyles = getContentStyles()
 
   const handleDragStart = (e: React.TouchEvent) => {
     setIsDragging(true)
@@ -121,58 +113,27 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
   if (isMobile && isPortrait) {
     return (
       <div
+        className="dark-chip fixed bottom-0 left-0 right-0 rounded-t-2xl z-[100] flex flex-col pointer-events-auto transition-all duration-300 ease-out"
         style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
           height: `${getCurrentHeight()}vh`,
-          backgroundColor: '#0a0806',
-          borderRadius: '16px 16px 0 0',
-          boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.3)',
-          zIndex: 100,
-          transform: 'none',
-          opacity: 1,
-          transition: isDragging ? 'none' : 'all 0.3s ease-out',
-          display: 'flex',
-          flexDirection: 'column',
-          pointerEvents: 'auto',
+          ...(isDragging && { transition: 'none' }),
         }}
       >
-        {/* Drag handle */}
         <div 
-          className="drag-handle"
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            padding: '8px 0 4px 0',
-            cursor: 'grab',
-          }}
+          className="drag-handle flex justify-center items-center py-2 cursor-grab"
           onTouchStart={handleDragStart}
           onTouchMove={handleDragMove}
           onTouchEnd={handleDragEnd}
         >
-          <div style={{
-            width: '40px',
-            height: '4px',
-            backgroundColor: 'rgba(196, 168, 118, 0.7)',
-            borderRadius: '2px',
-          }} />
+          <div className="w-10 h-1 bg-bronze-600/70 rounded-sm" />
         </div>
         
-        <div style={{
-          flex: 1,
-          color: '#f4e6d3',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
+        <div className="flex-1 text-dark-text overflow-hidden flex flex-col">
           <div
             onTouchStart={handleDragStart}
             onTouchMove={handleDragMove}
             onTouchEnd={handleDragEnd}
-            style={{ cursor: 'grab' }}
+            className="cursor-grab"
           >
             <PanelHeader 
               selectedInscription={selectedInscription}
@@ -181,61 +142,43 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
               getTextClass={getTextClass}
             />
           </div>
-        <div 
-          className="deity-panel-scrollbar"
-          style={{
-            flex: 1,
-            overflowY: 'scroll',
-            overflowX: 'hidden',
-            padding: '16px 24px',
-            color: '#f4e6d3',
-            WebkitOverflowScrolling: 'touch',
-            minHeight: 0,
-            touchAction: 'pan-y',
-          }}>
-          <div style={{ marginBottom: 24 }}>
-            <div style={{ marginBottom: 12 }}>
-              <h5 style={{
-                fontSize: isMobile ? '1.1em' : '1.0em',
-                fontWeight: 600,
-                color: 'rgba(139, 101, 65, 0.9)',
-                margin: 0,
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }} className={getTextClass('label')}>Involved deities</h5>
-            </div>
-            
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '16px',
-            }}>
-              {gods.map((god: any) => (
-                <DeityCard
-                  key={god.id}
-                  god={god}
-                  getTextClass={getTextClass}
-                  selectedInscriptionId={selectedInscription.id}
-                  onInscriptionClick={(inscriptionId) => {
-                    const inscription = liverInscriptions.find((ins: any) => ins.id === inscriptionId)
-                    if (inscription && onInscriptionSelect) {
-                      // First: Lower the panel to 33vh
-                      setPanelHeight(33)
-                      // Then: Trigger camera animation and new inscription selection
-                      setTimeout(() => {
-                        onInscriptionSelect(inscription)
-                      }, 300) // Wait for panel lowering animation
-                    }
-                  }}
-                />
-              ))}
-            </div>
+        <div className="deity-panel-scrollbar flex-1 overflow-y-scroll overflow-x-hidden text-dark-text min-h-0 touch-pan-y px-4 sm:px-6 lg:px-8">
+          
+          <h4 className="panel-section-header text-xl sm:text-2xl">
+            Involved deities
+          </h4>
+          
+          <div className="flex flex-col gap-4 mb-6">
+            {gods.map((god: any) => (
+              <DeityCard
+                key={god.id}
+                god={god}
+                getTextClass={getTextClass}
+                selectedInscriptionId={selectedInscription.id}
+                onInscriptionClick={(inscriptionId) => {
+                  const inscription = liverInscriptions.find((ins: any) => ins.id === inscriptionId)
+                  if (inscription && onInscriptionSelect) {
+                    // First: Lower the panel to 33vh
+                    setPanelHeight(33)
+                    // Then: Trigger camera animation and new inscription selection
+                    setTimeout(() => {
+                      onInscriptionSelect(inscription)
+                    }, 100)
+                  }
+                }}
+              />
+            ))}
           </div>
-
-          <GroupSection 
-            selectedInscription={selectedInscription}
-            getTextClass={getTextClass}
-          />
+          
+          <h4 className="panel-section-header text-xl sm:text-2xl">
+            Group
+          </h4>
+          <div className="pb-6">
+            <GroupSection 
+              selectedInscription={selectedInscription}
+              getTextClass={getTextClass}
+            />
+          </div>
         </div>
         </div>
       </div>
@@ -244,59 +187,22 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
 
   // Desktop/landscape: right side panel
   return (
-    <Drawer
-      opened={!!selectedInscription}
-      onClose={onClose}
-      position="right"
-      size="45vw"
-      withOverlay={false}
-      withCloseButton={false}
-      styles={{
-        content: {
-          ...panelStyles.desktop,
-          maxWidth: '600px',
-          width: 'min(45vw, 600px)',
-        },
-        body: {
-          padding: 0,
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          backgroundColor: '#0a0806',
-        },
-      }}
-      transitionProps={{
-        transition: 'slide-left',
-        duration: 400,
-      }}
-    >
+    <div className={`deity-panel-desktop ${selectedInscription ? 'open' : ''}`}>
       <PanelHeader 
         selectedInscription={selectedInscription}
         deityNames={deityNames}
         onClose={onClose}
         getTextClass={getTextClass}
       />
-      <div 
-        className="deity-panel-scrollbar"
-        style={{
-          ...contentStyles,
-          overflowY: 'scroll',
-          overflowX: 'hidden',
-          minHeight: 0,
-        }}>
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ marginBottom: 12 }}>
-            <h5 style={{
-              fontSize: isMobile ? '1.1em' : '1.0em',
-              fontWeight: 600,
-              color: 'rgba(139, 101, 65, 0.9)',
-              margin: 0,
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px'
-            }} className={getTextClass('label')}>Involved deities</h5>
+      <div className="deity-panel-scrollbar panel-content overflow-y-scroll overflow-x-hidden min-h-0">
+        <div className="mb-6">
+          <div className="mb-3">
+            <h5 className={`section-label text-bronze-600/90 m-0 ${isMobile ? 'text-lg' : 'text-base'} ${getTextClass('label')}`}>
+              Involved deities
+            </h5>
           </div>
           
-          <div style={getDeitiesSectionStyles()}>
+          <div className="deities-section">
             {gods.map((god: any) => (
               <DeityCard
                 key={god.id}
@@ -319,6 +225,6 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
           getTextClass={getTextClass}
         />
       </div>
-    </Drawer>
+    </div>
   )
 }

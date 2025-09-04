@@ -1,136 +1,126 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 
-export function BraveDisclaimer() {
-  const [showModal, setShowModal] = useState(false)
+interface BraveDisclaimerProps {}
+
+export function BraveDisclaimer({}: BraveDisclaimerProps) {
+  const [isVisible, setIsVisible] = useState(false)
   const [dontShowAgain, setDontShowAgain] = useState(false)
 
   useEffect(() => {
-    // Don't show on mobile devices
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-    if (isMobile) {
-      return
+    const hasOptedOut = localStorage.getItem('brave-disclaimer-dismissed') === 'true'
+    if (hasOptedOut) return
+
+    const isBrave = () => {
+      if ((navigator as any).brave && (navigator as any).brave.isBrave) {
+        return true
+      }
+      
+      if (navigator.userAgent.includes('Brave')) {
+        return true
+      }
+      
+      if ('webkitSpeechRecognition' in window && 'chrome' in window && !('opr' in window) && !navigator.userAgent.includes('edg')) {
+        const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor)
+        if (!isChrome) {
+          return true
+        }
+      }
+      
+      return false
     }
 
-    // Check if browser is Brave
-    const userAgent = navigator.userAgent
-    const isBraveUA = userAgent.includes('Brave') || userAgent.includes('brave')
-    const hasBraveAPI = (navigator as any).brave && (navigator as any).brave.isBrave
+    const isDesktop = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     
-    if (!isBraveUA && !hasBraveAPI) {
-      return // Not Brave browser
+    if (isBrave() && isDesktop) {
+      const timer = setTimeout(() => {
+        setIsVisible(true)
+      }, 2000)
+      
+      return () => clearTimeout(timer)
     }
-
-    // Check if user has previously dismissed the warning
-    const dismissed = localStorage.getItem('brave-shields-disclaimer-dismissed')
-    if (dismissed === 'true') {
-      return
-    }
-
-    // Since shield detection is unreliable, just show for all Brave users
-    // but make it less intrusive by showing after a delay
-    setTimeout(() => {
-      setShowModal(true)
-    }, 2000)
   }, [])
 
-  const handleDismiss = () => {
-    setShowModal(false)
+  const handleClose = () => {
+    setIsVisible(false)
+    
     if (dontShowAgain) {
-      localStorage.setItem('brave-shields-disclaimer-dismissed', 'true')
+      localStorage.setItem('brave-disclaimer-dismissed', 'true')
     }
   }
 
-  if (!showModal) {
-    return null
-  }
+  if (!isVisible) return null
 
   return (
-    <>
-        {/* Modal backdrop */}
-        <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            zIndex: 10000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px',
-          }}
-          onClick={handleDismiss}
-        >
-          {/* Modal content */}
-          <div
-            style={{
-              backgroundColor: '#0a0806',
-              border: '2px solid rgba(139, 101, 65, 0.6)',
-              borderRadius: 12,
-              padding: '32px',
-              maxWidth: '480px',
-              width: '100%',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(139, 101, 65, 0.2)',
-              textAlign: 'center' as const,
-              color: '#f4e6d3',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ fontSize: 28, marginBottom: 16, opacity: 0.8 }}>🛡️</div>
-            <h3 style={{ margin: '0 0 16px 0', fontSize: 20, fontWeight: 500, color: '#f4e6d3' }}>
-              Brave Browser Notice
-            </h3>
-            <p style={{ margin: '0 0 24px 0', fontSize: 15, lineHeight: 1.5, color: '#c9a876' }}>
-            For reliable inscription selection, please disable Brave Shields for this site.
-            We don't save any personal data and we don't use any analytics.
-            We cannot detect if your shields are enabled, so if you have already disabled them,
-            please check the checkbox below.
-            </p>
-            
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              gap: '10px',
+    <div 
+      className="fixed inset-0 bg-black/80 flex items-center justify-center z-[10000] p-5"
+      onClick={handleClose}
+    >
+      <div 
+        className="backdrop-blur-md rounded-2xl max-w-md w-full relative shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+        style={{ 
+          padding: '32px',
+          backgroundColor: 'rgba(10, 8, 6, 0.95)',
+          border: 'none'
+        }}
+      >
+        <div className="text-center" style={{ marginBottom: '32px' }}>
+          <div 
+            className="inline-flex items-center justify-center w-16 h-16 rounded-full"
+            style={{ 
               marginBottom: '20px',
-              fontSize: '14px',
-              color: '#c9a876'
-            }}>
-              <input
-                type="checkbox"
-                id="dont-show-again"
-                checked={dontShowAgain}
-                onChange={(e) => setDontShowAgain(e.target.checked)}
-                style={{
-                  accentColor: '#d4af37',
-                  transform: 'scale(1.1)'
-                }}
-              />
-              <label htmlFor="dont-show-again" style={{ cursor: 'pointer' }}>
-                Don't show again
-              </label>
-            </div>
-            
-            <button
-              onClick={handleDismiss}
-              style={{
-                background: 'linear-gradient(45deg, #d4af37 0%, #f0d67c 25%, #d4af37 100%)',
-                color: '#0a0806',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: 6,
-                fontSize: 15,
-                cursor: 'pointer',
-                fontWeight: 600,
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-              Continue
-            </button>
+              backgroundColor: 'rgba(139, 101, 65, 0.2)',
+              border: 'none'
+            }}
+          >
+            <span className="text-2xl">🛡️</span>
           </div>
+          <h3 className="text-dark-text text-lg font-bold font-garamond">
+            Brave Browser Detected
+          </h3>
         </div>
-    </>
+        
+        <div style={{ marginBottom: '32px' }}>
+          <p className="text-dark-text/90 text-xl leading-relaxed text-center" style={{ marginBottom: '16px' }}>
+            Brave Shields will interfere with inscription selection on this 3D visualization.
+          </p>
+          
+          <p className="text-bronze-600 text-center font-medium">
+            Please disable Shields for optimal experience. We don't have a way to detect Shields, so please check the box below if you have already disabled them
+          </p>
+        </div>
+
+        <div style={{ marginBottom: '32px' }}>
+          <label className="flex items-center justify-center cursor-pointer group">
+            <input
+              type="checkbox"
+              checked={dontShowAgain}
+              onChange={(e) => setDontShowAgain(e.target.checked)}
+              className="w-4 h-4 accent-bronze-600 rounded"
+              style={{ marginRight: '12px' }}
+            />
+            <span className="text-dark-text/80 group-hover:text-dark-text transition-colors">
+              Don't show this again
+            </span>
+          </label>
+        </div>
+
+        <button
+          onClick={handleClose}
+          className="rounded-full text-sm font-semibold w-full transition-colors shadow-lg"
+          style={{ 
+            padding: '16px 32px',
+            backgroundColor: '#8b6541',
+            color: '#0a0806',
+            border: 'none',
+            outline: 'none'
+          }}
+          onMouseEnter={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#7a5937'}
+          onMouseLeave={(e) => (e.target as HTMLButtonElement).style.backgroundColor = '#8b6541'}
+        >
+          Continue
+        </button>
+      </div>
+    </div>
   )
 }

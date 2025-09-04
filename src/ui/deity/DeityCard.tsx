@@ -1,20 +1,5 @@
 import { InscriptionChip } from './InscriptionChip'
 import { getGodInscriptionData, getGodVariationInInscription } from '../../utils/liverUtils'
-import {
-  getDeityCardStyles,
-  getDeityHeaderStyles,
-  getDeityNameStyles,
-  getDeityScriptStyles,
-  getAboutSectionStyles,
-  getDomainSectionStyles,
-  getSectionHeaderStyles,
-  getSectionLabelStyles,
-  getSectionTextStyles,
-  getInscriptionSectionStyles,
-  getInscriptionHeaderStyles,
-  getInscriptionTitleStyles,
-  getInscriptionChipsStyles
-} from './styles'
 
 interface DeityCardProps {
   god: any
@@ -27,45 +12,37 @@ export function DeityCard({ god, getTextClass, onInscriptionClick, selectedInscr
   const godData = getGodInscriptionData(god.id)
   const { godInscriptions } = godData
   
-  // Filter out the currently selected inscription
   const filteredInscriptions = godInscriptions.filter(inscription => 
     inscription.id !== selectedInscriptionId
   )
 
   return (
-    <div style={getDeityCardStyles()}>
-      <div style={getDeityHeaderStyles()}>
-        <h4 style={getDeityNameStyles()} className={getTextClass('subsection-title')}>
+    <div className="deity-card">
+      <div className="deity-header">
+        <h4 className="text-deity-name m-0 text-2xl sm:text-3xl">
           {god.name}
         </h4>
-        <span style={getDeityScriptStyles()} className={getTextClass('label')}>
+        <span className="font-italic text-dark-text/70 text-shadow-subtle text-lg sm:text-xl">
           {god.etruscanScript}
         </span>
       </div>
       
-      {/* About - First */}
-      <div style={getAboutSectionStyles()}>
-        <div style={getSectionHeaderStyles()}>
-          <span style={getSectionLabelStyles()} className={getTextClass('label')}>About</span>
-        </div>
-        <p style={getSectionTextStyles()} className={getTextClass('body')}>{god.description}</p>
+      <div className="bg-bronze-600/3 rounded-card">
+        <span className="section-label">About</span>
+        <p className={`section-text ${getTextClass('body')}`}>{god.description}</p>
       </div>
 
-      {/* Domain - Second */}
-      <div style={getDomainSectionStyles()}>
-        <div style={getSectionHeaderStyles()}>
-          <span style={getSectionLabelStyles()} className={getTextClass('label')}>Domain</span>
-        </div>
-        <p style={getSectionTextStyles()} className={getTextClass('body')}>{god.domain}</p>
+      <div className="bg-bronze-600/5 rounded-card">
+        <span className="section-label">Domain</span>
+        <p className={`section-text ${getTextClass('body')}`}>{god.domain}</p>
       </div>
 
-      {/* Also appears in inscriptions */}
       {filteredInscriptions.length > 0 && (
-        <div style={getInscriptionSectionStyles()}>
-          <div style={getInscriptionHeaderStyles()}>
-            <h5 style={getInscriptionTitleStyles()} className={getTextClass('label')}>ALSO Appears in:</h5>
-          </div>
-          <div style={getInscriptionChipsStyles()}>
+        <div className="mt-5">
+          <h5 className="section-label text-bronze-600/90 m-0 text-lg sm:text-xl">
+            ALSO Appears in:
+          </h5>
+          <div className="flex flex-wrap gap-1 p-2 -m-2">
             {filteredInscriptions.map(inscription => (
               <InscriptionChip
                 key={inscription.id}
