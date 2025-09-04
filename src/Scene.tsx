@@ -12,13 +12,13 @@ import { CameraController } from './camera/Controller'
 import { LiverModel } from './scene/LiverModel'
 import { InteractionManager } from './scene/InteractionManager'
 
-
 // UI Components
 import { DeityPanel } from './ui/DeityPanel'
 import { HoverTooltip } from './ui/HoverTooltip'
 import { Legend } from './ui/Legend'
 import { LoadingScreen } from './ui/LoadingScreen'
 import { InscriptionList } from './ui/InscriptionList'
+import { BraveDisclaimer } from './components/BraveDisclaimer'
 import { SceneConfig } from './config/SceneConfig'
 
 import { MantineProvider } from '@mantine/core'
@@ -419,7 +419,10 @@ function PiacenzaLiverScene() {
           progress={loadingProgress} 
           isLoading={isLoading} 
         />
-
+        
+        {/* Brave Browser Disclaimer */}
+        <BraveDisclaimer />
+        
         {/* Compatibility/Error Banner */}
         {errorMsg && (
           <div
