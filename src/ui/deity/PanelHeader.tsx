@@ -1,22 +1,20 @@
 import { NumberBadge } from '../NumberBadge'
-import { isMobile } from 'react-device-detect'
 
 interface PanelHeaderProps {
   selectedInscription: any
   deityNames: string
   onClose: () => void
-  getTextClass: (type: string) => string
 }
 
-export function PanelHeader({ selectedInscription, deityNames, onClose, getTextClass }: PanelHeaderProps) {
+export function PanelHeader({ selectedInscription, deityNames, onClose }: PanelHeaderProps) {
   return (
     <div className="panel-header">
       <div className="grid grid-cols-[max-content_1fr] auto-rows-auto gap-x-2 gap-y-1 items-center">
         <NumberBadge value={selectedInscription.id} size={40} />
-        <h2 className={`m-0 text-dark-text text-shadow-bronze col-start-2 self-center font-garamond font-semibold ${isMobile ? 'text-xl' : 'text-2xl'} ${getTextClass('title')}`}>
+        <h2 className="m-0 text-dark-text text-shadow-bronze col-start-2 self-center font-garamond font-semibold text-xl sm:text-2xl">
           {deityNames}
         </h2>
-        <span className={`text-etruscan col-span-2 row-start-2 ${isMobile ? 'text-lg' : 'text-base'} ${getTextClass('etruscan')}`}>
+        <span className="text-etruscan col-span-2 row-start-2 text-base sm:text-lg">
           {selectedInscription.etruscanText}
         </span>
       </div>
@@ -34,10 +32,10 @@ export function PanelHeader({ selectedInscription, deityNames, onClose, getTextC
           text-dark-text/80 hover:text-dark-text
           transition-all duration-200
           backdrop-blur-sm
-          ${isMobile ? 'w-10 h-10 text-lg' : 'text-sm'}
+          w-8 h-8 text-sm sm:w-10 sm:h-10 sm:text-lg
         `}
       >
-        {isMobile ? '✕' : '×'}
+        <span className="sm:hidden">✕</span><span className="hidden sm:inline">×</span>
       </button>
     </div>
   )

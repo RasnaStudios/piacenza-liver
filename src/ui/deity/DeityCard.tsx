@@ -3,12 +3,11 @@ import { getGodInscriptionData, getGodVariationInInscription } from '../../utils
 
 interface DeityCardProps {
   god: any
-  getTextClass: (type: string) => string
   onInscriptionClick?: (inscriptionId: number) => void
   selectedInscriptionId?: number
 }
 
-export function DeityCard({ god, getTextClass, onInscriptionClick, selectedInscriptionId }: DeityCardProps) {
+export function DeityCard({ god, onInscriptionClick, selectedInscriptionId }: DeityCardProps) {
   const godData = getGodInscriptionData(god.id)
   const { godInscriptions } = godData
   
@@ -19,7 +18,7 @@ export function DeityCard({ god, getTextClass, onInscriptionClick, selectedInscr
   return (
     <div className="deity-card">
       <div className="deity-header">
-        <h4 className="text-deity-name m-0 text-2xl sm:text-3xl">
+        <h4 className="text-deity-name m-0 text-lg sm:text-xl">
           {god.name}
         </h4>
         <span className="font-italic text-dark-text/70 text-shadow-subtle text-lg sm:text-xl">
@@ -29,12 +28,12 @@ export function DeityCard({ god, getTextClass, onInscriptionClick, selectedInscr
       
       <div className="bg-bronze-600/3 rounded-card">
         <span className="section-label">About</span>
-        <p className={`section-text ${getTextClass('body')}`}>{god.description}</p>
+        <p className="section-text">{god.description}</p>
       </div>
 
       <div className="bg-bronze-600/5 rounded-card">
         <span className="section-label">Domain</span>
-        <p className={`section-text ${getTextClass('body')}`}>{god.domain}</p>
+        <p className="section-text">{god.domain}</p>
       </div>
 
       {filteredInscriptions.length > 0 && (

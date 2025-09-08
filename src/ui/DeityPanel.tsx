@@ -31,18 +31,6 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
   const gods = selectedInscription.gods?.map((godId: string) => (liverGods as any)[godId]).filter(Boolean) || []
   const deityNames = gods.map((g: any) => g.name).join(' + ')
 
-  const getTextClass = (type: string) => {
-    if (!isMobile) return ''
-    switch (type) {
-      case 'title': return 'mobile-title'
-      case 'subtitle': return 'mobile-subtitle'
-      case 'section-title': return 'mobile-section-title'
-      case 'subsection-title': return 'mobile-section-title'
-      case 'body': return 'mobile-body-text'
-      case 'label': return 'mobile-label-text'
-      default: return ''
-    }
-  }
   
 
   const handleDragStart = (e: React.TouchEvent) => {
@@ -139,10 +127,10 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
               selectedInscription={selectedInscription}
               deityNames={deityNames}
               onClose={onClose}
-              getTextClass={getTextClass}
             />
           </div>
-        <div className="deity-panel-scrollbar flex-1 overflow-y-scroll overflow-x-hidden text-dark-text min-h-0 touch-pan-y px-4 sm:px-6 lg:px-8">
+        <div className="deity-panel-scrollbar flex-1 overflow-y-scroll overflow-x-hidden text-dark-text min-h-0 touch-pan-y">
+          <div className="px-6 py-4">
           
           <h4 className="panel-section-header text-xl sm:text-2xl">
             Involved deities
@@ -153,7 +141,6 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
               <DeityCard
                 key={god.id}
                 god={god}
-                getTextClass={getTextClass}
                 selectedInscriptionId={selectedInscription.id}
                 onInscriptionClick={(inscriptionId) => {
                   const inscription = liverInscriptions.find((ins: any) => ins.id === inscriptionId)
@@ -170,14 +157,12 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
             ))}
           </div>
           
-          <h4 className="panel-section-header text-xl sm:text-2xl">
-            Group
-          </h4>
+
           <div className="pb-6">
             <GroupSection 
               selectedInscription={selectedInscription}
-              getTextClass={getTextClass}
             />
+          </div>
           </div>
         </div>
         </div>
@@ -192,12 +177,11 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
         selectedInscription={selectedInscription}
         deityNames={deityNames}
         onClose={onClose}
-        getTextClass={getTextClass}
       />
-      <div className="deity-panel-scrollbar panel-content overflow-y-scroll overflow-x-hidden min-h-0">
+      <div className="deity-panel-scrollbar panel-content overflow-y-scroll overflow-x-hidden min-h-0 p-4 sm:p-6">
         <div className="mb-6">
           <div className="mb-3">
-            <h5 className={`section-label text-bronze-600/90 m-0 ${isMobile ? 'text-lg' : 'text-base'} ${getTextClass('label')}`}>
+            <h5 className="section-label text-bronze-600/90 m-0 text-base sm:text-lg">
               Involved deities
             </h5>
           </div>
@@ -207,7 +191,6 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
               <DeityCard
                 key={god.id}
                 god={god}
-                getTextClass={getTextClass}
                 selectedInscriptionId={selectedInscription.id}
                 onInscriptionClick={(inscriptionId) => {
                   const inscription = liverInscriptions.find((ins: any) => ins.id === inscriptionId)
@@ -219,10 +202,15 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
             ))}
           </div>
         </div>
+          
+        <div className="m-8">
+          <h5 className="section-label text-bronze-600/90 text-base sm:text-lg">
+            Group
+          </h5>
+        </div>
 
         <GroupSection 
           selectedInscription={selectedInscription}
-          getTextClass={getTextClass}
         />
       </div>
     </div>

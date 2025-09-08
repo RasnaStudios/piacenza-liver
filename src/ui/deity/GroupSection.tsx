@@ -1,12 +1,10 @@
 import { getInscriptionGroup } from '../../utils/liverUtils'
-import { isMobile } from 'react-device-detect'
 
 interface GroupSectionProps {
   selectedInscription: any
-  getTextClass: (type: string) => string
 }
 
-export function GroupSection({ selectedInscription, getTextClass }: GroupSectionProps) {
+export function GroupSection({ selectedInscription }: GroupSectionProps) {
   const group = getInscriptionGroup(selectedInscription.id)
 
   if (!group) {
@@ -16,24 +14,24 @@ export function GroupSection({ selectedInscription, getTextClass }: GroupSection
   return (
     <div className="group-section">
       <div className="group-header">
-        <div 
+        <div
           className="w-3 h-3 rounded-full mr-3 flex-shrink-0"
           style={{ backgroundColor: group.color }}
         />
-        <h3 className={`text-group-title m-0 ml-10 ${isMobile ? 'text-2xl' : 'text-xl'} ${getTextClass('section-title')}`}>
+        <h3 className="text-group-title m-0 ml-10 text-xl sm:text-2xl">
           {group.name}
         </h3>
       </div>
       
-      <p className={`text-group-description ${getTextClass('body')}`}>
+      <p className="text-group-description">
         {group.description}
       </p>
       
       <div className="mt-6">
-        <h4 className={`text-cosmological-title m-0 mb-3 ${isMobile ? 'text-xl' : 'text-lg'} ${getTextClass('subsection-title')}`}>
+        <h4 className="text-cosmological-title m-0 mb-3 text-lg sm:text-xl">
           Cosmological Meaning
         </h4>
-        <p className={`text-cosmological-text ${getTextClass('body')}`}>
+        <p className="text-cosmological-text">
           {group.cosmologicalMeaning}
         </p>
       </div>

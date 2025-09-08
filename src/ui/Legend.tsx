@@ -54,108 +54,14 @@ export function Legend({ hasInteracted }: LegendProps) {
     ]
   }
 
-  const containerStyles = {
-    position: 'fixed' as const,
-    bottom: 0,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    zIndex: 100,
-    pointerEvents: 'auto' as const,
-  }
-
-  const thumbnailStyles = {
-    position: 'absolute' as const,
-    bottom: 0,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    zIndex: 0,
-    background: 'rgba(0, 0, 0, 0.85)',
-    backdropFilter: 'blur(4px)',
-    border: '1px solid rgba(139, 101, 65, 0.4)',
-    borderBottom: 'none',
-    borderRadius: '8px 8px 0 0',
-    padding: '8px 14px 6px 14px',
-    color: 'rgba(196, 168, 118, 0.9)',
-    fontSize: '12px',
-    fontWeight: 600,
-    fontFamily: 'Georgia, serif',
-    letterSpacing: '0.3px',
-    cursor: 'pointer',
-    transition: 'background 0.2s ease, color 0.2s ease, border-color 0.2s ease',
-    userSelect: 'none' as const,
-    textAlign: 'center' as const,
-    minWidth: '200px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.25)',
-  }
-
-  const legendStyles = isMobile ? {
-    // Mobile: full-width bottom panel
-    position: 'absolute' as const,
-    bottom: isOpen ? 0 : -300,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '90vw',
-    maxWidth: '460px',
-    zIndex: 1,
-    color: 'rgba(196, 168, 118, 0.6)',
-    fontFamily: 'Georgia, serif',
-    fontSize: '14px',
-    lineHeight: 1.3,
-    pointerEvents: 'auto' as const,
-    userSelect: 'none' as const,
-    padding: '14px 18px',
-    background: 'rgba(0, 0, 0, 0.9)',
-    backdropFilter: 'blur(8px)',
-    border: '1px solid rgba(139, 101, 65, 0.4)',
-    borderRadius: '8px 8px 0 0',
-    transition: isDragging ? 'none' : 'bottom 0.3s ease-out, transform 0.2s ease-out, opacity 0.2s ease-out',
-    transformOrigin: 'bottom center',
-    overflow: 'visible' as const,
-  } : {
-    // Desktop: bottom center panel
-    position: 'absolute' as const,
-    bottom: (isOpen || isHovered) ? 0 : -300,
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '440px',
-    zIndex: 1,
-    color: 'rgba(196, 168, 118, 0.6)',
-    fontFamily: 'Georgia, serif',
-    fontSize: '14px',
-    lineHeight: 1.4,
-    pointerEvents: 'auto' as const,
-    userSelect: 'none' as const,
-    padding: '14px 18px',
-    background: 'rgba(0, 0, 0, 0.9)',
-    borderRadius: '8px 8px 0 0',
-    backdropFilter: 'blur(8px)',
-    border: '1px solid rgba(139, 101, 65, 0.4)',
-    transition: 'bottom 0.3s ease-out',
-    overflow: 'visible' as const,
-  }
-
-  const linkStyles = {
-    pointerEvents: 'auto' as const,
-    color: 'inherit',
-    textDecoration: 'none',
-    transition: 'all 0.2s ease',
-  }
-
-
-  const githubIconStyles = {
-    width: '12px',
-    height: '12px',
-    fill: 'currentColor',
-  }
-
   return (
     <div 
-      style={containerStyles}
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 z-[100] pointer-events-auto"
       onDoubleClick={() => setIsOpen((v) => !v)}
     >
       {/* Thumbnail Tab (panel slides over this) */}
       <div 
-        style={thumbnailStyles}
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 z-0 bg-black/85 backdrop-blur border border-bronze-600/40 border-b-0 rounded-t-lg px-3.5 py-2 text-[#c4a876]/90 text-xs font-semibold font-serif tracking-wide cursor-pointer select-none text-center min-w-[200px] shadow-lg transition-all duration-200"
         onClick={() => setIsOpen((v) => !v)}
         onTouchStart={() => setIsOpen((v) => !v)}
         onMouseEnter={(e) => {
@@ -174,12 +80,11 @@ export function Legend({ hasInteracted }: LegendProps) {
       </div>
 
       <div 
+        className={`absolute z-[1] text-[#c4a876]/60 font-serif text-sm pointer-events-auto select-none bg-black/90 backdrop-blur-lg rounded-t-lg overflow-visible transition-all duration-300 border border-bronze-600/40 w-[90vw] max-w-[460px] md:w-[440px] left-1/2 -translate-x-1/2 leading-tight md:leading-normal ${isDragging ? 'transition-none' : ''} ${isOpen || (!isMobile && isHovered) ? 'bottom-0' : '-bottom-[300px]'}`}
         style={{
-          ...legendStyles,
-          // Apply drag transform only on mobile when dragging
           transform: isMobile
             ? `translate(-50%, ${isOpen ? dragY : 0}px)`
-            : 'translateX(-50%)',
+            : undefined,
           opacity: isMobile && isOpen ? Math.max(0.6, 1 - dragY / 600) : undefined,
         }}
         onMouseLeave={() => { if (!isOpen) setIsHovered(false) }}
@@ -208,42 +113,21 @@ export function Legend({ hasInteracted }: LegendProps) {
         }}
       >
       {isMobile && (
-        <div style={{
-          position: 'absolute',
-          top: 6,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 36,
-          height: 4,
-          borderRadius: 2,
-          background: 'rgba(196, 168, 118, 0.35)'
-        }} />
+        <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-9 h-1 rounded-sm bg-[#c4a876]/35" />
       )}
-      <div style={{ 
-        display: isMobile ? 'flex' : 'grid',
-        gridTemplateColumns: isMobile ? undefined : '1fr 1px minmax(160px, max-content)',
-        alignItems: 'flex-start',
-        gap: isMobile ? '12px' : '20px',
-        flexDirection: isMobile ? 'column' as const : undefined,
-      }}>
+      <div className="p-4 md:p-5">
+        <div className="flex flex-col gap-6 md:grid md:grid-cols-[1fr_1px_minmax(160px,max-content)] md:items-start md:gap-8">
         {/* Left side: Names */}
-        <div style={{ flex: 1 }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-            <div style={{ 
-              color: 'rgba(255, 255, 255, 0.9)', 
-              fontSize: isMobile ? '13px' : '14px',
-              fontWeight: 500,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <span style={{ whiteSpace: 'nowrap' }}>Lorenzo Andraghetti</span>
-              <div style={{ display: 'flex', gap: '6px' }}>
+        <div className="flex-1">
+          <div className="flex flex-col gap-4">
+            <div className={`text-white/90 ${isMobile ? 'text-[13px]' : 'text-sm'} font-medium flex items-center gap-3 mb-2`}>
+              <span className="whitespace-nowrap">Lorenzo Andraghetti</span>
+              <div className="flex gap-2">
                 <a 
                   href="https://linkedin.com/in/andraghetti" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ color: '#0077b5', fontSize: '14px', textDecoration: 'none' }}
+                  className="text-[#0077b5] text-sm no-underline"
                 >
                   <FaLinkedin />
                 </a>
@@ -251,35 +135,24 @@ export function Legend({ hasInteracted }: LegendProps) {
                 href="https://github.com/andraghetti" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ color: '#333', fontSize: '14px', textDecoration: 'none' }}
+                  className="text-[#333] text-sm no-underline"
                 >
                   <FaGithub />
                 </a>
               </div>
-              <span style={{ 
-                color: 'rgba(196, 168, 118, 0.7)', 
-                fontSize: isMobile ? '11px' : '12px',
-                fontStyle: 'italic'
-              }}>
+              <span className={`text-[#c4a876]/70 ${isMobile ? 'text-[11px]' : 'text-xs'} italic ml-2`}>
                 Developer
               </span>
             </div>
             
-            <div style={{ 
-              color: 'rgba(255, 255, 255, 0.9)', 
-              fontSize: isMobile ? '13px' : '14px',
-              fontWeight: 500,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}>
-              <span style={{ whiteSpace: 'nowrap' }}>Luca Tampieri</span>
-              <div style={{ display: 'flex', gap: '6px' }}>
+            <div className={`text-white/90 ${isMobile ? 'text-[13px]' : 'text-sm'} font-medium flex items-center gap-3 mb-2`}>
+              <span className="whitespace-nowrap">Luca Tampieri</span>
+              <div className="flex gap-2">
                 <a 
                   href="https://linkedin.com/in/luca-tampieri" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ color: '#0077b5', fontSize: '14px', textDecoration: 'none' }}
+                  className="text-[#0077b5] text-sm no-underline"
                 >
                   <FaLinkedin />
                 </a>
@@ -287,7 +160,7 @@ export function Legend({ hasInteracted }: LegendProps) {
                   href="https://www.artstation.com/lukedt" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ color: '#13aff0', fontSize: '14px', textDecoration: 'none' }}
+                  className="text-[#13aff0] text-sm no-underline"
                 >
                   <SiArtstation />
                 </a>
@@ -295,44 +168,23 @@ export function Legend({ hasInteracted }: LegendProps) {
                   href="https://www.instagram.com/heythereluke/" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  style={{ color: '#e4405f', fontSize: '14px', textDecoration: 'none' }}
+                  className="text-[#e4405f] text-sm no-underline"
                 >
                   <FaInstagram />
                 </a>
               </div>
-              <span style={{ 
-                color: 'rgba(196, 168, 118, 0.7)', 
-                fontSize: isMobile ? '11px' : '12px',
-                fontStyle: 'italic'
-              }}>
+              <span className={`text-[#c4a876]/70 ${isMobile ? 'text-[11px]' : 'text-xs'} italic ml-2`}>
                 3D Artist
               </span>
             </div>
           </div>
           
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginTop: '6px',
-            paddingTop: '6px',
-            borderTop: '1px solid rgba(139, 101, 65, 0.3)'
-          }}>
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-bronze-600/30">
             <a 
               href="https://github.com/rasnastudios" 
               target="_blank" 
               rel="noopener noreferrer"
-              style={{
-                ...linkStyles,
-                color: 'rgba(196, 168, 118, 0.8)',
-                fontSize: isMobile ? '11px' : '12px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = 'rgba(212, 175, 55, 0.9)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = 'rgba(196, 168, 118, 0.8)'
-              }}
+              className="pointer-events-auto text-inherit no-underline transition-all duration-200 text-[#c4a876]/80 text-[11px] md:text-xs hover:text-[#d4af37]/90"
             >
               Rasna Studios
             </a>
@@ -341,23 +193,10 @@ export function Legend({ hasInteracted }: LegendProps) {
               href="https://github.com/rasnastudios/piacenza-liver" 
               target="_blank" 
               rel="noopener noreferrer"
-              style={{
-                ...linkStyles,
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-                color: 'rgba(196, 168, 118, 0.8)',
-                fontSize: isMobile ? '11px' : '12px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.color = 'rgba(212, 175, 55, 0.9)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.color = 'rgba(196, 168, 118, 0.8)'
-              }}
+              className="pointer-events-auto text-inherit no-underline transition-all duration-200 inline-flex items-center gap-1 text-[#c4a876]/80 text-[11px] md:text-xs hover:text-[#d4af37]/90"
             >
               Contribute
-              <svg style={githubIconStyles} viewBox="0 0 24 24">
+              <svg className="w-3 h-3 fill-current" viewBox="0 0 24 24">
                 <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.30.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
               </svg>
             </a>
@@ -365,42 +204,23 @@ export function Legend({ hasInteracted }: LegendProps) {
         </div>
         
         {/* Vertical separator (desktop only) */}
-        {!isMobile && (
-          <div style={{ 
-            width: '1px',
-            height: '50px',
-            backgroundColor: 'rgba(139, 101, 65, 0.4)',
-            alignSelf: 'center'
-          }} />
-        )}
+        <div className="hidden md:block w-px h-[50px] bg-bronze-600/40 self-center" />
 
         {/* Right side: Controls */}
-        <div style={{ flexShrink: 0, minWidth: '160px', width: 'max-content' }}>
-          <div style={{
-            color: 'rgba(212, 175, 55, 0.9)',
-            fontSize: isMobile ? '12px' : '13px',
-            fontWeight: 600,
-            marginBottom: '4px',
-            textTransform: 'uppercase' as const,
-            letterSpacing: '0.5px'
-          }}>
+        <div className="flex-shrink-0 min-w-[160px] w-max">
+          <div className="text-[#d4af37]/90 text-xs md:text-[13px] font-semibold mb-3 uppercase tracking-wider">
             Controls
           </div>
           
           {(isMobile ? getMobileControlsText() : getControlsText()).map((control, index) => (
             <div
               key={index}
-              style={{
-                color: 'rgba(196, 168, 118, 0.8)',
-                fontSize: isMobile ? '11px' : '12px',
-                display: 'block',
-                marginBottom: index === (isMobile ? getMobileControlsText() : getControlsText()).length - 1 ? 0 : '1px',
-                lineHeight: 1.3,
-              }}
+              className={`text-[#c4a876]/80 text-[11px] md:text-xs block leading-relaxed ${index === (isMobile ? getMobileControlsText() : getControlsText()).length - 1 ? '' : 'mb-1'}`}
             >
               {control}
             </div>
           ))}
+        </div>
         </div>
       </div>
       </div>
