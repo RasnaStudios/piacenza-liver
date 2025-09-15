@@ -1,12 +1,31 @@
 import { useEffect, useState } from 'react'
+import { isMobile } from 'react-device-detect'
 
 export function BraveDisclaimer() {
   const [showModal, setShowModal] = useState(false)
   const [dontShowAgain, setDontShowAgain] = useState(false)
 
+  // Safe localStorage access with error handling
+  const safeLocalStorage = {
+    getItem: (key: string): string | null => {
+      try {
+        return localStorage.getItem(key)
+      } catch (e) {
+        console.warn('localStorage access blocked by browser settings')
+        return null
+      }
+    },
+    setItem: (key: string, value: string): void => {
+      try {
+        localStorage.setItem(key, value)
+      } catch (e) {
+        console.warn('Failed to write to localStorage', e)
+      }
+    }
+  }
+
   useEffect(() => {
     // Don't show on mobile devices
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     if (isMobile) {
       return
     }
@@ -21,7 +40,7 @@ export function BraveDisclaimer() {
     }
 
     // Check if user has previously dismissed the warning
-    const dismissed = localStorage.getItem('brave-shields-disclaimer-dismissed')
+    const dismissed = safeLocalStorage.getItem('brave-shields-disclaimer-dismissed')
     if (dismissed === 'true') {
       return
     }
@@ -36,7 +55,7 @@ export function BraveDisclaimer() {
   const handleDismiss = () => {
     setShowModal(false)
     if (dontShowAgain) {
-      localStorage.setItem('brave-shields-disclaimer-dismissed', 'true')
+      safeLocalStorage.setItem('brave-shields-disclaimer-dismissed', 'true')
     }
   }
 
@@ -44,10 +63,22 @@ export function BraveDisclaimer() {
     return null
   }
 
+  // If we can't access localStorage, don't show the "Don't show again" option
+  const canSavePreference = (() => {
+    try {
+      const testKey = '__test__';
+      localStorage.setItem(testKey, testKey);
+      localStorage.removeItem(testKey);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  })();
+
   return (
     <>
-        {/* Modal backdrop */}
-        <div
+      {/* Modal backdrop */}
+      <div
           style={{
             position: 'fixed',
             top: 0,
@@ -98,19 +129,20 @@ export function BraveDisclaimer() {
               fontSize: '14px',
               color: '#c9a876'
             }}>
-              <input
-                type="checkbox"
-                id="dont-show-again"
-                checked={dontShowAgain}
-                onChange={(e) => setDontShowAgain(e.target.checked)}
-                style={{
-                  accentColor: '#d4af37',
-                  transform: 'scale(1.1)'
-                }}
-              />
-              <label htmlFor="dont-show-again" style={{ cursor: 'pointer' }}>
-                Don't show again
-              </label>
+              {canSavePreference && (
+                <div className="flex items-center">
+                  <input
+                    id="dont-show-again"
+                    type="checkbox"
+                    checked={dontShowAgain}
+                    onChange={(e) => setDontShowAgain(e.target.checked)}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="dont-show-again" className="ml-2 block text-sm text-gray-700">
+                    Don't show this message again
+                  </label>
+                </div>
+              )}
             </div>
             
             <button
