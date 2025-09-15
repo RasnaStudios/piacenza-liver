@@ -14,11 +14,10 @@ import { InteractionManager } from './scene/InteractionManager'
 
 // UI Components
 import { DeityPanel } from './ui/DeityPanel'
-import { HoverTooltip } from './ui/HoverTooltip'
-import { Legend } from './ui/Legend'
+import { HoverTooltip } from './ui/components/HoverTooltip'
+import { BraveDisclaimer } from './ui/components/BraveDisclaimer'
 import { LoadingScreen } from './ui/LoadingScreen'
 import { InscriptionList } from './ui/InscriptionList'
-import { BraveDisclaimer } from './components/BraveDisclaimer'
 import { SceneConfig } from './config/SceneConfig'
 
 import { MantineProvider } from '@mantine/core'
@@ -145,31 +144,34 @@ function PiacenzaLiverScene() {
     // Set highlighting immediately for better visual feedback
     liverModelRef.current.setSelectedInscription(inscription.id)
     
-    // Focus camera on inscription
-    if (inscription.cameraPosition && inscription.cameraTarget) {
-      cameraControllerRef.current.focusOnTransformed(
-        inscription.cameraPosition,
-        inscription.cameraTarget,
-        liverModelRef.current.getModelMatrix(),
-        800,
-        () => {
-          // Open panel after camera animation completes
-          if (isMobile) {
-            // Clear any existing timeout before setting a new one
-            if (panelTimeoutRef.current) {
-              clearTimeout(panelTimeoutRef.current)
-            }
-            panelTimeoutRef.current = window.setTimeout(() => {
-              setSelectedInscription(inscription)
-              panelTimeoutRef.current = null
-            }, 1000)
-          } else {
+    // Set inscription immediately for desktop, after camera animation for mobile
+    if (isMobile) {
+      // Mobile: wait for camera animation to complete
+      if (inscription.cameraPosition && inscription.cameraTarget) {
+        cameraControllerRef.current.focusOnTransformed(
+          inscription.cameraPosition,
+          inscription.cameraTarget,
+          liverModelRef.current.getModelMatrix(),
+          800,
+          () => {
             setSelectedInscription(inscription)
           }
-        }
-      )
+        )
+      } else {
+        setSelectedInscription(inscription)
+      }
     } else {
+      // Desktop: set immediately
       setSelectedInscription(inscription)
+      
+      // Still animate camera if position data exists
+      if (inscription.cameraPosition && inscription.cameraTarget) {
+        cameraControllerRef.current.focusOnTransformed(
+          inscription.cameraPosition,
+          inscription.cameraTarget,
+          liverModelRef.current.getModelMatrix()
+        )
+      }
     }
   }, [])
 
@@ -396,6 +398,12 @@ function PiacenzaLiverScene() {
             onClose={handlePanelClose}
             onInscriptionSelect={handleInscriptionListClick}
           />
+          <InscriptionList 
+            onInscriptionSelect={handleInscriptionListClick}
+            selectedInscription={selectedInscription}
+            isLoading={isLoading}
+            hasInteracted={hasInteracted}
+          />
         </div>
         
         <HoverTooltip 
@@ -406,14 +414,7 @@ function PiacenzaLiverScene() {
           isMouseOverPanel={isMouseOverPanel}
         />
         
-        {!isLoading && <Legend hasInteracted={hasInteracted} />}
-        
-        <InscriptionList 
-          onInscriptionSelect={handleInscriptionListClick}
-          selectedInscription={selectedInscription}
-          isLoading={isLoading}
-          hasInteracted={hasInteracted}
-        />
+        {!isLoading && <BraveDisclaimer />}
         
         <LoadingScreen 
           progress={loadingProgress} 

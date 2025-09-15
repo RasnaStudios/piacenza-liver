@@ -1,8 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { useMediaQuery } from '@mantine/hooks'
+import { Box, Group } from '@mantine/core'
 import { isMobile } from 'react-device-detect'
 import { liverInscriptions, liverGods } from '../scene/LiverData'
 import { getInscriptionGroup } from '../utils/liverUtils'
+import { NumberBadge } from './components/NumberBadge'
 
 interface InscriptionListProps {
   onInscriptionSelect: (inscription: any) => void
@@ -28,7 +30,7 @@ export function InscriptionList({
   }
 
   const getGodNames = (gods: string[]) => {
-    return gods.map(godId => liverGods[godId as keyof typeof liverGods]?.name || godId).join(' & ')
+    return gods.map(godId => liverGods[godId as keyof typeof liverGods]?.name || godId).join(' + ')
   }
 
   useEffect(() => {
@@ -66,120 +68,53 @@ export function InscriptionList({
     const isSelected = selectedInscription?.id === inscription.id
     
     return (
-      <div
+      <Box
         key={inscription.id}
         ref={(el: HTMLDivElement | null) => { inscriptionRefs.current[inscription.id] = el }}
+        className="inscription-item"
         style={{
-          padding: '6px 8px',
-          marginBottom: 2,
-          borderRadius: 8,
-          cursor: 'pointer',
-          transition: 'all 0.15s ease',
           background: isSelected 
-            ? `${getGroupColor(inscription.id)}30`
+            ? `${getGroupColor(inscription.id)}70`
             : isHovered 
-              ? 'rgba(196, 168, 118, 0.12)'
+              ? `${getGroupColor(inscription.id)}50`
               : 'transparent',
-          display: 'flex',
-          alignItems: 'center',
-          minHeight: 32,
         }}
         onMouseEnter={() => setHoveredId(inscription.id)}
         onMouseLeave={() => setHoveredId(null)}
         onClick={() => onInscriptionSelect(inscription)}
       >
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 24,
-            height: 24,
-            borderRadius: '50%',
-            backgroundColor: getGroupColor(inscription.id),
-            color: 'white',
-            fontSize: 11,
-            fontWeight: 600,
-            marginRight: 8,
-            flexShrink: 0,
-          }}
-        >
-          {inscription.id}
-        </div>
-        <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
-          <span
-            style={{
-              color: 'rgba(196, 168, 118, 0.9)',
-              fontWeight: 400,
-              lineHeight: 1.3,
-              fontFamily: 'Georgia, serif',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              fontSize: '14px',
-            }}
-          >
+        <Group align="center" gap="xs">
+          <NumberBadge value={inscription.id} />
+          <Box className="text-bronze-light font-primary" style={{ fontSize: '18px' }}>
             {getGodNames(inscription.gods)}
-          </span>
-        </div>
-      </div>
+          </Box>
+        </Group>
+      </Box>
     )
   }
 
   return (
-    <div
+    <Box
+      className="inscription-list-container panel-border"
       style={{
-        position: 'fixed',
-        top: 20,
-        bottom: 20,
-        left: isVisible ? 0 : -300,
-        width: 200,
-        background: '#0a0806',
-        border: '1px solid rgba(139, 101, 65, 0.2)',
-        borderRadius: '0 12px 12px 0',
-        zIndex: 50,
-        fontFamily: 'Georgia, serif',
-        transition: 'left 0.3s ease-out',
-        padding: 8,
-        display: 'flex',
-        flexDirection: 'column',
+        left: isVisible ? 0 : -1000,
       }}
     >
-      <div
+      <Box
+        className="scrollbar"
         style={{
           flex: 1,
           overflowY: 'scroll',
           overflowX: 'hidden',
-          scrollbarWidth: 'thin',
-          scrollbarColor: 'rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2)',
           WebkitOverflowScrolling: 'touch',
           pointerEvents: 'auto',
         }}
-        className="custom-scrollbar"
         onWheel={(e) => {
           e.stopPropagation()
         }}
       >
-        <style>
-          {`
-            .custom-scrollbar::-webkit-scrollbar {
-              width: 6px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-track {
-              background: rgba(0, 0, 0, 0.2);
-              border-radius: 3px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb {
-              background: rgba(196, 168, 118, 0.4);
-              border-radius: 3px;
-            }
-            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-              background: rgba(196, 168, 118, 0.6);
-            }
-          `}
-        </style>
         {liverInscriptions.map(renderInscription)}
-      </div>
-    </div>
+      </Box>
+    </Box>
   )
 }

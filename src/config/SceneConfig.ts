@@ -17,17 +17,15 @@ export const SceneConfig = {
   // Animation offsets (added to initial positions)
   animation: {
     camera: {
-      positionOffset: new THREE.Vector3(0, 3, -4), // Move up and closer
-      targetOffset: new THREE.Vector3(0, 0, 0),
+      landscape: {
+        positionOffset: new THREE.Vector3(0, 2, -7), // Move up and closer
+        targetOffset: new THREE.Vector3(0, -1, -1.5),
+      },
+      portrait: {
+        positionOffset: new THREE.Vector3(0, 3, -4), // Move up and closer
+        targetOffset: new THREE.Vector3(0, 0, 0),
+      },
       duration: 1500
-    },
-    
-    model: {
-      scaleAnimation: {
-        startScale: 0.3,
-        endScale: 1.0,
-        duration: 1500
-      }
     }
   },
   

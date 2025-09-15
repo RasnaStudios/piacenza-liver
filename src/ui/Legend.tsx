@@ -76,7 +76,6 @@ export function Legend({ hasInteracted }: LegendProps) {
     zIndex: 0,
     background: 'rgba(0, 0, 0, 0.85)',
     backdropFilter: 'blur(4px)',
-    border: '1px solid rgba(139, 101, 65, 0.4)',
     borderBottom: 'none',
     borderRadius: '8px 8px 0 0',
     padding: '8px 14px 6px 14px',
@@ -111,7 +110,6 @@ export function Legend({ hasInteracted }: LegendProps) {
     padding: '14px 18px',
     background: 'rgba(0, 0, 0, 0.9)',
     backdropFilter: 'blur(8px)',
-    border: '1px solid rgba(139, 101, 65, 0.4)',
     borderRadius: '8px 8px 0 0',
     transition: isDragging ? 'none' : 'bottom 0.3s ease-out, transform 0.2s ease-out, opacity 0.2s ease-out',
     transformOrigin: 'bottom center',
@@ -134,7 +132,6 @@ export function Legend({ hasInteracted }: LegendProps) {
     background: 'rgba(0, 0, 0, 0.9)',
     borderRadius: '8px 8px 0 0',
     backdropFilter: 'blur(8px)',
-    border: '1px solid rgba(139, 101, 65, 0.4)',
     transition: 'bottom 0.3s ease-out',
     overflow: 'visible' as const,
   }
@@ -161,6 +158,7 @@ export function Legend({ hasInteracted }: LegendProps) {
       {/* Thumbnail Tab (panel slides over this) */}
       <Box 
         style={thumbnailStyles}
+        className="panel-border"
         onClick={() => setIsOpen((v) => !v)}
         onTouchStart={() => setIsOpen((v) => !v)}
         onMouseEnter={(e) => {

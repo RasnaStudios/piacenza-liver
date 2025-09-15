@@ -9,6 +9,13 @@ const isPortraitOrientation = () => {
   return window.innerHeight > window.innerWidth
 }
 
+// Helper function to get orientation-specific camera animation offsets
+const getCameraAnimationOffsets = () => {
+  return isPortraitOrientation() 
+    ? SceneConfig.animation.camera.portrait 
+    : SceneConfig.animation.camera.landscape
+}
+
 export class CameraController {
   private camera: THREE.Camera
   private controls: OrbitControls
@@ -28,8 +35,9 @@ export class CameraController {
     
     // Track user's manual positions
     // Calculate intro end position and target using config
-    const endPos = SceneConfig.camera.initial.clone().add(SceneConfig.animation.camera.positionOffset)
-    const endTarget = SceneConfig.camera.target.clone().add(SceneConfig.animation.camera.targetOffset)
+    const cameraOffsets = getCameraAnimationOffsets()
+    const endPos = SceneConfig.camera.initial.clone().add(cameraOffsets.positionOffset)
+    const endTarget = SceneConfig.camera.target.clone().add(cameraOffsets.targetOffset)
     this.lastManualPosition = endPos
     this.lastManualTarget = endTarget
     
@@ -277,8 +285,9 @@ export class CameraController {
     
     const startPos = SceneConfig.camera.initial
     const startTarget = SceneConfig.camera.target
-    const endPos = startPos.clone().add(SceneConfig.animation.camera.positionOffset)
-    const endTarget = startTarget.clone().add(SceneConfig.animation.camera.targetOffset)
+    const cameraOffsets = getCameraAnimationOffsets()
+    const endPos = startPos.clone().add(cameraOffsets.positionOffset)
+    const endTarget = startTarget.clone().add(cameraOffsets.targetOffset)
     const duration = SceneConfig.animation.camera.duration
     
     this.isAnimating = true
@@ -318,8 +327,9 @@ export class CameraController {
     const startPosition = this.camera.position.clone()
     const startTarget = this.controls.target.clone()
 
-    const endPosition = SceneConfig.camera.initial.clone().add(SceneConfig.animation.camera.positionOffset)
-    const endTarget = SceneConfig.camera.target.clone().add(SceneConfig.animation.camera.targetOffset)
+    const cameraOffsets = getCameraAnimationOffsets()
+    const endPosition = SceneConfig.camera.initial.clone().add(cameraOffsets.positionOffset)
+    const endTarget = SceneConfig.camera.target.clone().add(cameraOffsets.targetOffset)
 
     this.lastManualPosition.copy(endPosition)
     this.lastManualTarget.copy(endTarget)
