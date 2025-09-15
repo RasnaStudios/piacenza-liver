@@ -17,72 +17,63 @@ export const liverGroups = {
     name: 'Sky',
     positions: [1, 2, 3, 4],
     color: '#87CEEB', // Sky-blue
-    description: 'The celestial realm dominated by Tinia (Jupiter) and his divine court. This zone governs heavenly omens, divine authority, and cosmic order.',
-    cosmologicalMeaning: 'Supreme divine authority, celestial omens, and the governance of fate from the heavens.'
+    description: 'The celestial realm dominated by Tinia (Jupiter) and his divine court. This zone governs heavenly omens, divine authority, and cosmic order.'
   },
   water: {
     id: 'water',
     name: 'Water',
     positions: [5, 6, 7, 8],
     color: '#008B8B', // Teal
-    description: 'The aquatic realm presided over by Nethuns (Neptune) and water deities. Controls omens related to water, purification, and life force.',
-    cosmologicalMeaning: 'Life-giving waters, purification rituals, and the flow of divine energy through liquid elements.'
+    description: 'The aquatic realm presided over by Nethuns (Neptune) and water deities. Controls omens related to water, purification, and life force.'
   },
   earth: {
     id: 'earth', 
     name: 'Earth',
     positions: [9, 10, 11, 12],
     color: '#CD853F', // Brown-ochre
-    description: 'The terrestrial realm of vegetation, boundaries, and earth spirits. Governs agricultural cycles, forest boundaries, and land-based divine forces.',
-    cosmologicalMeaning: 'Terrestrial fertility, natural boundaries, vegetation cycles, and earth-bound spiritual forces.'
+    description: 'The terrestrial realm of vegetation, boundaries, and earth spirits. Governs agricultural cycles, forest boundaries, and land-based divine forces.'
   },
   underworld: {
     id: 'underworld',
     name: 'Underworld',
     positions: [13, 14, 15, 16],
     color: '#808000', // Olive-green
-    description: 'The chthonic realm of earth goddesses, protective spirits, and underworld deities. Controls death omens, protection, and liminal passages.',
-    cosmologicalMeaning: 'Death transitions, protective spirits, underworld passages, and chthonic divine authority.'
+    description: 'The chthonic realm of earth goddesses, protective spirits, and underworld deities. Controls death omens, protection, and liminal passages.'
   },
   pars_familiaris: {
     id: 'pars_familiaris',
     name: 'Pars Familiaris',
     positions: [17, 18, 19, 20, 21, 22, 23, 24],
     color: '#FF0000', // Bright red
-    description: 'The familiar/favorable realm containing household spirits and benevolent deities. Represents favorable omens and domestic divine protection.',
-    cosmologicalMeaning: 'Household protection, favorable omens, domestic divine forces, and benevolent spiritual guidance.'
+    description: 'The familiar/favorable realm containing household spirits and benevolent deities. Represents favorable omens and domestic divine protection.'
   },
   gall_bladder: {
     id: 'gall_bladder',
     name: 'Gall Bladder',
     positions: [25, 26, 27, 28],
     color: '#FF8C00', // Deep orange
-    description: 'The bile reservoir representing concentrated divine energy, generative forces, and seasonal transitions. Contains powerful fertility and war deities.',
-    cosmologicalMeaning: 'Concentrated divine energy, generative power, seasonal transitions, and intense spiritual forces.'
+    description: 'The bile reservoir representing concentrated divine energy, generative forces, and seasonal transitions. Contains powerful fertility and war deities.'
   },
   central_section: {
     id: 'central_section', 
     name: 'Central Section',
     positions: [29, 30, 37, 38, 39, 40],
     color: '#FFA500', // Light orange
-    description: 'The central power zone containing heroic protectors and generating forces. Represents the heart of divine power and cosmic balance.',
-    cosmologicalMeaning: 'Central divine authority, heroic protection, cosmic balance, and the generating power of all gods.'
+    description: 'The central power zone containing heroic protectors and generating forces. Represents the heart of divine power and cosmic balance.'
   },
   pars_hostilis: {
     id: 'pars_hostilis',
     name: 'Pars Hostilis',
     positions: [31, 32, 33, 34, 35, 36],
     color: '#9370DB', // Purple-lavender
-    description: 'The hostile/unfavorable realm containing border guardians and infernal deities. Represents challenging omens and protective boundaries.',
-    cosmologicalMeaning: 'Hostile forces, protective boundaries, infernal powers, and challenging divine tests.'
+    description: 'The hostile/unfavorable realm containing border guardians and infernal deities. Represents challenging omens and protective boundaries.'
   },
   retro: {
     id: 'retro',
     name: 'Back / Bottom',
     positions: [41, 42], 
     color: '#808080', // Gray
-    description: 'The foundational cosmic anchors representing the Sun and Moon. These mark the fundamental celestial cycles underlying all divination.',
-    cosmologicalMeaning: 'Cosmic foundation, solar-lunar cycles, day-night duality, and the fundamental rhythm of time.'
+    description: 'The foundational cosmic anchors representing the Sun and Moon. These mark the fundamental celestial cycles underlying all divination.'
   }
 }
 
@@ -91,7 +82,6 @@ export const liverGods = {
   tinia: {
     id: 'tinia',
     name: 'Tinia',
-    etruscanScript: '𐌕𐌉𐌍',
     transcription: 'tinia',
     romanEquivalent: 'Jupiter',
     greekEquivalent: 'Zeus', 
@@ -102,7 +92,6 @@ export const liverGods = {
   cilens: {
     id: 'cilens',
     name: 'Cilens',
-    etruscanScript: '𐌂𐌉𐌋𐌄𐌍',
     transcription: 'cilens',
     romanEquivalent: 'Nocturnus',
     domain: 'Night, Psychopomp',
@@ -112,8 +101,6 @@ export const liverGods = {
   thufltha: {
     id: 'thufltha', 
     name: 'Thufltha',
-    etruscanScript: '𐌚𐌖𐌅𐌋𐌚𐌀',
-    transcription: '',
     romanEquivalent: 'Fortuna',
     domain: 'Fate, Healing, Oracles',
     description: 'Goddess of fate, healing, and oracular wisdom.',
@@ -122,7 +109,6 @@ export const liverGods = {
   nethuns: {
     id: 'nethuns',
     name: 'Nethuns', 
-    etruscanScript: '𐌍𐌄𐌈',
     transcription: 'neθ',
     romanEquivalent: 'Neptune',
     greekEquivalent: 'Poseidon',
@@ -133,7 +119,6 @@ export const liverGods = {
   uni: {
     id: 'uni',
     name: 'Uni',
-    etruscanScript: '𐌖𐌍𐌉',
     transcription: 'Uni',
     romanEquivalent: 'Juno',
     greekEquivalent: 'Hera',
@@ -144,9 +129,7 @@ export const liverGods = {
   mae: {
     id: 'mae',
     name: 'Mae',
-    etruscanScript: '𐌡𐌀𐌄',
     romanEquivalent: 'Maius',
-    transcription: '',
     domain: 'Maternal, Generative',
     description: 'Possibly maternal or generative attribute deity.',
     
@@ -154,7 +137,6 @@ export const liverGods = {
   tecvm: {
     id: 'tecvm',
     name: 'Tecum', 
-    etruscanScript: '𐌕𐌄𐌂𐌅𐌡',
     transcription: 'tecvm',
     domain: 'Paternal Water Spirit',
     description: 'God of the lucomenes, or ruling class.',
@@ -163,7 +145,6 @@ export const liverGods = {
   lusal: {
     id: 'lusal',
     name: 'Lusal',
-    etruscanScript: '𐌋𐌖𐌔𐌋',
     transcription: 'lusl',
     domain: 'Water (unidentified)',
     description: 'Unidentified water deity, possibly related to light or purification.',
@@ -172,8 +153,6 @@ export const liverGods = {
   catha: {
     id: 'catha',
     name: 'Catha',
-    etruscanScript: '𐌂𐌀𐌚',
-    transcription: '',
     romanEquivalent: 'Kore',
     domain: 'Sun, Solar-Nymph',
     description: 'Goddess of the sun in her solar-nymph form.',
@@ -182,7 +161,6 @@ export const liverGods = {
   fufluns: {
     id: 'fufluns',
     name: 'Fufluns',
-    etruscanScript: '𐌅𐌖𐌅𐌋𐌖𐌍',
     transcription: 'fuflun',
     romanEquivalent: 'Bacchus',
     greekEquivalent: 'Dionysus',
@@ -193,8 +171,6 @@ export const liverGods = {
   selvans: {
     id: 'selvans',
     name: 'Selvans',
-    etruscanScript: '𐌔𐌄𐌋𐌅𐌀',
-    transcription: '',
     romanEquivalent: 'Silvanus',
     domain: 'Forests, Borders',
     description: 'God of borders and forest boundaries.',
@@ -203,8 +179,6 @@ export const liverGods = {
   lethns: {
     id: 'lethns',
     name: 'Lethns',
-    etruscanScript: '𐌋𐌄𐌚𐌍',
-    transcription: '',
     romanEquivalent: 'Lethams',
     domain: 'Local Spirit, Genius',
     description: 'Genius or local spirit, possibly related to memory/forgetfulness.',
@@ -213,8 +187,6 @@ export const liverGods = {
   tluscva: {
     id: 'tluscva',
     name: 'Tluscva',
-    etruscanScript: '𐌕𐌋𐌖𐌔𐌂',
-    transcription: '',
     domain: 'Water Nymphs, Sacred Water',
     description: 'Nymphs tied to water cult and sacred offerings.',
     
@@ -222,8 +194,6 @@ export const liverGods = {
   cels: {
     id: 'cels',
     name: 'Cels',
-    etruscanScript: '𐌂𐌄𐌋𐌔',
-    transcription: '',
     romanEquivalent: 'Gea',
     domain: 'Earth Goddess',
     description: 'Goddess of the earth and chthonic forces.',
@@ -232,8 +202,6 @@ export const liverGods = {
   culsans: {
     id: 'culsans',
     name: 'Culsans',
-    etruscanScript: '𐌂𐌖𐌋',
-    transcription: '',
     romanEquivalent: 'Janus',
     domain: 'Doors, Protection',
     description: 'Benevolent protector of doors and thresholds.',
@@ -242,8 +210,6 @@ export const liverGods = {
   alpans: {
     id: 'alpans',
     name: 'Alpans',
-    etruscanScript: '𐌀𐌋𐌐',
-    transcription: '',
     domain: 'Protective Spirit',
     description: 'Protective spirit associated with Culsans.',
     
@@ -251,8 +217,6 @@ export const liverGods = {
   vetils: {
     id: 'vetils',
     name: 'Vetils',
-    etruscanScript: '𐌅𐌄𐌕𐌉𐌋𐌔',
-    transcription: '',
     romanEquivalent: 'Veiovis',
     domain: 'Underworld Apollo',
     description: 'Underworld "Apollo", chthonic version of the light god.',
@@ -261,8 +225,6 @@ export const liverGods = {
   pul: {
     id: 'pul',
     name: 'Pul',
-    etruscanScript: '𐌐𐌖𐌋',
-    transcription: '',
     domain: 'Uncertain',
     description: 'Uncertain deity, possibly related to purification.',
     
@@ -270,8 +232,6 @@ export const liverGods = {
   lasl: {
     id: 'lasl',
     name: 'Lasl',
-    etruscanScript: '𐌋𐌀𐌔𐌋',
-    transcription: '',
     romanEquivalent: 'Lasi',
     domain: 'Household Spirit',
     description: 'Household female spirit, domestic protection. Companion of Turan.',
@@ -280,7 +240,6 @@ export const liverGods = {
   maris: {
     id: 'maris',
     name: 'Maris',
-    etruscanScript: '𐌡𐌀𐌓',
     transcription: 'mar',
     domain: 'Generative Force, Youth',
     description: 'Generative force and generating power of all the gods.',
@@ -289,7 +248,6 @@ export const liverGods = {
   laran: {
     id: 'laran',
     name: 'Laran', 
-    etruscanScript: '𐌋𐌀𐌓',
     transcription: 'lar',
     romanEquivalent: 'Ares',
     domain: 'War, Fire',
@@ -299,7 +257,6 @@ export const liverGods = {
   letams: {
     id: 'letams',
     name: 'Letams',
-    etruscanScript: '𐌋𐌄𐌕𐌀',
     transcription: 'leta',
     domain: 'Local Spirit',
     description: 'Local spirit or genius, memory-related deity.',
@@ -308,8 +265,6 @@ export const liverGods = {
   tvnth: {
     id: 'tvnth',
     name: 'Tvnth',
-    etruscanScript: '𐌕𐌖𐌍𐌚',
-    transcription: '',
     domain: 'Uncertain',
     description: 'Uncertain deity in the gall bladder zone.',
     
@@ -317,8 +272,6 @@ export const liverGods = {
   hercle: {
     id: 'hercle',
     name: 'Hercle',
-    etruscanScript: '𐌇𐌄𐌓𐌂',
-    transcription: '',
     romanEquivalent: 'Hercules', 
     domain: 'Heroic Protection',
     description: 'Hero-protector, divine strength and protection.',
@@ -327,8 +280,6 @@ export const liverGods = {
   metlvmth: {
     id: 'metlvmth',
     name: 'Metlvmth',
-    etruscanScript: '𐌡𐌄𐌕𐌋𐌖𐌡𐌚',
-    transcription: '',
     domain: 'Epithet/Attribute',
     description: 'Epithet or attribute associated with Lethams.',
     
@@ -336,8 +287,6 @@ export const liverGods = {
   marutl: {
     id: 'marutl',
     name: 'Marutl',
-    etruscanScript: '𐌡𐌀𐌓𐌖𐌕𐌋',
-    transcription: '',
     domain: 'Epithet/Attribute',
     description: 'Double epithet associated with Tluscva.',
     
@@ -345,8 +294,6 @@ export const liverGods = {
   lethams: {
     id: 'lethams',
     name: 'Lethams',
-    etruscanScript: '𐌋𐌄𐌚𐌀𐌡',
-    transcription: '',
     domain: 'Local Spirit',
     description: 'Local tutelary spirit, genius of place.',
     
@@ -354,8 +301,6 @@ export const liverGods = {
   velch: {
     id: 'velch',
     name: 'Velch',
-    etruscanScript: '𐌅𐌄𐌋𐌒',
-    transcription: '',
     romanEquivalent: 'Vulcan',
     domain: 'Fire, Underworld',
     description: 'Infernal form of Sethlans (Vulcan), fire deity.',
@@ -364,8 +309,6 @@ export const liverGods = {
   satres: {
     id: 'satres',
     name: 'Satres',
-    etruscanScript: '𐌔𐌀𐌕𐌓𐌄𐌔',
-    transcription: '',
     romanEquivalent: 'Saturn',
     domain: 'Underworld, Time',
     description: 'God of the underworld and temporal cycles.',
@@ -374,8 +317,6 @@ export const liverGods = {
   usil: {
     id: 'usil',
     name: 'Usil',
-    etruscanScript: '𐌖𐌔𐌉𐌋',
-    transcription: 'usil',
     domain: 'Sun',
     description: 'The sun god, representing solar power and illumination.',
     
@@ -383,8 +324,6 @@ export const liverGods = {
   tiur: {
     id: 'tiur',
     name: 'Tiur',
-    etruscanScript: '𐌕𐌉𐌖𐌓',
-    transcription: 'tiur',
     domain: 'Moon',
     description: 'The moon god, representing lunar cycles and night illumination.',
     
