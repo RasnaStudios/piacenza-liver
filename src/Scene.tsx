@@ -60,8 +60,12 @@ function PiacenzaLiverScene() {
   // Optimized callback handlers
   const handleMarkerHover = useCallback((section: any) => {
     setHoveredSection(section)
-    if (liverModelRef.current && section?.id) {
-      liverModelRef.current.setHoveredInscription(section.id)
+    if (liverModelRef.current) {
+      if (section?.id) {
+        liverModelRef.current.setHoveredInscription(section.id)
+      } else {
+        liverModelRef.current.setHoveredInscription(0)
+      }
     }
   }, [])
 
@@ -382,6 +386,14 @@ function PiacenzaLiverScene() {
       interactionManagerRef.current = interactionManager
     }
   }, [handleInscriptionClick, handleBackgroundClick, handleMarkerHover, handleZoomDetected, handleMouseMove, handleModifierKeyChange, handleReset])
+
+  // Clear hovered inscription when mouse enters panel area
+  useEffect(() => {
+    if (isMouseOverPanel && liverModelRef.current) {
+      liverModelRef.current.setHoveredInscription(0)
+      setHoveredSection(null)
+    }
+  }, [isMouseOverPanel])
 
   return (
     <div className="piacenza-liver-app">
