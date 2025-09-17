@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://liver.rasna.dev/sitemap.xml

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build:extract": "node scripts/extract-inscriptions.cjs",
+    "build": "npm run build:extract && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

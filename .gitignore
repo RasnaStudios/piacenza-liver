@@ -13,6 +13,9 @@ dist-ssr
 dev-dist
 *.local
 
+# Generated data files
+public/data/inscriptions.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

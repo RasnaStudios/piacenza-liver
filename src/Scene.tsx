@@ -18,6 +18,7 @@ import { HoverTooltip } from './ui/components/HoverTooltip'
 import { BraveDisclaimer } from './ui/components/BraveDisclaimer'
 import { LoadingScreen } from './ui/LoadingScreen'
 import { InscriptionList } from './ui/InscriptionList'
+import { DataSummary } from './ui/components/DataSummary'
 import { SceneConfig } from './config/SceneConfig'
 
 import { MantineProvider } from '@mantine/core'
@@ -432,6 +433,9 @@ function PiacenzaLiverScene() {
           progress={loadingProgress} 
           isLoading={isLoading} 
         />
+        
+        {/* Data Summary */}
+        <DataSummary />
         
         {/* Brave Browser Disclaimer */}
         <BraveDisclaimer />

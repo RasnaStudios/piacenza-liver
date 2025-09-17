@@ -63,6 +63,14 @@ export default defineConfig({
       'Expires': '0'
     }
   },
+  preview: {
+    headers: {
+      '/data/inscriptions.json': {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=86400, s-maxage=86400'
+      }
+    }
+  },
   build: {
     chunkSizeWarningLimit: 1024,
     rollupOptions: {
