@@ -335,40 +335,40 @@ export const liverInscriptions = [
   {
     id: 1,
     etruscanText: '𐌕𐌉𐌍 / 𐌂𐌉𐌋 / 𐌄𐌍', 
-    transcription: 'tin/cil/en',
-    gods: ['tinia', 'cilens'],
+    transcription: 'tin / cil / en',
+    gods: [{id: 'tinia', form: '𐌕𐌉𐌍'}, {id: 'cilens', form: '𐌂𐌉𐌋𐌄𐌍'}],
     cameraPosition: new THREE.Vector3(-2.491, 0.722, -1.246),
     cameraTarget: new THREE.Vector3(-2.357, 0.865, 1.013)
   },
   {
     id: 2,
-    etruscanText: '𐌕𐌉𐌍 / 𐌏𐌖𐌚',
-    transcription: 'tin/θvf',
-    gods: ['tinia', 'thufltha'],
+    etruscanText: '𐌕𐌉𐌍 / 𐌏𐌅𐌚',
+    transcription: 'tin / θvf',
+    gods: [{id: 'tinia', form: '𐌕𐌉𐌍'}, {id: 'thufltha', form: '𐌏𐌅𐌚'}],
     cameraPosition: new THREE.Vector3(-2.608, 0.055, -1.174),
     cameraTarget: new THREE.Vector3(-2.567, 0.305, 1.079)
   },
   {
     id: 3,
     etruscanText: '𐌕𐌉𐌍𐌔 / 𐌏𐌍𐌄',
-    transcription: 'tins/θne',
-    gods: ['tinia', 'nethuns'],
+    transcription: 'tins / θne',
+    gods: [{id: 'tinia', form: '𐌕𐌉𐌍𐌔𐌏'}, {id: 'nethuns', form: '𐌍𐌄'}],
     cameraPosition: new THREE.Vector3(-2.517, -0.611, -1.069),
     cameraTarget: new THREE.Vector3(-2.609, -0.247, 1.167)
   },
   {
     id: 4,
     etruscanText: '𐌖𐌍𐌉 / 𐌡𐌀𐌄',
-    transcription: 'uni/mae',
-    gods: ['uni', 'mae'],
+    transcription: 'uni / mae',
+    gods: [{id: 'uni', form: '𐌖𐌍𐌉'}, {id: 'mae', form: '𐌡𐌀𐌄'}],
     cameraPosition: new THREE.Vector3(-2.220, -1.169, -0.953),
     cameraTarget: new THREE.Vector3(-2.480, -0.819, 1.272)
   },
   {
     id: 5,
     etruscanText: '𐌕𐌄𐌂 / 𐌅𐌡',
-    transcription: 'tec/vm',
-    gods: ['tecvm'],
+    transcription: 'tec / vm',
+    gods: [{id: 'tecvm', form: '𐌕𐌄𐌂𐌅𐌡'}],
     description: 'Tece Sans, "Father"',
     cameraPosition: new THREE.Vector3(-1.838, -1.580, -0.839),
     cameraTarget: new THREE.Vector3(-2.221, -1.297, 1.377)
@@ -377,7 +377,7 @@ export const liverInscriptions = [
     id: 6,
     etruscanText: '𐌋𐌅𐌔𐌀𐌋',
     transcription: 'lvsal',
-    gods: ['lusal'],
+    gods: [{id: 'lusal', form: '𐌋𐌅𐌔𐌀𐌋'}],
     description: 'Fertility goddess Lusal',
     cameraPosition: new THREE.Vector3(-1.365, -1.7185, -0.5965),
     cameraTarget: new THREE.Vector3(-1.6015, -1.3815, 1.4875)
@@ -386,7 +386,7 @@ export const liverInscriptions = [
     id: 7,
     etruscanText: '𐌍𐌄𐌏',
     transcription: 'neθ',
-    gods: ['nethuns'],
+    gods: [{id: 'nethuns', form: '𐌍𐌄𐌏'}],
     description: 'Primary water deity in his own domain',
     cameraPosition: new THREE.Vector3(-0.892, -1.857, -0.354),
     cameraTarget: new THREE.Vector3(-0.982, -1.466, 1.598)
@@ -395,7 +395,7 @@ export const liverInscriptions = [
     id: 8,
     etruscanText: '𐌂𐌀𐌏',
     transcription: 'caθ',
-    gods: ['catha'],
+    gods: [{id: 'catha', form: '𐌂𐌀𐌏'}],
     description: 'Solar goddess in water context',
     cameraPosition: new THREE.Vector3(-0.191, -1.726, -0.265),
     cameraTarget: new THREE.Vector3(-0.573, -1.313, 1.647)
@@ -403,8 +403,8 @@ export const liverInscriptions = [
   {
     id: 9,
     etruscanText: '𐌚𐌖𐌚𐌋𐌖 / 𐌍𐌔',
-    transcription: 'fuflu/ns',
-    gods: ['fufluns'],
+    transcription: 'fuflu / ns',
+    gods: [{id: 'fufluns', form: '𐌚𐌖𐌚𐌋𐌖𐌍𐌔'}],
     description: 'Vegetation deity in earth domain',
     cameraPosition: new THREE.Vector3(0.066, -1.213, -0.702),
     cameraTarget: new THREE.Vector3(0.068, -1.275, 1.659)
@@ -413,7 +413,7 @@ export const liverInscriptions = [
     id: 10,
     etruscanText: '𐌔𐌄𐌋𐌅𐌀',
     transcription: 'selva',
-    gods: ['selvans'],
+    gods: [{id: 'selvans', form: '𐌔𐌄𐌋𐌅𐌀'}],
     description: 'Forest boundary guardian in earth realm',
     cameraPosition: new THREE.Vector3(0.896, -1.509, -0.514),
     cameraTarget: new THREE.Vector3(0.869, -1.426, 1.657)
@@ -422,7 +422,7 @@ export const liverInscriptions = [
     id: 11,
     etruscanText: '𐌋𐌄𐌏𐌍𐌔',
     transcription: 'leθns',
-    gods: ['lethns'],
+    gods: [{id: 'lethns', form: '𐌋𐌄𐌏𐌍𐌔'}],
     description: 'Local earth spirit/genius',
     cameraPosition: new THREE.Vector3(1.577, -1.542, -0.604),
     cameraTarget: new THREE.Vector3(1.348, -1.245, 1.654)
@@ -431,7 +431,7 @@ export const liverInscriptions = [
     id: 12,
     etruscanText: '𐌕𐌋𐌖𐌔𐌂𐌅',
     transcription: 'tluscv',
-    gods: ['tluscva'],
+    gods: [{id: 'tluscva', form: '𐌕𐌋𐌖𐌔𐌂𐌅'}],
     description: 'Water nymphs in earth context (springs, sacred groves)',
     cameraPosition: new THREE.Vector3(2.238, -0.057, -1.039),
     cameraTarget: new THREE.Vector3(2.247, -0.257, 1.788)
@@ -440,7 +440,7 @@ export const liverInscriptions = [
     id: 13,
     etruscanText: '𐌂𐌄𐌋𐌔',
     transcription: 'cels',
-    gods: ['cels'],
+    gods: [{id: 'cels', form: '𐌂𐌄𐌋𐌔'}],
     description: 'Earth goddess in underworld domain',
     cameraPosition: new THREE.Vector3(1.640, 0.505, -0.994),
     cameraTarget: new THREE.Vector3(1.667, 0.355, 1.836)
@@ -448,8 +448,8 @@ export const liverInscriptions = [
   {
     id: 14,
     etruscanText: '𐌂𐌅𐌋 / 𐌀𐌋𐌐',
-    transcription: 'cvl/alp',
-    gods: ['culsans', 'alpans'],
+    transcription: 'cvl / alp',
+    gods: [{id: 'culsans', form: '𐌂𐌅𐌋'}, {id: 'alpans', form: '𐌀𐌋𐌐'}],
     description: 'Culsans (Janus) paired with protective spirit Alpans',
     cameraPosition: new THREE.Vector3(0.949, 0.906, -0.964),
     cameraTarget: new THREE.Vector3(0.981, 0.805, 1.868)
@@ -458,7 +458,7 @@ export const liverInscriptions = [
     id: 15,
     etruscanText: '𐌅𐌄𐌕𐌉𐌔𐌋',
     transcription: 'vetisl',
-    gods: ['vetils'],
+    gods: [{id: 'vetils', form: '𐌅𐌄𐌕𐌉𐌔𐌋'}],
     description: 'Underworld "Apollo" as solitary chthonic light',
     cameraPosition: new THREE.Vector3(0.053, 0.838, -0.949),
     cameraTarget: new THREE.Vector3(0.036, 0.825, 1.885)
@@ -467,7 +467,7 @@ export const liverInscriptions = [
     id: 16,
     etruscanText: '𐌂𐌉𐌋𐌄𐌍𐌔𐌋',
     transcription: 'cilensl',
-    gods: ['cilens'],
+    gods: [{id: 'cilens', form: '𐌂𐌉𐌋𐌄𐌍𐌔𐌋'}],
     description: 'Night god in underworld context',
     cameraPosition: new THREE.Vector3(-1.536, 0.831, -1.864),
     cameraTarget: new THREE.Vector3(-1.578, 0.665, 1.912)
@@ -476,7 +476,7 @@ export const liverInscriptions = [
     id: 17,
     etruscanText: '𐌐𐌖𐌋',
     transcription: 'pul',
-    gods: ['pul'],
+    gods: [{id: 'pul', form: '𐌐𐌖𐌋'}],
     description: 'Protective spirit Alpans',
     cameraPosition: new THREE.Vector3(-1.679, -1.661, -0.829),
     cameraTarget: new THREE.Vector3(-1.672, -0.941, 2.223)
@@ -485,7 +485,7 @@ export const liverInscriptions = [
     id: 18,
     etruscanText: '𐌋𐌄𐌏𐌍',
     transcription: 'leθn',
-    gods: ['lethns'],
+    gods: [{id: 'lethns', form: '𐌋𐌄𐌏𐌍'}],
     description: 'Local spirit in familiar context',
     cameraPosition: new THREE.Vector3(-1.664, -1.309, -0.891),
     cameraTarget: new THREE.Vector3(-1.672, -0.941, 2.223)
@@ -493,8 +493,8 @@ export const liverInscriptions = [
   {
     id: 19,
     etruscanText: '𐌋𐌀 / 𐌔𐌋',
-    transcription: 'la/sl',
-    gods: ['lasl'],
+    transcription: 'la / sl',
+    gods: [{id: 'lasl', form: '𐌋𐌀𐌔𐌋'}],
     description: 'Household female spirit',
     cameraPosition: new THREE.Vector3(-1.492, -1.157, -0.908),
     cameraTarget: new THREE.Vector3(-1.486, -0.807, 2.208)
@@ -502,8 +502,8 @@ export const liverInscriptions = [
   {
     id: 20,
     etruscanText: '𐌕𐌉𐌍𐌔 / 𐌏𐌅𐌚',
-    transcription: 'tins/θvf',
-    gods: ['tinia', 'thufltha'],
+    transcription: 'tins / θvf',
+    gods: [{id: 'tinia', form: '𐌕𐌉𐌍𐌔'}, {id: 'thufltha', form: '𐌏𐌅𐌚'}],
     description: 'Tinia and Thufltha',
     cameraPosition: new THREE.Vector3(-1.909, -1.121, -0.911),
     cameraTarget: new THREE.Vector3(-1.902, -0.772, 2.204)
@@ -511,8 +511,8 @@ export const liverInscriptions = [
   {
     id: 21,
     etruscanText: '𐌏𐌖𐌚𐌋 / 𐌏𐌀𐌔',
-    transcription: 'θufl/θas',
-    gods: ['thufltha'],
+    transcription: 'θufl / θas',
+    gods: [{id: 'thufltha', form: '𐌏𐌖𐌚𐌋𐌏𐌀𐌔'}],
     description: 'Fate goddess as solitary favorable force',
     cameraPosition: new THREE.Vector3(-2.003, -0.707, -0.958),
     cameraTarget: new THREE.Vector3(-1.996, -0.357, 2.158)
@@ -521,7 +521,7 @@ export const liverInscriptions = [
     id: 22,
     etruscanText: '𐌕𐌉𐌍𐌔𐌏 / 𐌍𐌄𐌏',
     transcription: 'tinsθ/neθ',
-    gods: ['tinia', 'nethuns'],
+    gods: [{id: 'tinia', form: '𐌕𐌉𐌍𐌔𐌏'}, {id: 'nethuns', form: '𐌍𐌄𐌏'}],
     description: 'Tinia and Nethuns',
     cameraPosition: new THREE.Vector3(-1.989, -0.296, -1.004),
     cameraTarget: new THREE.Vector3(-1.982, 0.051, 2.112)
@@ -530,7 +530,7 @@ export const liverInscriptions = [
     id: 23,
     etruscanText: '𐌂𐌀𐌏𐌀',
     transcription: 'caθa',
-    gods: ['catha'],
+    gods: [{id: 'catha', form: '𐌂𐌀𐌏𐌀'}],
     description: 'Solar goddess in familiar realm',
     cameraPosition: new THREE.Vector3(-1.397, -0.335, -1.004),
     cameraTarget: new THREE.Vector3(-1.382, -0.056, 2.119)
@@ -539,7 +539,7 @@ export const liverInscriptions = [
     id: 24,
     etruscanText: '𐌚𐌖𐌚𐌋𐌖𐌔',
     transcription: 'fuf/lus',
-    gods: ['fufluns'],
+    gods: [{id: 'fufluns', form: '𐌚𐌖𐌚𐌋𐌖𐌔'}],
     description: 'Fufluns in favorable context',
     cameraPosition: new THREE.Vector3(-1.322, -0.636, -0.977),
     cameraTarget: new THREE.Vector3(-1.307, -0.356, 2.146)
@@ -548,7 +548,7 @@ export const liverInscriptions = [
     id: 25,
     etruscanText: '𐌕𐌅𐌖𐌏',
     transcription: 'tvnθ',
-    gods: ['tvnth'],
+    gods: [{id: 'tvnth', form: '𐌕𐌅𐌖𐌏'}],
     description: 'Uncertain deity in concentrated energy zone',
     cameraPosition: new THREE.Vector3(-1.014, -1.772, -0.893),
     cameraTarget: new THREE.Vector3(-1.078, -0.796, 2.086)
@@ -557,7 +557,7 @@ export const liverInscriptions = [
     id: 26,
     etruscanText: '𐌡𐌀𐌓𐌉𐌔𐌋 / 𐌋𐌀𐌏',
     transcription: 'marisl/laθ',
-    gods: ['maris', 'laran'],
+    gods: [{id: 'maris', form: '𐌡𐌀𐌓𐌉𐌔𐌋'}, {id: 'laran', form: '𐌋𐌀𐌏'}],
     description: 'Maris (generative force) paired with Laran (war & fire)',
     cameraPosition: new THREE.Vector3(-1.023, -1.475, -0.974),
     cameraTarget: new THREE.Vector3(-1.078, -0.796, 2.086)
@@ -566,7 +566,7 @@ export const liverInscriptions = [
     id: 27,
     etruscanText: '𐌋𐌄𐌕𐌀',
     transcription: 'leta',
-    gods: ['letams'],
+    gods: [{id: 'letams', form: '𐌋𐌄𐌕𐌀'}],
     description: 'Local spirit in concentrated form',
     cameraPosition: new THREE.Vector3(-1.048, -0.807, -1.049),
     cameraTarget: new THREE.Vector3(-1.078, -0.796, 2.086)
@@ -575,7 +575,7 @@ export const liverInscriptions = [
     id: 28,
     etruscanText: '𐌍𐌄𐌏',
     transcription: 'neθ',
-    gods: ['nethuns'],
+    gods: [{id: 'nethuns', form: '𐌍𐌄𐌏'}],
     description: 'Water god in concentrated energy context',
     cameraPosition: new THREE.Vector3(-1.039, -0.547, -1.039),
     cameraTarget: new THREE.Vector3(-1.065, -0.744, 2.090)
@@ -584,7 +584,7 @@ export const liverInscriptions = [
     id: 29,
     etruscanText: '𐌇𐌄𐌓𐌂',
     transcription: 'herc',
-    gods: ['hercle'],
+    gods: [{id: 'hercle', form: '𐌇𐌄𐌓𐌂'}],
     description: 'Hero-protector at cosmic center',
     cameraPosition: new THREE.Vector3(-0.098, -1.144, -0.839),
     cameraTarget: new THREE.Vector3(-0.232, -1.333, 1.801)
@@ -593,7 +593,7 @@ export const liverInscriptions = [
     id: 30,
     etruscanText: '𐌡𐌀𐌓',
     transcription: 'mar',
-    gods: ['maris'],
+    gods: [{id: 'maris', form: '𐌡𐌀𐌓'}],
     description: 'Generating god Maris at the center',
     cameraPosition: new THREE.Vector3(-0.142, -0.576, -0.801),
     cameraTarget: new THREE.Vector3(-0.277, -0.766, 1.839)
@@ -602,7 +602,7 @@ export const liverInscriptions = [
     id: 31,
     etruscanText: '𐌔𐌄𐌋𐌅𐌀',
     transcription: 'selva',
-    gods: ['selvans'],
+    gods: [{id: 'selvans', form: '𐌔𐌄𐌋𐌅𐌀'}],
     description: 'Forest deity in central section',
     cameraPosition: new THREE.Vector3(1.120, -0.447, -0.973),
     cameraTarget: new THREE.Vector3(1.107, -0.665, 2.155)
@@ -611,7 +611,7 @@ export const liverInscriptions = [
     id: 32,
     etruscanText: '𐌋𐌄𐌏𐌀',
     transcription: 'leθa',
-    gods: ['lethams'],
+    gods: [{id: 'lethams', form: '𐌋𐌄𐌏𐌀'}],
     description: 'Local tutelary spirit at center',
     cameraPosition: new THREE.Vector3(1.313, -0.349, -0.950),
     cameraTarget: new THREE.Vector3(1.392, -0.381, 2.184)
@@ -620,7 +620,7 @@ export const liverInscriptions = [
     id: 33,
     etruscanText: '𐌕𐌋𐌖𐌔𐌂',
     transcription: 'tlusc',
-    gods: ['tluscva'],
+    gods: [{id: 'tluscva', form: '𐌕𐌋𐌖𐌔𐌂'}],
     description: 'Water nymphs in hostile realm',
     cameraPosition: new THREE.Vector3(1.359, -0.251, -0.950),
     cameraTarget: new THREE.Vector3(1.313, -0.445, 2.179)
@@ -629,7 +629,7 @@ export const liverInscriptions = [
     id: 34,
     etruscanText: '𐌋𐌖𐌔𐌋 / 𐌅𐌄𐌋𐌗',
     transcription: 'lvsl/velϰ',
-    gods: ['lusal', 'velch'],
+    gods: [{id: 'lusal', form: '𐌋𐌅𐌔𐌋'}, {id: 'velch', form: '𐌅𐌄𐌋𐌗'}],
     description: 'Lusal paired with infernal Vulcan (Velchans)',
     cameraPosition: new THREE.Vector3(0.747, 0.573, -0.982),
     cameraTarget: new THREE.Vector3(1.194, 0.643, 2.630)
@@ -638,7 +638,7 @@ export const liverInscriptions = [
     id: 35,
     etruscanText: '𐌔𐌀𐌕𐌓 / 𐌄𐌔',
     transcription: 'satr/es',
-    gods: ['satres'],
+    gods: [{id: 'satres', form: '𐌔𐌀𐌕𐌓'}],
     description: 'Underworld Saturn in hostile context',
     cameraPosition: new THREE.Vector3(0.287, -0.133, -0.900),
     cameraTarget: new THREE.Vector3(0.396, -0.013, 2.737)
@@ -647,7 +647,7 @@ export const liverInscriptions = [
     id: 36,
     etruscanText: '𐌂𐌉𐌋𐌄𐌍',
     transcription: 'cilen',
-    gods: ['cilens'],
+    gods: [{id: 'cilens', form: '𐌂𐌉𐌋𐌄𐌍'}],
     description: 'Night god in hostile realm',
     cameraPosition: new THREE.Vector3(0.359, -0.996, -0.756),
     cameraTarget: new THREE.Vector3(0.301, -1.122, 1.890)
@@ -656,7 +656,7 @@ export const liverInscriptions = [
     id: 37,
     etruscanText: '𐌋𐌄𐌏𐌀𐌡',
     transcription: 'leθam',
-    gods: ['lethams'],
+    gods: [{id: 'lethams', form: '𐌋𐌄𐌏𐌀𐌡'}],
     description: 'Local spirit in unfavorable context',
     cameraPosition: new THREE.Vector3(0.165, -0.612, -0.787),
     cameraTarget: new THREE.Vector3(0.030, -0.801, 1.852)
@@ -665,7 +665,7 @@ export const liverInscriptions = [
     id: 38,
     etruscanText: '𐌡𐌄𐌕𐌋𐌅𐌡𐌏',
     transcription: 'metlvmθ',
-    gods: ['metlvmth'],
+    gods: [{id: 'metlvmth', form: '𐌡𐌄𐌕𐌋𐌅𐌡𐌏'}],
     description: 'Epithet or attribute deity in hostile realm',
     cameraPosition: new THREE.Vector3(0.729, 0.769, -1.313),
     cameraTarget: new THREE.Vector3(0.589, -0.129, 2.763)
@@ -674,7 +674,7 @@ export const liverInscriptions = [
     id: 39,
     etruscanText: '𐌡𐌀𐌓',
     transcription: 'mar',
-    gods: ['maris'],
+    gods: [{id: 'maris', form: '𐌡𐌀𐌓'}],
     description: 'Generative force in foundational context',
     cameraPosition: new THREE.Vector3(-0.382, 0.398, -0.719),
     cameraTarget: new THREE.Vector3(-0.723, 0.132, 1.503)
@@ -683,7 +683,7 @@ export const liverInscriptions = [
     id: 40,
     etruscanText: '𐌕𐌋𐌖𐌔𐌂',
     transcription: 'tlusc',
-    gods: ['tluscva'],
+    gods: [{id: 'tluscva', form: '𐌕𐌋𐌖𐌔𐌂'}],
     description: 'Water nymphs as foundational spirits',
     cameraPosition: new THREE.Vector3(-0.741, 0.125, -1.025),
     cameraTarget: new THREE.Vector3(-0.804, -0.067, 1.464)
@@ -692,14 +692,14 @@ export const liverInscriptions = [
     id: 41,
     etruscanText: '𐌕𐌉𐌅𐌔',
     transcription: 'tivs',
-    gods: ['tiur'],
+    gods: [{id: 'tiur', form: '𐌕𐌉𐌅𐌔'}],
     description: 'The Moon as cosmic foundation',
   },
   {
     id: 42,
     etruscanText: '𐌖𐌔𐌉𐌋𐌔',
     transcription: 'usils',
-    gods: ['usil'],
+    gods: [{id: 'usil', form: '𐌖𐌔𐌉𐌋𐌔'}],
     description: 'The Sun as cosmic foundation',
   }
 ]

@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { useMediaQuery } from '@mantine/hooks'
 import { Box, Group } from '@mantine/core'
 import { isMobile } from 'react-device-detect'
-import { liverInscriptions, liverGods } from '../scene/LiverData'
-import { getInscriptionGroup } from '../utils/liverUtils'
+import { liverInscriptions } from '../scene/LiverData'
+import { getInscriptionGroup, getGodsDisplayNames } from '../utils/liverUtils'
 import { NumberBadge } from './components/NumberBadge'
 
 interface InscriptionListProps {
@@ -29,9 +29,6 @@ export function InscriptionList({
     return group?.color || '#888'
   }
 
-  const getGodNames = (gods: string[]) => {
-    return gods.map(godId => liverGods[godId as keyof typeof liverGods]?.name || godId).join(' + ')
-  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -86,7 +83,7 @@ export function InscriptionList({
         <Group align="center" gap="xs">
           <NumberBadge value={inscription.id} />
           <Box className="text-bronze-light font-primary" style={{ fontSize: '18px' }}>
-            {getGodNames(inscription.gods)}
+            {getGodsDisplayNames(inscription.gods)}
           </Box>
         </Group>
       </Box>

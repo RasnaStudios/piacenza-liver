@@ -2,6 +2,7 @@ import { Drawer, Paper, Stack, Box, Title } from '@mantine/core'
 import { useState, useRef } from 'react'
 import { isMobile } from 'react-device-detect'
 import { liverGods, liverInscriptions } from '../scene/LiverData'
+import { getGodsDisplayNames } from '../utils/liverUtils'
 import { GroupSection } from './components/GroupSection'
 import { DeityCard } from './components/DeityCard'
 import { PanelHeader } from './components/PanelHeader'
@@ -29,9 +30,14 @@ export function DeityPanel({ selectedInscription, onClose, onInscriptionSelect }
   
   if (!selectedInscription) return null
 
-  // Fix gods data structure - use selectedInscription.gods like original
-  const gods = selectedInscription.gods?.map((godId: string) => (liverGods as any)[godId]).filter(Boolean) || []
-  const deityNames = gods.map((g: any) => g.name).join(' + ')
+  // Get display names for the gods in this inscription
+  const deityNames = getGodsDisplayNames(selectedInscription.gods || [])
+  
+  // Get god objects for DeityCard components
+  const gods = (selectedInscription.gods || []).map((god: any) => {
+    const godId = typeof god === 'string' ? god : god.id
+    return (liverGods as any)[godId]
+  }).filter(Boolean)
 
   
 

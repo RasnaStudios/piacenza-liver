@@ -1,8 +1,8 @@
 import { 
   Paper
 } from '@mantine/core'
-import { liverGods } from '../../scene/LiverData'
 import { NumberBadge } from './NumberBadge'
+import { getGodsDisplayNames } from '../../utils/liverUtils'
 import { isMobile } from 'react-device-detect'
 
 interface HoverTooltipProps {
@@ -13,15 +13,14 @@ interface HoverTooltipProps {
   isMouseOverPanel?: boolean
 }
 
-export function HoverTooltip({ hoveredSection, mousePosition, isPanelOpen = false, isModifierKeyPressed = false, isMouseOverPanel = false }: HoverTooltipProps) {
+export function HoverTooltip({ hoveredSection, mousePosition, isModifierKeyPressed = false, isMouseOverPanel = false }: HoverTooltipProps) {
   
   // Don't show tooltip if mobile, no hovered section, modifier keys are pressed, cursor is outside canvas, or cursor is over panel
   if (!hoveredSection || isMobile || isModifierKeyPressed || mousePosition.isOverCanvas === false || isMouseOverPanel) {
     return null
   }
 
-  const gods = hoveredSection.gods.map((godId: string) => (liverGods as any)[godId]).filter(Boolean)
-  const deityNames = gods.map((god: any) => god.name).join(' + ')
+  const deityNames = getGodsDisplayNames(hoveredSection.gods)
 
   const tooltipX = mousePosition.x + 15
   const tooltipY = mousePosition.y - 10
