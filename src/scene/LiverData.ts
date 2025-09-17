@@ -82,19 +82,15 @@ export const liverGods = {
   tinia: {
     id: 'tinia',
     name: 'Tinia',
-    transcription: 'tinia',
     romanEquivalent: 'Jupiter',
     greekEquivalent: 'Zeus', 
-    domain: 'Sky, Thunder, Divine Authority',
     description: 'Supreme sky god and father of the gods in the Etruscan pantheon.',
     
   },
   cilens: {
     id: 'cilens',
     name: 'Cilens',
-    transcription: 'cilens',
     romanEquivalent: 'Nocturnus',
-    domain: 'Night, Psychopomp',
     description: 'God of the night and guide of souls between worlds.',
     
   },
@@ -102,27 +98,22 @@ export const liverGods = {
     id: 'thufltha', 
     name: 'Thufltha',
     romanEquivalent: 'Fortuna',
-    domain: 'Fate, Healing, Oracles',
     description: 'Goddess of fate, healing, and oracular wisdom.',
     
   },
   nethuns: {
     id: 'nethuns',
     name: 'Nethuns', 
-    transcription: 'neθ',
     romanEquivalent: 'Neptune',
     greekEquivalent: 'Poseidon',
-    domain: 'Water, Sea, Atmospheric Humidity',
     description: 'God of fresh water, sea, and atmospheric moisture.',
     
   },
   uni: {
     id: 'uni',
     name: 'Uni',
-    transcription: 'Uni',
     romanEquivalent: 'Juno',
     greekEquivalent: 'Hera',
-    domain: 'Marriage, Fertility, Cities',
     description: 'Wife of Tinia, guardian of marriage, fertility, birth, and cities.',
     
   },
@@ -130,23 +121,18 @@ export const liverGods = {
     id: 'mae',
     name: 'Mae',
     romanEquivalent: 'Maius',
-    domain: 'Maternal, Generative',
     description: 'Possibly maternal or generative attribute deity.',
     
   },
   tecvm: {
     id: 'tecvm',
-    name: 'Tecum', 
-    transcription: 'tecvm',
-    domain: 'Paternal Water Spirit',
+    name: 'Tecum',
     description: 'God of the lucomenes, or ruling class.',
     
   },
   lusal: {
     id: 'lusal',
     name: 'Lusal',
-    transcription: 'lusl',
-    domain: 'Water (unidentified)',
     description: 'Unidentified water deity, possibly related to light or purification.',
     
   },
@@ -154,17 +140,14 @@ export const liverGods = {
     id: 'catha',
     name: 'Catha',
     romanEquivalent: 'Kore',
-    domain: 'Sun, Solar-Nymph',
     description: 'Goddess of the sun in her solar-nymph form.',
     
   },
   fufluns: {
     id: 'fufluns',
     name: 'Fufluns',
-    transcription: 'fuflun',
     romanEquivalent: 'Bacchus',
     greekEquivalent: 'Dionysus',
-    domain: 'Wine, Vegetation, Inebriation',
     description: 'God of wine, inebriation, and vegetation cycles.',
     
   },
@@ -172,7 +155,6 @@ export const liverGods = {
     id: 'selvans',
     name: 'Selvans',
     romanEquivalent: 'Silvanus',
-    domain: 'Forests, Borders',
     description: 'God of borders and forest boundaries.',
     
   },
@@ -180,14 +162,12 @@ export const liverGods = {
     id: 'lethns',
     name: 'Lethns',
     romanEquivalent: 'Lethams',
-    domain: 'Local Spirit, Genius',
     description: 'Genius or local spirit, possibly related to memory/forgetfulness.',
     
   },
   tluscva: {
     id: 'tluscva',
     name: 'Tluscva',
-    domain: 'Water Nymphs, Sacred Water',
     description: 'Nymphs tied to water cult and sacred offerings.',
     
   },
@@ -195,7 +175,6 @@ export const liverGods = {
     id: 'cels',
     name: 'Cels',
     romanEquivalent: 'Gea',
-    domain: 'Earth Goddess',
     description: 'Goddess of the earth and chthonic forces.',
     
   },
@@ -203,14 +182,12 @@ export const liverGods = {
     id: 'culsans',
     name: 'Culsans',
     romanEquivalent: 'Janus',
-    domain: 'Doors, Protection',
     description: 'Benevolent protector of doors and thresholds.',
     
   },
   alpans: {
     id: 'alpans',
     name: 'Alpans',
-    domain: 'Protective Spirit',
     description: 'Protective spirit associated with Culsans.',
     
   },
@@ -218,14 +195,12 @@ export const liverGods = {
     id: 'vetils',
     name: 'Vetils',
     romanEquivalent: 'Veiovis',
-    domain: 'Underworld Apollo',
     description: 'Underworld "Apollo", chthonic version of the light god.',
     
   },
   pul: {
     id: 'pul',
     name: 'Pul',
-    domain: 'Uncertain',
     description: 'Uncertain deity, possibly related to purification.',
     
   },
@@ -233,7 +208,6 @@ export const liverGods = {
     id: 'lasl',
     name: 'Lasl',
     romanEquivalent: 'Lasi',
-    domain: 'Household Spirit',
     description: 'Household female spirit, domestic protection. Companion of Turan.',
     
   },
@@ -241,7 +215,6 @@ export const liverGods = {
     id: 'maris',
     name: 'Maris',
     transcription: 'mar',
-    domain: 'Generative Force, Youth',
     description: 'Generative force and generating power of all the gods.',
     
   },
@@ -250,22 +223,12 @@ export const liverGods = {
     name: 'Laran', 
     transcription: 'lar',
     romanEquivalent: 'Ares',
-    domain: 'War, Fire',
     description: 'God of war and fire, representing martial force.',
-    
-  },
-  letams: {
-    id: 'letams',
-    name: 'Letams',
-    transcription: 'leta',
-    domain: 'Local Spirit',
-    description: 'Local spirit or genius, memory-related deity.',
     
   },
   tvnth: {
     id: 'tvnth',
     name: 'Tvnth',
-    domain: 'Uncertain',
     description: 'Uncertain deity in the gall bladder zone.',
     
   },
@@ -273,28 +236,24 @@ export const liverGods = {
     id: 'hercle',
     name: 'Hercle',
     romanEquivalent: 'Hercules', 
-    domain: 'Heroic Protection',
     description: 'Hero-protector, divine strength and protection.',
     
   },
   metlvmth: {
     id: 'metlvmth',
     name: 'Metlvmth',
-    domain: 'Epithet/Attribute',
     description: 'Epithet or attribute associated with Lethams.',
     
   },
   marutl: {
     id: 'marutl',
     name: 'Marutl',
-    domain: 'Epithet/Attribute',
     description: 'Double epithet associated with Tluscva.',
     
   },
-  lethams: {
-    id: 'lethams',
-    name: 'Lethams',
-    domain: 'Local Spirit',
+  letham: {
+    id: 'letham',
+    name: 'Letham',
     description: 'Local tutelary spirit, genius of place.',
     
   },
@@ -302,7 +261,6 @@ export const liverGods = {
     id: 'velch',
     name: 'Velch',
     romanEquivalent: 'Vulcan',
-    domain: 'Fire, Underworld',
     description: 'Infernal form of Sethlans (Vulcan), fire deity.',
     
   },
@@ -310,21 +268,18 @@ export const liverGods = {
     id: 'satres',
     name: 'Satres',
     romanEquivalent: 'Saturn',
-    domain: 'Underworld, Time',
     description: 'God of the underworld and temporal cycles.',
     
   },
   usil: {
     id: 'usil',
     name: 'Usil',
-    domain: 'Sun',
     description: 'The sun god, representing solar power and illumination.',
     
   },
   tiur: {
     id: 'tiur',
     name: 'Tiur',
-    domain: 'Moon',
     description: 'The moon god, representing lunar cycles and night illumination.',
     
   }
@@ -566,7 +521,7 @@ export const liverInscriptions = [
     id: 27,
     etruscanText: '𐌋𐌄𐌕𐌀',
     transcription: 'leta',
-    gods: [{id: 'letams', form: '𐌋𐌄𐌕𐌀'}],
+    gods: [{id: 'letham', form: '𐌋𐌄𐌕𐌀'}],
     description: 'Local spirit in concentrated form',
     cameraPosition: new THREE.Vector3(-1.048, -0.807, -1.049),
     cameraTarget: new THREE.Vector3(-1.078, -0.796, 2.086)
@@ -656,7 +611,7 @@ export const liverInscriptions = [
     id: 37,
     etruscanText: '𐌋𐌄𐌏𐌀𐌡',
     transcription: 'leθam',
-    gods: [{id: 'lethams', form: '𐌋𐌄𐌏𐌀𐌡'}],
+    gods: [{id: 'letham', form: '𐌋𐌄𐌏𐌀𐌡'}],
     description: 'Local spirit in unfavorable context',
     cameraPosition: new THREE.Vector3(0.165, -0.612, -0.787),
     cameraTarget: new THREE.Vector3(0.030, -0.801, 1.852)

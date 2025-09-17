@@ -44,8 +44,8 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
   
   // Etruscan Old Italic Unicode characters + fallback symbols
   const etruscanChars = [
-    '𐌀', '𐌁', '𐌂', '𐌃', '𐌄', '𐌅', '𐌆', '𐌉', '𐌊', '𐌋', '𐌌', '𐌍', '𐌏',
-    '𐌐', '𐌑', '𐌒', '𐌓', '𐌔', '𐌕', '𐌖', '𐌗',   '𐌛', '𐌜', '𐌝', '𐌞',
+    '𐌀', '𐌁', '𐌂', '𐌃', '𐌄', '𐌅', '𐌉', '𐌊', '𐌋', '𐌌', '𐌍', '𐌏',
+    '𐌐', '𐌑', '𐌒', '𐌓', '𐌔', '𐌕', '𐌖', '𐌗',   '𐌛', '𐌜', '𐌝',
   ]
   
   useEffect(() => {
