@@ -191,9 +191,9 @@ export const liverGods = {
     description: 'Protective spirit associated with Culsans.',
     
   },
-  vetils: {
-    id: 'vetils',
-    name: 'Vetils',
+  vetis: {
+    id: 'vetis',
+    name: 'Vetis',
     romanEquivalent: 'Veiovis',
     description: 'Underworld "Apollo", chthonic version of the light god.',
     
@@ -413,7 +413,7 @@ export const liverInscriptions = [
     id: 15,
     etruscanText: '𐌅𐌄𐌕𐌉𐌔𐌋',
     transcription: 'vetisl',
-    gods: [{id: 'vetils', form: '𐌅𐌄𐌕𐌉𐌔𐌋'}],
+    gods: [{id: 'vetis', form: '𐌅𐌄𐌕𐌉𐌔𐌋'}],
     description: 'Underworld "Apollo" as solitary chthonic light',
     cameraPosition: new THREE.Vector3(0.053, 0.838, -0.949),
     cameraTarget: new THREE.Vector3(0.036, 0.825, 1.885)
