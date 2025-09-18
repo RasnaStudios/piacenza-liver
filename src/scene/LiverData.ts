@@ -17,14 +17,14 @@ export const liverGroups = {
     name: 'Sky',
     positions: [1, 2, 3, 4],
     color: '#87CEEB', // Sky-blue
-    description: 'The celestial realm dominated by Tinia (Jupiter) and his divine court. This zone governs heavenly omens, divine authority, and cosmic order.'
+    description: 'The first three houses are occupied by Tinia, the supreme god linked to the Greek god Zeus, followed by Cilens, goddess of the night, and Thufltha, who governed the fate of men and the world, and Nethuns, in the form of divinity of atmospheric humidity. In fourth place is Uni, wife of Tinia, protectress of cities and births.'
   },
   water: {
     id: 'water',
     name: 'Water',
     positions: [5, 6, 7, 8],
     color: '#008B8B', // Teal
-    description: 'The aquatic realm presided over by Nethuns (Neptune) and water deities. Controls omens related to water, purification, and life force.'
+    description: 'The second four houses are occupied by Tecum, a still-mysterious figure: the sanctuary of Tuoro on Lake Trasimeno is dedicated to this diety. Lur, a deified hero or mythical founder, occupies the next space, followed by Nethuns, originally the diety of fresh-water, only later identified with the Greek god Poseidon. Catha, the sun goddess, occupies the last house.'
   },
   earth: {
     id: 'earth', 
@@ -68,9 +68,9 @@ export const liverGroups = {
     color: '#9370DB', // Purple-lavender
     description: 'The hostile/unfavorable realm containing border guardians and infernal deities. Represents challenging omens and protective boundaries.'
   },
-  retro: {
-    id: 'retro',
-    name: 'Back / Bottom',
+  back: {
+    id: 'back',
+    name: 'Back',
     positions: [41, 42], 
     color: '#808080', // Gray
     description: 'The foundational cosmic anchors representing the Sun and Moon. These mark the fundamental celestial cycles underlying all divination.'
@@ -139,7 +139,7 @@ export const liverGods = {
   catha: {
     id: 'catha',
     name: 'Catha',
-    romanEquivalent: 'Kore',
+    greekEquivalent: 'Leucothea',
     description: 'Goddess of the sun in her solar-nymph form.',
     
   },
@@ -200,7 +200,7 @@ export const liverGods = {
   lasl: {
     id: 'lasl',
     name: 'Lasl',
-    romanEquivalent: 'Lasi',
+    romanEquivalent: 'Lares',
     description: 'Household female spirit, domestic protection. Companion of Turan.',
     
   },
@@ -586,7 +586,7 @@ export const liverInscriptions = [
     id: 35,
     etruscanText: '𐌔𐌀𐌕𐌓 / 𐌄𐌔',
     transcription: 'satr/es',
-    gods: [{id: 'satres', form: '𐌔𐌀𐌕𐌓'}],
+    gods: [{id: 'satres', form: '𐌔𐌀𐌕𐌓𐌄𐌔'}],
     description: 'Underworld Saturn in hostile context',
     cameraPosition: new THREE.Vector3(0.287, -0.133, -0.900),
     cameraTarget: new THREE.Vector3(0.396, -0.013, 2.737)
@@ -638,9 +638,9 @@ export const liverInscriptions = [
   },
   {
     id: 41,
-    etruscanText: '𐌕𐌉𐌅𐌔',
-    transcription: 'tivs',
-    gods: [{id: 'tiur', form: '𐌕𐌉𐌅𐌔'}],
+    etruscanText: '𐌕𐌉𐌅𐌓',
+    transcription: 'tivr',
+    gods: [{id: 'tiur', form: '𐌕𐌉𐌅𐌓'}],
     description: 'The Moon as cosmic foundation',
   },
   {
