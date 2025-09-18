@@ -91,10 +91,17 @@ export class CameraController {
     localTargetPosition: THREE.Vector3,
     modelMatrix: THREE.Matrix4,
     duration: number = 800,
+    isMobile: boolean = false,
     onComplete?: () => void
   ) {
-    const worldCameraPos = localCameraPosition.clone().applyMatrix4(modelMatrix)
-    const worldTargetPos = localTargetPosition.clone().applyMatrix4(modelMatrix)
+    let worldCameraPos = localCameraPosition.clone().applyMatrix4(modelMatrix)
+    let worldTargetPos = localTargetPosition.clone().applyMatrix4(modelMatrix)
+    
+    // Apply device-specific offset
+    const cameraOffset = isMobile ? SceneConfig.cameraOffset.mobile : SceneConfig.cameraOffset.desktop
+    worldCameraPos.add(cameraOffset.positionOffset)
+    worldTargetPos.add(cameraOffset.targetOffset)
+    
     return this.focusOn(worldTargetPos, duration, worldCameraPos, true, onComplete)
   }
 

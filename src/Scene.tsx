@@ -125,7 +125,8 @@ function PiacenzaLiverScene() {
         data.cameraPosition,
         data.cameraTarget,
         modelMatrix,
-        1000
+        1000,
+        isMobile
       )
       // Clear any existing timeout before setting a new one
       if (panelTimeoutRef.current) {
@@ -158,6 +159,7 @@ function PiacenzaLiverScene() {
           inscription.cameraTarget,
           liverModelRef.current.getModelMatrix(),
           800,
+          isMobile,
           () => {
             setSelectedInscription(inscription)
           }
@@ -174,7 +176,9 @@ function PiacenzaLiverScene() {
         cameraControllerRef.current.focusOnTransformed(
           inscription.cameraPosition,
           inscription.cameraTarget,
-          liverModelRef.current.getModelMatrix()
+          liverModelRef.current.getModelMatrix(),
+          800,
+          isMobile
         )
       }
     }
