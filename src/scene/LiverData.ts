@@ -158,13 +158,6 @@ export const liverGods = {
     description: 'God of borders and forest boundaries.',
     
   },
-  lethns: {
-    id: 'lethns',
-    name: 'Lethns',
-    romanEquivalent: 'Lethams',
-    description: 'Genius or local spirit, possibly related to memory/forgetfulness.',
-    
-  },
   tluscva: {
     id: 'tluscva',
     name: 'Tluscva',
@@ -254,7 +247,7 @@ export const liverGods = {
   letham: {
     id: 'letham',
     name: 'Letham',
-    description: 'Local tutelary spirit, genius of place.',
+    description: 'Goddess associated with the underworld and the protector of pregnant mothers and newborns.',
     
   },
   velch: {
@@ -377,7 +370,7 @@ export const liverInscriptions = [
     id: 11,
     etruscanText: '𐌋𐌄𐌏𐌍𐌔',
     transcription: 'leθns',
-    gods: [{id: 'lethns', form: '𐌋𐌄𐌏𐌍𐌔'}],
+    gods: [{id: 'letham', form: '𐌋𐌄𐌏𐌍𐌔'}],
     description: 'Local earth spirit/genius',
     cameraPosition: new THREE.Vector3(1.577, -1.542, -0.604),
     cameraTarget: new THREE.Vector3(1.348, -1.245, 1.654)
@@ -440,7 +433,7 @@ export const liverInscriptions = [
     id: 18,
     etruscanText: '𐌋𐌄𐌏𐌍',
     transcription: 'leθn',
-    gods: [{id: 'lethns', form: '𐌋𐌄𐌏𐌍'}],
+    gods: [{id: 'letham', form: '𐌋𐌄𐌏𐌍'}],
     description: 'Local spirit in familiar context',
     cameraPosition: new THREE.Vector3(-1.664, -1.309, -0.891),
     cameraTarget: new THREE.Vector3(-1.672, -0.941, 2.223)
@@ -566,7 +559,7 @@ export const liverInscriptions = [
     id: 32,
     etruscanText: '𐌋𐌄𐌏𐌀',
     transcription: 'leθa',
-    gods: [{id: 'lethams', form: '𐌋𐌄𐌏𐌀'}],
+    gods: [{id: 'letham', form: '𐌋𐌄𐌏𐌀'}],
     description: 'Local tutelary spirit at center',
     cameraPosition: new THREE.Vector3(1.313, -0.349, -0.950),
     cameraTarget: new THREE.Vector3(1.392, -0.381, 2.184)
