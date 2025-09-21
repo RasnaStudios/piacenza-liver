@@ -1,0 +1,9 @@
+echo "🔍 Running type check before push..."
+pnpm exec tsc --noEmit
+
+if [ $? -ne 0 ]; then
+    echo "❌ Type check failed! Please fix the errors before pushing."
+    exit 1
+fi
+
+echo "✅ Type check passed!"

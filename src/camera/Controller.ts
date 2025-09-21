@@ -1,448 +1,531 @@
-import * as THREE from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { gsap } from 'gsap'
-import { isMobile } from 'react-device-detect'
-import { SceneConfig } from '../config/SceneConfig'
+import { gsap } from "gsap";
+import { isMobile } from "react-device-detect";
+import * as THREE from "three";
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { SceneConfig } from "../config/SceneConfig";
 
 // Helper function to detect portrait orientation with improved detection
 const isPortraitOrientation = () => {
-  return window.innerHeight > window.innerWidth
-}
+	return window.innerHeight > window.innerWidth;
+};
 
 // Helper function to get orientation-specific camera animation offsets
 const getCameraAnimationOffsets = () => {
-  return isPortraitOrientation() 
-    ? SceneConfig.animation.camera.portrait 
-    : SceneConfig.animation.camera.landscape
-}
+	return isPortraitOrientation()
+		? SceneConfig.animation.camera.portrait
+		: SceneConfig.animation.camera.landscape;
+};
 
 export class CameraController {
-  private camera: THREE.Camera
-  private controls: OrbitControls
-  private lastManualPosition: THREE.Vector3
-  private lastManualTarget: THREE.Vector3
-  private isAnimating: boolean
-  private currentAnimationId: string | null
-  private originalControlsEnabled: boolean
-  private originalEnableDamping: boolean
-  private controlsTemporarilyDisabled: boolean
-  private static readonly MIN_OFFSET_EPSILON = 1e-4
-  private currentTween: gsap.core.Tween | null = null
+	private camera: THREE.Camera;
+	private controls: OrbitControls;
+	private lastManualPosition: THREE.Vector3;
+	private lastManualTarget: THREE.Vector3;
+	private isAnimating: boolean;
+	private currentAnimationId: string | null;
+	private originalControlsEnabled: boolean;
+	private originalEnableDamping: boolean;
+	private controlsTemporarilyDisabled: boolean;
+	private static readonly MIN_OFFSET_EPSILON = 1e-4;
+	private currentTween: gsap.core.Tween | null = null;
 
-  constructor(camera: THREE.Camera, controls: OrbitControls) {
-    this.camera = camera
-    this.controls = controls
-    
-    // Track user's manual positions
-    // Calculate intro end position and target using config
-    const cameraOffsets = getCameraAnimationOffsets()
-    const endPos = SceneConfig.camera.initial.clone().add(cameraOffsets.positionOffset)
-    const endTarget = SceneConfig.camera.target.clone().add(cameraOffsets.targetOffset)
-    this.lastManualPosition = endPos
-    this.lastManualTarget = endTarget
-    
-    // Animation state
-    this.isAnimating = false
-    this.currentAnimationId = null
-    this.originalControlsEnabled = controls.enabled
-    this.originalEnableDamping = controls.enableDamping
-    this.controlsTemporarilyDisabled = false
-    
-    // Bind methods
-    this.handleControlsChange = this.handleControlsChange.bind(this)
-    this.handleControlsStart = this.handleControlsStart.bind(this)
-    this.handleControlsEnd = this.handleControlsEnd.bind(this)
-    
-    // Listen for manual camera movements
-    this.controls.addEventListener('change', this.handleControlsChange)
-    this.controls.addEventListener('start', this.handleControlsStart)
-    this.controls.addEventListener('end', this.handleControlsEnd)
-  }
+	constructor(camera: THREE.Camera, controls: OrbitControls) {
+		this.camera = camera;
+		this.controls = controls;
 
-  private ensureSafeEndPose(
-    startPosition: THREE.Vector3,
-    startTarget: THREE.Vector3,
-    endPosition: THREE.Vector3,
-    endTarget: THREE.Vector3
-  ): { endPosition: THREE.Vector3; endTarget: THREE.Vector3 } {
-    // Ensure numbers are finite
-    const all = [endPosition.x, endPosition.y, endPosition.z, endTarget.x, endTarget.y, endTarget.z]
-    for (const v of all) {
-      if (!Number.isFinite(v)) {
-        // Fallback to start pose to avoid corrupting controls
-        return { endPosition: startPosition.clone(), endTarget: startTarget.clone() }
-      }
-    }
-    // Ensure offset is not degenerate
-    const endOffset = endPosition.clone().sub(endTarget)
-    if (endOffset.lengthSq() < CameraController.MIN_OFFSET_EPSILON) {
-      const startOffset = startPosition.clone().sub(startTarget)
-      const safeDir = startOffset.lengthSq() > 0 ? startOffset.normalize() : new THREE.Vector3(0, 0, 1)
-      const safeDist = Math.max(0.5, startOffset.length())
-      const safeEndPos = endTarget.clone().add(safeDir.multiplyScalar(safeDist))
-      return { endPosition: safeEndPos, endTarget }
-    }
-    return { endPosition, endTarget }
-  }
+		// Track user's manual positions
+		// Calculate intro end position and target using config
+		const cameraOffsets = getCameraAnimationOffsets();
+		const endPos = SceneConfig.camera.initial
+			.clone()
+			.add(cameraOffsets.positionOffset);
+		const endTarget = SceneConfig.camera.target
+			.clone()
+			.add(cameraOffsets.targetOffset);
+		this.lastManualPosition = endPos;
+		this.lastManualTarget = endTarget;
 
-  // Focus using positions stored in model-local space by transforming with the given model matrix
-  focusOnTransformed(
-    localCameraPosition: THREE.Vector3,
-    localTargetPosition: THREE.Vector3,
-    modelMatrix: THREE.Matrix4,
-    duration: number = 800,
-    isMobile: boolean = false,
-    onComplete?: () => void
-  ) {
-    let worldCameraPos = localCameraPosition.clone().applyMatrix4(modelMatrix)
-    let worldTargetPos = localTargetPosition.clone().applyMatrix4(modelMatrix)
-    
-    // Apply device-specific offset
-    const cameraOffset = isMobile ? SceneConfig.cameraOffset.mobile : SceneConfig.cameraOffset.desktop
-    worldCameraPos.add(cameraOffset.positionOffset)
-    worldTargetPos.add(cameraOffset.targetOffset)
-    
-    return this.focusOn(worldTargetPos, duration, worldCameraPos, true, onComplete)
-  }
+		// Animation state
+		this.isAnimating = false;
+		this.currentAnimationId = null;
+		this.originalControlsEnabled = controls.enabled;
+		this.originalEnableDamping = controls.enableDamping;
+		this.controlsTemporarilyDisabled = false;
 
-  // Handle when user starts manual control (interrupt animations)
-  handleControlsStart() {
-    if (this.isAnimating) {
-      this.stopAnimation()
-    }
-  }
+		// Bind methods
+		this.handleControlsChange = this.handleControlsChange.bind(this);
+		this.handleControlsStart = this.handleControlsStart.bind(this);
+		this.handleControlsEnd = this.handleControlsEnd.bind(this);
 
-  // Handle when user stops manual control
-  handleControlsEnd() {
-    // Update manual position when user finishes controlling
-    if (!this.isAnimating) {
-      this.lastManualPosition.copy(this.camera.position)
-      this.lastManualTarget.copy(this.controls.target)
-    }
-  }
+		// Listen for manual camera movements
+		this.controls.addEventListener("change", this.handleControlsChange);
+		this.controls.addEventListener("start", this.handleControlsStart);
+		this.controls.addEventListener("end", this.handleControlsEnd);
+	}
 
-  // Track manual camera movements (only when not animating)
-  handleControlsChange() {
-    if (!this.isAnimating) {
-      this.lastManualPosition.copy(this.camera.position)
-      this.lastManualTarget.copy(this.controls.target)
-    }
-  }
+	private ensureSafeEndPose(
+		startPosition: THREE.Vector3,
+		startTarget: THREE.Vector3,
+		endPosition: THREE.Vector3,
+		endTarget: THREE.Vector3,
+	): { endPosition: THREE.Vector3; endTarget: THREE.Vector3 } {
+		// Ensure numbers are finite
+		const all = [
+			endPosition.x,
+			endPosition.y,
+			endPosition.z,
+			endTarget.x,
+			endTarget.y,
+			endTarget.z,
+		];
+		for (const v of all) {
+			if (!Number.isFinite(v)) {
+				// Fallback to start pose to avoid corrupting controls
+				return {
+					endPosition: startPosition.clone(),
+					endTarget: startTarget.clone(),
+				};
+			}
+		}
+		// Ensure offset is not degenerate
+		const endOffset = endPosition.clone().sub(endTarget);
+		if (endOffset.lengthSq() < CameraController.MIN_OFFSET_EPSILON) {
+			const startOffset = startPosition.clone().sub(startTarget);
+			const safeDir =
+				startOffset.lengthSq() > 0
+					? startOffset.normalize()
+					: new THREE.Vector3(0, 0, 1);
+			const safeDist = Math.max(0.5, startOffset.length());
+			const safeEndPos = endTarget
+				.clone()
+				.add(safeDir.multiplyScalar(safeDist));
+			return { endPosition: safeEndPos, endTarget };
+		}
+		return { endPosition, endTarget };
+	}
 
+	// Focus using positions stored in model-local space by transforming with the given model matrix
+	focusOnTransformed(
+		localCameraPosition: THREE.Vector3,
+		localTargetPosition: THREE.Vector3,
+		modelMatrix: THREE.Matrix4,
+		duration: number = 800,
+		isMobile: boolean = false,
+		onComplete?: () => void,
+	) {
+		const worldCameraPos = localCameraPosition
+			.clone()
+			.applyMatrix4(modelMatrix);
+		const worldTargetPos = localTargetPosition
+			.clone()
+			.applyMatrix4(modelMatrix);
 
-  // Animate camera to focus on a specific position with panel-aware positioning and proper text orientation
-  focusOn(
-    targetPosition: THREE.Vector3, 
-    duration: number = 800, 
-    customCameraPosition: THREE.Vector3 | null = null, 
-    isPanelOpen: boolean = false,
-    onComplete?: () => void
-  ) {
-    // Stop any existing animation first
-    this.stopAnimation()
-    
-    // Store current position before animating
-    this.lastManualPosition.copy(this.camera.position)
-    this.lastManualTarget.copy(this.controls.target)
-    
-    // TODO: Use isPanelOpen for panel-aware camera positioning
-    // Currently unused but reserved for future panel positioning logic
-    void isPanelOpen
+		// Apply device-specific offset
+		const cameraOffset = isMobile
+			? SceneConfig.cameraOffset.mobile
+			: SceneConfig.cameraOffset.desktop;
+		worldCameraPos.add(cameraOffset.positionOffset);
+		worldTargetPos.add(cameraOffset.targetOffset);
 
-    const startPosition = this.camera.position.clone()
-    const startTarget = this.controls.target.clone()
-    
-    // Target is the inscription position - this centers it in the screen
-    let endTarget = targetPosition.clone()
-    
-    // Use custom camera position if provided, otherwise calculate based on target
-    let endPosition: THREE.Vector3
-    if (customCameraPosition) {
-      // Use the predefined camera position from the inscription data
-      endPosition = customCameraPosition.clone()
-    } else {
-      // Fallback: position camera at a reasonable offset
-      const offset = new THREE.Vector3(0, 0.5, 1.0)
-      endPosition = endTarget.clone().add(offset)
-    }
+		return this.focusOn(
+			worldTargetPos,
+			duration,
+			worldCameraPos,
+			true,
+			onComplete,
+		);
+	}
 
-    // Mobile-only: adjust camera positioning based on orientation
-    try {
-      if (isMobile) {
-        const persp = this.camera as any
-        if (persp && (persp.isPerspectiveCamera === true)) {
-          const forwardVec = endTarget.clone().sub(endPosition)
-          const distance = forwardVec.length()
-          const fov = THREE.MathUtils.degToRad(persp.fov)
-          
-          if (isPortraitOrientation()) {
-            // Portrait mode: zoom out + shift camera UP to account for responsive bottom panel
-            const halfHeight = Math.tan(fov * 0.5) * distance
-            
-            // 1. Zoom out by moving camera further back
-            const zoomOutFactor = 1.3 // Zoom out by 30% (reduced from 40%)
-            const forward = forwardVec.clone().normalize()
-            const zoomOffset = forward.multiplyScalar(-distance * (zoomOutFactor - 1))
-            endPosition.add(zoomOffset)
-            
-            // 2. Shift UP to center the visible area (accounting for responsive panel height)
-            // Panel takes min(50vh, 400px) with minHeight 280px
-            const viewportHeight = window.innerHeight
-            const panelHeight = Math.min(viewportHeight * 0.5, 400)
-            const actualPanelHeight = Math.max(panelHeight, 280)
-            const panelFraction = (actualPanelHeight / viewportHeight) * 0.4 // Adjust shift based on actual panel size
-            
-            const worldShiftUp = halfHeight * zoomOutFactor * panelFraction
-            const up = this.camera.up.clone().normalize()
-            
-            endPosition.add(up.multiplyScalar(worldShiftUp))
-            endTarget.add(up.multiplyScalar(worldShiftUp))
-          } else {
-            // Landscape mode: pan LEFT for side panel
-            const halfWidth = Math.tan(fov * 0.5) * distance * persp.aspect
-            const fraction = 0.4 // tune as needed; portion of half-screen width to pan
-            const worldShift = halfWidth * fraction
-            const forward = forwardVec.clone().normalize()
-            const right = new THREE.Vector3().crossVectors(forward, this.camera.up).normalize()
-            const leftShift = right.multiplyScalar(-worldShift)
-            // Pan both position and target equally to avoid rotation
-            endPosition.add(leftShift)
-            endTarget.add(leftShift)
-          }
-        }
-      }
-    } catch (_e) {
-      // ignore
-    }
+	// Handle when user starts manual control (interrupt animations)
+	handleControlsStart() {
+		if (this.isAnimating) {
+			this.stopAnimation();
+		}
+	}
 
-    // Sanitize the target/position to avoid degenerate offsets and non-finite values
-    const safePose = this.ensureSafeEndPose(startPosition, startTarget, endPosition, endTarget)
-    endPosition = safePose.endPosition
-    endTarget = safePose.endTarget
+	// Handle when user stops manual control
+	handleControlsEnd() {
+		// Update manual position when user finishes controlling
+		if (!this.isAnimating) {
+			this.lastManualPosition.copy(this.camera.position);
+			this.lastManualTarget.copy(this.controls.target);
+		}
+	}
 
-    // Reusable vectors and rotation helpers
-    const tempCameraPos = new THREE.Vector3()
-    const tempTargetPos = new THREE.Vector3()
-    // We avoid quaternion slerp to keep motion softer; rely on lookAt with eased target
+	// Track manual camera movements (only when not animating)
+	handleControlsChange() {
+		if (!this.isAnimating) {
+			this.lastManualPosition.copy(this.camera.position);
+			this.lastManualTarget.copy(this.controls.target);
+		}
+	}
 
-    // Temporarily disable controls to avoid fighting during animation
-    this.originalControlsEnabled = this.controls.enabled
-    this.originalEnableDamping = this.controls.enableDamping
-    this.controls.enabled = false
-    this.controls.enableDamping = false
-    this.controlsTemporarilyDisabled = true
-    this.isAnimating = true
+	// Animate camera to focus on a specific position with panel-aware positioning and proper text orientation
+	focusOn(
+		targetPosition: THREE.Vector3,
+		duration: number = 800,
+		customCameraPosition: THREE.Vector3 | null = null,
+		isPanelOpen: boolean = false,
+		onComplete?: () => void,
+	) {
+		// Stop any existing animation first
+		this.stopAnimation();
 
-    // Use GSAP for robust tweening of both position and target
-    const tween = gsap.to({ t: 0 }, {
-      t: 1,
-      duration: duration / 1000,
-      ease: 'sine.inOut',
-      onUpdate: () => {
-        try {
-          // Ignore updates from stale tweens
-          if (this.currentTween !== tween || !this.isAnimating) return
-          const t = (tween as any).targets()[0].t as number
-          tempCameraPos.lerpVectors(startPosition, endPosition, t)
-          tempTargetPos.lerpVectors(startTarget, endTarget, t)
-          const offset = tempCameraPos.clone().sub(tempTargetPos)
-          if (offset.lengthSq() < CameraController.MIN_OFFSET_EPSILON) {
-            const startOffset = startPosition.clone().sub(startTarget)
-            const safeDir = startOffset.lengthSq() > 0 ? startOffset.normalize() : new THREE.Vector3(0, 0, 1)
-            const safeDist = Math.max(0.5, startOffset.length())
-            tempCameraPos.copy(tempTargetPos).add(safeDir.multiplyScalar(safeDist))
-          }
-          this.camera.position.copy(tempCameraPos)
-          this.controls.target.copy(tempTargetPos)
-          this.camera.up.set(0, 1, 0)
-          this.camera.lookAt(tempTargetPos)
-          this.camera.updateMatrixWorld(true)
-          this.controls.update()
-        } catch (_e) {
-          this.stopAnimation()
-          tween.kill()
-        }
-      },
-      onComplete: () => {
-        if (this.currentTween !== tween) return
-        this.isAnimating = false
-        this.currentAnimationId = null
-        if (this.controlsTemporarilyDisabled) {
-          this.controls.enabled = this.originalControlsEnabled
-          this.controls.enableDamping = this.originalEnableDamping
-          this.controlsTemporarilyDisabled = false
-        }
-        this.controls.target.copy(endTarget)
-        this.camera.up.set(0, 1, 0)
-        this.camera.lookAt(endTarget)
-        this.controls.update()
-        if (onComplete) onComplete()
-      }
-    })
+		// Store current position before animating
+		this.lastManualPosition.copy(this.camera.position);
+		this.lastManualTarget.copy(this.controls.target);
 
-    // Track animation state
-    this.isAnimating = true
-    this.currentTween = tween
-    return 'camera-focus-gsap'
-  }
+		// TODO: Use isPanelOpen for panel-aware camera positioning
+		// Currently unused but reserved for future panel positioning logic
+		void isPanelOpen;
 
-  // Intro camera animation
-  playIntroAnimation(onComplete?: () => void) {
-    this.stopAnimation()
-    
-    const startPos = SceneConfig.camera.initial
-    const startTarget = SceneConfig.camera.target
-    const cameraOffsets = getCameraAnimationOffsets()
-    const endPos = startPos.clone().add(cameraOffsets.positionOffset)
-    const endTarget = startTarget.clone().add(cameraOffsets.targetOffset)
-    const duration = SceneConfig.animation.camera.duration
-    
-    this.isAnimating = true
-    const tween = gsap.to({ t: 0 }, {
-      t: 1,
-      duration: duration / 1000,
-      ease: 'power2.inOut',
-      onUpdate: () => {
-        if (this.currentTween !== tween || !this.isAnimating) return
-        const t = (tween as any).targets()[0].t as number
-        
-        const tempCameraPos = new THREE.Vector3().lerpVectors(startPos, endPos, t)
-        const tempTargetPos = new THREE.Vector3().lerpVectors(startTarget, endTarget, t)
-        
-        this.camera.position.copy(tempCameraPos)
-        this.controls.target.copy(tempTargetPos)
-        this.controls.update()
-      },
-      onComplete: () => {
-        if (this.currentTween !== tween) return
-        this.isAnimating = false
-        this.currentTween = null
-        this.lastManualPosition.copy(endPos)
-        this.lastManualTarget.copy(endTarget)
-        if (onComplete) onComplete()
-      }
-    })
-    this.currentTween = tween
-    this.currentAnimationId = 'camera-intro-gsap'
-    return 'camera-intro-gsap'
-  }
-  
-  // Reset camera and model to default positions
-  resetToDefault(liverModel: any, duration = 1000, onComplete?: () => void) {
-    this.stopAnimation()
+		const startPosition = this.camera.position.clone();
+		const startTarget = this.controls.target.clone();
 
-    const startPosition = this.camera.position.clone()
-    const startTarget = this.controls.target.clone()
+		// Target is the inscription position - this centers it in the screen
+		let endTarget = targetPosition.clone();
 
-    const cameraOffsets = getCameraAnimationOffsets()
-    const endPosition = SceneConfig.camera.initial.clone().add(cameraOffsets.positionOffset)
-    const endTarget = SceneConfig.camera.target.clone().add(cameraOffsets.targetOffset)
+		// Use custom camera position if provided, otherwise calculate based on target
+		let endPosition: THREE.Vector3;
+		if (customCameraPosition) {
+			// Use the predefined camera position from the inscription data
+			endPosition = customCameraPosition.clone();
+		} else {
+			// Fallback: position camera at a reasonable offset
+			const offset = new THREE.Vector3(0, 0.5, 1.0);
+			endPosition = endTarget.clone().add(offset);
+		}
 
-    this.lastManualPosition.copy(endPosition)
-    this.lastManualTarget.copy(endTarget)
+		// Mobile-only: adjust camera positioning based on orientation
+		try {
+			if (isMobile) {
+				const persp = this.camera as any;
+				if (persp && persp.isPerspectiveCamera === true) {
+					const forwardVec = endTarget.clone().sub(endPosition);
+					const distance = forwardVec.length();
+					const fov = THREE.MathUtils.degToRad(persp.fov);
 
-    let modelAnimation: ((t: number) => void) | null = null
-    
-    if (liverModel) {
-      const liverObject = liverModel.getObject()
-      if (liverObject) {
-        const startModelPosition = {
-          x: liverObject.position.x,
-          y: liverObject.position.y,
-          z: liverObject.position.z
-        }
-        const startModelRotation = {
-          x: liverObject.rotation.x,
-          y: liverObject.rotation.y, 
-          z: liverObject.rotation.z
-        }
-        const endModelPosition = SceneConfig.model.position
-        const endModelRotation = SceneConfig.model.rotation
-        
-        modelAnimation = (t: number) => {
-          if (liverObject) {
-            liverObject.position.x = startModelPosition.x + (endModelPosition.x - startModelPosition.x) * t
-            liverObject.position.y = startModelPosition.y + (endModelPosition.y - startModelPosition.y) * t
-            liverObject.position.z = startModelPosition.z + (endModelPosition.z - startModelPosition.z) * t
-            
-            liverObject.rotation.x = startModelRotation.x + (endModelRotation.x - startModelRotation.x) * t
-            liverObject.rotation.y = startModelRotation.y + (endModelRotation.y - startModelRotation.y) * t
-            liverObject.rotation.z = startModelRotation.z + (endModelRotation.z - startModelRotation.z) * t
-          }
-        }
-      }
-    }
+					if (isPortraitOrientation()) {
+						// Portrait mode: zoom out + shift camera UP to account for responsive bottom panel
+						const halfHeight = Math.tan(fov * 0.5) * distance;
 
-    this.isAnimating = true
-    const tween = gsap.to({ t: 0 }, {
-      t: 1,
-      duration: duration / 1000,
-      ease: 'power1.inOut',
-      onUpdate: () => {
-        if (this.currentTween !== tween || !this.isAnimating) return
-        const t = (tween as any).targets()[0].t as number
-        
-        const tempCameraPos = new THREE.Vector3().lerpVectors(startPosition, endPosition, t)
-        const tempTargetPos = new THREE.Vector3().lerpVectors(startTarget, endTarget, t)
-        this.camera.position.copy(tempCameraPos)
-        this.controls.target.copy(tempTargetPos)
-        this.camera.up.set(0, 1, 0)
-        this.camera.lookAt(tempTargetPos)
-        this.controls.update()
-        
-        if (modelAnimation) {
-          modelAnimation(t)
-        }
-      },
-      onComplete: () => {
-        if (this.currentTween !== tween) return
-        this.isAnimating = false
-        this.currentTween = null
-        if (onComplete) onComplete()
-      }
-    })
-    this.currentTween = tween
-    this.currentAnimationId = 'camera-reset-gsap'
-    return 'camera-reset-gsap'
-  }
+						// 1. Zoom out by moving camera further back
+						const zoomOutFactor = 1.3; // Zoom out by 30% (reduced from 40%)
+						const forward = forwardVec.clone().normalize();
+						const zoomOffset = forward.multiplyScalar(
+							-distance * (zoomOutFactor - 1),
+						);
+						endPosition.add(zoomOffset);
 
+						// 2. Shift UP to center the visible area (accounting for responsive panel height)
+						// Panel takes min(50vh, 400px) with minHeight 280px
+						const viewportHeight = window.innerHeight;
+						const panelHeight = Math.min(viewportHeight * 0.5, 400);
+						const actualPanelHeight = Math.max(panelHeight, 280);
+						const panelFraction = (actualPanelHeight / viewportHeight) * 0.4; // Adjust shift based on actual panel size
 
-  // Stop current camera animation immediately
-  stopAnimation() {
-    if (this.currentTween) {
-      this.currentTween.kill()
-      this.currentTween = null
-    }
-    this.isAnimating = false
-    this.currentAnimationId = null
+						const worldShiftUp = halfHeight * zoomOutFactor * panelFraction;
+						const up = this.camera.up.clone().normalize();
 
-    // Always restore controls state if we temporarily disabled them
-    if (this.controlsTemporarilyDisabled) {
-      this.controls.enabled = this.originalControlsEnabled
-      this.controls.enableDamping = this.originalEnableDamping
-      this.controlsTemporarilyDisabled = false
-    }
+						endPosition.add(up.multiplyScalar(worldShiftUp));
+						endTarget.add(up.multiplyScalar(worldShiftUp));
+					} else {
+						// Landscape mode: pan LEFT for side panel
+						const halfWidth = Math.tan(fov * 0.5) * distance * persp.aspect;
+						const fraction = 0.4; // tune as needed; portion of half-screen width to pan
+						const worldShift = halfWidth * fraction;
+						const forward = forwardVec.clone().normalize();
+						const right = new THREE.Vector3()
+							.crossVectors(forward, this.camera.up)
+							.normalize();
+						const leftShift = right.multiplyScalar(-worldShift);
+						// Pan both position and target equally to avoid rotation
+						endPosition.add(leftShift);
+						endTarget.add(leftShift);
+					}
+				}
+			}
+		} catch (_e) {
+			// ignore
+		}
 
-    // Ensure controls are properly updated after stopping
-    this.controls.update()
-  }
-  
-  // Get current animation ID for external checks
-  getCurrentAnimationId(): string | null {
-    return this.currentAnimationId
-  }
+		// Sanitize the target/position to avoid degenerate offsets and non-finite values
+		const safePose = this.ensureSafeEndPose(
+			startPosition,
+			startTarget,
+			endPosition,
+			endTarget,
+		);
+		endPosition = safePose.endPosition;
+		endTarget = safePose.endTarget;
 
+		// Reusable vectors and rotation helpers
+		const tempCameraPos = new THREE.Vector3();
+		const tempTargetPos = new THREE.Vector3();
+		// We avoid quaternion slerp to keep motion softer; rely on lookAt with eased target
 
-  // Check if currently animating
-  isCurrentlyAnimating(): boolean {
-    return this.isAnimating
-  }
-  
-  // Cleanup
-  dispose() {
-    this.controls.removeEventListener('change', this.handleControlsChange)
-    this.controls.removeEventListener('start', this.handleControlsStart)
-    this.controls.removeEventListener('end', this.handleControlsEnd)
-    this.stopAnimation()
-  }
-} 
+		// Temporarily disable controls to avoid fighting during animation
+		this.originalControlsEnabled = this.controls.enabled;
+		this.originalEnableDamping = this.controls.enableDamping;
+		this.controls.enabled = false;
+		this.controls.enableDamping = false;
+		this.controlsTemporarilyDisabled = true;
+		this.isAnimating = true;
+
+		// Use GSAP for robust tweening of both position and target
+		const tween = gsap.to(
+			{ t: 0 },
+			{
+				t: 1,
+				duration: duration / 1000,
+				ease: "sine.inOut",
+				onUpdate: () => {
+					try {
+						// Ignore updates from stale tweens
+						if (this.currentTween !== tween || !this.isAnimating) return;
+						const t = (tween as any).targets()[0].t as number;
+						tempCameraPos.lerpVectors(startPosition, endPosition, t);
+						tempTargetPos.lerpVectors(startTarget, endTarget, t);
+						const offset = tempCameraPos.clone().sub(tempTargetPos);
+						if (offset.lengthSq() < CameraController.MIN_OFFSET_EPSILON) {
+							const startOffset = startPosition.clone().sub(startTarget);
+							const safeDir =
+								startOffset.lengthSq() > 0
+									? startOffset.normalize()
+									: new THREE.Vector3(0, 0, 1);
+							const safeDist = Math.max(0.5, startOffset.length());
+							tempCameraPos
+								.copy(tempTargetPos)
+								.add(safeDir.multiplyScalar(safeDist));
+						}
+						this.camera.position.copy(tempCameraPos);
+						this.controls.target.copy(tempTargetPos);
+						this.camera.up.set(0, 1, 0);
+						this.camera.lookAt(tempTargetPos);
+						this.camera.updateMatrixWorld(true);
+						this.controls.update();
+					} catch (_e) {
+						this.stopAnimation();
+						tween.kill();
+					}
+				},
+				onComplete: () => {
+					if (this.currentTween !== tween) return;
+					this.isAnimating = false;
+					this.currentAnimationId = null;
+					if (this.controlsTemporarilyDisabled) {
+						this.controls.enabled = this.originalControlsEnabled;
+						this.controls.enableDamping = this.originalEnableDamping;
+						this.controlsTemporarilyDisabled = false;
+					}
+					this.controls.target.copy(endTarget);
+					this.camera.up.set(0, 1, 0);
+					this.camera.lookAt(endTarget);
+					this.controls.update();
+					if (onComplete) onComplete();
+				},
+			},
+		);
+
+		// Track animation state
+		this.isAnimating = true;
+		this.currentTween = tween;
+		return "camera-focus-gsap";
+	}
+
+	// Intro camera animation
+	playIntroAnimation(onComplete?: () => void) {
+		this.stopAnimation();
+
+		const startPos = SceneConfig.camera.initial;
+		const startTarget = SceneConfig.camera.target;
+		const cameraOffsets = getCameraAnimationOffsets();
+		const endPos = startPos.clone().add(cameraOffsets.positionOffset);
+		const endTarget = startTarget.clone().add(cameraOffsets.targetOffset);
+		const duration = SceneConfig.animation.camera.duration;
+
+		this.isAnimating = true;
+		const tween = gsap.to(
+			{ t: 0 },
+			{
+				t: 1,
+				duration: duration / 1000,
+				ease: "power2.inOut",
+				onUpdate: () => {
+					if (this.currentTween !== tween || !this.isAnimating) return;
+					const t = (tween as any).targets()[0].t as number;
+
+					const tempCameraPos = new THREE.Vector3().lerpVectors(
+						startPos,
+						endPos,
+						t,
+					);
+					const tempTargetPos = new THREE.Vector3().lerpVectors(
+						startTarget,
+						endTarget,
+						t,
+					);
+
+					this.camera.position.copy(tempCameraPos);
+					this.controls.target.copy(tempTargetPos);
+					this.controls.update();
+				},
+				onComplete: () => {
+					if (this.currentTween !== tween) return;
+					this.isAnimating = false;
+					this.currentTween = null;
+					this.lastManualPosition.copy(endPos);
+					this.lastManualTarget.copy(endTarget);
+					if (onComplete) onComplete();
+				},
+			},
+		);
+		this.currentTween = tween;
+		this.currentAnimationId = "camera-intro-gsap";
+		return "camera-intro-gsap";
+	}
+
+	// Reset camera and model to default positions
+	resetToDefault(liverModel: any, duration = 1000, onComplete?: () => void) {
+		this.stopAnimation();
+
+		const startPosition = this.camera.position.clone();
+		const startTarget = this.controls.target.clone();
+
+		const cameraOffsets = getCameraAnimationOffsets();
+		const endPosition = SceneConfig.camera.initial
+			.clone()
+			.add(cameraOffsets.positionOffset);
+		const endTarget = SceneConfig.camera.target
+			.clone()
+			.add(cameraOffsets.targetOffset);
+
+		this.lastManualPosition.copy(endPosition);
+		this.lastManualTarget.copy(endTarget);
+
+		let modelAnimation: ((t: number) => void) | null = null;
+
+		if (liverModel) {
+			const liverObject = liverModel.getObject();
+			if (liverObject) {
+				const startModelPosition = {
+					x: liverObject.position.x,
+					y: liverObject.position.y,
+					z: liverObject.position.z,
+				};
+				const startModelRotation = {
+					x: liverObject.rotation.x,
+					y: liverObject.rotation.y,
+					z: liverObject.rotation.z,
+				};
+				const endModelPosition = SceneConfig.model.position;
+				const endModelRotation = SceneConfig.model.rotation;
+
+				modelAnimation = (t: number) => {
+					if (liverObject) {
+						liverObject.position.x =
+							startModelPosition.x +
+							(endModelPosition.x - startModelPosition.x) * t;
+						liverObject.position.y =
+							startModelPosition.y +
+							(endModelPosition.y - startModelPosition.y) * t;
+						liverObject.position.z =
+							startModelPosition.z +
+							(endModelPosition.z - startModelPosition.z) * t;
+
+						liverObject.rotation.x =
+							startModelRotation.x +
+							(endModelRotation.x - startModelRotation.x) * t;
+						liverObject.rotation.y =
+							startModelRotation.y +
+							(endModelRotation.y - startModelRotation.y) * t;
+						liverObject.rotation.z =
+							startModelRotation.z +
+							(endModelRotation.z - startModelRotation.z) * t;
+					}
+				};
+			}
+		}
+
+		this.isAnimating = true;
+		const tween = gsap.to(
+			{ t: 0 },
+			{
+				t: 1,
+				duration: duration / 1000,
+				ease: "power1.inOut",
+				onUpdate: () => {
+					if (this.currentTween !== tween || !this.isAnimating) return;
+					const t = (tween as any).targets()[0].t as number;
+
+					const tempCameraPos = new THREE.Vector3().lerpVectors(
+						startPosition,
+						endPosition,
+						t,
+					);
+					const tempTargetPos = new THREE.Vector3().lerpVectors(
+						startTarget,
+						endTarget,
+						t,
+					);
+					this.camera.position.copy(tempCameraPos);
+					this.controls.target.copy(tempTargetPos);
+					this.camera.up.set(0, 1, 0);
+					this.camera.lookAt(tempTargetPos);
+					this.controls.update();
+
+					if (modelAnimation) {
+						modelAnimation(t);
+					}
+				},
+				onComplete: () => {
+					if (this.currentTween !== tween) return;
+					this.isAnimating = false;
+					this.currentTween = null;
+					if (onComplete) onComplete();
+				},
+			},
+		);
+		this.currentTween = tween;
+		this.currentAnimationId = "camera-reset-gsap";
+		return "camera-reset-gsap";
+	}
+
+	// Stop current camera animation immediately
+	stopAnimation() {
+		if (this.currentTween) {
+			this.currentTween.kill();
+			this.currentTween = null;
+		}
+		this.isAnimating = false;
+		this.currentAnimationId = null;
+
+		// Always restore controls state if we temporarily disabled them
+		if (this.controlsTemporarilyDisabled) {
+			this.controls.enabled = this.originalControlsEnabled;
+			this.controls.enableDamping = this.originalEnableDamping;
+			this.controlsTemporarilyDisabled = false;
+		}
+
+		// Ensure controls are properly updated after stopping
+		this.controls.update();
+	}
+
+	// Get current animation ID for external checks
+	getCurrentAnimationId(): string | null {
+		return this.currentAnimationId;
+	}
+
+	// Check if currently animating
+	isCurrentlyAnimating(): boolean {
+		return this.isAnimating;
+	}
+
+	// Cleanup
+	dispose() {
+		this.controls.removeEventListener("change", this.handleControlsChange);
+		this.controls.removeEventListener("start", this.handleControlsStart);
+		this.controls.removeEventListener("end", this.handleControlsEnd);
+		this.stopAnimation();
+	}
+}

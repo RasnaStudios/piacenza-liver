@@ -1,0 +1,9 @@
+echo "🎨 Formatting code with Biome..."
+pnpm exec lint-staged
+
+if [ $? -ne 0 ]; then
+    echo "❌ Pre-commit formatting failed!"
+    exit 1
+fi
+
+echo "✅ Code formatted successfully!"

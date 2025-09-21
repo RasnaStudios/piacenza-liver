@@ -1,38 +1,115 @@
 {
-  "name": "piacenza-liver",
-  "private": true,
-  "version": "0.1.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build:extract": "node scripts/extract-inscriptions.cjs",
-    "build": "npm run build:extract && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@mantine/core": "^8.3.1",
-    "@mantine/hooks": "^8.3.1",
-    "@tabler/icons-react": "^3.35.0",
-    "gsap": "^3.13.0",
-    "react": "^19.1.1",
-    "react-device-detect": "^2.2.3",
-    "react-dom": "^19.1.1",
-    "react-icons": "^5.5.0",
-    "three": "^0.180.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.35.0",
-    "@types/react": "^19.1.13",
-    "@types/react-dom": "^19.1.9",
-    "@types/three": "^0.180.0",
-    "@vitejs/plugin-react": "^5.0.2",
-    "eslint": "^9.35.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.4.0",
-    "typescript": "^5.9.2",
-    "vite": "^7.1.5",
-    "vite-plugin-pwa": "^1.0.3"
-  }
+	"name": "piacenza-liver",
+	"private": true,
+	"version": "0.1.0",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build:extract": "node scripts/extract-inscriptions.cjs",
+		"build": "npm run build:extract && vite build",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"format": "biome format --write .",
+		"preview": "vite preview",
+		"prepare": "husky"
+	},
+	"biome": {
+		"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+		"vcs": {
+			"enabled": true,
+			"clientKind": "git",
+			"useIgnoreFile": true
+		},
+		"files": {
+			"ignoreUnknown": false,
+			"includes": [
+				"src/**/*",
+				"*.ts",
+				"*.tsx",
+				"*.js",
+				"*.jsx"
+			],
+			"ignore": [
+				"scripts/**/*",
+				"dist/**/*",
+				"node_modules/**/*",
+				"public/data/**/*",
+				"*.py",
+				"venv/**/*"
+			]
+		},
+		"formatter": {
+			"enabled": true,
+			"indentStyle": "space",
+			"indentWidth": 2
+		},
+		"linter": {
+			"enabled": true,
+			"rules": {
+				"recommended": true,
+				"correctness": {
+					"noUnusedVariables": "error"
+				},
+				"suspicious": {
+					"noExplicitAny": "off"
+				},
+				"style": {
+					"noNonNullAssertion": "warn",
+					"noApproximativeNumericConstant": "off"
+				}
+			}
+		},
+		"javascript": {
+			"formatter": {
+				"quoteStyle": "single",
+				"semicolons": "always",
+				"trailingCommas": "es5"
+			}
+		},
+		"json": {
+			"formatter": {
+				"indentStyle": "space",
+				"indentWidth": 2
+			}
+		},
+		"assist": {
+			"enabled": true,
+			"actions": {
+				"source": {
+					"organizeImports": "on"
+				}
+			}
+		}
+	},
+	"lint-staged": {
+		"src/**/*.{ts,tsx,js,jsx}": [
+			"biome format --write"
+		],
+		"*.{json,md}": [
+			"biome format --write"
+		]
+	},
+	"dependencies": {
+		"@mantine/core": "^8.3.1",
+		"@mantine/hooks": "^8.3.1",
+		"@tabler/icons-react": "^3.35.0",
+		"gsap": "^3.13.0",
+		"react": "^19.1.1",
+		"react-device-detect": "^2.2.3",
+		"react-dom": "^19.1.1",
+		"react-icons": "^5.5.0",
+		"three": "^0.180.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.4",
+		"@types/react": "^19.1.13",
+		"@types/react-dom": "^19.1.9",
+		"@types/three": "^0.180.0",
+		"@vitejs/plugin-react": "^5.0.2",
+		"husky": "^9.1.7",
+		"lint-staged": "^16.1.6",
+		"typescript": "^5.9.2",
+		"vite": "^7.1.5",
+		"vite-plugin-pwa": "^1.0.3"
+	}
 }

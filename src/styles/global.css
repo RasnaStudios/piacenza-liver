@@ -1,459 +1,526 @@
 /* Import display and serif fonts */
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:wght@400;600;700&family=Poppins:wght@300;400;500;600;700&display=swap");
 
 /* Global reset to eliminate white borders */
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
 }
 
-body, html {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  color: #c9a876;
+body,
+html {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	color: #c9a876;
 }
 
 /* Basic app styling */
 .piacenza-liver-app {
-  width: 100vw;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  color: #c9a876;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	color: #c9a876;
 }
 
 .scene-container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
+	position: relative;
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
 }
 
 .three-container {
-  width: 100%;
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
-  background: #000000; /* Pure black museum background */
+	width: 100%;
+	height: 100vh;
+	position: relative;
+	overflow: hidden;
+	background: #000000; /* Pure black museum background */
 }
 
 /* Dynamic centered title overlay - hides permanently after first interaction */
 .three-container::before {
-  content: 'Piacenza Liver';
-  position: absolute;
-  top: 8%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'Cinzel', 'Trajan Pro', 'Times New Roman', serif;
-  font-size: clamp(28px, 4.5vw, 60px);
-  font-weight: 100; /* Ultra thin and elegant */
-  letter-spacing: 6px;
-  text-align: center;
-  z-index: 10; /* Above the 3D model */
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.8s ease-out; /* Smooth fade out only */
-  
-  /* Ultra-smooth wavy bronze/gray gradient */
-  background: linear-gradient(
-    45deg,
-    #2c2c2c 0%,      /* Dark gray */
-    #6b6b6b 30%,     /* Light gray */
-    #c9a876 60%,     /* Golden bronze */
-    #2c2c2c 100%     /* Back to dark gray */
-  );
-  
-  /* Wavy pattern effect */
-  background-size: 400% 200%;
-  
-  /* Apply gradient to text */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  
-  /* Wavy gradient animation */
-  animation: wavyGradient 30s ease-in-out infinite;
-  
-  /* Subtle shadows for bronze effect */
-  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))
-          drop-shadow(0 0 15px rgba(139, 101, 65, 0.3))
-          drop-shadow(0 0 30px rgba(201, 168, 118, 0.1));
-  
-  /* Very subtle bronze stroke */
-  -webkit-text-stroke: 0.5px rgba(139, 101, 65, 0.2);
+	content: "Piacenza Liver";
+	position: absolute;
+	top: 8%;
+	left: 50%;
+	transform: translateX(-50%);
+	font-family: "Cinzel", "Trajan Pro", "Times New Roman", serif;
+	font-size: clamp(28px, 4.5vw, 60px);
+	font-weight: 100; /* Ultra thin and elegant */
+	letter-spacing: 6px;
+	text-align: center;
+	z-index: 10; /* Above the 3D model */
+	pointer-events: none;
+	opacity: 1;
+	transition: opacity 0.8s ease-out; /* Smooth fade out only */
+
+	/* Ultra-smooth wavy bronze/gray gradient */
+	background: linear-gradient(
+		45deg,
+		#2c2c2c 0% /* Dark gray */,
+		#6b6b6b 30% /* Light gray */,
+		#c9a876 60% /* Golden bronze */,
+		#2c2c2c 100% /* Back to dark gray */
+	);
+
+	/* Wavy pattern effect */
+	background-size: 400% 200%;
+
+	/* Apply gradient to text */
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+
+	/* Wavy gradient animation */
+	animation: wavyGradient 30s ease-in-out infinite;
+
+	/* Subtle shadows for bronze effect */
+	filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))
+		drop-shadow(0 0 15px rgba(139, 101, 65, 0.3))
+		drop-shadow(0 0 30px rgba(201, 168, 118, 0.1));
+
+	/* Very subtle bronze stroke */
+	-webkit-text-stroke: 0.5px rgba(139, 101, 65, 0.2);
 }
 
 /* Hide title permanently after first interaction */
 .three-container.interacted::before {
-  opacity: 0;
-  pointer-events: none;
+	opacity: 0;
+	pointer-events: none;
 }
 
 /* Wavy gradient animation */
 @keyframes wavyGradient {
-  0% {
-    background-position: 0% 0%;
-  }
-  25% {
-    background-position: 100% 50%;
-  }
-  50% {
-    background-position: 200% 100%;
-  }
-  75% {
-    background-position: 300% 50%;
-  }
-  100% {
-    background-position: 400% 0%;
-  }
+	0% {
+		background-position: 0% 0%;
+	}
+	25% {
+		background-position: 100% 50%;
+	}
+	50% {
+		background-position: 200% 100%;
+	}
+	75% {
+		background-position: 300% 50%;
+	}
+	100% {
+		background-position: 400% 0%;
+	}
 }
 
 /* Update vignette to not interfere with title */
 .scene-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 20%,
-    rgba(0, 0, 0, 0.05) 50%,
-    rgba(0, 0, 0, 0.2) 100%
-  );
-  pointer-events: none;
-  z-index: 0;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: radial-gradient(
+		ellipse at center,
+		transparent 20%,
+		rgba(0, 0, 0, 0.05) 50%,
+		rgba(0, 0, 0, 0.2) 100%
+	);
+	pointer-events: none;
+	z-index: 0;
 }
 
 /* Mobile responsive */
 @media (max-width: 768px) {
-  body, html {
-    font-size: 14px;
-    overflow: hidden;
-  }
+	body,
+	html {
+		font-size: 14px;
+		overflow: hidden;
+	}
 
-  .piacenza-liver-app {
-    overflow: hidden;
-  }
+	.piacenza-liver-app {
+		overflow: hidden;
+	}
 
-  .scene-container {
-    overflow: hidden;
-  }
+	.scene-container {
+		overflow: hidden;
+	}
 
-  .three-container {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    touch-action: none;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-  }
+	.three-container {
+		width: 100vw;
+		height: 100vh;
+		overflow: hidden;
+		touch-action: none;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		user-select: none;
+	}
 
-  .three-container::before {
-    font-size: clamp(20px, 6vw, 40px);
-    letter-spacing: 3px;
-  }
+	.three-container::before {
+		font-size: clamp(20px, 6vw, 40px);
+		letter-spacing: 3px;
+	}
 
-  /* Hide title on mobile when interacted */
-  .three-container.interacted::before {
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease-out;
-  }
+	/* Hide title on mobile when interacted */
+	.three-container.interacted::before {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.3s ease-out;
+	}
 
-  .scene-container.panel-open {
-    transform: none;
-  }
+	.scene-container.panel-open {
+		transform: none;
+	}
 }
 
 @media (max-width: 768px) and (orientation: landscape) {
-  .three-container::before {
-    font-size: clamp(16px, 4.5vw, 30px);
-    top: 5%;
-  }
+	.three-container::before {
+		font-size: clamp(16px, 4.5vw, 30px);
+		top: 5%;
+	}
 }
 
 /* Color Variables and Classes */
 :root {
-  --primary-bg: #0a0806;
-  --primary-text: #f4e6d3;
-  --secondary-text: rgba(244, 230, 211, 0.9);
-  --tertiary-text: rgba(244, 230, 211, 0.7);
-  --accent-gold: #d4af37;
-  --accent-bronze: #8b6541;
-  --bronze-light: #fbe7cb;
-  --bronze-dark: #2c1810;
-  --bronze-text: rgba(196, 168, 118, 0.9);
-  --border-primary: rgba(139, 101, 65, 0.2);
-  --border-secondary: rgba(139, 101, 65, 0.1);
-  --border-accent: rgba(244, 230, 211, 0.15);
-  --bg-overlay: rgba(244, 230, 211, 0.05);
-  --bg-overlay-secondary: rgba(139, 101, 65, 0.05);
-  --bg-overlay-tertiary: rgba(139, 101, 65, 0.03);
-  --shadow-primary: 0 8px 24px rgba(0, 0, 0, 0.6);
-  --shadow-secondary: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --gradient-gold: linear-gradient(45deg, #b8942a 0%, #d4b85f 25%, #e6d13a 50%, #d4b85f 75%, #b8942a 100%);
-  --gradient-tooltip: linear-gradient(135deg, rgba(20, 16, 12, 0.95) 0%, rgba(32, 26, 20, 0.95) 25%, rgba(44, 36, 28, 0.95) 50%, rgba(58, 48, 38, 0.95) 75%, rgba(70, 58, 46, 0.95) 100%);
-  --font-primary: "'Inter', 'SF Pro Display', 'Segoe UI', 'Roboto', sans-serif";
-  --font-display: "'Poppins', 'Inter', 'SF Pro Display', 'Segoe UI', 'Roboto', sans-serif";
-  --font-serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif";
-  --font-etruscan: 'Noto Sans Old Italic, Aegean, serif';
+	--primary-bg: #0a0806;
+	--primary-text: #f4e6d3;
+	--secondary-text: rgba(244, 230, 211, 0.9);
+	--tertiary-text: rgba(244, 230, 211, 0.7);
+	--accent-gold: #d4af37;
+	--accent-bronze: #8b6541;
+	--bronze-light: #fbe7cb;
+	--bronze-dark: #2c1810;
+	--bronze-text: rgba(196, 168, 118, 0.9);
+	--border-primary: rgba(139, 101, 65, 0.2);
+	--border-secondary: rgba(139, 101, 65, 0.1);
+	--border-accent: rgba(244, 230, 211, 0.15);
+	--bg-overlay: rgba(244, 230, 211, 0.05);
+	--bg-overlay-secondary: rgba(139, 101, 65, 0.05);
+	--bg-overlay-tertiary: rgba(139, 101, 65, 0.03);
+	--shadow-primary: 0 8px 24px rgba(0, 0, 0, 0.6);
+	--shadow-secondary: 0 4px 12px rgba(0, 0, 0, 0.3);
+	--gradient-gold: linear-gradient(
+		45deg,
+		#b8942a 0%,
+		#d4b85f 25%,
+		#e6d13a 50%,
+		#d4b85f 75%,
+		#b8942a 100%
+	);
+	--gradient-tooltip: linear-gradient(
+		135deg,
+		rgba(20, 16, 12, 0.95) 0%,
+		rgba(32, 26, 20, 0.95) 25%,
+		rgba(44, 36, 28, 0.95) 50%,
+		rgba(58, 48, 38, 0.95) 75%,
+		rgba(70, 58, 46, 0.95) 100%
+	);
+	--font-primary: "'Inter', 'SF Pro Display', 'Segoe UI', 'Roboto', sans-serif";
+	--font-display: "'Poppins', 'Inter', 'SF Pro Display', 'Segoe UI', 'Roboto', sans-serif";
+	--font-serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif";
+	--font-etruscan: "Noto Sans Old Italic, Aegean, serif";
 }
 
 /* Background Colors */
-.bg-primary { background-color: var(--primary-bg) !important; }
-.bg-overlay { background-color: var(--bg-overlay) !important; }
-.bg-overlay-secondary { background-color: var(--bg-overlay-secondary) !important; }
-.bg-overlay-tertiary { background-color: var(--bg-overlay-tertiary) !important; }
+.bg-primary {
+	background-color: var(--primary-bg) !important;
+}
+.bg-overlay {
+	background-color: var(--bg-overlay) !important;
+}
+.bg-overlay-secondary {
+	background-color: var(--bg-overlay-secondary) !important;
+}
+.bg-overlay-tertiary {
+	background-color: var(--bg-overlay-tertiary) !important;
+}
 
 /* Text Colors */
-.text-primary { color: var(--primary-text) !important; }
-.text-secondary { color: var(--secondary-text) !important; }
-.text-tertiary { color: var(--tertiary-text) !important; }
-.text-accent-gold { color: var(--accent-gold) !important; }
-.text-accent-bronze { color: var(--accent-bronze) !important; }
-.text-bronze { color: var(--bronze-text) !important; }
+.text-primary {
+	color: var(--primary-text) !important;
+}
+.text-secondary {
+	color: var(--secondary-text) !important;
+}
+.text-tertiary {
+	color: var(--tertiary-text) !important;
+}
+.text-accent-gold {
+	color: var(--accent-gold) !important;
+}
+.text-accent-bronze {
+	color: var(--accent-bronze) !important;
+}
+.text-bronze {
+	color: var(--bronze-text) !important;
+}
 
 /* Gradient Text */
 .text-gradient-gold {
-  background: var(--gradient-gold);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+	background: var(--gradient-gold);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
 }
 
 /* Border Colors */
-.border-primary { border-color: var(--border-primary) !important; }
-.border-secondary { border-color: var(--border-secondary) !important; }
-.border-accent { border-color: var(--border-accent) !important; }
+.border-primary {
+	border-color: var(--border-primary) !important;
+}
+.border-secondary {
+	border-color: var(--border-secondary) !important;
+}
+.border-accent {
+	border-color: var(--border-accent) !important;
+}
 
 /* Unified Panel Border */
 .panel-border {
-  border: 1px solid var(--border-primary) !important;
-  border-radius: 12px !important;
+	border: 1px solid var(--border-primary) !important;
+	border-radius: 12px !important;
 }
 
 /* Shadows */
-.shadow-primary { box-shadow: var(--shadow-primary) !important; }
-.shadow-secondary { box-shadow: var(--shadow-secondary) !important; }
+.shadow-primary {
+	box-shadow: var(--shadow-primary) !important;
+}
+.shadow-secondary {
+	box-shadow: var(--shadow-secondary) !important;
+}
 
 /* Font Families */
-.font-primary { font-family: var(--font-primary) !important; }
-.font-serif { font-family: var(--font-serif) !important; }
-.font-display { font-family: var(--font-display) !important; }
-.font-etruscan { font-family: var(--font-etruscan) !important; }
+.font-primary {
+	font-family: var(--font-primary) !important;
+}
+.font-serif {
+	font-family: var(--font-serif) !important;
+}
+.font-display {
+	font-family: var(--font-display) !important;
+}
+.font-etruscan {
+	font-family: var(--font-etruscan) !important;
+}
 /* Back-compat for previous usage */
-.font-secondary { font-family: var(--font-display) !important; }
+.font-secondary {
+	font-family: var(--font-display) !important;
+}
 
 /* Text Shadows */
-.text-shadow-primary { text-shadow: 0 0 8px rgba(0, 0, 0, 0.8), 0 2px 6px rgba(0, 0, 0, 0.9) !important; }
-.text-shadow-secondary { text-shadow: 0 0 4px rgba(0, 0, 0, 0.8), 0 1px 3px rgba(0, 0, 0, 0.9) !important; }
-.text-shadow-gold { text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important; }
+.text-shadow-primary {
+	text-shadow:
+		0 0 8px rgba(0, 0, 0, 0.8),
+		0 2px 6px rgba(0, 0, 0, 0.9) !important;
+}
+.text-shadow-secondary {
+	text-shadow:
+		0 0 4px rgba(0, 0, 0, 0.8),
+		0 1px 3px rgba(0, 0, 0, 0.9) !important;
+}
+.text-shadow-gold {
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8) !important;
+}
 
 /* Panel Animations */
 @keyframes panelSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateX(100%) scale(0.95);
-    filter: blur(5px);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translateX(20%) scale(0.98);
-    filter: blur(2px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-    filter: blur(0);
-  }
+	0% {
+		opacity: 0;
+		transform: translateX(100%) scale(0.95);
+		filter: blur(5px);
+	}
+	50% {
+		opacity: 0.8;
+		transform: translateX(20%) scale(0.98);
+		filter: blur(2px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateX(0) scale(1);
+		filter: blur(0);
+	}
 }
 
 @keyframes panelSlideInMobile {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+	from {
+		transform: translateY(100%);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
 }
 
 /* Panel Styles */
 .deity-panel-desktop {
-  position: fixed !important;
-  top: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 500px !important;
-  height: 100vh !important;
-  background: var(--primary-bg) !important;
-  border: 1px solid var(--border-primary) !important;
-  border-radius: 12px 0 0 12px !important;
-  color: var(--primary-text) !important;
-  font-family: var(--font-primary) !important;
-  box-shadow: var(--shadow-primary) !important;
-  z-index: 1000 !important;
-  animation: panelSlideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+	position: fixed !important;
+	top: 0 !important;
+	right: 0 !important;
+	bottom: 0 !important;
+	width: 500px !important;
+	height: 100vh !important;
+	background: var(--primary-bg) !important;
+	border: 1px solid var(--border-primary) !important;
+	border-radius: 12px 0 0 12px !important;
+	color: var(--primary-text) !important;
+	font-family: var(--font-primary) !important;
+	box-shadow: var(--shadow-primary) !important;
+	z-index: 1000 !important;
+	animation: panelSlideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
 }
 
 .deity-panel-mobile {
-  position: fixed !important;
-  top: 0 !important;
-  right: 0 !important;
-  left: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background: var(--primary-bg) !important;
-  color: var(--primary-text) !important;
-  font-family: var(--font-primary) !important;
-  z-index: 9999 !important;
-  animation: panelSlideInMobile 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-  border: none !important;
-  border-radius: 0 !important;
-  margin: 0 !important;
-  padding: 0 !important;
+	position: fixed !important;
+	top: 0 !important;
+	right: 0 !important;
+	left: 0 !important;
+	bottom: 0 !important;
+	width: 100vw !important;
+	height: 100vh !important;
+	background: var(--primary-bg) !important;
+	color: var(--primary-text) !important;
+	font-family: var(--font-primary) !important;
+	z-index: 9999 !important;
+	animation: panelSlideInMobile 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+	border: none !important;
+	border-radius: 0 !important;
+	margin: 0 !important;
+	padding: 0 !important;
 }
 
 /* Scrollbar Styles */
 .scrollbar {
-  scrollbar-width: thin !important;
-  scrollbar-color: transparent transparent !important;
-  transition: scrollbar-color 0.15s ease-in-out !important;
+	scrollbar-width: thin !important;
+	scrollbar-color: transparent transparent !important;
+	transition: scrollbar-color 0.15s ease-in-out !important;
 }
 
 .scrollbar::-webkit-scrollbar {
-  width: 6px !important;
-  height: 6px !important;
+	width: 6px !important;
+	height: 6px !important;
 }
 
 .scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2) !important;
-  border-radius: 3px !important;
-  -webkit-border-radius: 3px !important;
-  opacity: 0 !important;
-  transition: opacity 0.15s ease-in-out !important;
+	background: rgba(0, 0, 0, 0.2) !important;
+	border-radius: 3px !important;
+	-webkit-border-radius: 3px !important;
+	opacity: 0 !important;
+	transition: opacity 0.15s ease-in-out !important;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(196, 168, 118, 0.4) !important;
-  border-radius: 3px !important;
-  -webkit-border-radius: 3px !important;
-  border: none !important;
-  opacity: 0 !important;
-  transition: opacity 0.15s ease-in-out, background 0.15s ease-in-out !important;
+	background: rgba(196, 168, 118, 0.4) !important;
+	border-radius: 3px !important;
+	-webkit-border-radius: 3px !important;
+	border: none !important;
+	opacity: 0 !important;
+	transition:
+		opacity 0.15s ease-in-out,
+		background 0.15s ease-in-out !important;
 }
 
 .scrollbar::-webkit-scrollbar-corner {
-  background: rgba(0, 0, 0, 0.2) !important;
-  opacity: 0 !important;
-  transition: opacity 0.15s ease-in-out !important;
+	background: rgba(0, 0, 0, 0.2) !important;
+	opacity: 0 !important;
+	transition: opacity 0.15s ease-in-out !important;
 }
 
 .scrollbar:hover {
-  scrollbar-width: thin !important;
-  scrollbar-color: rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2) !important;
+	scrollbar-width: thin !important;
+	scrollbar-color: rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2) !important;
 }
 
 .scrollbar:hover::-webkit-scrollbar {
-  width: 6px !important;
-  height: 6px !important;
+	width: 6px !important;
+	height: 6px !important;
 }
 
 .scrollbar:hover::-webkit-scrollbar-track {
-  opacity: 1 !important;
+	opacity: 1 !important;
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb {
-  opacity: 1 !important;
+	opacity: 1 !important;
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb:hover {
-  background: rgba(196, 168, 118, 0.6) !important;
+	background: rgba(196, 168, 118, 0.6) !important;
 }
 
 .scrollbar:hover::-webkit-scrollbar-corner {
-  opacity: 1 !important;
+	opacity: 1 !important;
 }
 
 /* Button Hover Effects */
 .fancy-button {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
 .fancy-button:hover {
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+	transform: translateY(-1px) !important;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
 }
 
 /* Inscription List Styles */
 .inscription-list-container {
-  position: fixed !important;
-  top: 20px !important;
-  bottom: 20px !important;
-  width: 220px !important;
-  background: var(--primary-bg) !important;
-  border-radius: 0 12px 12px 0 !important;
-  z-index: 50 !important;
-  transition: left 0.3s ease-out !important;
-  padding: 8px !important;
-  display: flex !important;
-  flex-direction: column !important;
+	position: fixed !important;
+	top: 20px !important;
+	bottom: 20px !important;
+	width: 220px !important;
+	background: var(--primary-bg) !important;
+	border-radius: 0 12px 12px 0 !important;
+	z-index: 50 !important;
+	transition: left 0.3s ease-out !important;
+	padding: 8px !important;
+	display: flex !important;
+	flex-direction: column !important;
 }
 
 .inscription-item {
-  padding: 6px 8px !important;
-  margin-bottom: 2px !important;
-  border-radius: 8px !important;
-  cursor: pointer !important;
-  transition: all 0.15s ease !important;
-  min-height: 32px !important;
+	padding: 6px 8px !important;
+	margin-bottom: 2px !important;
+	border-radius: 8px !important;
+	cursor: pointer !important;
+	transition: all 0.15s ease !important;
+	min-height: 32px !important;
 }
-
 
 /* WebGL error fallback */
 .webgl-error {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(139, 101, 65, 0.95);
-  color: #f4e6d3;
-  padding: 30px;
-  border-radius: 12px;
-  text-align: center;
-  font-family: var(--font-serif);
-  max-width: 500px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
-  z-index: 10000;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: rgba(139, 101, 65, 0.95);
+	color: #f4e6d3;
+	padding: 30px;
+	border-radius: 12px;
+	text-align: center;
+	font-family: var(--font-serif);
+	max-width: 500px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+	z-index: 10000;
 }
 
 .webgl-error h3 {
-  color: #d4af37;
-  margin-bottom: 15px;
-  font-size: 24px;
+	color: #d4af37;
+	margin-bottom: 15px;
+	font-size: 24px;
 }
 
 .webgl-error p {
-  margin-bottom: 15px;
-  line-height: 1.5;
+	margin-bottom: 15px;
+	line-height: 1.5;
 }
 
 .webgl-error ul {
-  text-align: left;
-  margin: 15px 0;
+	text-align: left;
+	margin: 15px 0;
 }
 
 .webgl-error li {
-  margin-bottom: 8px;
-} 
+	margin-bottom: 8px;
+}

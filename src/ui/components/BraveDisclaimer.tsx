@@ -1,168 +1,193 @@
-import { useEffect, useState } from 'react'
-import { isMobile } from 'react-device-detect'
+import { useEffect, useState } from "react";
+import { isMobile } from "react-device-detect";
 
 export function BraveDisclaimer() {
-  const [showModal, setShowModal] = useState(false)
-  const [dontShowAgain, setDontShowAgain] = useState(false)
+	const [showModal, setShowModal] = useState(false);
+	const [dontShowAgain, setDontShowAgain] = useState(false);
 
-  // Safe localStorage access with error handling
-  const safeLocalStorage = {
-    getItem: (key: string): string | null => {
-      try {
-        return localStorage.getItem(key)
-      } catch (e) {
-        console.warn('localStorage access blocked by browser settings')
-        return null
-      }
-    },
-    setItem: (key: string, value: string): void => {
-      try {
-        localStorage.setItem(key, value)
-      } catch (e) {
-        console.warn('Failed to write to localStorage', e)
-      }
-    }
-  }
+	// Safe localStorage access with error handling
+	const safeLocalStorage = {
+		getItem: (key: string): string | null => {
+			try {
+				return localStorage.getItem(key);
+			} catch (e) {
+				console.warn("localStorage access blocked by browser settings");
+				return null;
+			}
+		},
+		setItem: (key: string, value: string): void => {
+			try {
+				localStorage.setItem(key, value);
+			} catch (e) {
+				console.warn("Failed to write to localStorage", e);
+			}
+		},
+	};
 
-  useEffect(() => {
-    // Don't show on mobile devices
-    if (isMobile) {
-      return
-    }
+	useEffect(() => {
+		// Don't show on mobile devices
+		if (isMobile) {
+			return;
+		}
 
-    // Check if browser is Brave
-    const userAgent = navigator.userAgent
-    const isBraveUA = userAgent.includes('Brave') || userAgent.includes('brave')
-    const hasBraveAPI = (navigator as any).brave && (navigator as any).brave.isBrave
-    
-    if (!isBraveUA && !hasBraveAPI) {
-      return // Not Brave browser
-    }
+		// Check if browser is Brave
+		const userAgent = navigator.userAgent;
+		const isBraveUA =
+			userAgent.includes("Brave") || userAgent.includes("brave");
+		const hasBraveAPI =
+			(navigator as any).brave && (navigator as any).brave.isBrave;
 
-    // Check if user has previously dismissed the warning
-    const dismissed = safeLocalStorage.getItem('brave-shields-disclaimer-dismissed')
-    if (dismissed === 'true') {
-      return
-    }
+		if (!isBraveUA && !hasBraveAPI) {
+			return; // Not Brave browser
+		}
 
-    // Since shield detection is unreliable, just show for all Brave users
-    // but make it less intrusive by showing after a delay
-    setTimeout(() => {
-      setShowModal(true)
-    }, 2000)
-  }, [])
+		// Check if user has previously dismissed the warning
+		const dismissed = safeLocalStorage.getItem(
+			"brave-shields-disclaimer-dismissed",
+		);
+		if (dismissed === "true") {
+			return;
+		}
 
-  const handleDismiss = () => {
-    setShowModal(false)
-    if (dontShowAgain) {
-      safeLocalStorage.setItem('brave-shields-disclaimer-dismissed', 'true')
-    }
-  }
+		// Since shield detection is unreliable, just show for all Brave users
+		// but make it less intrusive by showing after a delay
+		setTimeout(() => {
+			setShowModal(true);
+		}, 2000);
+	}, []);
 
-  if (!showModal) {
-    return null
-  }
+	const handleDismiss = () => {
+		setShowModal(false);
+		if (dontShowAgain) {
+			safeLocalStorage.setItem("brave-shields-disclaimer-dismissed", "true");
+		}
+	};
 
-  // If we can't access localStorage, don't show the "Don't show again" option
-  const canSavePreference = (() => {
-    try {
-      const testKey = '__test__';
-      localStorage.setItem(testKey, testKey);
-      localStorage.removeItem(testKey);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  })();
+	if (!showModal) {
+		return null;
+	}
 
-  return (
-    <>
-      {/* Modal backdrop */}
-      <div
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.7)',
-            zIndex: 10000,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px',
-          }}
-          onClick={handleDismiss}
-        >
-          {/* Modal content */}
-          <div
-            style={{
-              backgroundColor: '#0a0806',
-              border: '2px solid rgba(139, 101, 65, 0.6)',
-              borderRadius: 12,
-              padding: '32px',
-              maxWidth: '480px',
-              width: '100%',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(139, 101, 65, 0.2)',
-              textAlign: 'center' as const,
-              color: '#f4e6d3',
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div style={{ fontSize: 28, marginBottom: 16, opacity: 0.8 }}>🛡️</div>
-            <h3 style={{ margin: '0 0 16px 0', fontSize: 20, fontWeight: 500, color: '#f4e6d3' }}>
-              Brave Browser Notice
-            </h3>
-            <p style={{ margin: '0 0 24px 0', fontSize: 15, lineHeight: 1.5, color: '#c9a876' }}>
-            For reliable inscription selection, please disable Brave Shields for this site.
-            We don't save any personal data and we don't use any analytics.
-            We cannot detect if your shields are enabled, so if you have already disabled them,
-            please check the checkbox below.
-            </p>
-            
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              gap: '10px',
-              marginBottom: '20px',
-              fontSize: '14px',
-              color: '#c9a876'
-            }}>
-              {canSavePreference && (
-                <div className="flex items-center">
-                  <input
-                    id="dont-show-again"
-                    type="checkbox"
-                    checked={dontShowAgain}
-                    onChange={(e) => setDontShowAgain(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="dont-show-again" className="ml-2 block text-sm text-gray-700">
-                    Don't show this message again
-                  </label>
-                </div>
-              )}
-            </div>
-            
-            <button
-              onClick={handleDismiss}
-              style={{
-                background: 'linear-gradient(45deg, #d4af37 0%, #f0d67c 25%, #d4af37 100%)',
-                color: '#0a0806',
-                border: 'none',
-                padding: '12px 24px',
-                borderRadius: 6,
-                fontSize: 15,
-                cursor: 'pointer',
-                fontWeight: 600,
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-              }}
-            >
-              Continue
-            </button>
-          </div>
-        </div>
-    </>
-  )
+	// If we can't access localStorage, don't show the "Don't show again" option
+	const canSavePreference = (() => {
+		try {
+			const testKey = "__test__";
+			localStorage.setItem(testKey, testKey);
+			localStorage.removeItem(testKey);
+			return true;
+		} catch (e) {
+			return false;
+		}
+	})();
+
+	return (
+		<>
+			{/* Modal backdrop */}
+			<div
+				style={{
+					position: "fixed",
+					top: 0,
+					left: 0,
+					right: 0,
+					bottom: 0,
+					backgroundColor: "rgba(0, 0, 0, 0.7)",
+					zIndex: 10000,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+					padding: "20px",
+				}}
+				onClick={handleDismiss}
+			>
+				{/* Modal content */}
+				<div
+					style={{
+						backgroundColor: "#0a0806",
+						border: "2px solid rgba(139, 101, 65, 0.6)",
+						borderRadius: 12,
+						padding: "32px",
+						maxWidth: "480px",
+						width: "100%",
+						boxShadow:
+							"0 8px 32px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(139, 101, 65, 0.2)",
+						textAlign: "center" as const,
+						color: "#f4e6d3",
+					}}
+					onClick={(e) => e.stopPropagation()}
+				>
+					<div style={{ fontSize: 28, marginBottom: 16, opacity: 0.8 }}>🛡️</div>
+					<h3
+						style={{
+							margin: "0 0 16px 0",
+							fontSize: 20,
+							fontWeight: 500,
+							color: "#f4e6d3",
+						}}
+					>
+						Brave Browser Notice
+					</h3>
+					<p
+						style={{
+							margin: "0 0 24px 0",
+							fontSize: 15,
+							lineHeight: 1.5,
+							color: "#c9a876",
+						}}
+					>
+						For reliable inscription selection, please disable Brave Shields for
+						this site. We don't save any personal data and we don't use any
+						analytics. We cannot detect if your shields are enabled, so if you
+						have already disabled them, please check the checkbox below.
+					</p>
+
+					<div
+						style={{
+							display: "flex",
+							alignItems: "center",
+							justifyContent: "center",
+							gap: "10px",
+							marginBottom: "20px",
+							fontSize: "14px",
+							color: "#c9a876",
+						}}
+					>
+						{canSavePreference && (
+							<div className="flex items-center">
+								<input
+									id="dont-show-again"
+									type="checkbox"
+									checked={dontShowAgain}
+									onChange={(e) => setDontShowAgain(e.target.checked)}
+									className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+								/>
+								<label
+									htmlFor="dont-show-again"
+									className="ml-2 block text-sm text-gray-700"
+								>
+									Don't show this message again
+								</label>
+							</div>
+						)}
+					</div>
+
+					<button
+						onClick={handleDismiss}
+						style={{
+							background:
+								"linear-gradient(45deg, #d4af37 0%, #f0d67c 25%, #d4af37 100%)",
+							color: "#0a0806",
+							border: "none",
+							padding: "12px 24px",
+							borderRadius: 6,
+							fontSize: 15,
+							cursor: "pointer",
+							fontWeight: 600,
+							boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
+						}}
+					>
+						Continue
+					</button>
+				</div>
+			</div>
+		</>
+	);
 }

@@ -1,102 +1,127 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
 interface LoadingScreenProps {
-  progress: number
-  isLoading: boolean
+	progress: number;
+	isLoading: boolean;
 }
 
 interface EtruscanParticle {
-  char: string
-  x: number
-  y: number
-  opacity: number
-  size: number
-  animationDelay: number
-  duration: number
-  vx: number
-  vy: number
-  id: number
+	char: string;
+	x: number;
+	y: number;
+	opacity: number;
+	size: number;
+	animationDelay: number;
+	duration: number;
+	vx: number;
+	vy: number;
+	id: number;
 }
 
 export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
-  const [isDissolving, setIsDissolving] = useState(false)
-  const [shouldRender, setShouldRender] = useState(true)
+	const [isDissolving, setIsDissolving] = useState(false);
+	const [shouldRender, setShouldRender] = useState(true);
 
-  useEffect(() => {
-    if ((progress >= 100 || !isLoading) && !isDissolving) {
-      // Start dissolve animation when loading completes (100%) or isLoading becomes false
-      setIsDissolving(true)
-      
-      // Remove from DOM after dissolve animation completes
-      const timer = setTimeout(() => {
-        setShouldRender(false)
-      }, 2800) // extended to 2.8s to avoid snapping
-      
-      return () => clearTimeout(timer)
-    }
-  }, [progress, isLoading, isDissolving])
+	useEffect(() => {
+		if ((progress >= 100 || !isLoading) && !isDissolving) {
+			// Start dissolve animation when loading completes (100%) or isLoading becomes false
+			setIsDissolving(true);
 
-  if (!shouldRender) {
-    return null
-  }
-  const [loadingText, setLoadingText] = useState('Decoding ancient inscriptions')
-  const [etruscanParticles, setEtruscanParticles] = useState<EtruscanParticle[]>([])
-  
-  // Etruscan Old Italic Unicode characters + fallback symbols
-  const etruscanChars = [
-    '𐌀', '𐌁', '𐌂', '𐌃', '𐌄', '𐌅', '𐌉', '𐌊', '𐌋', '𐌌', '𐌍', '𐌏',
-    '𐌐', '𐌑', '𐌒', '𐌓', '𐌔', '𐌕', '𐌖', '𐌗',   '𐌛', '𐌜', '𐌝',
-  ]
-  
-  useEffect(() => {
-    const texts = [
-      'Decoding ancient inscriptions',
-      'Interpreting divine symbols', 
-      'Aligning celestial patterns',
-      'Unveiling sacred knowledge',
-      'Channeling ethereal energies'
-    ]
-    let currentIndex = 0
-    
-    const interval = setInterval(() => {
-      currentIndex = (currentIndex + 1) % texts.length
-      setLoadingText(texts[currentIndex])
-    }, 3000)
-    
-    return () => clearInterval(interval)
-  }, [])
+			// Remove from DOM after dissolve animation completes
+			const timer = setTimeout(() => {
+				setShouldRender(false);
+			}, 2800); // extended to 2.8s to avoid snapping
 
-  useEffect(() => {
-    const particles: EtruscanParticle[] = Array.from({ length: 80 }, (_, i) => {
-      // Distribute only on left and right sides with density towards borders
-      const isLeft = Math.random() < 0.5
-      
-      // Use squared random for density towards borders
-      const densityRandom = Math.random() * Math.random()
-      
-      const x = isLeft 
-        ? densityRandom * 28 // Left side band (slightly wider)
-        : 100 - (densityRandom * 28) // Right side band (slightly wider)
-      
-      return {
-        char: etruscanChars[Math.floor(Math.random() * etruscanChars.length)],
-        x,
-        y: Math.random() * 100,
-        opacity: Math.random() * 0.17 + 0.08, // more transparent overall
-        size: Math.random() * 14 + 10, // a bit larger base size
-        animationDelay: Math.random() * 20,
-        duration: Math.random() * 40 + 30,
-        vx: (Math.random() - 0.5) * 0.06,
-        vy: (Math.random() - 0.5) * 0.06,
-        id: i
-      }
-    })
-    setEtruscanParticles(particles)
-  }, [])
+			return () => clearTimeout(timer);
+		}
+	}, [progress, isLoading, isDissolving]);
 
-  useEffect(() => {
-    const style = document.createElement('style')
-    style.textContent = `
+	if (!shouldRender) {
+		return null;
+	}
+	const [loadingText, setLoadingText] = useState(
+		"Decoding ancient inscriptions",
+	);
+	const [etruscanParticles, setEtruscanParticles] = useState<
+		EtruscanParticle[]
+	>([]);
+
+	// Etruscan Old Italic Unicode characters + fallback symbols
+	const etruscanChars = [
+		"𐌀",
+		"𐌁",
+		"𐌂",
+		"𐌃",
+		"𐌄",
+		"𐌅",
+		"𐌉",
+		"𐌊",
+		"𐌋",
+		"𐌌",
+		"𐌍",
+		"𐌏",
+		"𐌐",
+		"𐌑",
+		"𐌒",
+		"𐌓",
+		"𐌔",
+		"𐌕",
+		"𐌖",
+		"𐌗",
+		"𐌛",
+		"𐌜",
+		"𐌝",
+	];
+
+	useEffect(() => {
+		const texts = [
+			"Decoding ancient inscriptions",
+			"Interpreting divine symbols",
+			"Aligning celestial patterns",
+			"Unveiling sacred knowledge",
+			"Channeling ethereal energies",
+		];
+		let currentIndex = 0;
+
+		const interval = setInterval(() => {
+			currentIndex = (currentIndex + 1) % texts.length;
+			setLoadingText(texts[currentIndex]);
+		}, 3000);
+
+		return () => clearInterval(interval);
+	}, []);
+
+	useEffect(() => {
+		const particles: EtruscanParticle[] = Array.from({ length: 80 }, (_, i) => {
+			// Distribute only on left and right sides with density towards borders
+			const isLeft = Math.random() < 0.5;
+
+			// Use squared random for density towards borders
+			const densityRandom = Math.random() * Math.random();
+
+			const x = isLeft
+				? densityRandom * 28 // Left side band (slightly wider)
+				: 100 - densityRandom * 28; // Right side band (slightly wider)
+
+			return {
+				char: etruscanChars[Math.floor(Math.random() * etruscanChars.length)],
+				x,
+				y: Math.random() * 100,
+				opacity: Math.random() * 0.17 + 0.08, // more transparent overall
+				size: Math.random() * 14 + 10, // a bit larger base size
+				animationDelay: Math.random() * 20,
+				duration: Math.random() * 40 + 30,
+				vx: (Math.random() - 0.5) * 0.06,
+				vy: (Math.random() - 0.5) * 0.06,
+				id: i,
+			};
+		});
+		setEtruscanParticles(particles);
+	}, []);
+
+	useEffect(() => {
+		const style = document.createElement("style");
+		style.textContent = `
       @keyframes etruscanFloat {
         0% { 
           transform: translate(-50%, -50%) scale(1) rotate(0deg);
@@ -151,207 +176,228 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
           filter: blur(2px);
         }
       }
-    `
-    document.head.appendChild(style)
+    `;
+		document.head.appendChild(style);
 
-    return () => {
-      document.head.removeChild(style)
-    }
-  }, [])
+		return () => {
+			document.head.removeChild(style);
+		};
+	}, []);
 
-  const containerStyles = {
-    position: 'fixed' as const,
-    top: 0,
-    left: 0,
-    width: '100vw',
-    height: '100vh',
-    margin: 0,
-    padding: 0,
-    border: 'none',
-    background: 'black',
-    zIndex: 5,
-    opacity: isDissolving ? 0 : 1,
-    transition: 'opacity 2.8s cubic-bezier(0.22, 0.61, 0.36, 1)',
-    overflow: 'hidden',
-    pointerEvents: isDissolving ? 'none' as const : 'auto' as const,
-    willChange: 'opacity',
-    // Edge gradient mask to make the disappearance feel more natural
-    WebkitMaskImage: isDissolving 
-      ? 'radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)' 
-      : undefined,
-    maskImage: isDissolving 
-      ? 'radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)' 
-      : undefined,
-    WebkitMaskSize: isDissolving ? '100% 100%' : undefined,
-    maskSize: isDissolving ? '100% 100%' : undefined,
-  }
+	const containerStyles = {
+		position: "fixed" as const,
+		top: 0,
+		left: 0,
+		width: "100vw",
+		height: "100vh",
+		margin: 0,
+		padding: 0,
+		border: "none",
+		background: "black",
+		zIndex: 5,
+		opacity: isDissolving ? 0 : 1,
+		transition: "opacity 2.8s cubic-bezier(0.22, 0.61, 0.36, 1)",
+		overflow: "hidden",
+		pointerEvents: isDissolving ? ("none" as const) : ("auto" as const),
+		willChange: "opacity",
+		// Edge gradient mask to make the disappearance feel more natural
+		WebkitMaskImage: isDissolving
+			? "radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)"
+			: undefined,
+		maskImage: isDissolving
+			? "radial-gradient(circle at 50% 50%, rgba(0,0,0,1) 55%, rgba(0,0,0,0) 100%)"
+			: undefined,
+		WebkitMaskSize: isDissolving ? "100% 100%" : undefined,
+		maskSize: isDissolving ? "100% 100%" : undefined,
+	};
 
+	const etruscanParticleStyles = (particle: EtruscanParticle) => {
+		const centerX = 50;
+		const centerY = 50;
+		const distanceFromCenter = Math.sqrt(
+			(particle.x - centerX) ** 2 + (particle.y - centerY) ** 2,
+		);
+		const maxDistance = Math.sqrt(50 * 50 + 50 * 50);
+		const distanceMultiplier = Math.min(
+			(distanceFromCenter / maxDistance) * 1.2,
+			1,
+		);
 
+		const exclusionRadius = 0.4;
+		if (distanceMultiplier < exclusionRadius) {
+			return {
+				display: "none" as const,
+			} as React.CSSProperties;
+		}
 
-  const etruscanParticleStyles = (particle: EtruscanParticle) => {
-    const centerX = 50
-    const centerY = 50
-    const distanceFromCenter = Math.sqrt(Math.pow(particle.x - centerX, 2) + Math.pow(particle.y - centerY, 2))
-    const maxDistance = Math.sqrt(50 * 50 + 50 * 50)
-    const distanceMultiplier = Math.min(distanceFromCenter / maxDistance * 1.2, 1)
-    
-    const exclusionRadius = 0.4
-    if (distanceMultiplier < exclusionRadius) {
-      return {
-        display: 'none' as const,
-      } as React.CSSProperties
-    }
-    
-    const scaledSize = particle.size * (0.6 + distanceMultiplier * 2.2)
-    const finalOpacity = Math.min(particle.opacity, distanceMultiplier * 0.35)
-    const glowIntensity = distanceMultiplier * 8
-    // Deterministic pseudo-random based on id for stable pulse per particle
-    const seed = ((particle.id * 9301 + 49297) % 233280) / 233280
-    const pulseDuration = 3.8 + (seed * 3.4) // 3.8s - 7.2s
-    const pulseDelay = (seed * 3.5) // 0 - 3.5s
-    
-    // Build animation styles without using shorthand to avoid conflicts
-    const animationStyles: React.CSSProperties = isDissolving
-      ? {
-          animationName: 'dissolveParticle',
-          animationDuration: `${1.5 + Math.random() * 0.8}s`,
-          animationTimingFunction: 'cubic-bezier(0.22, 0.61, 0.36, 1)',
-          animationIterationCount: '1',
-          animationDelay: `${Math.random() * 0.5}s`,
-          animationFillMode: 'forwards',
-        }
-      : {
-          animationName: 'etruscanFloat, fireflyPulse',
-          animationDuration: `${particle.duration}s, ${pulseDuration}s`,
-          animationTimingFunction: 'ease-in-out, ease-in-out',
-          animationIterationCount: 'infinite, infinite',
-          animationDelay: `${particle.animationDelay}s, ${pulseDelay}s`,
-          animationFillMode: 'none, none',
-        }
+		const scaledSize = particle.size * (0.6 + distanceMultiplier * 2.2);
+		const finalOpacity = Math.min(particle.opacity, distanceMultiplier * 0.35);
+		const glowIntensity = distanceMultiplier * 8;
+		// Deterministic pseudo-random based on id for stable pulse per particle
+		const seed = ((particle.id * 9301 + 49297) % 233280) / 233280;
+		const pulseDuration = 3.8 + seed * 3.4; // 3.8s - 7.2s
+		const pulseDelay = seed * 3.5; // 0 - 3.5s
 
-    return {
-      position: 'absolute' as const,
-      left: `${particle.x}%`,
-      top: `${particle.y}%`,
-      fontSize: `${scaledSize}px`,
-      fontWeight: '200' as const,
-      color: `rgba(212, 175, 55, ${Math.max(0.08, Math.min(finalOpacity, 0.28))})`,
-      textShadow: `0 0 ${Math.max(1, glowIntensity * 0.6)}px rgba(212, 175, 55, 0.22)`,
-      ...animationStyles,
-      pointerEvents: 'none' as const,
-      fontFamily: 'Times, serif',
-      transform: 'translate(-50%, -50%)',
-      filter: `drop-shadow(0 0 2px rgba(212, 175, 55, 0.12))`,
-      zIndex: 1,
-      '--max-opacity': finalOpacity,
-      '--move-x': `${particle.vx * 200}px`,
-      '--move-y': `${particle.vy * 200}px`,
-      willChange: 'opacity, transform',
-    } as React.CSSProperties
-  }
+		// Build animation styles without using shorthand to avoid conflicts
+		const animationStyles: React.CSSProperties = isDissolving
+			? {
+					animationName: "dissolveParticle",
+					animationDuration: `${1.5 + Math.random() * 0.8}s`,
+					animationTimingFunction: "cubic-bezier(0.22, 0.61, 0.36, 1)",
+					animationIterationCount: "1",
+					animationDelay: `${Math.random() * 0.5}s`,
+					animationFillMode: "forwards",
+				}
+			: {
+					animationName: "etruscanFloat, fireflyPulse",
+					animationDuration: `${particle.duration}s, ${pulseDuration}s`,
+					animationTimingFunction: "ease-in-out, ease-in-out",
+					animationIterationCount: "infinite, infinite",
+					animationDelay: `${particle.animationDelay}s, ${pulseDelay}s`,
+					animationFillMode: "none, none",
+				};
 
+		return {
+			position: "absolute" as const,
+			left: `${particle.x}%`,
+			top: `${particle.y}%`,
+			fontSize: `${scaledSize}px`,
+			fontWeight: "200" as const,
+			color: `rgba(212, 175, 55, ${Math.max(0.08, Math.min(finalOpacity, 0.28))})`,
+			textShadow: `0 0 ${Math.max(1, glowIntensity * 0.6)}px rgba(212, 175, 55, 0.22)`,
+			...animationStyles,
+			pointerEvents: "none" as const,
+			fontFamily: "Times, serif",
+			transform: "translate(-50%, -50%)",
+			filter: `drop-shadow(0 0 2px rgba(212, 175, 55, 0.12))`,
+			zIndex: 1,
+			"--max-opacity": finalOpacity,
+			"--move-x": `${particle.vx * 200}px`,
+			"--move-y": `${particle.vy * 200}px`,
+			willChange: "opacity, transform",
+		} as React.CSSProperties;
+	};
 
+	const contentStyles = {
+		position: "absolute" as const,
+		top: "50%",
+		left: "50%",
+		transform: "translate(-50%, -50%)",
+		textAlign: "center" as const,
+		zIndex: 10,
+		maxWidth: "90vw",
+	};
 
-  const contentStyles = {
-    position: 'absolute' as const,
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    textAlign: 'center' as const,
-    zIndex: 10,
-    maxWidth: '90vw',
-  }
+	const subtitleStyles = {
+		color: "rgba(244, 230, 211, 0.7)",
+		fontSize: "clamp(1rem, 3vw, 1.5rem)",
+		margin: "0 0 60px 0",
+		fontStyle: "italic",
+		letterSpacing: "2px",
+		fontFamily: "Cormorant Garamond, serif",
+	};
 
-  const subtitleStyles = {
-    color: 'rgba(244, 230, 211, 0.7)',
-    fontSize: 'clamp(1rem, 3vw, 1.5rem)',
-    margin: '0 0 60px 0',
-    fontStyle: 'italic',
-    letterSpacing: '2px',
-    fontFamily: 'Cormorant Garamond, serif',
-  }
+	const progressContainerStyles = {
+		marginBottom: 40,
+		position: "relative" as const,
+		width: "min(400px, 80vw)",
+		display: "flex",
+		flexDirection: "column" as const,
+		alignItems: "center",
+		justifyContent: "center",
+	};
 
-  const progressContainerStyles = {
-    marginBottom: 40,
-    position: 'relative' as const,
-    width: 'min(400px, 80vw)',
-    display: 'flex',
-    flexDirection: 'column' as const,
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
+	const progressBarStyles = {
+		height: 2,
+		width: "90%",
+		background: "rgba(139, 101, 65, 0.3)",
+		overflow: "hidden",
+		position: "relative" as const,
+		borderRadius: "1px",
+		boxShadow: "inset 0 1px 3px rgba(0, 0, 0, 0.5)",
+	};
 
-  const progressBarStyles = {
-    height: 2,
-    width: '90%',
-    background: 'rgba(139, 101, 65, 0.3)',
-    overflow: 'hidden',
-    position: 'relative' as const,
-    borderRadius: '1px',
-    boxShadow: 'inset 0 1px 3px rgba(0, 0, 0, 0.5)',
-  }
+	const progressFillStyles = {
+		height: "100%",
+		background:
+			"linear-gradient(90deg, transparent, #d4af37, #f0d67c, #d4af37, transparent)",
+		width: `${progress}%`,
+		transition: "width 0.3s ease-out",
+		animation: "shimmer 2s linear infinite",
+		boxShadow: "0 0 20px rgba(212, 175, 55, 0.6)",
+		borderRadius: "1px",
+	};
 
-  const progressFillStyles = {
-    height: '100%',
-    background: 'linear-gradient(90deg, transparent, #d4af37, #f0d67c, #d4af37, transparent)',
-    width: `${progress}%`,
-    transition: 'width 0.3s ease-out',
-    animation: 'shimmer 2s linear infinite',
-    boxShadow: '0 0 20px rgba(212, 175, 55, 0.6)',
-    borderRadius: '1px',
-  }
+	const percentageStyles = {
+		color: "#d4af37",
+		fontSize: "clamp(2rem, 6vw, 3rem)",
+		fontWeight: 700,
+		marginTop: 24,
+		textShadow: "0 2px 4px rgba(0, 0, 0, 0.8)",
+		fontFamily: "Cinzel, Times New Roman, serif",
+		textAlign: "center" as const,
+		width: "100%",
+		transition:
+			"opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), filter 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), transform 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
+	};
 
-  const percentageStyles = {
-    color: '#d4af37',
-    fontSize: 'clamp(2rem, 6vw, 3rem)',
-    fontWeight: 700,
-    marginTop: 24,
-    textShadow: '0 2px 4px rgba(0, 0, 0, 0.8)',
-    fontFamily: 'Cinzel, Times New Roman, serif',
-    textAlign: 'center' as const,
-    width: '100%',
-    transition: 'opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), filter 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), transform 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)',
-  }
+	const loadingTextStyles = {
+		color: "rgba(244, 230, 211, 0.6)",
+		fontSize: "clamp(0.9rem, 2.5vw, 1.2rem)",
+		fontStyle: "italic",
+		marginTop: 24,
+		textShadow: "0 1px 2px rgba(0, 0, 0, 0.8)",
+		letterSpacing: "1px",
+		fontFamily: "Cormorant Garamond, serif",
+		animation: "fadeInOut 3s ease-in-out infinite",
+		transition:
+			"opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), filter 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), transform 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)",
+	};
 
-  const loadingTextStyles = {
-    color: 'rgba(244, 230, 211, 0.6)',
-    fontSize: 'clamp(0.9rem, 2.5vw, 1.2rem)',
-    fontStyle: 'italic',
-    marginTop: 24,
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.8)',
-    letterSpacing: '1px',
-    fontFamily: 'Cormorant Garamond, serif',
-    animation: 'fadeInOut 3s ease-in-out infinite',
-    transition: 'opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), filter 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), transform 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)',
-  }
+	// Shared dissolve styles for text elements
+	const dissolveText = isDissolving
+		? ({
+				opacity: 0,
+				filter: "blur(1.2px)",
+				transform: "translateY(6px)",
+			} as React.CSSProperties)
+		: ({} as React.CSSProperties);
 
-  // Shared dissolve styles for text elements
-  const dissolveText = isDissolving 
-    ? { opacity: 0, filter: 'blur(1.2px)', transform: 'translateY(6px)' } as React.CSSProperties
-    : {} as React.CSSProperties
+	return (
+		<div style={containerStyles}>
+			{etruscanParticles.map((particle) => (
+				<div key={particle.id} style={etruscanParticleStyles(particle)}>
+					{particle.char}
+				</div>
+			))}
+			<div style={contentStyles}>
+				<p style={subtitleStyles}>Ancient Etruscan Divination</p>
 
-  return (
-    <div style={containerStyles}>
-      {etruscanParticles.map((particle) => (
-        <div
-          key={particle.id}
-          style={etruscanParticleStyles(particle)}
-        >
-          {particle.char}
-        </div>
-      ))}
-      <div style={contentStyles}>
-        <p style={subtitleStyles}>Ancient Etruscan Divination</p>
-        
-        <div style={progressContainerStyles}>
-          <div style={{ ...progressBarStyles, transition: 'opacity 1.2s ease', opacity: isDissolving ? 0 : 1 }}>
-          <div style={{ ...progressFillStyles, transition: 'opacity 1.2s ease', opacity: isDissolving ? 0 : 1 }} />
-        </div>
-          <div style={{ ...percentageStyles, ...dissolveText }}>{Math.round(progress)}%</div>
-        </div>
-        
-        <div style={{ ...loadingTextStyles, ...dissolveText }}>{loadingText}</div>
-      </div>
-    </div>
-  )
+				<div style={progressContainerStyles}>
+					<div
+						style={{
+							...progressBarStyles,
+							transition: "opacity 1.2s ease",
+							opacity: isDissolving ? 0 : 1,
+						}}
+					>
+						<div
+							style={{
+								...progressFillStyles,
+								transition: "opacity 1.2s ease",
+								opacity: isDissolving ? 0 : 1,
+							}}
+						/>
+					</div>
+					<div style={{ ...percentageStyles, ...dissolveText }}>
+						{Math.round(progress)}%
+					</div>
+				</div>
+
+				<div style={{ ...loadingTextStyles, ...dissolveText }}>
+					{loadingText}
+				</div>
+			</div>
+		</div>
+	);
 }
