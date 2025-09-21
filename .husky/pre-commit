@@ -1,8 +1,22 @@
 echo "🎨 Formatting code with Biome..."
-pnpm exec lint-staged
+pnpm format
 
 if [ $? -ne 0 ]; then
-    echo "❌ Pre-commit formatting failed!"
+    echo "❌ Formatting failed! Please fix the errors before pushing."
+    exit 1
+fi
+
+pnpm lint-staged --fix
+
+if [ $? -ne 0 ]; then
+    echo "❌ Linting failed! Please fix the errors before pushing."
+    exit 1
+fi
+
+pnpm tsc
+
+if [ $? -ne 0 ]; then
+    echo "❌ Type check failed! Please fix the errors before pushing."
     exit 1
 fi
 

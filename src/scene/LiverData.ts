@@ -1,6 +1,38 @@
 import * as THREE from "three";
 
 // ================================================================================================
+// TYPE DEFINITIONS
+// ================================================================================================
+
+export interface LiverGod {
+	id: string;
+	name: string;
+	romanEquivalent?: string;
+	greekEquivalent?: string;
+	description?: string;
+	etruscanScript?: string;
+	transcription?: string;
+}
+
+export interface LiverGroup {
+	id: string;
+	name: string;
+	positions: number[];
+	color: string;
+	description: string;
+}
+
+export interface Inscription {
+	id: number;
+	etruscanText: string;
+	transcription: string;
+	gods: Array<{ id: string; form: string }>;
+	cameraPosition?: THREE.Vector3;
+	cameraTarget?: THREE.Vector3;
+	description?: string;
+}
+
+// ================================================================================================
 // PIACENZA LIVER DATA
 // ================================================================================================
 //
@@ -465,7 +497,7 @@ export const liverInscriptions = [
 		transcription: "θufl / θas",
 		gods: [{ id: "thufltha", form: "𐌏𐌖𐌚𐌋𐌏𐌀𐌔" }],
 		description: "Fate goddess as solitary favorable force",
-		cameraPosition: new THREE.Vector3(-2.003, -0.707, -0.958),
+		cameraPosition: new THREE.Vector3(-2.003, -Math.SQRT1_2, -0.958),
 		cameraTarget: new THREE.Vector3(-1.996, -0.357, 2.158),
 	},
 	{

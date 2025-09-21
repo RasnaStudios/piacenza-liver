@@ -1,9 +1,21 @@
 echo "🔍 Running type check before push..."
-pnpm exec tsc --noEmit
+pnpm format
 
+if [ $? -ne 0 ]; then
+    echo "❌ Formatting failed! Please fix the errors before pushing."
+    exit 1
+fi
+
+pnpm lint
+if [ $? -ne 0 ]; then
+    echo "❌ Linting failed! Please fix the errors before pushing."
+    exit 1
+fi
+
+pnpm tsc
 if [ $? -ne 0 ]; then
     echo "❌ Type check failed! Please fix the errors before pushing."
     exit 1
 fi
 
-echo "✅ Type check passed!"
+echo "✅ Code formatted, linted, and type checked successfully!"

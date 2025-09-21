@@ -21,6 +21,12 @@ interface EtruscanParticle {
 export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
 	const [isDissolving, setIsDissolving] = useState(false);
 	const [shouldRender, setShouldRender] = useState(true);
+	const [loadingText, setLoadingText] = useState(
+		"Decoding ancient inscriptions",
+	);
+	const [etruscanParticles, setEtruscanParticles] = useState<
+		EtruscanParticle[]
+	>([]);
 
 	useEffect(() => {
 		if ((progress >= 100 || !isLoading) && !isDissolving) {
@@ -35,16 +41,6 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
 			return () => clearTimeout(timer);
 		}
 	}, [progress, isLoading, isDissolving]);
-
-	if (!shouldRender) {
-		return null;
-	}
-	const [loadingText, setLoadingText] = useState(
-		"Decoding ancient inscriptions",
-	);
-	const [etruscanParticles, setEtruscanParticles] = useState<
-		EtruscanParticle[]
-	>([]);
 
 	// Etruscan Old Italic Unicode characters + fallback symbols
 	const etruscanChars = [
@@ -183,6 +179,10 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
 			document.head.removeChild(style);
 		};
 	}, []);
+
+	if (!shouldRender) {
+		return null;
+	}
 
 	const containerStyles = {
 		position: "fixed" as const,

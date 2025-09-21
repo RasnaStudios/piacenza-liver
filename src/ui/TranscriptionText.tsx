@@ -17,7 +17,7 @@ export function TranscriptionText({
 		<span className={className} style={style}>
 			{parts.map((part, index) => (
 				<span
-					key={index}
+					key={`${part.text}-${index}`}
 					style={{
 						color: part.isReconstructed
 							? "rgba(244, 230, 211, 0.4)"

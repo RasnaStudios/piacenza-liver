@@ -4,7 +4,8 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 // Data
-import { liverInscriptions } from "./scene/LiverData";
+import { type Inscription, liverInscriptions } from "./scene/LiverData";
+import type { HoveredSection } from "./types";
 
 // import { getLiverModelMatrix } from './camera/InscriptionPositions'
 
@@ -26,8 +27,11 @@ import "./styles/global.css";
 
 function PiacenzaLiverScene() {
 	// State management
-	const [selectedInscription, setSelectedInscription] = useState<any>(null);
-	const [hoveredSection, setHoveredSection] = useState<any>(null);
+	const [selectedInscription, setSelectedInscription] =
+		useState<Inscription | null>(null);
+	const [hoveredSection, setHoveredSection] = useState<HoveredSection | null>(
+		null,
+	);
 	const [isInteracting, setIsInteracting] = useState(false);
 	const [hasInteracted, setHasInteracted] = useState(false);
 	const [loadingProgress, setLoadingProgress] = useState(0);
@@ -60,7 +64,7 @@ function PiacenzaLiverScene() {
 	const panelTimeoutRef = useRef<number | null>(null);
 
 	// Optimized callback handlers
-	const handleMarkerHover = useCallback((section: any) => {
+	const handleMarkerHover = useCallback((section: HoveredSection | null) => {
 		setHoveredSection(section);
 		if (liverModelRef.current) {
 			if (section?.id) {
@@ -138,7 +142,7 @@ function PiacenzaLiverScene() {
 			console.log(
 				`cameraPosition: new THREE.Vector3(${cameraLocalPosition.x.toFixed(3)}, ${cameraLocalPosition.y.toFixed(3)}, ${cameraLocalPosition.z.toFixed(3)}), cameraTarget: new THREE.Vector3(${cameraLocalTarget.x.toFixed(3)}, ${cameraLocalTarget.y.toFixed(3)}, ${cameraLocalTarget.z.toFixed(3)})`,
 			);
-			const data = inscription as any;
+			const data = inscription as Inscription;
 			if (
 				cameraControllerRef.current &&
 				data.cameraPosition &&
@@ -166,7 +170,7 @@ function PiacenzaLiverScene() {
 		[],
 	);
 
-	const handleInscriptionListClick = useCallback((inscription: any) => {
+	const handleInscriptionListClick = useCallback((inscription: Inscription) => {
 		if (!cameraControllerRef.current || !liverModelRef.current) return;
 
 		setHasInteracted(true);
@@ -219,8 +223,8 @@ function PiacenzaLiverScene() {
 	const handlePanelClose = useCallback(() => {
 		setSelectedInscription(null);
 
-		if (cameraControllerRef.current && !isMobile) {
-			cameraControllerRef.current.resetToDefault(800);
+		if (cameraControllerRef.current && liverModelRef.current && !isMobile) {
+			cameraControllerRef.current.resetToDefault(liverModelRef.current, 800);
 		}
 
 		if (liverModelRef.current) {
@@ -314,7 +318,7 @@ function PiacenzaLiverScene() {
 		try {
 			const liverModel = new LiverModel(scene, handleLoadingProgress);
 			liverModelRef.current = liverModel;
-		} catch (e: any) {
+		} catch (e: unknown) {
 			console.error("Failed to initialize LiverModel:", e);
 			setErrorMsg(
 				"Your browser or device does not support the required 3D features (WebGL). Please try updating your browser or using a different device.",
@@ -329,9 +333,9 @@ function PiacenzaLiverScene() {
 					interactionManagerRef.current.setIntroAnimationMode(true);
 					liverModelRef.current?.pulseAllInscriptions();
 					cameraControllerRef.current.playIntroAnimation(() => {
-						interactionManagerRef.current!.setIntroAnimationMode(false);
-						interactionManagerRef.current!.setInitialCameraDistance(
-							cameraRef.current!.position.length(),
+						interactionManagerRef.current?.setIntroAnimationMode(false);
+						interactionManagerRef.current?.setInitialCameraDistance(
+							cameraRef.current?.position.length() || 0,
 						);
 					});
 				}
@@ -399,7 +403,7 @@ function PiacenzaLiverScene() {
 				container.removeChild(renderer.domElement);
 			}
 		};
-	}, [handleMarkerHover, handleInscriptionClick, handleBackgroundClick]);
+	}, []);
 	useEffect(() => {
 		if (
 			rendererRef.current &&
@@ -453,7 +457,8 @@ function PiacenzaLiverScene() {
 				<div ref={containerRef} className="three-container" />
 
 				{/* Modular UI components */}
-				<div
+				<section
+					aria-label="UI Panel Container"
 					onMouseEnter={() => setIsMouseOverPanel(true)}
 					onMouseLeave={() => setIsMouseOverPanel(false)}
 				>
@@ -468,7 +473,7 @@ function PiacenzaLiverScene() {
 						isLoading={isLoading}
 						hasInteracted={hasInteracted}
 					/>
-				</div>
+				</section>
 
 				<HoverTooltip
 					hoveredSection={hoveredSection}
@@ -536,7 +541,7 @@ function setupLighting(scene: THREE.Scene) {
 	keyLight.shadow.camera.fov = 30;
 	keyLight.shadow.bias = -0.0001;
 	keyLight.shadow.normalBias = 0.02;
-	(keyLight.shadow as any).radius = 8;
+	(keyLight.shadow as unknown as THREE.DirectionalLightShadow).radius = 8;
 	scene.add(keyLight);
 	scene.add(keyLight.target);
 

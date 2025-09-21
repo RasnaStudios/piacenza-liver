@@ -1,16 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { isMobile } from "react-device-detect";
 
 export function BraveDisclaimer() {
 	const [showModal, setShowModal] = useState(false);
 	const [dontShowAgain, setDontShowAgain] = useState(false);
+	const checkboxId = useId();
+	const titleId = useId();
 
 	// Safe localStorage access with error handling
 	const safeLocalStorage = {
 		getItem: (key: string): string | null => {
 			try {
 				return localStorage.getItem(key);
-			} catch (e) {
+			} catch (_e) {
 				console.warn("localStorage access blocked by browser settings");
 				return null;
 			}
@@ -34,8 +36,8 @@ export function BraveDisclaimer() {
 		const userAgent = navigator.userAgent;
 		const isBraveUA =
 			userAgent.includes("Brave") || userAgent.includes("brave");
-		const hasBraveAPI =
-			(navigator as any).brave && (navigator as any).brave.isBrave;
+		const hasBraveAPI = (navigator as { brave?: { isBrave?: boolean } }).brave
+			?.isBrave;
 
 		if (!isBraveUA && !hasBraveAPI) {
 			return; // Not Brave browser
@@ -54,7 +56,7 @@ export function BraveDisclaimer() {
 		setTimeout(() => {
 			setShowModal(true);
 		}, 2000);
-	}, []);
+	}, [safeLocalStorage.getItem]);
 
 	const handleDismiss = () => {
 		setShowModal(false);
@@ -74,7 +76,7 @@ export function BraveDisclaimer() {
 			localStorage.setItem(testKey, testKey);
 			localStorage.removeItem(testKey);
 			return true;
-		} catch (e) {
+		} catch (_e) {
 			return false;
 		}
 	})();
@@ -83,6 +85,9 @@ export function BraveDisclaimer() {
 		<>
 			{/* Modal backdrop */}
 			<div
+				role="dialog"
+				aria-modal="true"
+				aria-labelledby={titleId}
 				style={{
 					position: "fixed",
 					top: 0,
@@ -97,9 +102,16 @@ export function BraveDisclaimer() {
 					padding: "20px",
 				}}
 				onClick={handleDismiss}
+				onKeyDown={(e) => {
+					if (e.key === "Escape") {
+						handleDismiss();
+					}
+				}}
+				tabIndex={-1}
 			>
 				{/* Modal content */}
 				<div
+					role="document"
 					style={{
 						backgroundColor: "#0a0806",
 						border: "2px solid rgba(139, 101, 65, 0.6)",
@@ -113,9 +125,11 @@ export function BraveDisclaimer() {
 						color: "#f4e6d3",
 					}}
 					onClick={(e) => e.stopPropagation()}
+					onKeyDown={(e) => e.stopPropagation()}
 				>
 					<div style={{ fontSize: 28, marginBottom: 16, opacity: 0.8 }}>🛡️</div>
 					<h3
+						id={titleId}
 						style={{
 							margin: "0 0 16px 0",
 							fontSize: 20,
@@ -153,14 +167,14 @@ export function BraveDisclaimer() {
 						{canSavePreference && (
 							<div className="flex items-center">
 								<input
-									id="dont-show-again"
+									id={checkboxId}
 									type="checkbox"
 									checked={dontShowAgain}
 									onChange={(e) => setDontShowAgain(e.target.checked)}
 									className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
 								/>
 								<label
-									htmlFor="dont-show-again"
+									htmlFor={checkboxId}
 									className="ml-2 block text-sm text-gray-700"
 								>
 									Don't show this message again
@@ -170,6 +184,7 @@ export function BraveDisclaimer() {
 					</div>
 
 					<button
+						type="button"
 						onClick={handleDismiss}
 						style={{
 							background:

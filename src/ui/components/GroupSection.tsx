@@ -1,11 +1,14 @@
 import { Group, Paper, Text, Title } from "@mantine/core";
+import type { Inscription } from "../../scene/LiverData";
 import { getInscriptionGroup } from "../../utils/liverUtils";
 
 interface GroupSectionProps {
-	selectedInscription: any;
+	selectedInscription: Inscription | null;
 }
 
 export function GroupSection({ selectedInscription }: GroupSectionProps) {
+	if (!selectedInscription) return null;
+
 	const group = getInscriptionGroup(selectedInscription.id);
 
 	if (!group) {

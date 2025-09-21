@@ -1,4 +1,9 @@
-import { liverGods, liverGroups, liverInscriptions } from "../scene/LiverData";
+import {
+	type LiverGod,
+	liverGods,
+	liverGroups,
+	liverInscriptions,
+} from "../scene/LiverData";
 
 // Type definition for god entries in inscriptions
 type GodEntry = string | { id: string; form: string };
@@ -142,12 +147,16 @@ export function getGodInscriptionData(godId: string) {
 					.toLowerCase()
 					.includes(variation.toLowerCase()),
 			) ||
-			(liverGods as any)[godId]?.name ||
+			(liverGods as Record<string, LiverGod>)[godId]?.name ||
 			godId;
 
 		if (otherGods.length > 0) {
 			const otherGodNames = otherGods
-				.map((god) => (liverGods as any)[getGodId(god)]?.name || getGodId(god))
+				.map(
+					(god) =>
+						(liverGods as Record<string, LiverGod>)[getGodId(god)]?.name ||
+						getGodId(god),
+				)
 				.join(", ");
 			return `${inscription.id} with ${otherGodNames} as ${godVariation.toUpperCase()}`;
 		} else {
@@ -178,18 +187,18 @@ export function getGodInscriptionData(godId: string) {
 // Get Greek script equivalent for Etruscan script
 export function getGreekEquivalent(etruscanScript: string): string {
 	// Find god by etruscan script and return their transcription
-	const god = Object.values(liverGods as any).find(
-		(g: any) => g.etruscanScript === etruscanScript,
+	const god = Object.values(liverGods as Record<string, LiverGod>).find(
+		(g: LiverGod) => g.etruscanScript === etruscanScript,
 	);
-	return (god as any)?.transcription || "";
+	return god?.transcription || "";
 }
 
 // Get display names for gods in an inscription (used by HoverTooltip, PanelHeader, etc.)
-export function getGodsDisplayNames(gods: any[]): string {
+export function getGodsDisplayNames(gods: GodEntry[]): string {
 	return gods
 		.map((god) => {
 			const godId = getGodId(god);
-			const godData = (liverGods as any)[godId];
+			const godData = (liverGods as Record<string, LiverGod>)[godId];
 			return godData?.name || godId;
 		})
 		.join(" + ");
@@ -210,6 +219,6 @@ export function getAssociatedGods(godId: string) {
 	});
 
 	return Array.from(associatedGods)
-		.map((id) => (liverGods as any)[id])
+		.map((id) => (liverGods as Record<string, LiverGod>)[id])
 		.filter(Boolean);
 }

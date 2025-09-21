@@ -9,6 +9,7 @@ import maskUrl from "../assets/segmentation.png";
 import atlasMeta from "../assets/segmentation_atlas.json";
 import atlasPngUrl from "../assets/segmentation_atlas.png";
 import { SceneConfig } from "../config/SceneConfig";
+import type { AtlasMeta, AtlasTweak } from "../types";
 import { getInscriptionGroup } from "../utils/liverUtils";
 import { liverInscriptions } from "./LiverData";
 
@@ -53,16 +54,7 @@ export class LiverModel {
 	private atlasCols = 1;
 	private atlasRows = 1;
 	private labelToTile: Record<number, { row: number; col: number }> = {};
-	private atlasTweak: {
-		flipX: boolean;
-		flipY: boolean;
-		repeatScaleX: number;
-		repeatScaleY: number;
-		offsetX: number;
-		offsetY: number;
-		idOffset: number;
-		idMap: Record<number, number>;
-	} = {
+	private atlasTweak: AtlasTweak = {
 		flipX: false,
 		flipY: true,
 		repeatScaleX: 1,
@@ -115,8 +107,7 @@ export class LiverModel {
 
 	private getHighlightColor(id: number): THREE.Color {
 		// Apply the same ID remapping as the highlighting system
-		const map = this.atlasTweak.idMap || {};
-		let remappedId = (map as any)[id] ?? id;
+		let remappedId = this.atlasTweak.idMap?.[id] ?? id;
 		remappedId = Math.round(remappedId + (this.atlasTweak.idOffset || 0));
 
 		const ins = liverInscriptions.find((i) => i.id === remappedId);
@@ -164,7 +155,7 @@ export class LiverModel {
 			const gl =
 				canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
 			return !!gl;
-		} catch (e) {
+		} catch (_e) {
 			return false;
 		}
 	}
@@ -218,9 +209,9 @@ export class LiverModel {
 			this.atlasTexture = atlasTex;
 
 			// Parse atlas meta
-			this.atlasCols = (atlasMeta as any).cols || 1;
-			this.atlasRows = (atlasMeta as any).rows || 1;
-			const labelsObj = (atlasMeta as any).labels || {};
+			this.atlasCols = (atlasMeta as AtlasMeta).cols || 1;
+			this.atlasRows = (atlasMeta as AtlasMeta).rows || 1;
+			const labelsObj = (atlasMeta as AtlasMeta).labels || {};
 			this.labelToTile = {};
 			Object.keys(labelsObj).forEach((k) => {
 				const n = Number(k);
@@ -296,7 +287,7 @@ export class LiverModel {
 			const object = await objLoader.loadAsync(objUrl);
 
 			object.traverse((child) => {
-				if ((child as any).isMesh) {
+				if ((child as THREE.Object3D & { isMesh?: boolean }).isMesh) {
 					const mesh = child as THREE.Mesh;
 					const geom = mesh.geometry as THREE.BufferGeometry;
 
@@ -347,11 +338,16 @@ export class LiverModel {
 
 			this.object = object;
 			this.scene.add(object);
-
-			const self = this;
-			(window as any).liverAtlas = {
-				set: (t: any) => self.setAtlasTweak(t),
-				get: () => self.getAtlasTweak(),
+			(
+				window as typeof window & {
+					liverAtlas?: {
+						set: (t: Partial<AtlasTweak>) => void;
+						get: () => AtlasTweak;
+					};
+				}
+			).liverAtlas = {
+				set: (t: Partial<AtlasTweak>) => this.setAtlasTweak(t),
+				get: () => this.getAtlasTweak(),
 			};
 
 			// Complete load
@@ -446,8 +442,7 @@ export class LiverModel {
 		opacity: number,
 	) {
 		// Remap incoming id if configured
-		const map = this.atlasTweak.idMap || {};
-		let labelId = (map as any)[inscriptionId] ?? inscriptionId;
+		let labelId = this.atlasTweak.idMap?.[inscriptionId] ?? inscriptionId;
 		labelId = Math.round(labelId + (this.atlasTweak.idOffset || 0));
 
 		if (!labelId || !this.labelToTile[labelId]) {
@@ -468,7 +463,12 @@ export class LiverModel {
 			(flipY ? 1 - (tile.row + 1) * baseV : tile.row * baseV) + offsetY;
 
 		// Create a clone of the atlas texture for this material
-		const textureClone = this.atlasTexture!.clone();
+		const textureClone = this.atlasTexture?.clone();
+		if (!textureClone) {
+			console.error("Failed to clone atlas texture for highlight material");
+			return;
+		}
+
 		textureClone.repeat.set(uRep, vRep);
 		textureClone.offset.set(offX, offY);
 		textureClone.needsUpdate = true;
@@ -532,7 +532,9 @@ export class LiverModel {
 			this.scene.remove(this.mesh);
 			this.mesh.geometry?.dispose();
 			if (Array.isArray(this.mesh.material)) {
-				this.mesh.material.forEach((mat) => mat.dispose());
+				this.mesh.material.forEach((mat) => {
+					mat.dispose();
+				});
 			} else {
 				this.mesh.material?.dispose();
 			}
@@ -595,7 +597,9 @@ export class LiverModel {
 								overlays.forEach((mesh) => {
 									mesh.parent?.remove(mesh) || this.scene.remove(mesh);
 									if (Array.isArray(mesh.material)) {
-										mesh.material.forEach((mat) => mat.dispose());
+										mesh.material.forEach((mat) => {
+											mat.dispose();
+										});
 									} else {
 										mesh.material.dispose();
 									}
@@ -607,16 +611,25 @@ export class LiverModel {
 			}
 
 			// Create overlay for current inscription
-			const material = this.hoveredMaterial!.clone();
+			const material = this.hoveredMaterial?.clone();
+			if (!material) {
+				console.error("Failed to clone hovered material for pulse animation");
+				return;
+			}
+			if (!this.mesh) {
+				console.error("No mesh available for pulse animation");
+				return;
+			}
+
 			material.opacity = 0.6;
 			this.applyHighlightToMaterial(inscriptions[index].id, material, 0.4);
 
-			const mesh = new THREE.Mesh(this.mesh!.geometry, material);
-			mesh.position.copy(this.mesh!.position);
-			mesh.rotation.copy(this.mesh!.rotation);
-			mesh.scale.copy(this.mesh!.scale);
+			const mesh = new THREE.Mesh(this.mesh.geometry, material);
+			mesh.position.copy(this.mesh.position);
+			mesh.rotation.copy(this.mesh.rotation);
+			mesh.scale.copy(this.mesh.scale);
 
-			this.mesh!.parent?.add(mesh) || this.scene.add(mesh);
+			this.mesh?.parent?.add(mesh) || this.scene.add(mesh);
 			overlays.push(mesh);
 
 			// Accelerate: 100ms -> 10ms

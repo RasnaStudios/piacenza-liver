@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 // Read the LiverData.ts file
 const liverDataPath = path.join(__dirname, "../src/scene/LiverData.ts");
@@ -53,14 +53,14 @@ try {
 	// Replace THREE.Vector3 constructors with simple objects
 	const cleanArrayContent = arrayContent.replace(
 		/new THREE\.Vector3\(([^)]+)\)/g,
-		(match, coords) => {
+		(_match, coords) => {
 			const [x, y, z] = coords.split(",").map((c) => parseFloat(c.trim()));
 			return JSON.stringify({ x, y, z });
 		},
 	);
 
-	// Wrap in array brackets and evaluate
-	const inscriptionsArray = eval(`[${cleanArrayContent}]`);
+	// Wrap in array brackets and parse safely
+	const inscriptionsArray = JSON.parse(`[${cleanArrayContent}]`);
 
 	// Transform to clean JSON format
 	const cleanInscriptions = inscriptionsArray.map((inscription) => ({

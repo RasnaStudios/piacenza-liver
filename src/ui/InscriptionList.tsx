@@ -2,13 +2,13 @@ import { Box, Group } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
-import { liverInscriptions } from "../scene/LiverData";
+import { type Inscription, liverInscriptions } from "../scene/LiverData";
 import { getGodsDisplayNames, getInscriptionGroup } from "../utils/liverUtils";
 import { NumberBadge } from "./components/NumberBadge";
 
 interface InscriptionListProps {
-	onInscriptionSelect: (inscription: any) => void;
-	selectedInscription: any;
+	onInscriptionSelect: (inscription: Inscription) => void;
+	selectedInscription: Inscription | null;
 	isLoading: boolean;
 	hasInteracted: boolean;
 }
@@ -38,7 +38,7 @@ export function InscriptionList({
 		}, 500);
 
 		return () => clearTimeout(timer);
-	}, [hasInteracted, isLoading, isMobile, isPortrait]);
+	}, [hasInteracted, isLoading, isPortrait]);
 
 	// Auto-scroll to selected inscription
 	useEffect(() => {
@@ -63,7 +63,7 @@ export function InscriptionList({
 		return null;
 	}
 
-	const renderInscription = (inscription: any) => {
+	const renderInscription = (inscription: Inscription) => {
 		const isHovered = hoveredId === inscription.id;
 		const isSelected = selectedInscription?.id === inscription.id;
 

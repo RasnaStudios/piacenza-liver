@@ -1,4 +1,5 @@
 import { Group, Paper, Text, Title } from "@mantine/core";
+import type { LiverGod } from "../../scene/LiverData";
 import {
 	getGodInscriptionData,
 	getGodVariationInInscription,
@@ -6,7 +7,7 @@ import {
 import { InscriptionChip } from "./InscriptionChip";
 
 interface DeityCardProps {
-	god: any;
+	god: LiverGod;
 	onInscriptionClick?: (inscriptionId: number) => void;
 	selectedInscriptionId?: number;
 }

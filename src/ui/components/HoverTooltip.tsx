@@ -1,10 +1,11 @@
 import { Paper } from "@mantine/core";
 import { isMobile } from "react-device-detect";
+import type { HoveredSection } from "../../types";
 import { getGodsDisplayNames } from "../../utils/liverUtils";
 import { NumberBadge } from "./NumberBadge";
 
 interface HoverTooltipProps {
-	hoveredSection: any;
+	hoveredSection: HoveredSection | null;
 	mousePosition: { x: number; y: number; isOverCanvas?: boolean };
 	isPanelOpen?: boolean;
 	isModifierKeyPressed?: boolean;
@@ -28,7 +29,7 @@ export function HoverTooltip({
 		return null;
 	}
 
-	const deityNames = getGodsDisplayNames(hoveredSection.gods);
+	const deityNames = getGodsDisplayNames(hoveredSection.gods || []);
 
 	const tooltipX = mousePosition.x + 15;
 	const tooltipY = mousePosition.y - 10;

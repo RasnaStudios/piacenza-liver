@@ -1,5 +1,5 @@
 import { Badge } from "@mantine/core";
-import { liverInscriptions } from "../../scene/LiverData";
+import { type Inscription, liverInscriptions } from "../../scene/LiverData";
 import { getInscriptionGroup } from "../../utils/liverUtils";
 
 interface NumberBadgeProps {
@@ -18,8 +18,8 @@ export function NumberBadge({ value, color, size = 28 }: NumberBadgeProps) {
 		const numericId =
 			typeof value === "number" ? value : parseInt(String(value), 10);
 		if (!Number.isNaN(numericId)) {
-			const ins = (liverInscriptions as any[]).find(
-				(i: any) => i.id === numericId,
+			const ins = (liverInscriptions as Inscription[]).find(
+				(i: Inscription) => i.id === numericId,
 			);
 			if (ins) {
 				const group = getInscriptionGroup(ins.id);

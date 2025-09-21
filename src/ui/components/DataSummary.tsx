@@ -102,7 +102,8 @@ export function DataSummary() {
 						key={id}
 						style={{ marginLeft: "8px", fontSize: "9px", marginBottom: "2px" }}
 					>
-						{id}: {deity.name} ({(deity as any).romanEquivalent || "N/A"})
+						{id}: {deity.name} (
+						{"romanEquivalent" in deity ? deity.romanEquivalent : "N/A"})
 					</div>
 				))}
 			</div>

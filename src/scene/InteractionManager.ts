@@ -1,19 +1,14 @@
 import * as THREE from "three";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { worldToModelSpace } from "../camera/InscriptionPositions";
+import type { HoveredSection, InscriptionClickPayload } from "../types";
+import type { Inscription } from "./LiverData";
+import type { LiverModel } from "./LiverModel";
 
 export interface InteractionCallbacks {
-	onInscriptionClick: (payload: {
-		inscriptionId: number;
-		clickedUV: THREE.Vector2;
-		cameraWorldPosition: THREE.Vector3;
-		cameraWorldTarget: THREE.Vector3;
-		cameraLocalPosition: THREE.Vector3;
-		cameraLocalTarget: THREE.Vector3;
-		modelMatrix: THREE.Matrix4;
-	}) => void;
+	onInscriptionClick: (payload: InscriptionClickPayload) => void;
 	onBackgroundClick: () => void;
-	onMarkerHover: (section: any) => void;
+	onMarkerHover: (section: HoveredSection | null) => void;
 	onZoomDetected: () => void;
 	onMouseMove: (
 		position: { x: number; y: number },
@@ -27,8 +22,8 @@ export class InteractionManager {
 	private renderer: THREE.WebGLRenderer;
 	private camera: THREE.Camera;
 	private controls: OrbitControls;
-	private liverModel: any;
-	private liverInscriptions: any[];
+	private liverModel: LiverModel;
+	private liverInscriptions: Inscription[];
 	private callbacks: InteractionCallbacks;
 
 	private isPanningOrRotating = false;
@@ -68,8 +63,8 @@ export class InteractionManager {
 		renderer: THREE.WebGLRenderer,
 		camera: THREE.Camera,
 		controls: OrbitControls,
-		liverModel: any,
-		liverInscriptions: any[],
+		liverModel: LiverModel,
+		liverInscriptions: Inscription[],
 		callbacks: InteractionCallbacks,
 	) {
 		this.renderer = renderer;
@@ -285,7 +280,12 @@ export class InteractionManager {
 						(ins) => ins.id === inscriptionId,
 					);
 					if (inscription) {
-						this.callbacks.onMarkerHover(inscription);
+						const hoveredSection: HoveredSection = {
+							id: inscription.id,
+							gods: inscription.gods,
+							etruscanText: inscription.etruscanText,
+						};
+						this.callbacks.onMarkerHover(hoveredSection);
 						this.renderer.domElement.style.cursor = "pointer";
 					}
 				} else {
@@ -390,7 +390,7 @@ export class InteractionManager {
 		}
 
 		// Check for double tap
-		const currentTime = new Date().getTime();
+		const currentTime = Date.now();
 		const tapLength = currentTime - this.lastTapTime;
 		if (tapLength < 500 && tapLength > 0) {
 			// Double tap detected
@@ -453,8 +453,7 @@ export class InteractionManager {
 							const persp = this.camera as THREE.PerspectiveCamera;
 							const worldPos = persp.position.clone();
 							const worldTgt = this.controls.target.clone();
-							const liverObject =
-								this.liverModel.getObject && this.liverModel.getObject();
+							const liverObject = this.liverModel.getObject?.();
 							const modelMatrix = liverObject
 								? liverObject.matrixWorld.clone()
 								: new THREE.Matrix4();

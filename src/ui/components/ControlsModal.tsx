@@ -108,8 +108,8 @@ export function ControlsModal({
 			}}
 		>
 			<Stack gap="xs">
-				{controls.map((control, index) => (
-					<Box key={index}>
+				{controls.map((control) => (
+					<Box key={control.command}>
 						<Box
 							className="bg-overlay-secondary"
 							p="xs"

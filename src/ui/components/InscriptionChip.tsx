@@ -1,5 +1,5 @@
 import { Button, Group, Text } from "@mantine/core";
-import { liverGods } from "../../scene/LiverData";
+import { type LiverGod, liverGods } from "../../scene/LiverData";
 import { NumberBadge } from "./NumberBadge";
 
 interface InscriptionChipProps {
@@ -18,7 +18,7 @@ export function InscriptionChip({
 	godVariation,
 }: InscriptionChipProps) {
 	const associatedGods = associatedGodIds
-		.map((id) => (liverGods as any)[id])
+		.map((id) => (liverGods as Record<string, LiverGod>)[id])
 		.filter(Boolean);
 
 	return (

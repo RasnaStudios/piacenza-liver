@@ -1,7 +1,12 @@
 import { Box, Drawer, Paper, Stack, Title } from "@mantine/core";
 import { useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
-import { liverGods, liverInscriptions } from "../scene/LiverData";
+import {
+	type Inscription,
+	type LiverGod,
+	liverGods,
+	liverInscriptions,
+} from "../scene/LiverData";
 import { getGodsDisplayNames } from "../utils/liverUtils";
 import { DeityCard } from "./components/DeityCard";
 import { GroupSection } from "./components/GroupSection";
@@ -9,9 +14,9 @@ import { PanelHeader } from "./components/PanelHeader";
 import { PanelLegend } from "./components/PanelLegend";
 
 interface DeityPanelProps {
-	selectedInscription: any;
+	selectedInscription: Inscription | null;
 	onClose: () => void;
-	onInscriptionSelect?: (inscription: any) => void;
+	onInscriptionSelect?: (inscription: Inscription) => void;
 }
 
 export function DeityPanel({
@@ -42,9 +47,9 @@ export function DeityPanel({
 
 	// Get god objects for DeityCard components
 	const gods = (selectedInscription.gods || [])
-		.map((god: any) => {
+		.map((god) => {
 			const godId = typeof god === "string" ? god : god.id;
-			return (liverGods as any)[godId];
+			return (liverGods as Record<string, LiverGod>)[godId];
 		})
 		.filter(Boolean);
 
@@ -215,14 +220,14 @@ export function DeityPanel({
 								</Title>
 
 								<Stack gap="md">
-									{gods.map((god: any) => (
+									{gods.map((god: LiverGod) => (
 										<DeityCard
 											key={god.id}
 											god={god}
 											selectedInscriptionId={selectedInscription.id}
 											onInscriptionClick={(inscriptionId) => {
 												const inscription = liverInscriptions.find(
-													(ins: any) => ins.id === inscriptionId,
+													(ins: Inscription) => ins.id === inscriptionId,
 												);
 												if (inscription && onInscriptionSelect) {
 													setPanelHeight(33);
@@ -306,14 +311,14 @@ export function DeityPanel({
 						</Title>
 
 						<Stack gap="md">
-							{gods.map((god: any) => (
+							{gods.map((god: LiverGod) => (
 								<DeityCard
 									key={god.id}
 									god={god}
 									selectedInscriptionId={selectedInscription.id}
 									onInscriptionClick={(inscriptionId) => {
 										const inscription = liverInscriptions.find(
-											(ins: any) => ins.id === inscriptionId,
+											(ins: Inscription) => ins.id === inscriptionId,
 										);
 										if (inscription && onInscriptionSelect) {
 											onInscriptionSelect(inscription);

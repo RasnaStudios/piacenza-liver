@@ -26,3 +26,4 @@ public/data/inscriptions.json
 *.njsproj
 *.sln
 *.sw?
+.cursor/

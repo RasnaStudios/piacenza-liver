@@ -1,8 +1,9 @@
 import { ActionIcon, Group, Title } from "@mantine/core";
+import type { Inscription } from "../../scene/LiverData";
 import { NumberBadge } from "./NumberBadge";
 
 interface PanelHeaderProps {
-	selectedInscription: any;
+	selectedInscription: Inscription | null;
 	deityNames: string;
 	onClose: () => void;
 }
@@ -12,6 +13,8 @@ export function PanelHeader({
 	deityNames,
 	onClose,
 }: PanelHeaderProps) {
+	if (!selectedInscription) return null;
+
 	return (
 		<Group
 			align="center"

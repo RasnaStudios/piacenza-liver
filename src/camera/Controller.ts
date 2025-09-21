@@ -3,6 +3,7 @@ import { isMobile } from "react-device-detect";
 import * as THREE from "three";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { SceneConfig } from "../config/SceneConfig";
+import type { LiverModel } from "../scene/LiverModel";
 
 // Helper function to detect portrait orientation with improved detection
 const isPortraitOrientation = () => {
@@ -199,7 +200,7 @@ export class CameraController {
 		// Mobile-only: adjust camera positioning based on orientation
 		try {
 			if (isMobile) {
-				const persp = this.camera as any;
+				const persp = this.camera as THREE.PerspectiveCamera;
 				if (persp && persp.isPerspectiveCamera === true) {
 					const forwardVec = endTarget.clone().sub(endPosition);
 					const distance = forwardVec.length();
@@ -283,7 +284,7 @@ export class CameraController {
 					try {
 						// Ignore updates from stale tweens
 						if (this.currentTween !== tween || !this.isAnimating) return;
-						const t = (tween as any).targets()[0].t as number;
+						const t = (tween.targets()[0] as { t: number }).t;
 						tempCameraPos.lerpVectors(startPosition, endPosition, t);
 						tempTargetPos.lerpVectors(startTarget, endTarget, t);
 						const offset = tempCameraPos.clone().sub(tempTargetPos);
@@ -353,7 +354,7 @@ export class CameraController {
 				ease: "power2.inOut",
 				onUpdate: () => {
 					if (this.currentTween !== tween || !this.isAnimating) return;
-					const t = (tween as any).targets()[0].t as number;
+					const t = (tween.targets()[0] as { t: number }).t;
 
 					const tempCameraPos = new THREE.Vector3().lerpVectors(
 						startPos,
@@ -386,7 +387,11 @@ export class CameraController {
 	}
 
 	// Reset camera and model to default positions
-	resetToDefault(liverModel: any, duration = 1000, onComplete?: () => void) {
+	resetToDefault(
+		liverModel: LiverModel | null,
+		duration = 1000,
+		onComplete?: () => void,
+	) {
 		this.stopAnimation();
 
 		const startPosition = this.camera.position.clone();
@@ -456,7 +461,7 @@ export class CameraController {
 				ease: "power1.inOut",
 				onUpdate: () => {
 					if (this.currentTween !== tween || !this.isAnimating) return;
-					const t = (tween as any).targets()[0].t as number;
+					const t = (tween.targets()[0] as { t: number }).t;
 
 					const tempCameraPos = new THREE.Vector3().lerpVectors(
 						startPosition,
