@@ -1,5 +1,6 @@
 import { gsap } from "gsap";
 import * as THREE from "three";
+import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
 import objUrl from "../assets/liver-model/Fegato.obj";
 import baseColorUrl from "../assets/liver-model/Fegato_baseColor.jpg";
@@ -20,6 +21,7 @@ export class LiverModel {
 	private onProgress?: (progress: number) => void;
 	private loadingManager: THREE.LoadingManager;
 	private lastProgress: number = 0;
+	private liverCenter: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
 	private reportProgress(p: number) {
 		const clamped = Math.max(0, Math.min(100, Math.floor(p)));
 		const monotonic = Math.max(this.lastProgress, clamped);
@@ -160,6 +162,65 @@ export class LiverModel {
 		}
 	}
 
+	private calculateLiverCenter() {
+		if (!this.mesh || !this.object) {
+			console.warn(
+				"Cannot calculate liver center: mesh or object not available",
+			);
+			return;
+		}
+
+		// Calculate bounding box of the entire object (which includes all transforms)
+		const worldBoundingBox = new THREE.Box3();
+		worldBoundingBox.setFromObject(this.object);
+
+		const worldCenter = new THREE.Vector3();
+		worldBoundingBox.getCenter(worldCenter);
+
+		// Store the calculated center for reuse
+		this.liverCenter = worldCenter.clone();
+
+		// // DEBUG: Add world-space bounding box visualization
+		// const boxGeometry = new THREE.BoxGeometry(
+		// 	worldBoundingBox.max.x - worldBoundingBox.min.x,
+		// 	worldBoundingBox.max.y - worldBoundingBox.min.y,
+		// 	worldBoundingBox.max.z - worldBoundingBox.min.z,
+		// );
+		// const boxMaterial = new THREE.MeshBasicMaterial({
+		// 	color: 0xff0000,
+		// 	wireframe: true,
+		// 	transparent: true,
+		// 	opacity: 0.8,
+		// });
+		// const worldBoxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+		// worldBoxMesh.position.copy(worldCenter);
+		// this.scene.add(worldBoxMesh);
+
+		// // DEBUG: Add camera target visualization (small sphere)
+		// const targetGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+		// const targetMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green sphere
+		// const targetSphere = new THREE.Mesh(targetGeometry, targetMaterial);
+		// targetSphere.position.copy(worldCenter);
+		// this.scene.add(targetSphere);
+
+		// console.log(
+		// 	"Debug visualizations added: red world-space bounding box, green camera target",
+		// );
+	}
+
+	// Getter for the calculated liver center
+	getLiverCenter(): THREE.Vector3 {
+		return this.liverCenter.clone();
+	}
+
+	// Method to reset camera target to liver center
+	resetCameraToCenter(controls?: OrbitControls) {
+		if (this.liverCenter && controls) {
+			controls.target.copy(this.liverCenter);
+			console.log("Camera target reset to liver center:", this.liverCenter);
+		}
+	}
+
 	private async loadLiverModel() {
 		try {
 			// Load PBR textures available in /src/assets/liver-model
@@ -173,30 +234,36 @@ export class LiverModel {
 					textureLoader.loadAsync(atlasPngUrl),
 				]);
 
+			// Configure textures
+			const configureTexture = (
+				texture: THREE.Texture,
+				config: Partial<THREE.Texture>,
+			) => {
+				Object.assign(texture, { needsUpdate: true, ...config });
+			};
+
 			// Configure segmentation mask texture
-			Object.assign(maskTex, {
+			configureTexture(maskTex, {
 				minFilter: THREE.NearestFilter,
 				magFilter: THREE.NearestFilter,
 				generateMipmaps: false,
 				wrapS: THREE.ClampToEdgeWrapping,
 				wrapT: THREE.ClampToEdgeWrapping,
 				flipY: false,
-				needsUpdate: true,
 			});
 
 			// Configure PBR textures
 			[baseColor, normalTex, ormTex].forEach((tex) => {
-				Object.assign(tex, {
+				configureTexture(tex, {
 					wrapS: THREE.ClampToEdgeWrapping,
 					wrapT: THREE.ClampToEdgeWrapping,
 					colorSpace: THREE.LinearSRGBColorSpace,
 					flipY: baseColor.flipY,
-					needsUpdate: true,
 				});
 			});
 
 			// Configure atlas texture for smooth highlights
-			Object.assign(atlasTex, {
+			configureTexture(atlasTex, {
 				minFilter: THREE.LinearMipmapLinearFilter,
 				magFilter: THREE.LinearFilter,
 				generateMipmaps: true,
@@ -204,7 +271,6 @@ export class LiverModel {
 				wrapT: THREE.ClampToEdgeWrapping,
 				flipY: false,
 				colorSpace: THREE.NoColorSpace,
-				needsUpdate: true,
 			});
 			this.atlasTexture = atlasTex;
 
@@ -229,11 +295,6 @@ export class LiverModel {
 				});
 				this.maskCtx?.drawImage(img, 0, 0, img.width, img.height);
 			}
-
-			// Configure texture properties
-			this.configureTexture(baseColor, { flipY: true });
-			this.configureTexture(normalTex, { flipY: true });
-			this.configureTexture(ormTex, { flipY: true });
 
 			// Create base material with PBR settings
 			const baseMaterial = new THREE.MeshStandardMaterial({
@@ -260,27 +321,20 @@ export class LiverModel {
 			baseMaterial.shadowSide = THREE.FrontSide;
 
 			// Create separate materials for selected and hovered states
-			this.selectedMaterial = new THREE.MeshStandardMaterial({
-				color: new THREE.Color(0xffc107),
-				transparent: true,
-				opacity: 0.0,
-				alphaMap: this.atlasTexture,
-				depthWrite: false,
-				alphaTest: 0.0,
-				blending: THREE.AdditiveBlending,
-				depthTest: true,
-			});
+			const createHighlightMaterial = () =>
+				new THREE.MeshStandardMaterial({
+					color: new THREE.Color(0xffc107),
+					transparent: true,
+					opacity: 0.0,
+					alphaMap: this.atlasTexture,
+					depthWrite: false,
+					alphaTest: 0.0,
+					blending: THREE.AdditiveBlending,
+					depthTest: true,
+				});
 
-			this.hoveredMaterial = new THREE.MeshStandardMaterial({
-				color: new THREE.Color(0xffc107),
-				transparent: true,
-				opacity: 0.0,
-				alphaMap: this.atlasTexture,
-				depthWrite: false,
-				alphaTest: 0.0,
-				blending: THREE.AdditiveBlending,
-				depthTest: true,
-			});
+			this.selectedMaterial = createHighlightMaterial();
+			this.hoveredMaterial = createHighlightMaterial();
 
 			// Load OBJ geometry
 			const objLoader = new OBJLoader(this.loadingManager);
@@ -291,42 +345,42 @@ export class LiverModel {
 					const mesh = child as THREE.Mesh;
 					const geom = mesh.geometry as THREE.BufferGeometry;
 
-					// Compute vertex normals to smooth out grid artifacts from OBJ model
+					// Compute vertex normals and bounding box for proper rendering
 					geom.computeVertexNormals();
+					geom.computeBoundingBox();
 
 					mesh.material = baseMaterial;
 					this.mesh = mesh;
 
 					// Ensure uv2 exists so aoMap can work; duplicate uv if missing
 
+					// Create overlay meshes
+					const createOverlayMesh = (
+						material: THREE.Material,
+						renderOrderOffset: number,
+					) => {
+						const overlayMesh = new THREE.Mesh(geom, material);
+						overlayMesh.position.copy(mesh.position);
+						overlayMesh.rotation.copy(mesh.rotation);
+						overlayMesh.scale.copy(mesh.scale);
+						overlayMesh.renderOrder =
+							(mesh.renderOrder || 0) + renderOrderOffset;
+						if (mesh.parent) {
+							mesh.parent.add(overlayMesh);
+						} else {
+							this.scene.add(overlayMesh);
+						}
+						return overlayMesh;
+					};
+
 					// Create and add selected overlay mesh
 					if (!this.selectedMesh && this.selectedMaterial) {
-						const selectedMesh = new THREE.Mesh(geom, this.selectedMaterial);
-						selectedMesh.position.copy(mesh.position);
-						selectedMesh.rotation.copy(mesh.rotation);
-						selectedMesh.scale.copy(mesh.scale);
-						selectedMesh.renderOrder = (mesh.renderOrder || 0) + 1;
-						if (mesh.parent) {
-							mesh.parent.add(selectedMesh);
-						} else {
-							this.scene.add(selectedMesh);
-						}
-						this.selectedMesh = selectedMesh;
+						this.selectedMesh = createOverlayMesh(this.selectedMaterial, 1);
 					}
 
 					// Create and add hovered overlay mesh
 					if (!this.hoveredMesh && this.hoveredMaterial) {
-						const hoveredMesh = new THREE.Mesh(geom, this.hoveredMaterial);
-						hoveredMesh.position.copy(mesh.position);
-						hoveredMesh.rotation.copy(mesh.rotation);
-						hoveredMesh.scale.copy(mesh.scale);
-						hoveredMesh.renderOrder = (mesh.renderOrder || 0) + 2;
-						if (mesh.parent) {
-							mesh.parent.add(hoveredMesh);
-						} else {
-							this.scene.add(hoveredMesh);
-						}
-						this.hoveredMesh = hoveredMesh;
+						this.hoveredMesh = createOverlayMesh(this.hoveredMaterial, 2);
 					}
 				}
 			});
@@ -338,6 +392,8 @@ export class LiverModel {
 
 			this.object = object;
 			this.scene.add(object);
+			this.calculateLiverCenter();
+
 			(
 				window as typeof window & {
 					liverAtlas?: {
@@ -399,41 +455,52 @@ export class LiverModel {
 		this.updateSelectedHighlight();
 	}
 
-	private updateSelectedHighlight() {
-		if (!this.atlasTexture || !this.selectedMaterial) return;
+	private updateHighlight(
+		material: THREE.MeshStandardMaterial | null,
+		inscriptionId: number,
+		opacity: number,
+	) {
+		if (!this.atlasTexture || !material) return;
 
-		if (!this.currentSelectedId) {
-			this.selectedMaterial.opacity = 0.0;
-			this.selectedMaterial.needsUpdate = true;
+		if (!inscriptionId) {
+			material.opacity = 0.0;
+			material.needsUpdate = true;
 			return;
 		}
 
-		this.applyHighlightToMaterial(
-			this.currentSelectedId,
-			this.selectedMaterial,
-			0.4,
-		);
+		this.applyHighlightToMaterial(inscriptionId, material, opacity);
+	}
+
+	private updateSelectedHighlight() {
+		this.updateHighlight(this.selectedMaterial, this.currentSelectedId, 0.4);
 	}
 
 	private updateHoveredHighlight() {
-		if (!this.atlasTexture || !this.hoveredMaterial) return;
-
 		// Don't show hovered highlight if hovering over selected inscription to avoid overlap
-		if (
-			!this.currentHoveredId ||
-			this.currentHoveredId === this.currentSelectedId
-		) {
-			this.hoveredMaterial.opacity = 0.0;
-			this.hoveredMaterial.needsUpdate = true;
-			return;
-		}
+		const hoverId =
+			this.currentHoveredId && this.currentHoveredId !== this.currentSelectedId
+				? this.currentHoveredId
+				: 0;
+		this.updateHighlight(this.hoveredMaterial, hoverId, 0.3);
+	}
 
-		// Only show hovered highlight for different inscriptions
-		this.applyHighlightToMaterial(
-			this.currentHoveredId,
-			this.hoveredMaterial,
-			0.3,
-		);
+	private calculateUVCoordinates(labelId: number) {
+		const tile = this.labelToTile[labelId];
+		const baseU = 1 / Math.max(1, this.atlasCols);
+		const baseV = 1 / Math.max(1, this.atlasRows);
+		const { flipX, flipY, repeatScaleX, repeatScaleY, offsetX, offsetY } =
+			this.atlasTweak;
+
+		return {
+			repeat: new THREE.Vector2(
+				(flipX ? -1 : 1) * baseU * (repeatScaleX || 1),
+				(flipY ? -1 : 1) * baseV * (repeatScaleY || 1),
+			),
+			offset: new THREE.Vector2(
+				(flipX ? (tile.col + 1) * baseU : tile.col * baseU) + offsetX,
+				(flipY ? 1 - (tile.row + 1) * baseV : tile.row * baseV) + offsetY,
+			),
+		};
 	}
 
 	private applyHighlightToMaterial(
@@ -451,29 +518,15 @@ export class LiverModel {
 			return;
 		}
 
-		const tile = this.labelToTile[labelId];
-		const baseU = 1 / Math.max(1, this.atlasCols);
-		const baseV = 1 / Math.max(1, this.atlasRows);
-		const { flipX, flipY, repeatScaleX, repeatScaleY, offsetX, offsetY } =
-			this.atlasTweak;
-		const uRep = (flipX ? -1 : 1) * baseU * (repeatScaleX || 1);
-		const vRep = (flipY ? -1 : 1) * baseV * (repeatScaleY || 1);
-		const offX = (flipX ? (tile.col + 1) * baseU : tile.col * baseU) + offsetX;
-		const offY =
-			(flipY ? 1 - (tile.row + 1) * baseV : tile.row * baseV) + offsetY;
+		const { repeat, offset } = this.calculateUVCoordinates(labelId);
 
 		// Create a clone of the atlas texture for this material
 		const textureClone = this.atlasTexture?.clone();
-		if (!textureClone) {
-			console.error("Failed to clone atlas texture for highlight material");
-			return;
+		if (textureClone) {
+			textureClone.repeat.copy(repeat);
+			textureClone.offset.copy(offset);
+			material.alphaMap = textureClone;
 		}
-
-		textureClone.repeat.set(uRep, vRep);
-		textureClone.offset.set(offX, offY);
-		textureClone.needsUpdate = true;
-
-		material.alphaMap = textureClone;
 		material.color.copy(this.getHighlightColor(labelId));
 		material.opacity = opacity;
 		material.needsUpdate = true;
@@ -512,60 +565,42 @@ export class LiverModel {
 		this.onModelReady = callback;
 	}
 
-	private configureTexture(
-		texture: THREE.Texture,
-		options: { flipY?: boolean } = {},
-	) {
-		texture.anisotropy = 4; // Reduce anisotropy to minimize artifacts
-		texture.minFilter = THREE.LinearFilter; // Use simpler filtering
-		texture.magFilter = THREE.LinearFilter;
-		texture.wrapS = THREE.RepeatWrapping; // Try repeat wrapping
-		texture.wrapT = THREE.RepeatWrapping;
-		texture.generateMipmaps = false; // Disable mipmaps to avoid compression artifacts
-		texture.flipY = options.flipY ?? false;
-		texture.needsUpdate = true;
-	}
-
 	dispose() {
-		// Clean up mesh and geometry
-		if (this.mesh) {
-			this.scene.remove(this.mesh);
-			this.mesh.geometry?.dispose();
-			if (Array.isArray(this.mesh.material)) {
-				this.mesh.material.forEach((mat) => {
-					mat.dispose();
-				});
-			} else {
-				this.mesh.material?.dispose();
-			}
-			this.mesh = null;
-		}
+		// Use Three.js traverse to dispose of all meshes and materials
+		const disposeObject = (obj: THREE.Object3D | null) => {
+			if (!obj) return;
 
-		// Clean up object
-		if (this.object) {
-			this.scene.remove(this.object);
-			this.object = null;
-		}
+			obj.traverse((child) => {
+				if ((child as THREE.Object3D & { isMesh?: boolean }).isMesh) {
+					const mesh = child as THREE.Mesh;
+					mesh.geometry?.dispose();
+					if (Array.isArray(mesh.material)) {
+						mesh.material.forEach((mat) => {
+							mat.dispose();
+						});
+					} else {
+						mesh.material?.dispose();
+					}
+				}
+			});
 
-		// Clean up highlight meshes
-		if (this.selectedMesh) {
-			this.scene.remove(this.selectedMesh);
-			this.selectedMesh = null;
-		}
-		if (this.hoveredMesh) {
-			this.scene.remove(this.hoveredMesh);
-			this.hoveredMesh = null;
-		}
+			this.scene.remove(obj);
+		};
 
-		// Clean up materials and textures
-		this.selectedMaterial?.dispose();
+		// Clean up all objects using traverse
+		disposeObject(this.object);
+		disposeObject(this.selectedMesh);
+		disposeObject(this.hoveredMesh);
+
+		// Clean up remaining resources
+		this.mesh = null;
+		this.object = null;
+		this.selectedMesh = null;
+		this.hoveredMesh = null;
 		this.selectedMaterial = null;
-		this.hoveredMaterial?.dispose();
 		this.hoveredMaterial = null;
 		this.atlasTexture?.dispose();
 		this.atlasTexture = null;
-
-		// Clean up canvas resources
 		this.maskCanvas = null;
 		this.maskCtx = null;
 	}
@@ -595,7 +630,7 @@ export class LiverModel {
 							ease: "power2.in",
 							onComplete: () => {
 								overlays.forEach((mesh) => {
-									mesh.parent?.remove(mesh) || this.scene.remove(mesh);
+									(mesh.parent || this.scene).remove(mesh);
 									if (Array.isArray(mesh.material)) {
 										mesh.material.forEach((mat) => {
 											mat.dispose();
@@ -612,14 +647,7 @@ export class LiverModel {
 
 			// Create overlay for current inscription
 			const material = this.hoveredMaterial?.clone();
-			if (!material) {
-				console.error("Failed to clone hovered material for pulse animation");
-				return;
-			}
-			if (!this.mesh) {
-				console.error("No mesh available for pulse animation");
-				return;
-			}
+			if (!material || !this.mesh?.geometry) return;
 
 			material.opacity = 0.6;
 			this.applyHighlightToMaterial(inscriptions[index].id, material, 0.4);
@@ -629,7 +657,7 @@ export class LiverModel {
 			mesh.rotation.copy(this.mesh.rotation);
 			mesh.scale.copy(this.mesh.scale);
 
-			this.mesh?.parent?.add(mesh) || this.scene.add(mesh);
+			(this.mesh?.parent || this.scene).add(mesh);
 			overlays.push(mesh);
 
 			// Accelerate: 100ms -> 10ms

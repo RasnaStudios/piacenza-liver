@@ -91,56 +91,36 @@ export class InteractionManager {
 	}
 
 	private setupEventListeners() {
-		this.renderer.domElement.addEventListener(
-			"mousemove",
-			this.boundHandleMouseMove,
-		);
-		this.renderer.domElement.addEventListener("click", this.boundHandleClick);
-		this.renderer.domElement.addEventListener(
-			"mousedown",
-			this.boundHandleMouseDown,
-		);
-		this.renderer.domElement.addEventListener(
-			"mouseup",
-			this.boundHandleMouseUp,
-		);
-		this.renderer.domElement.addEventListener(
-			"dblclick",
-			this.boundHandleDoubleClick,
-		);
+		const domElement = this.renderer.domElement;
 
-		// Touch events for mobile
-		this.renderer.domElement.addEventListener(
-			"touchstart",
-			this.boundHandleTouchStart,
-			{ passive: false },
-		);
-		this.renderer.domElement.addEventListener(
-			"touchmove",
-			this.boundHandleTouchMove,
-			{ passive: false },
-		);
-		this.renderer.domElement.addEventListener(
-			"touchend",
-			this.boundHandleTouchEnd,
-			{ passive: false },
-		);
+		// Mouse events
+		domElement.addEventListener("mousemove", this.boundHandleMouseMove);
+		domElement.addEventListener("click", this.boundHandleClick);
+		domElement.addEventListener("mousedown", this.boundHandleMouseDown);
+		domElement.addEventListener("mouseup", this.boundHandleMouseUp);
+		domElement.addEventListener("dblclick", this.boundHandleDoubleClick);
 
-		// Mouse and wheel events
-		this.renderer.domElement.addEventListener(
-			"wheel",
-			this.handleWheel.bind(this),
-			{ passive: true },
-		);
+		// Touch events
+		domElement.addEventListener("touchstart", this.boundHandleTouchStart, {
+			passive: false,
+		});
+		domElement.addEventListener("touchmove", this.boundHandleTouchMove, {
+			passive: false,
+		});
+		domElement.addEventListener("touchend", this.boundHandleTouchEnd, {
+			passive: false,
+		});
 
-		// Keyboard events for Shift detection
+		// Wheel event
+		domElement.addEventListener("wheel", this.handleWheel.bind(this), {
+			passive: true,
+		});
+
+		// Keyboard and control events
 		window.addEventListener("keydown", this.boundHandleKeyDown);
 		window.addEventListener("keyup", this.boundHandleKeyUp);
-
 		this.controls.addEventListener("start", this.boundHandleControlsStart);
 		this.controls.addEventListener("end", this.boundHandleControlsEnd);
-
-		// Removed setup debug logs
 	}
 
 	private handleMouseDown(event: MouseEvent) {
@@ -250,54 +230,15 @@ export class InteractionManager {
 			}
 		}
 
-		const liverMesh = this.liverModel.getMesh();
-		if (!liverMesh || !this.liverModel.getMaskTexture()) {
-			return;
-		}
+		if (!this.liverModel.getMaskTexture()) return;
 
-		const rect = this.renderer.domElement.getBoundingClientRect();
-		const mouse = new THREE.Vector2();
-		mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-		mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+		const intersection = this.performRaycast(event.clientX, event.clientY);
+		const inscription = this.getInscriptionFromIntersection(intersection);
 
-		const raycaster = new THREE.Raycaster();
-		raycaster.setFromCamera(mouse, this.camera);
-
-		// Only test the base mesh, not its children (e.g., overlay)
-		const intersects = raycaster.intersectObject(liverMesh, false);
-
-		if (intersects.length > 0) {
-			const intersection = intersects[0];
-			const uv = intersection.uv;
-
-			if (uv) {
-				const inscriptionId = this.liverModel.getInscriptionAtUV(uv.x, uv.y);
-
-				if (inscriptionId > 0 && inscriptionId <= 42) {
-					this.liverModel.setHoveredInscription(inscriptionId);
-
-					const inscription = this.liverInscriptions.find(
-						(ins) => ins.id === inscriptionId,
-					);
-					if (inscription) {
-						const hoveredSection: HoveredSection = {
-							id: inscription.id,
-							gods: inscription.gods,
-							etruscanText: inscription.etruscanText,
-						};
-						this.callbacks.onMarkerHover(hoveredSection);
-						this.renderer.domElement.style.cursor = "pointer";
-					}
-				} else {
-					this.liverModel.setHoveredInscription(0);
-					this.callbacks.onMarkerHover(null);
-					this.renderer.domElement.style.cursor = "grab";
-				}
-			} else {
-				this.liverModel.setHoveredInscription(0);
-				this.callbacks.onMarkerHover(null);
-				this.renderer.domElement.style.cursor = "grab";
-			}
+		if (inscription) {
+			this.liverModel.setHoveredInscription(inscription.id);
+			this.callbacks.onMarkerHover(inscription);
+			this.renderer.domElement.style.cursor = "pointer";
 		} else {
 			this.liverModel.setHoveredInscription(0);
 			this.callbacks.onMarkerHover(null);
@@ -424,56 +365,42 @@ export class InteractionManager {
 		this.performReset();
 	}
 
+	private calculateCameraPositions() {
+		const persp = this.camera as THREE.PerspectiveCamera;
+		const worldPos = persp.position.clone();
+		const worldTgt = this.controls.target.clone();
+		const liverObject = this.liverModel.getObject?.();
+		const modelMatrix = liverObject
+			? liverObject.matrixWorld.clone()
+			: new THREE.Matrix4();
+		const localPos = worldToModelSpace(worldPos, modelMatrix);
+		const localTgt = worldToModelSpace(worldTgt, modelMatrix);
+
+		return {
+			worldPosition: worldPos,
+			worldTarget: worldTgt,
+			localPosition: localPos,
+			localTarget: localTgt,
+			modelMatrix,
+		};
+	}
+
 	private processClick(clientX: number, clientY: number) {
-		const rect = this.renderer.domElement.getBoundingClientRect();
-		const mouse = new THREE.Vector2();
-		mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-		mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+		const intersection = this.performRaycast(clientX, clientY);
+		const inscription = this.getInscriptionFromIntersection(intersection);
 
-		const raycaster = new THREE.Raycaster();
-		raycaster.setFromCamera(mouse, this.camera);
+		if (inscription) {
+			const cameraData = this.calculateCameraPositions();
 
-		const liverMesh = this.liverModel.getMesh();
-		if (liverMesh) {
-			// Only test the base mesh, not its children (e.g., overlay)
-			const intersects = raycaster.intersectObject(liverMesh, false);
-
-			if (intersects.length > 0) {
-				const intersection = intersects[0];
-				const uv = intersection.uv;
-
-				if (uv) {
-					const inscriptionId = this.liverModel.getInscriptionAtUV(uv.x, uv.y);
-
-					if (inscriptionId > 0 && inscriptionId <= 42) {
-						const inscription = this.liverInscriptions.find(
-							(ins) => ins.id === inscriptionId,
-						);
-						if (inscription) {
-							const persp = this.camera as THREE.PerspectiveCamera;
-							const worldPos = persp.position.clone();
-							const worldTgt = this.controls.target.clone();
-							const liverObject = this.liverModel.getObject?.();
-							const modelMatrix = liverObject
-								? liverObject.matrixWorld.clone()
-								: new THREE.Matrix4();
-							const localPos = worldToModelSpace(worldPos, modelMatrix);
-							const localTgt = worldToModelSpace(worldTgt, modelMatrix);
-							this.callbacks.onInscriptionClick({
-								inscriptionId,
-								clickedUV: uv.clone(),
-								cameraWorldPosition: worldPos,
-								cameraWorldTarget: worldTgt,
-								cameraLocalPosition: localPos,
-								cameraLocalTarget: localTgt,
-								modelMatrix,
-							});
-						}
-					}
-				}
-			} else {
-				this.callbacks.onBackgroundClick();
-			}
+			this.callbacks.onInscriptionClick({
+				inscriptionId: inscription.id,
+				clickedUV: intersection?.uv?.clone() || new THREE.Vector2(),
+				cameraWorldPosition: cameraData.worldPosition,
+				cameraWorldTarget: cameraData.worldTarget,
+				cameraLocalPosition: cameraData.localPosition,
+				cameraLocalTarget: cameraData.localTarget,
+				modelMatrix: cameraData.modelMatrix,
+			});
 		} else {
 			this.callbacks.onBackgroundClick();
 		}
@@ -504,52 +431,63 @@ export class InteractionManager {
 		}
 	}
 
+	private performRaycast(clientX: number, clientY: number) {
+		const liverMesh = this.liverModel.getMesh();
+		if (!liverMesh) return null;
+
+		const rect = this.renderer.domElement.getBoundingClientRect();
+		const mouse = new THREE.Vector2();
+		mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+		mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
+
+		const raycaster = new THREE.Raycaster();
+		raycaster.setFromCamera(mouse, this.camera);
+
+		const intersects = raycaster.intersectObject(liverMesh, false);
+		return intersects.length > 0 ? intersects[0] : null;
+	}
+
+	private getInscriptionFromIntersection(
+		intersection: THREE.Intersection | null,
+	) {
+		if (!intersection?.uv) return null;
+
+		const inscriptionId = this.liverModel.getInscriptionAtUV(
+			intersection.uv.x,
+			intersection.uv.y,
+		);
+		if (inscriptionId <= 0 || inscriptionId > 42) return null;
+
+		return (
+			this.liverInscriptions.find((ins) => ins.id === inscriptionId) || null
+		);
+	}
+
 	private performReset() {
 		this.callbacks.onReset();
 	}
 
 	public dispose() {
-		this.renderer.domElement.removeEventListener(
-			"mousemove",
-			this.boundHandleMouseMove,
-		);
-		this.renderer.domElement.removeEventListener(
-			"click",
-			this.boundHandleClick,
-		);
-		this.renderer.domElement.removeEventListener(
-			"mousedown",
-			this.boundHandleMouseDown,
-		);
-		this.renderer.domElement.removeEventListener(
-			"mouseup",
-			this.boundHandleMouseUp,
-		);
-		this.renderer.domElement.removeEventListener(
-			"dblclick",
-			this.boundHandleDoubleClick,
-		);
+		const domElement = this.renderer.domElement;
 
-		this.renderer.domElement.removeEventListener(
-			"touchstart",
-			this.boundHandleTouchStart,
-		);
-		this.renderer.domElement.removeEventListener(
-			"touchmove",
-			this.boundHandleTouchMove,
-		);
-		this.renderer.domElement.removeEventListener(
-			"touchend",
-			this.boundHandleTouchEnd,
-		);
-		this.renderer.domElement.removeEventListener(
-			"wheel",
-			this.handleWheel.bind(this),
-		);
+		// Mouse events
+		domElement.removeEventListener("mousemove", this.boundHandleMouseMove);
+		domElement.removeEventListener("click", this.boundHandleClick);
+		domElement.removeEventListener("mousedown", this.boundHandleMouseDown);
+		domElement.removeEventListener("mouseup", this.boundHandleMouseUp);
+		domElement.removeEventListener("dblclick", this.boundHandleDoubleClick);
 
+		// Touch events
+		domElement.removeEventListener("touchstart", this.boundHandleTouchStart);
+		domElement.removeEventListener("touchmove", this.boundHandleTouchMove);
+		domElement.removeEventListener("touchend", this.boundHandleTouchEnd);
+
+		// Wheel event
+		domElement.removeEventListener("wheel", this.handleWheel.bind(this));
+
+		// Keyboard and control events
 		window.removeEventListener("keydown", this.boundHandleKeyDown);
 		window.removeEventListener("keyup", this.boundHandleKeyUp);
-
 		this.controls.removeEventListener("start", this.boundHandleControlsStart);
 		this.controls.removeEventListener("end", this.boundHandleControlsEnd);
 	}

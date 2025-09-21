@@ -40,7 +40,7 @@ export class CameraController {
 		const endPos = SceneConfig.camera.initial
 			.clone()
 			.add(cameraOffsets.positionOffset);
-		const endTarget = SceneConfig.camera.target
+		const endTarget = new THREE.Vector3(0, 0, 0)
 			.clone()
 			.add(cameraOffsets.targetOffset);
 		this.lastManualPosition = endPos;
@@ -335,14 +335,13 @@ export class CameraController {
 	}
 
 	// Intro camera animation
-	playIntroAnimation(onComplete?: () => void) {
+	playIntroAnimation(onComplete?: () => void, finalTarget?: THREE.Vector3) {
 		this.stopAnimation();
 
 		const startPos = SceneConfig.camera.initial;
-		const startTarget = SceneConfig.camera.target;
 		const cameraOffsets = getCameraAnimationOffsets();
 		const endPos = startPos.clone().add(cameraOffsets.positionOffset);
-		const endTarget = startTarget.clone().add(cameraOffsets.targetOffset);
+		const target = finalTarget?.clone() || new THREE.Vector3(0, 0, 0);
 		const duration = SceneConfig.animation.camera.duration;
 
 		this.isAnimating = true;
@@ -362,8 +361,8 @@ export class CameraController {
 						t,
 					);
 					const tempTargetPos = new THREE.Vector3().lerpVectors(
-						startTarget,
-						endTarget,
+						target,
+						target,
 						t,
 					);
 
@@ -376,7 +375,7 @@ export class CameraController {
 					this.isAnimating = false;
 					this.currentTween = null;
 					this.lastManualPosition.copy(endPos);
-					this.lastManualTarget.copy(endTarget);
+					this.lastManualTarget.copy(target);
 					if (onComplete) onComplete();
 				},
 			},
@@ -401,9 +400,8 @@ export class CameraController {
 		const endPosition = SceneConfig.camera.initial
 			.clone()
 			.add(cameraOffsets.positionOffset);
-		const endTarget = SceneConfig.camera.target
-			.clone()
-			.add(cameraOffsets.targetOffset);
+		const endTarget =
+			liverModel?.getLiverCenter().clone() || new THREE.Vector3(0, 0, 0);
 
 		this.lastManualPosition.copy(endPosition);
 		this.lastManualTarget.copy(endTarget);

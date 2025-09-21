@@ -4,14 +4,13 @@ import * as THREE from "three";
 export const SceneConfig = {
 	// Initial positions
 	model: {
-		position: new THREE.Vector3(0.2, 1.5, 0),
+		position: new THREE.Vector3(0.2, 0.5, 0),
 		rotation: new THREE.Vector3(-1.5, 3.15, 0.0), // Anatomical orientation
 		scale: 1.0,
 	},
 
 	camera: {
 		initial: new THREE.Vector3(0, 2, 10),
-		target: new THREE.Vector3(0, 0, 0), // Where the camera looks at (pan control)
 	},
 
 	// Animation offsets (added to initial positions)

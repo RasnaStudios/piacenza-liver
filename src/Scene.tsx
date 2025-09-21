@@ -224,7 +224,10 @@ function PiacenzaLiverScene() {
 		setSelectedInscription(null);
 
 		if (cameraControllerRef.current && liverModelRef.current && !isMobile) {
-			cameraControllerRef.current.resetToDefault(liverModelRef.current, 800);
+			cameraControllerRef.current.resetToDefault(
+				liverModelRef.current as LiverModel,
+				800,
+			);
 		}
 
 		if (liverModelRef.current) {
@@ -300,10 +303,10 @@ function PiacenzaLiverScene() {
 		const controls = new OrbitControls(camera, renderer.domElement);
 		controls.enableDamping = true;
 		controls.dampingFactor = 0.05;
-		controls.maxPolarAngle = Math.PI * 0.8;
+		controls.maxPolarAngle = Math.PI;
 		controls.minDistance = 2.5;
 		controls.maxDistance = 10;
-		controls.target.copy(SceneConfig.camera.target);
+		controls.target.copy(new THREE.Vector3(0, 0, 0));
 		controlsRef.current = controls;
 		setupLighting(scene);
 
@@ -335,9 +338,9 @@ function PiacenzaLiverScene() {
 					cameraControllerRef.current.playIntroAnimation(() => {
 						interactionManagerRef.current?.setIntroAnimationMode(false);
 						interactionManagerRef.current?.setInitialCameraDistance(
-							cameraRef.current?.position.length() || 0,
+							cameraRef.current ? cameraRef.current.position.length() : 0,
 						);
-					});
+					}, liverModelRef.current?.getLiverCenter() || undefined);
 				}
 			}, 800);
 		});
@@ -523,6 +526,8 @@ function PiacenzaLiverScene() {
 
 // Lighting setup function
 function setupLighting(scene: THREE.Scene) {
+	const lightColor = 0xfff4e6;
+
 	// 3-Point Lighting Setup
 
 	// 1. KEY LIGHT - Spotlight for dramatic shadows on floor
@@ -562,7 +567,7 @@ function setupLighting(scene: THREE.Scene) {
 	scene.add(backLight.target);
 
 	// Subtle bottom fill for inscription visibility
-	const bottomFill = new THREE.PointLight(0xfff4e6, 8, 12, 2);
+	const bottomFill = new THREE.PointLight(lightColor, 8, 12, 2);
 	bottomFill.position.set(0, -6, 0);
 	bottomFill.castShadow = false;
 	scene.add(bottomFill);
@@ -598,7 +603,7 @@ function setupLighting(scene: THREE.Scene) {
 	);
 
 	const particleMaterial = new THREE.PointsMaterial({
-		color: 0xfff4e6,
+		color: lightColor,
 		size: 0.005,
 		transparent: true,
 		opacity: 0.12,

@@ -686,6 +686,8 @@ export const liverInscriptions = [
 		transcription: "tivr",
 		gods: [{ id: "tiur", form: "𐌕𐌉𐌅𐌓" }],
 		description: "The Moon as cosmic foundation",
+		cameraPosition: new THREE.Vector3(0.5, -2.0, 0.0),
+		cameraTarget: new THREE.Vector3(0.0, -2.5, 0.0),
 	},
 	{
 		id: 42,
@@ -693,5 +695,7 @@ export const liverInscriptions = [
 		transcription: "usils",
 		gods: [{ id: "usil", form: "𐌖𐌔𐌉𐌋𐌔" }],
 		description: "The Sun as cosmic foundation",
+		cameraPosition: new THREE.Vector3(-0.5, -2.0, 0.0),
+		cameraTarget: new THREE.Vector3(0.0, -2.5, 0.0),
 	},
 ];

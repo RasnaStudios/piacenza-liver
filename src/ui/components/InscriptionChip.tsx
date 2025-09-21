@@ -52,7 +52,7 @@ export function InscriptionChip({
 
 				{godVariation && (
 					<Text>
-						<Text component="span" size="lg">
+						<Text component="span" size="lg" style={{ color: "white" }}>
 							as{" "}
 						</Text>
 						<Text
@@ -70,7 +70,7 @@ export function InscriptionChip({
 
 				{associatedGods.length > 0 && (
 					<Text className="font-serif">
-						<Text component="span" size="lg">
+						<Text component="span" size="lg" style={{ color: "white" }}>
 							with{" "}
 						</Text>
 						<Text

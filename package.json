@@ -5,7 +5,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite",
-		"build:extract": "node scripts/extract-inscriptions.cjs",
+		"build:extract": "tsx scripts/extract-inscriptions.ts",
 		"build": "npm run build:extract && vite build",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
@@ -108,6 +108,7 @@
 		"@vitejs/plugin-react": "^5.0.2",
 		"husky": "^9.1.7",
 		"lint-staged": "^16.1.6",
+		"tsx": "^4.19.2",
 		"typescript": "^5.9.2",
 		"vite": "^7.1.5",
 		"vite-plugin-pwa": "^1.0.3"
