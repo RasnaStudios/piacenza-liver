@@ -1,20 +1,16 @@
+import { MantineProvider } from "@mantine/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-
-// Data
-import { type Inscription, liverInscriptions } from "./scene/LiverData";
-import type { HoveredSection } from "./types";
-
-// import { getLiverModelMatrix } from './camera/InscriptionPositions'
-
-import { MantineProvider } from "@mantine/core";
 // Core 3D logic
 import { CameraController } from "./camera/Controller";
 import { SceneConfig } from "./config/SceneConfig";
 import { InteractionManager } from "./scene/InteractionManager";
+// Data
+import { type Inscription, liverInscriptions } from "./scene/LiverData";
 import { LiverModel } from "./scene/LiverModel";
+import type { HoveredSection } from "./types";
 import { BraveDisclaimer } from "./ui/components/BraveDisclaimer";
 import { DataSummary } from "./ui/components/DataSummary";
 import { HoverTooltip } from "./ui/components/HoverTooltip";
@@ -43,6 +39,13 @@ function PiacenzaLiverScene() {
 	});
 	const [isMouseOverPanel, setIsMouseOverPanel] = useState(false);
 	const [errorMsg, setErrorMsg] = useState<string | null>(null);
+	const [cameraDebugInfo, setCameraDebugInfo] = useState<{
+		position: THREE.Vector3;
+		target: THREE.Vector3;
+		localPosition: THREE.Vector3;
+		localTarget: THREE.Vector3;
+		offsetTargetScreenPos?: { x: number; y: number };
+	} | null>(null);
 	const [isModifierKeyPressed, setIsModifierKeyPressed] = useState(false);
 
 	// Refs for 3D objects and controllers
@@ -109,63 +112,39 @@ function PiacenzaLiverScene() {
 	const handleInscriptionClick = useCallback(
 		(payload: {
 			inscriptionId: number;
-			clickedUV: THREE.Vector2;
-			cameraWorldPosition: THREE.Vector3;
-			cameraWorldTarget: THREE.Vector3;
-			cameraLocalPosition: THREE.Vector3;
-			cameraLocalTarget: THREE.Vector3;
-			modelMatrix: THREE.Matrix4;
+			cameraLocalPosition: THREE.Vector3; // Camera position relative to liver model
+			cameraLocalTarget: THREE.Vector3; // Camera target relative to liver model
+			modelMatrix: THREE.Matrix4; // Transforms model-local coords to world coords (accounts for liver rotation when moved by the user with shift key)
 		}) => {
-			const {
-				inscriptionId,
-				cameraWorldPosition,
-				cameraWorldTarget,
-				cameraLocalPosition,
-				cameraLocalTarget,
-				modelMatrix,
-			} = payload;
+			const { inscriptionId, modelMatrix } = payload;
 			const inscription = liverInscriptions.find(
 				(ins) => ins.id === inscriptionId,
 			);
-			if (!inscription) return;
-			setHasInteracted(true);
-
-			// Set highlighting immediately for better visual feedback
-			if (liverModelRef.current) {
-				liverModelRef.current.setSelectedInscription(inscriptionId);
-			}
-
-			console.log(`Inscription ${inscriptionId} clicked`);
-			console.log(
-				`Camera world position: [${cameraWorldPosition.x.toFixed(3)}, ${cameraWorldPosition.y.toFixed(3)}, ${cameraWorldPosition.z.toFixed(3)}], target: [${cameraWorldTarget.x.toFixed(3)}, ${cameraWorldTarget.y.toFixed(3)}, ${cameraWorldTarget.z.toFixed(3)}]`,
-			);
-			console.log(
-				`cameraPosition: new THREE.Vector3(${cameraLocalPosition.x.toFixed(3)}, ${cameraLocalPosition.y.toFixed(3)}, ${cameraLocalPosition.z.toFixed(3)}), cameraTarget: new THREE.Vector3(${cameraLocalTarget.x.toFixed(3)}, ${cameraLocalTarget.y.toFixed(3)}, ${cameraLocalTarget.z.toFixed(3)})`,
-			);
-			const data = inscription as Inscription;
 			if (
-				cameraControllerRef.current &&
-				data.cameraPosition &&
-				data.cameraTarget
-			) {
-				cameraControllerRef.current.focusOnTransformed(
-					data.cameraPosition,
-					data.cameraTarget,
-					modelMatrix,
+				!inscription ||
+				!cameraControllerRef.current ||
+				!liverModelRef.current
+			)
+				return;
+
+			setHasInteracted(true);
+			liverModelRef.current.setSelectedInscription(inscriptionId);
+
+			if (cameraControllerRef.current) {
+				cameraControllerRef.current.focusOn(
+					inscription.cameraTarget,
+					inscription.cameraPosition,
 					1000,
-					isMobile,
+					true,
+					undefined,
+					modelMatrix,
 				);
 				// Clear any existing timeout before setting a new one
 				if (panelTimeoutRef.current) {
 					clearTimeout(panelTimeoutRef.current);
 				}
-				panelTimeoutRef.current = window.setTimeout(() => {
-					setSelectedInscription(inscription);
-					panelTimeoutRef.current = null;
-				}, 1000);
-			} else {
-				setSelectedInscription(inscription);
 			}
+			setSelectedInscription(inscription);
 		},
 		[],
 	);
@@ -174,43 +153,16 @@ function PiacenzaLiverScene() {
 		if (!cameraControllerRef.current || !liverModelRef.current) return;
 
 		setHasInteracted(true);
-		console.log(`Inscription ${inscription.id} selected from list`);
-
-		// Set highlighting immediately for better visual feedback
 		liverModelRef.current.setSelectedInscription(inscription.id);
-
-		// Set inscription immediately for desktop, after camera animation for mobile
-		if (isMobile) {
-			// Mobile: wait for camera animation to complete
-			if (inscription.cameraPosition && inscription.cameraTarget) {
-				cameraControllerRef.current.focusOnTransformed(
-					inscription.cameraPosition,
-					inscription.cameraTarget,
-					liverModelRef.current.getModelMatrix(),
-					800,
-					isMobile,
-					() => {
-						setSelectedInscription(inscription);
-					},
-				);
-			} else {
-				setSelectedInscription(inscription);
-			}
-		} else {
-			// Desktop: set immediately
-			setSelectedInscription(inscription);
-
-			// Still animate camera if position data exists
-			if (inscription.cameraPosition && inscription.cameraTarget) {
-				cameraControllerRef.current.focusOnTransformed(
-					inscription.cameraPosition,
-					inscription.cameraTarget,
-					liverModelRef.current.getModelMatrix(),
-					800,
-					isMobile,
-				);
-			}
-		}
+		setSelectedInscription(inscription);
+		cameraControllerRef.current.focusOn(
+			inscription.cameraTarget,
+			inscription.cameraPosition,
+			800,
+			true,
+			undefined,
+			liverModelRef.current.getModelMatrix(),
+		);
 	}, []);
 
 	const handleBackgroundClick = useCallback(() => {
@@ -304,7 +256,7 @@ function PiacenzaLiverScene() {
 		controls.enableDamping = true;
 		controls.dampingFactor = 0.05;
 		controls.maxPolarAngle = Math.PI;
-		controls.minDistance = 2.5;
+		controls.minDistance = 1.5;
 		controls.maxDistance = 10;
 		controls.target.copy(new THREE.Vector3(0, 0, 0));
 		controlsRef.current = controls;
@@ -377,6 +329,36 @@ function PiacenzaLiverScene() {
 		const animate = () => {
 			animationIdRef.current = requestAnimationFrame(animate);
 			controls.update();
+
+			// Update camera debug info
+			if (
+				import.meta.env.VITE_DEBUG_ENABLED === "true" &&
+				import.meta.env.VITE_DEBUG_SHOW_CAMERA_INFO === "true"
+			) {
+				// Convert world coordinates to model-local coordinates
+				const modelMatrix = liverModelRef.current?.getModelMatrix();
+				const modelMatrixInverse = modelMatrix?.clone().invert();
+
+				const worldPosition = camera.position.clone();
+				const worldTarget = controls.target.clone();
+
+				let localPosition = worldPosition.clone();
+				let localTarget = worldTarget.clone();
+
+				if (modelMatrixInverse) {
+					localPosition = worldPosition
+						.clone()
+						.applyMatrix4(modelMatrixInverse);
+					localTarget = worldTarget.clone().applyMatrix4(modelMatrixInverse);
+				}
+
+				setCameraDebugInfo({
+					position: worldPosition,
+					target: worldTarget,
+					localPosition: localPosition,
+					localTarget: localTarget,
+				});
+			}
 
 			renderer.render(scene, camera);
 		};
@@ -485,6 +467,96 @@ function PiacenzaLiverScene() {
 					isModifierKeyPressed={isModifierKeyPressed}
 					isMouseOverPanel={isMouseOverPanel}
 				/>
+
+				{/* Debug Overlay */}
+				{import.meta.env.VITE_DEBUG_ENABLED === "true" &&
+					import.meta.env.VITE_DEBUG_SHOW_CAMERA_INFO === "true" &&
+					cameraDebugInfo && (
+						<div
+							style={{
+								position: "fixed",
+								top: "10px",
+								left: "10px",
+								background: "rgba(0, 0, 0, 0.8)",
+								color: "white",
+								padding: "10px",
+								fontFamily: "monospace",
+								fontSize: "12px",
+								borderRadius: "5px",
+								zIndex: 1000,
+								pointerEvents: "none",
+							}}
+						>
+							<div style={{ fontWeight: "bold", marginBottom: "5px" }}>
+								WORLD COORDINATES
+							</div>
+							<div>Camera Position:</div>
+							<div>x: {cameraDebugInfo.position.x.toFixed(3)}</div>
+							<div>y: {cameraDebugInfo.position.y.toFixed(3)}</div>
+							<div>z: {cameraDebugInfo.position.z.toFixed(3)}</div>
+							<div style={{ marginTop: "10px" }}>Camera Target:</div>
+							<div>x: {cameraDebugInfo.target.x.toFixed(3)}</div>
+							<div>y: {cameraDebugInfo.target.y.toFixed(3)}</div>
+							<div>z: {cameraDebugInfo.target.z.toFixed(3)}</div>
+
+							<div
+								style={{
+									fontWeight: "bold",
+									marginTop: "15px",
+									marginBottom: "5px",
+								}}
+							>
+								LOCAL COORDINATES
+							</div>
+							<div>Camera Position:</div>
+							<div>x: {cameraDebugInfo.localPosition.x.toFixed(3)}</div>
+							<div>y: {cameraDebugInfo.localPosition.y.toFixed(3)}</div>
+							<div>z: {cameraDebugInfo.localPosition.z.toFixed(3)}</div>
+							<div style={{ marginTop: "10px" }}>Camera Target:</div>
+							<div>x: {cameraDebugInfo.localTarget.x.toFixed(3)}</div>
+							<div>y: {cameraDebugInfo.localTarget.y.toFixed(3)}</div>
+							<div>z: {cameraDebugInfo.localTarget.z.toFixed(3)}</div>
+						</div>
+					)}
+
+				{/* Center Dot */}
+				{import.meta.env.VITE_DEBUG_ENABLED === "true" &&
+					import.meta.env.VITE_DEBUG_SHOW_CENTER_DOT === "true" && (
+						<>
+							{/* Original center */}
+							<div
+								style={{
+									position: "fixed",
+									top: "50%",
+									left: "50%",
+									width: "4px",
+									height: "4px",
+									background: "red",
+									borderRadius: "50%",
+									transform: "translate(-50%, -50%)",
+									zIndex: 1000,
+									pointerEvents: "none",
+								}}
+							/>
+							{/* New center (offset based on actual screen projection) */}
+							{cameraDebugInfo?.offsetTargetScreenPos && (
+								<div
+									style={{
+										position: "fixed",
+										top: `${cameraDebugInfo.offsetTargetScreenPos.y}px`,
+										left: `${cameraDebugInfo.offsetTargetScreenPos.x}px`,
+										width: "6px",
+										height: "6px",
+										background: "blue",
+										borderRadius: "50%",
+										transform: "translate(-50%, -50%)",
+										zIndex: 1000,
+										pointerEvents: "none",
+									}}
+								/>
+							)}
+						</>
+					)}
 
 				{!isLoading && <BraveDisclaimer />}
 

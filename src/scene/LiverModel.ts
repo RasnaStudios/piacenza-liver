@@ -180,32 +180,51 @@ export class LiverModel {
 		// Store the calculated center for reuse
 		this.liverCenter = worldCenter.clone();
 
-		// // DEBUG: Add world-space bounding box visualization
-		// const boxGeometry = new THREE.BoxGeometry(
-		// 	worldBoundingBox.max.x - worldBoundingBox.min.x,
-		// 	worldBoundingBox.max.y - worldBoundingBox.min.y,
-		// 	worldBoundingBox.max.z - worldBoundingBox.min.z,
-		// );
-		// const boxMaterial = new THREE.MeshBasicMaterial({
-		// 	color: 0xff0000,
-		// 	wireframe: true,
-		// 	transparent: true,
-		// 	opacity: 0.8,
-		// });
-		// const worldBoxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
-		// worldBoxMesh.position.copy(worldCenter);
-		// this.scene.add(worldBoxMesh);
+		if (
+			import.meta.env.VITE_DEBUG_ENABLED === "true" &&
+			import.meta.env.VITE_DEBUG_LIVER_BOUNDING_BOX === "true"
+		) {
+			// DEBUG: Add world-space bounding box visualization
+			const boxGeometry = new THREE.BoxGeometry(
+				worldBoundingBox.max.x - worldBoundingBox.min.x,
+				worldBoundingBox.max.y - worldBoundingBox.min.y,
+				worldBoundingBox.max.z - worldBoundingBox.min.z,
+			);
+			const boxMaterial = new THREE.MeshBasicMaterial({
+				color: 0xff0000,
+				wireframe: true,
+				transparent: true,
+				opacity: 0.8,
+			});
+			const worldBoxMesh = new THREE.Mesh(boxGeometry, boxMaterial);
+			worldBoxMesh.position.copy(worldCenter);
+			this.scene.add(worldBoxMesh);
+		}
 
-		// // DEBUG: Add camera target visualization (small sphere)
-		// const targetGeometry = new THREE.SphereGeometry(0.1, 16, 16);
-		// const targetMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 }); // Green sphere
-		// const targetSphere = new THREE.Mesh(targetGeometry, targetMaterial);
-		// targetSphere.position.copy(worldCenter);
-		// this.scene.add(targetSphere);
+		if (
+			import.meta.env.VITE_DEBUG_ENABLED === "true" &&
+			import.meta.env.VITE_DEBUG_LIVER_INSCRIPTION === "true"
+		) {
+			// Add green spheres at inscription camera targets for debugging
+			for (const inscription of liverInscriptions) {
+				if (inscription.cameraTarget) {
+					// Transform local coordinates to world coordinates
+					const worldTarget = inscription.cameraTarget.clone();
+					worldTarget.applyMatrix4(this.object.matrixWorld);
 
-		// console.log(
-		// 	"Debug visualizations added: red world-space bounding box, green camera target",
-		// );
+					const sphereGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+					const sphereMaterial = new THREE.MeshBasicMaterial({
+						color: 0x00ff00,
+						transparent: true,
+						opacity: 0.8,
+					});
+					const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+					sphere.position.copy(worldTarget);
+					sphere.name = `inscription-${inscription.id}-target`;
+					this.scene.add(sphere);
+				}
+			}
+		}
 	}
 
 	// Getter for the calculated liver center
@@ -350,6 +369,8 @@ export class LiverModel {
 					geom.computeBoundingBox();
 
 					mesh.material = baseMaterial;
+					mesh.castShadow = true;
+					mesh.receiveShadow = true;
 					this.mesh = mesh;
 
 					// Ensure uv2 exists so aoMap can work; duplicate uv if missing
@@ -385,13 +406,19 @@ export class LiverModel {
 				}
 			});
 
-			// Apply transforms
+			// Hide model during loading to prevent snap
+			object.visible = false;
+
+			// Apply transforms before adding to scene to avoid snap
 			object.scale.setScalar(SceneConfig.model.scale);
 			object.position.copy(SceneConfig.model.position);
 			object.rotation.setFromVector3(SceneConfig.model.rotation);
 
 			this.object = object;
 			this.scene.add(object);
+
+			// Show model after positioning
+			object.visible = true;
 			this.calculateLiverCenter();
 
 			(

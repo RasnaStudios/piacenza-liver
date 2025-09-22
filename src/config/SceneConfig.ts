@@ -27,21 +27,4 @@ export const SceneConfig = {
 			duration: 1500,
 		},
 	},
-
-	// Mobile-specific offset for inscription interactions
-	cameraOffset: {
-		mobile: {
-			positionOffset: new THREE.Vector3(0.0, 0.5, 0.5),
-			targetOffset: new THREE.Vector3(0.0, 0.5, 0.5),
-		},
-		desktop: {
-			positionOffset: new THREE.Vector3(0.0, 0.0, 0.0),
-			targetOffset: new THREE.Vector3(0.0, 0.0, 0.0),
-		},
-	},
-
-	// Reset animation duration
-	reset: {
-		duration: 800,
-	},
 };

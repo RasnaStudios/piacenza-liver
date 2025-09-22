@@ -16,6 +16,13 @@ dev-dist
 # Generated data files
 public/data/inscriptions.json
 
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

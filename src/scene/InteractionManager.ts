@@ -160,6 +160,41 @@ export class InteractionManager {
 				this.isShiftPressed || this.isMetaPressed,
 			);
 		}
+
+		// Debug camera position logging
+		if (
+			import.meta.env.VITE_DEBUG_ENABLED === "true" &&
+			event.key.toLowerCase() === "r"
+		) {
+			console.log("=== CAMERA DEBUG INFO ===");
+
+			// Convert world coordinates to model-local coordinates
+			const modelMatrix = this.liverModel.getModelMatrix();
+			const modelMatrixInverse = modelMatrix.clone().invert();
+
+			const localCameraPos = this.camera.position
+				.clone()
+				.applyMatrix4(modelMatrixInverse);
+			const localCameraTarget = this.controls.target
+				.clone()
+				.applyMatrix4(modelMatrixInverse);
+
+			console.log("World coordinates:");
+			console.log(
+				`World Position: ${this.camera.position.x.toFixed(3)}, ${this.camera.position.y.toFixed(3)}, ${this.camera.position.z.toFixed(3)}`,
+			);
+			console.log(
+				`World Target: ${this.controls.target.x.toFixed(3)}, ${this.controls.target.y.toFixed(3)}, ${this.controls.target.z.toFixed(3)}`,
+			);
+			console.log("Model-local coordinates:");
+			console.log(
+				`cameraPosition: new THREE.Vector3(${localCameraPos.x.toFixed(3)}, ${localCameraPos.y.toFixed(3)}, ${localCameraPos.z.toFixed(3)}),`,
+			);
+			console.log(
+				`cameraTarget: new THREE.Vector3(${localCameraTarget.x.toFixed(3)}, ${localCameraTarget.y.toFixed(3)}, ${localCameraTarget.z.toFixed(3)}),`,
+			);
+			console.log("========================");
+		}
 	}
 
 	private handleKeyUp(event: KeyboardEvent) {
