@@ -40,7 +40,15 @@ export function GroupSection({ selectedInscription }: GroupSectionProps) {
 				</Title>
 			</Group>
 
-			<Text className="font-primary" size="xl" fw={400}>
+			<Text
+				className="font-primary"
+				size="xl"
+				fw={400}
+				style={{
+					fontFamily:
+						"'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+				}}
+			>
 				{group.description}
 			</Text>
 		</Paper>
