@@ -89,7 +89,11 @@ export function InscriptionList({
 					<NumberBadge value={inscription.id} />
 					<Box
 						className="text-bronze-light font-primary"
-						style={{ fontSize: "18px" }}
+						style={{
+							fontSize: "16px",
+							fontFamily:
+								"'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+						}}
 					>
 						{getGodsDisplayNames(inscription.gods)}
 					</Box>

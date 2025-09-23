@@ -1,4 +1,4 @@
-import { MantineProvider, createTheme } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import * as THREE from "three";
@@ -734,19 +734,9 @@ function setupLighting(scene: THREE.Scene) {
 	scene.add(floor);
 }
 
-const theme = createTheme({
-	fontFamily: "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-	fontFamilyMonospace:
-		"'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-	headings: {
-		fontFamily:
-			"'Inter', 'Futura', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-	},
-});
-
 export default function App() {
 	return (
-		<MantineProvider theme={theme}>
+		<MantineProvider>
 			<PiacenzaLiverScene />
 		</MantineProvider>
 	);
