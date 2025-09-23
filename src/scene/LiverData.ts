@@ -587,7 +587,7 @@ export const liverInscriptions = [
 	},
 	{
 		id: 34,
-		etruscanText: "𐌋𐌖𐌔𐌋 / 𐌅𐌄𐌋𐌗",
+		etruscanText: "𐌋𐌅𐌔𐌋 / 𐌅𐌄𐌋𐌗",
 		transcription: "lvsl/velϰ",
 		gods: [
 			{ id: "lusal", form: "𐌋𐌅𐌔𐌋" },
