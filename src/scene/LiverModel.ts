@@ -647,7 +647,7 @@ export class LiverModel {
 					.timeline()
 					.to(
 						overlays.map((m) => m.material),
-						{ opacity: 0.5, duration: 0.6, ease: "power2.out" },
+						{ opacity: 0.3, duration: 0.3, ease: "power2.out" },
 					)
 					.to(
 						overlays.map((m) => m.material),
@@ -688,7 +688,7 @@ export class LiverModel {
 			overlays.push(mesh);
 
 			// Accelerate: 100ms -> 10ms
-			const delay = 100 - (90 * index) / inscriptions.length;
+			const delay = 200 - (150 * index) / inscriptions.length;
 			setTimeout(addNext, delay);
 			index++;
 		};

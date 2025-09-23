@@ -205,7 +205,10 @@ export class CameraController {
 		const startPos = this.camera.position.clone();
 		const cameraOffsets = getCameraAnimationOffsets();
 		const endPos = startPos.clone().add(cameraOffsets.positionOffset);
-		const target = finalTarget?.clone() || new THREE.Vector3(0, 0, 0);
+		const endTarget = finalTarget?.clone() || new THREE.Vector3(0, 0, 0);
+
+		// Start with the camera looking at the origin, then smoothly transition to the liver center
+		const startTarget = new THREE.Vector3(0, 0, 0);
 		const duration = SceneConfig.animation.camera.duration;
 
 		this.isAnimating = true;
@@ -225,8 +228,8 @@ export class CameraController {
 						t,
 					);
 					const tempTargetPos = new THREE.Vector3().lerpVectors(
-						target,
-						target,
+						startTarget,
+						endTarget,
 						t,
 					);
 
@@ -239,7 +242,7 @@ export class CameraController {
 					this.isAnimating = false;
 					this.currentTween = null;
 					this.lastManualPosition.copy(endPos);
-					this.lastManualTarget.copy(target);
+					this.lastManualTarget.copy(endTarget);
 					if (onComplete) onComplete();
 				},
 			},

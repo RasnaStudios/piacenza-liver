@@ -40,6 +40,7 @@ export class InteractionManager {
 	private touchStartPosition: { x: number; y: number } | null = null;
 	private touchMovedDuringTouch = false;
 	private lastTapTime = 0;
+	private isMultiTouch = false;
 
 	// Zoom detection
 	private initialCameraDistance: number | null = null;
@@ -311,6 +312,8 @@ export class InteractionManager {
 		if (currentDistance < initialDistance * 0.8 && !this.hasZoomed) {
 			this.hasZoomed = true;
 			this.callbacks.onZoomDetected();
+			// Clear any selected inscription when zoom is detected
+			this.callbacks.onBackgroundClick();
 		}
 	}
 
@@ -336,10 +339,25 @@ export class InteractionManager {
 			const touch = event.touches[0];
 			this.touchStartPosition = { x: touch.clientX, y: touch.clientY };
 			this.touchMovedDuringTouch = false;
+			this.isMultiTouch = false;
+		} else if (event.touches.length > 1) {
+			// Multi-touch detected (pinch/zoom gesture)
+			this.isMultiTouch = true;
+			this.touchStartPosition = null;
+			this.touchMovedDuringTouch = false;
+			// Clear any selected inscription during multi-touch
+			this.callbacks.onBackgroundClick();
 		}
 	}
 
 	private handleTouchMove(event: TouchEvent) {
+		if (event.touches.length > 1) {
+			// Multi-touch move (pinch/zoom gesture)
+			this.isMultiTouch = true;
+			this.touchMovedDuringTouch = true;
+			return;
+		}
+
 		if (this.touchStartPosition && event.touches.length === 1) {
 			const touch = event.touches[0];
 			const deltaX = Math.abs(touch.clientX - this.touchStartPosition.x);
@@ -353,6 +371,14 @@ export class InteractionManager {
 	}
 
 	private handleTouchEnd(event: TouchEvent) {
+		// Reset multi-touch state when touches end
+		if (this.isMultiTouch) {
+			this.isMultiTouch = false;
+			this.touchStartPosition = null;
+			this.touchMovedDuringTouch = false;
+			return;
+		}
+
 		if (this.isPanningOrRotating) {
 			this.touchStartPosition = null;
 			this.touchMovedDuringTouch = false;
