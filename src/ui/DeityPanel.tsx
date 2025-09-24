@@ -205,7 +205,7 @@ export function DeityPanel({
 							touchAction: "pan-y",
 						}}
 						p="md"
-						onTouchStart={(e) => e.stopPropagation()}
+						onTouchStart={(e: React.TouchEvent) => e.stopPropagation()}
 					>
 						<Stack gap="lg">
 							<Box>

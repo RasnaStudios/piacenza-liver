@@ -51,7 +51,7 @@
 					"noUnusedVariables": "error"
 				},
 				"suspicious": {
-					"noExplicitAny": "off"
+					"noExplicitAny": "warn"
 				},
 				"style": {
 					"noNonNullAssertion": "warn",
