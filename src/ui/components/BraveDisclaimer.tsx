@@ -165,17 +165,34 @@ export function BraveDisclaimer() {
 						}}
 					>
 						{canSavePreference && (
-							<div className="flex items-center">
+							<div
+								style={{
+									display: "flex",
+									alignItems: "flex-start",
+									gap: "12px",
+								}}
+							>
 								<input
 									id={checkboxId}
 									type="checkbox"
 									checked={dontShowAgain}
 									onChange={(e) => setDontShowAgain(e.target.checked)}
-									className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+									style={{
+										height: "16px",
+										width: "16px",
+										marginTop: "2px",
+										cursor: "pointer",
+										accentColor: "#c9a876",
+									}}
 								/>
 								<label
 									htmlFor={checkboxId}
-									className="ml-2 block text-sm text-gray-700"
+									style={{
+										fontSize: "14px",
+										color: "#c9a876",
+										cursor: "pointer",
+										lineHeight: "1.4",
+									}}
 								>
 									Don't show this message again
 								</label>

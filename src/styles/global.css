@@ -3,7 +3,7 @@
 	font-family: "Cinzel";
 	font-style: normal;
 	font-weight: 400;
-	font-display: swap;
+	font-display: block;
 	src: url("/fonts/cinzel-400.woff2") format("woff2");
 }
 
@@ -11,7 +11,7 @@
 	font-family: "Cinzel";
 	font-style: normal;
 	font-weight: 600;
-	font-display: swap;
+	font-display: block;
 	src: url("/fonts/cinzel-400.woff2") format("woff2");
 }
 
@@ -19,7 +19,7 @@
 	font-family: "Cinzel";
 	font-style: normal;
 	font-weight: 700;
-	font-display: swap;
+	font-display: block;
 	src: url("/fonts/cinzel-400.woff2") format("woff2");
 }
 
@@ -147,6 +147,8 @@ html {
 
 /* Responsive title styles */
 .title-responsive {
+	/* biome-ignore lint/a11y/useGenericFontNames: We want only Cinzel font, no fallbacks */
+	font-family: "Cinzel";
 	font-size: clamp(28px, 4.5vw, 60px);
 	letter-spacing: 6px;
 }

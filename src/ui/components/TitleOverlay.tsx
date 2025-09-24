@@ -43,7 +43,7 @@ export function TitleOverlay({ hasInteracted }: TitleOverlayProps) {
 					<Text
 						fw={100}
 						ta="center"
-						ff="Cinzel, Playfair Display, Crimson Text, Times New Roman, serif"
+						ff="Cinzel"
 						style={{
 							...styles,
 							fontSize: "clamp(28px, 4.5vw, 60px)",
