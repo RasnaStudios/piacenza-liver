@@ -18,10 +18,15 @@ import { HoverTooltip } from "./ui/components/HoverTooltip";
 import { DeityPanel } from "./ui/DeityPanel";
 import { InscriptionList } from "./ui/InscriptionList";
 import { LoadingScreen } from "./ui/LoadingScreen";
+// Hooks
+import { useOrientation } from "./hooks/useOrientation";
 import "@mantine/core/styles.css";
 import "./styles/global.css";
 
 function PiacenzaLiverScene() {
+	// Orientation detection
+	const isPortrait = useOrientation();
+
 	// State management
 	const [selectedInscription, setSelectedInscription] =
 		useState<Inscription | null>(null);
@@ -435,6 +440,30 @@ function PiacenzaLiverScene() {
 			setHoveredSection(null);
 		}
 	}, [isMouseOverPanel]);
+
+	// Apply CSS classes to clip the Three.js canvas when panel is open
+	useEffect(() => {
+		const container = containerRef.current;
+		if (!container) return;
+
+		// Apply appropriate CSS classes based on panel state and device
+		if (selectedInscription) {
+			if (isMobile && isPortrait) {
+				container.classList.add("panel-open-mobile");
+				container.classList.remove("panel-open-desktop");
+			} else {
+				container.classList.add("panel-open-desktop");
+				container.classList.remove("panel-open-mobile");
+			}
+		} else {
+			container.classList.remove("panel-open-desktop", "panel-open-mobile");
+		}
+
+		// Cleanup function
+		return () => {
+			container.classList.remove("panel-open-desktop", "panel-open-mobile");
+		};
+	}, [selectedInscription, isMobile, isPortrait]);
 
 	return (
 		<div className="piacenza-liver-app">

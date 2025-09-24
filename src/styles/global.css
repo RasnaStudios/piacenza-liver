@@ -33,6 +33,7 @@ html {
 	width: 100%;
 	height: 100vh;
 	overflow: hidden;
+	background: #000000; /* Black background to prevent white space */
 }
 
 .three-container {
@@ -41,6 +42,17 @@ html {
 	position: relative;
 	overflow: hidden;
 	background: #000000; /* Pure black museum background */
+	transition: transform 0.3s ease-out;
+}
+
+/* Desktop: move canvas left to make room for right panel */
+.three-container.panel-open-desktop {
+	transform: translateX(calc(-1 * min(45vw, 400px) / 3));
+}
+
+/* Mobile: move canvas up to make room for bottom panel */
+.three-container.panel-open-mobile {
+	transform: translateY(calc(-1 * 33vh / 3));
 }
 
 /* Dynamic centered title overlay - hides permanently after first interaction */
