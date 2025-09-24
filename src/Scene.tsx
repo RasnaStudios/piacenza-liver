@@ -6,6 +6,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // Core 3D logic
 import { CameraController } from "./camera/Controller";
 import { SceneConfig } from "./config/SceneConfig";
+// Hooks
+import { useOrientation } from "./hooks/useOrientation";
 import { InteractionManager } from "./scene/InteractionManager";
 // Data
 import { type Inscription, liverInscriptions } from "./scene/LiverData";
@@ -18,8 +20,6 @@ import { HoverTooltip } from "./ui/components/HoverTooltip";
 import { DeityPanel } from "./ui/DeityPanel";
 import { InscriptionList } from "./ui/InscriptionList";
 import { LoadingScreen } from "./ui/LoadingScreen";
-// Hooks
-import { useOrientation } from "./hooks/useOrientation";
 import "@mantine/core/styles.css";
 import "./styles/global.css";
 
@@ -299,7 +299,7 @@ function PiacenzaLiverScene() {
 						);
 					}, liverModelRef.current?.getLiverCenter() || undefined);
 				}
-			}, 800);
+			}, 2000); // 2 second delay before animation starts
 		});
 
 		// Add WebGL context loss handling
@@ -463,7 +463,7 @@ function PiacenzaLiverScene() {
 		return () => {
 			container.classList.remove("panel-open-desktop", "panel-open-mobile");
 		};
-	}, [selectedInscription, isMobile, isPortrait]);
+	}, [selectedInscription, isPortrait]);
 
 	return (
 		<div className="piacenza-liver-app">

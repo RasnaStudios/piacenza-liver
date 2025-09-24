@@ -638,37 +638,84 @@ export class LiverModel {
 
 		const inscriptions = liverInscriptions.slice();
 		const overlays: THREE.Mesh[] = [];
+
+		// Use configuration from SceneConfig
+		const config = SceneConfig.pulse;
+
 		let index = 0;
 
 		const addNext = () => {
 			if (index >= inscriptions.length) {
-				// Final pulse all together
-				gsap
-					.timeline()
-					.to(
-						overlays.map((m) => m.material),
-						{ opacity: 0.3, duration: 0.3, ease: "power2.out" },
-					)
-					.to(
-						overlays.map((m) => m.material),
-						{
-							opacity: 0,
-							duration: 0.6,
-							ease: "power2.in",
-							onComplete: () => {
-								overlays.forEach((mesh) => {
-									(mesh.parent || this.scene).remove(mesh);
-									if (Array.isArray(mesh.material)) {
-										mesh.material.forEach((mat) => {
-											mat.dispose();
-										});
-									} else {
-										mesh.material.dispose();
-									}
-								});
+				// Wait for trail to finish, then do final pulse
+				setTimeout(() => {
+					// Create final pulse with all inscriptions
+					const finalOverlays: THREE.Mesh[] = [];
+
+					inscriptions.forEach((inscription) => {
+						const material = this.hoveredMaterial?.clone();
+						if (!material || !this.mesh?.geometry) return;
+
+						material.opacity = config.finalColor.startOpacity;
+						this.applyHighlightToMaterial(
+							inscription.id,
+							material,
+							config.finalColor.highlightOpacity,
+						);
+
+						const mesh = new THREE.Mesh(this.mesh.geometry, material);
+						mesh.position.copy(this.mesh.position);
+						mesh.rotation.copy(this.mesh.rotation);
+						mesh.scale.copy(this.mesh.scale);
+
+						(this.mesh?.parent || this.scene).add(mesh);
+						finalOverlays.push(mesh);
+					});
+
+					// Final pulse animation - simple light pulse
+					gsap
+						.timeline()
+						.to(
+							finalOverlays.map((m) => m.material),
+							{
+								opacity: config.finalPulse.peakOpacity,
+								duration: config.finalPulse.riseDuration,
+								ease: "power2.out",
 							},
-						},
-					);
+						)
+						.to(
+							finalOverlays.map((m) => m.material),
+							{
+								opacity: 0,
+								duration: config.finalPulse.fallDuration,
+								ease: "power2.in",
+								onComplete: () => {
+									// Cleanup final overlays
+									finalOverlays.forEach((mesh) => {
+										(mesh.parent || this.scene).remove(mesh);
+										if (Array.isArray(mesh.material)) {
+											mesh.material.forEach((mat) => {
+												mat.dispose();
+											});
+										} else {
+											mesh.material.dispose();
+										}
+									});
+
+									// Cleanup trail overlays
+									overlays.forEach((mesh) => {
+										(mesh.parent || this.scene).remove(mesh);
+										if (Array.isArray(mesh.material)) {
+											mesh.material.forEach((mat) => {
+												mat.dispose();
+											});
+										} else {
+											mesh.material.dispose();
+										}
+									});
+								},
+							},
+						);
+				}, config.trailDuration + config.finalPulseDelay); // Wait for trail to finish
 				return;
 			}
 
@@ -676,8 +723,12 @@ export class LiverModel {
 			const material = this.hoveredMaterial?.clone();
 			if (!material || !this.mesh?.geometry) return;
 
-			material.opacity = 0.6;
-			this.applyHighlightToMaterial(inscriptions[index].id, material, 0.4);
+			material.opacity = config.trailColor.startOpacity;
+			this.applyHighlightToMaterial(
+				inscriptions[index].id,
+				material,
+				config.trailColor.highlightOpacity,
+			);
 
 			const mesh = new THREE.Mesh(this.mesh.geometry, material);
 			mesh.position.copy(this.mesh.position);
@@ -687,9 +738,21 @@ export class LiverModel {
 			(this.mesh?.parent || this.scene).add(mesh);
 			overlays.push(mesh);
 
-			// Accelerate: 100ms -> 10ms
-			const delay = 200 - (150 * index) / inscriptions.length;
-			setTimeout(addNext, delay);
+			// Fade out this inscription after TRAIL_DURATION
+			setTimeout(() => {
+				gsap.to(material, {
+					opacity: 0,
+					duration: config.individualFadeDuration,
+					ease: "power2.in",
+					onComplete: () => {
+						(mesh.parent || this.scene).remove(mesh);
+						material.dispose();
+					},
+				});
+			}, config.trailDuration);
+
+			// Move to next inscription
+			setTimeout(addNext, config.trailSpeed);
 			index++;
 		};
 

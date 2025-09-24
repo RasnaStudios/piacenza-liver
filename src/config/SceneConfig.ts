@@ -27,4 +27,30 @@ export const SceneConfig = {
 			duration: 1500,
 		},
 	},
+
+	// Pulse animation configuration
+	pulse: {
+		trailSpeed: 80, // milliseconds between each inscription (lower = faster)
+		trailDuration: 400, // how long each inscription stays lit (milliseconds)
+		finalPulseDelay: 200, // extra delay before final pulse (milliseconds)
+		individualFadeDuration: 0.1, // duration of individual inscription fade (seconds)
+
+		// Final pulse - simple light pulse effect
+		finalPulse: {
+			riseDuration: 1.2, // slow rise to peak (seconds)
+			fallDuration: 1.0, // slow fall from peak (seconds)
+			peakOpacity: 0.4, // peak brightness
+		},
+
+		// Color animation phases
+		trailColor: {
+			startOpacity: 0.6, // initial opacity when inscription lights up
+			highlightOpacity: 0.4, // highlight intensity for trail inscriptions
+		},
+
+		finalColor: {
+			startOpacity: 0.0, // initial opacity for final pulse inscriptions
+			highlightOpacity: 0.4, // highlight intensity for final pulse inscriptions
+		},
+	},
 };
