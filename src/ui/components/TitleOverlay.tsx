@@ -6,16 +6,11 @@ interface TitleOverlayProps {
 }
 
 export function TitleOverlay({ hasInteracted }: TitleOverlayProps) {
-	const [isVisible, setIsVisible] = useState(false);
-	const [shouldRender, setShouldRender] = useState(false);
+	const [isVisible, setIsVisible] = useState(true); // Show immediately
+	const [shouldRender, setShouldRender] = useState(true); // Show by default
 
 	useEffect(() => {
-		if (!hasInteracted) {
-			// No interaction yet - show with fade in
-			setShouldRender(true);
-			// Small delay to ensure DOM is ready for animation
-			setTimeout(() => setIsVisible(true), 10);
-		} else if (hasInteracted && shouldRender) {
+		if (hasInteracted && shouldRender) {
 			// User interacted - fade out
 			setIsVisible(false);
 			// Remove from DOM after animation completes
