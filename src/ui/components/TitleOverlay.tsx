@@ -15,6 +15,10 @@ export function TitleOverlay({ hasInteracted }: TitleOverlayProps) {
 			setIsVisible(false);
 			// Remove from DOM after animation completes
 			setTimeout(() => setShouldRender(false), 800);
+		} else if (!hasInteracted && !shouldRender) {
+			// User reset - bring back the title
+			setShouldRender(true);
+			setIsVisible(true);
 		}
 	}, [hasInteracted, shouldRender]);
 
