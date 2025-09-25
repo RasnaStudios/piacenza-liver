@@ -42,6 +42,10 @@ export class InteractionManager {
 	private lastTapTime = 0;
 	private isMultiTouch = false;
 
+	// 3-finger model rotation state
+	private isThreeFingerTouch = false;
+	private lastThreeFingerPosition: { x: number; y: number } | null = null;
+
 	// Zoom detection
 	private initialCameraDistance: number | null = null;
 	private hasZoomed = false;
@@ -335,22 +339,64 @@ export class InteractionManager {
 	}
 
 	private handleTouchStart(event: TouchEvent) {
-		if (event.touches.length === 1) {
+		if (event.touches.length === 3) {
+			// 3-finger touch for model rotation
+			this.isThreeFingerTouch = true;
+			this.isMultiTouch = false;
+			const touch = event.touches[0]; // Use first touch as reference
+			this.lastThreeFingerPosition = { x: touch.clientX, y: touch.clientY };
+			this.touchStartPosition = null;
+			this.touchMovedDuringTouch = false;
+			event.preventDefault(); // Prevent default 3-finger gestures
+		} else if (event.touches.length === 1) {
 			const touch = event.touches[0];
 			this.touchStartPosition = { x: touch.clientX, y: touch.clientY };
 			this.touchMovedDuringTouch = false;
 			this.isMultiTouch = false;
-		} else if (event.touches.length > 1) {
-			// Multi-touch detected (pinch/zoom gesture)
+			this.isThreeFingerTouch = false;
+		} else if (event.touches.length === 2) {
+			// 2-finger touch (pinch/zoom gesture)
 			this.isMultiTouch = true;
+			this.isThreeFingerTouch = false;
 			this.touchStartPosition = null;
 			this.touchMovedDuringTouch = false;
 			// Clear any selected inscription during multi-touch
 			this.callbacks.onBackgroundClick();
+		} else if (event.touches.length > 3) {
+			// More than 3 fingers - ignore
+			this.isMultiTouch = true;
+			this.isThreeFingerTouch = false;
+			this.touchStartPosition = null;
+			this.touchMovedDuringTouch = false;
 		}
 	}
 
 	private handleTouchMove(event: TouchEvent) {
+		if (event.touches.length === 3 && this.isThreeFingerTouch) {
+			// 3-finger model rotation
+			const touch = event.touches[0]; // Use first touch as reference
+			const currentPosition = { x: touch.clientX, y: touch.clientY };
+
+			if (this.lastThreeFingerPosition) {
+				const deltaX = currentPosition.x - this.lastThreeFingerPosition.x;
+				const deltaY = currentPosition.y - this.lastThreeFingerPosition.y;
+
+				const liverObject = this.liverModel.getObject();
+				if (liverObject) {
+					// Rotation sensitivity for touch (slightly higher than mouse)
+					const rotationSpeed = 0.015;
+
+					// Apply rotation: horizontal movement = Y rotation, vertical movement = X rotation
+					liverObject.rotation.y += deltaX * rotationSpeed;
+					liverObject.rotation.x += deltaY * rotationSpeed;
+				}
+			}
+
+			this.lastThreeFingerPosition = currentPosition;
+			event.preventDefault();
+			return;
+		}
+
 		if (event.touches.length > 1) {
 			// Multi-touch move (pinch/zoom gesture)
 			this.isMultiTouch = true;
@@ -371,6 +417,15 @@ export class InteractionManager {
 	}
 
 	private handleTouchEnd(event: TouchEvent) {
+		// Reset 3-finger touch state
+		if (this.isThreeFingerTouch) {
+			this.isThreeFingerTouch = false;
+			this.lastThreeFingerPosition = null;
+			this.touchStartPosition = null;
+			this.touchMovedDuringTouch = false;
+			return;
+		}
+
 		// Reset multi-touch state when touches end
 		if (this.isMultiTouch) {
 			this.isMultiTouch = false;
