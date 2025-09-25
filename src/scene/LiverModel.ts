@@ -276,8 +276,12 @@ export class LiverModel {
 				configureTexture(tex, {
 					wrapS: THREE.ClampToEdgeWrapping,
 					wrapT: THREE.ClampToEdgeWrapping,
-					colorSpace: THREE.LinearSRGBColorSpace,
+					colorSpace: THREE.SRGBColorSpace,
 					flipY: baseColor.flipY,
+					// Improved filtering for smoother texture blending
+					minFilter: THREE.LinearMipmapLinearFilter,
+					magFilter: THREE.LinearFilter,
+					generateMipmaps: true,
 				});
 			});
 
@@ -330,11 +334,13 @@ export class LiverModel {
 				depthWrite: true,
 				depthTest: true,
 
-				// Material properties
-				metalness: 1.0,
-				roughness: 1.0,
-				aoMapIntensity: 1.0,
-				flatShading: true, // Smooth shading helps hide mesh topology
+				// Material properties for color reproduction and blending
+				metalness: 0.1, // Metalness to reduce harsh reflections
+				roughness: 0.8, // Roughness for softer, larger reflections
+				aoMapIntensity: 0.8, // AO intensity for smoother transitions
+				flatShading: false, // Smooth shading for lighting response
+				// Additional properties for blending
+				normalScale: new THREE.Vector2(0.8, 0.8), // Normal intensity for smoother surface
 			});
 
 			baseMaterial.shadowSide = THREE.FrontSide;

@@ -641,16 +641,16 @@ function PiacenzaLiverScene({
 
 // Lighting setup function
 function setupLighting(scene: THREE.Scene) {
-	const lightColor = 0xfff4e6;
+	const lightColor = 0xffffff; // Neutral white light
 
 	// 3-Point Lighting Setup
 
 	// 1. KEY LIGHT - Spotlight for dramatic shadows on floor
-	const keyLight = new THREE.SpotLight(0xfff4e6, 80.0);
+	const keyLight = new THREE.SpotLight(0xffffff, 60.0); // Intensity for softer reflections
 	keyLight.position.set(0, 6, 3);
 	keyLight.target.position.set(0, 0, 0);
-	keyLight.angle = Math.PI / 6;
-	keyLight.penumbra = 0.9;
+	keyLight.angle = Math.PI / 3; // Wide angle for diffused lighting
+	keyLight.penumbra = 0.95; // Soft penumbra edges
 	keyLight.decay = 2;
 	keyLight.distance = 15;
 	keyLight.castShadow = true;
@@ -658,31 +658,49 @@ function setupLighting(scene: THREE.Scene) {
 	keyLight.shadow.mapSize.height = 256;
 	keyLight.shadow.camera.near = 0.1;
 	keyLight.shadow.camera.far = 15;
-	keyLight.shadow.camera.fov = 30;
+	keyLight.shadow.camera.fov = 45; // FOV to match the light angle
 	keyLight.shadow.bias = -0.0001;
 	keyLight.shadow.normalBias = 0.02;
 	(keyLight.shadow as unknown as THREE.DirectionalLightShadow).radius = 8;
 	scene.add(keyLight);
 	scene.add(keyLight.target);
 
-	// 2. FILL LIGHT - Softer light to fill shadows (front-left, lower intensity)
-	const fillLight = new THREE.DirectionalLight(0xfff4e6, 0.8);
+	// 2. FILL LIGHT - Softer light to fill shadows (front-left)
+	const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
 	fillLight.position.set(-6, 4, 4);
 	fillLight.target.position.set(0, 0, 0);
-	fillLight.castShadow = false;
+	fillLight.castShadow = true; // Enable shadow casting
+	fillLight.shadow.mapSize.width = 256;
+	fillLight.shadow.mapSize.height = 256;
+	fillLight.shadow.camera.near = 0.1;
+	fillLight.shadow.camera.far = 20;
+	fillLight.shadow.camera.left = -10;
+	fillLight.shadow.camera.right = 10;
+	fillLight.shadow.camera.top = 10;
+	fillLight.shadow.camera.bottom = -10;
+	fillLight.shadow.bias = -0.0001;
 	scene.add(fillLight);
 	scene.add(fillLight.target);
 
 	// 3. BACK LIGHT - Rim lighting from behind (creates separation)
-	const backLight = new THREE.DirectionalLight(0xfff4e6, 0.4);
+	const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
 	backLight.position.set(-2, 6, -8);
 	backLight.target.position.set(0, 0, 0);
-	backLight.castShadow = false;
+	backLight.castShadow = true; // Enable shadow casting
+	backLight.shadow.mapSize.width = 256;
+	backLight.shadow.mapSize.height = 256;
+	backLight.shadow.camera.near = 0.1;
+	backLight.shadow.camera.far = 20;
+	backLight.shadow.camera.left = -10;
+	backLight.shadow.camera.right = 10;
+	backLight.shadow.camera.top = 10;
+	backLight.shadow.camera.bottom = -10;
+	backLight.shadow.bias = -0.0001;
 	scene.add(backLight);
 	scene.add(backLight.target);
 
 	// Subtle bottom fill for inscription visibility
-	const bottomFill = new THREE.PointLight(lightColor, 8, 12, 2);
+	const bottomFill = new THREE.PointLight(lightColor, 6, 12, 2);
 	bottomFill.position.set(0, -6, 0);
 	bottomFill.castShadow = false;
 	scene.add(bottomFill);
@@ -761,7 +779,7 @@ function setupLighting(scene: THREE.Scene) {
 	animateParticles();
 
 	// Minimal ambient light for dramatic museum effect
-	const ambientLight = new THREE.AmbientLight(0x1a1611, 1);
+	const ambientLight = new THREE.AmbientLight(0x404040, 1.0); // Ambient light for blending
 	scene.add(ambientLight);
 
 	// Large museum floor plane - dark but receives shadows
