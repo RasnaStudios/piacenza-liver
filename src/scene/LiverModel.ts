@@ -271,8 +271,8 @@ export class LiverModel {
 				flipY: false,
 			});
 
-			// Configure PBR textures
-			[baseColor, normalTex, ormTex].forEach((tex) => {
+			// Configure base color and ORM textures
+			[baseColor, ormTex].forEach((tex) => {
 				configureTexture(tex, {
 					wrapS: THREE.ClampToEdgeWrapping,
 					wrapT: THREE.ClampToEdgeWrapping,
@@ -283,6 +283,17 @@ export class LiverModel {
 					magFilter: THREE.LinearFilter,
 					generateMipmaps: true,
 				});
+			});
+
+			// Configure normal map separately with proper settings
+			configureTexture(normalTex, {
+				wrapS: THREE.ClampToEdgeWrapping,
+				wrapT: THREE.ClampToEdgeWrapping,
+				colorSpace: THREE.NoColorSpace,
+				flipY: normalTex.flipY,
+				minFilter: THREE.LinearMipmapLinearFilter,
+				magFilter: THREE.LinearFilter,
+				generateMipmaps: true,
 			});
 
 			// Configure atlas texture for smooth highlights
@@ -340,7 +351,7 @@ export class LiverModel {
 				aoMapIntensity: 0.8, // AO intensity for smoother transitions
 				flatShading: false, // Smooth shading for lighting response
 				// Additional properties for blending
-				normalScale: new THREE.Vector2(0.8, 0.8), // Normal intensity for smoother surface
+				normalScale: new THREE.Vector2(1.0, 1.0), // Full normal intensity with proper configuration
 			});
 
 			baseMaterial.shadowSide = THREE.FrontSide;

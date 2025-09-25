@@ -646,7 +646,7 @@ function setupLighting(scene: THREE.Scene) {
 	// 3-Point Lighting Setup
 
 	// 1. KEY LIGHT - Spotlight for dramatic shadows on floor
-	const keyLight = new THREE.SpotLight(0xffffff, 60.0); // Intensity for softer reflections
+	const keyLight = new THREE.SpotLight(0xffffff, 150.0); // Intensity for softer reflections
 	keyLight.position.set(0, 6, 3);
 	keyLight.target.position.set(0, 0, 0);
 	keyLight.angle = Math.PI / 3; // Wide angle for diffused lighting
@@ -666,7 +666,7 @@ function setupLighting(scene: THREE.Scene) {
 	scene.add(keyLight.target);
 
 	// 2. FILL LIGHT - Softer light to fill shadows (front-left)
-	const fillLight = new THREE.DirectionalLight(0xffffff, 0.3);
+	const fillLight = new THREE.DirectionalLight(0xffffff, 0.8);
 	fillLight.position.set(-6, 4, 4);
 	fillLight.target.position.set(0, 0, 0);
 	fillLight.castShadow = true; // Enable shadow casting
@@ -683,7 +683,7 @@ function setupLighting(scene: THREE.Scene) {
 	scene.add(fillLight.target);
 
 	// 3. BACK LIGHT - Rim lighting from behind (creates separation)
-	const backLight = new THREE.DirectionalLight(0xffffff, 0.3);
+	const backLight = new THREE.DirectionalLight(0xffffff, 0.8);
 	backLight.position.set(-2, 6, -8);
 	backLight.target.position.set(0, 0, 0);
 	backLight.castShadow = true; // Enable shadow casting
@@ -700,7 +700,7 @@ function setupLighting(scene: THREE.Scene) {
 	scene.add(backLight.target);
 
 	// Subtle bottom fill for inscription visibility
-	const bottomFill = new THREE.PointLight(lightColor, 6, 12, 2);
+	const bottomFill = new THREE.PointLight(lightColor, 10, 100, 2);
 	bottomFill.position.set(0, -6, 0);
 	bottomFill.castShadow = false;
 	scene.add(bottomFill);
@@ -779,7 +779,7 @@ function setupLighting(scene: THREE.Scene) {
 	animateParticles();
 
 	// Minimal ambient light for dramatic museum effect
-	const ambientLight = new THREE.AmbientLight(0x404040, 1.0); // Ambient light for blending
+	const ambientLight = new THREE.AmbientLight(0x606060, 1.5); // Ambient light for blending
 	scene.add(ambientLight);
 
 	// Large museum floor plane - dark but receives shadows
