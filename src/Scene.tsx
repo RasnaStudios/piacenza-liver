@@ -641,66 +641,80 @@ function PiacenzaLiverScene({
 
 // Lighting setup function
 function setupLighting(scene: THREE.Scene) {
-	const lightColor = 0xffffff; // Neutral white light
+	const config = SceneConfig.lighting;
 
 	// 3-Point Lighting Setup
 
 	// 1. KEY LIGHT - Spotlight for dramatic shadows on floor
-	const keyLight = new THREE.SpotLight(0xffffff, 150.0); // Intensity for softer reflections
+	const keyLight = new THREE.SpotLight(
+		config.lightColor,
+		150.0 * config.intensityMultiplier,
+	);
 	keyLight.position.set(0, 6, 3);
 	keyLight.target.position.set(0, 0, 0);
-	keyLight.angle = Math.PI / 3; // Wide angle for diffused lighting
-	keyLight.penumbra = 0.95; // Soft penumbra edges
+	keyLight.angle = Math.PI / 3;
+	keyLight.penumbra = 0.95;
 	keyLight.decay = 2;
 	keyLight.distance = 15;
 	keyLight.castShadow = true;
-	keyLight.shadow.mapSize.width = 256;
-	keyLight.shadow.mapSize.height = 256;
+	keyLight.shadow.mapSize.width = config.shadowMapSize;
+	keyLight.shadow.mapSize.height = config.shadowMapSize;
 	keyLight.shadow.camera.near = 0.1;
 	keyLight.shadow.camera.far = 15;
-	keyLight.shadow.camera.fov = 45; // FOV to match the light angle
-	keyLight.shadow.bias = -0.0001;
+	keyLight.shadow.camera.fov = 45;
+	keyLight.shadow.bias = -0.0005;
 	keyLight.shadow.normalBias = 0.02;
-	(keyLight.shadow as unknown as THREE.DirectionalLightShadow).radius = 8;
+	(keyLight.shadow as unknown as THREE.DirectionalLightShadow).radius = 12;
 	scene.add(keyLight);
 	scene.add(keyLight.target);
 
 	// 2. FILL LIGHT - Softer light to fill shadows (front-left)
-	const fillLight = new THREE.DirectionalLight(0xffffff, 0.8);
+	const fillLight = new THREE.DirectionalLight(
+		config.lightColor,
+		0.8 * config.intensityMultiplier,
+	);
 	fillLight.position.set(-6, 4, 4);
 	fillLight.target.position.set(0, 0, 0);
-	fillLight.castShadow = true; // Enable shadow casting
-	fillLight.shadow.mapSize.width = 256;
-	fillLight.shadow.mapSize.height = 256;
+	fillLight.castShadow = true;
+	fillLight.shadow.mapSize.width = config.shadowMapSize;
+	fillLight.shadow.mapSize.height = config.shadowMapSize;
 	fillLight.shadow.camera.near = 0.1;
 	fillLight.shadow.camera.far = 20;
 	fillLight.shadow.camera.left = -10;
 	fillLight.shadow.camera.right = 10;
 	fillLight.shadow.camera.top = 10;
 	fillLight.shadow.camera.bottom = -10;
-	fillLight.shadow.bias = -0.0001;
+	fillLight.shadow.bias = -0.0005;
 	scene.add(fillLight);
 	scene.add(fillLight.target);
 
 	// 3. BACK LIGHT - Rim lighting from behind (creates separation)
-	const backLight = new THREE.DirectionalLight(0xffffff, 0.8);
+	const backLight = new THREE.DirectionalLight(
+		config.lightColor,
+		0.8 * config.intensityMultiplier,
+	);
 	backLight.position.set(-2, 6, -8);
 	backLight.target.position.set(0, 0, 0);
-	backLight.castShadow = true; // Enable shadow casting
-	backLight.shadow.mapSize.width = 256;
-	backLight.shadow.mapSize.height = 256;
+	backLight.castShadow = true;
+	backLight.shadow.mapSize.width = config.shadowMapSize;
+	backLight.shadow.mapSize.height = config.shadowMapSize;
 	backLight.shadow.camera.near = 0.1;
 	backLight.shadow.camera.far = 20;
 	backLight.shadow.camera.left = -10;
 	backLight.shadow.camera.right = 10;
 	backLight.shadow.camera.top = 10;
 	backLight.shadow.camera.bottom = -10;
-	backLight.shadow.bias = -0.0001;
+	backLight.shadow.bias = -0.0005;
 	scene.add(backLight);
 	scene.add(backLight.target);
 
 	// Subtle bottom fill for inscription visibility
-	const bottomFill = new THREE.PointLight(lightColor, 10, 100, 2);
+	const bottomFill = new THREE.PointLight(
+		config.lightColor,
+		10 * config.intensityMultiplier,
+		100,
+		2,
+	);
 	bottomFill.position.set(0, -6, 0);
 	bottomFill.castShadow = false;
 	scene.add(bottomFill);
@@ -736,7 +750,7 @@ function setupLighting(scene: THREE.Scene) {
 	);
 
 	const particleMaterial = new THREE.PointsMaterial({
-		color: lightColor,
+		color: config.lightColor,
 		size: 0.005,
 		transparent: true,
 		opacity: 0.12,
@@ -779,7 +793,10 @@ function setupLighting(scene: THREE.Scene) {
 	animateParticles();
 
 	// Minimal ambient light for dramatic museum effect
-	const ambientLight = new THREE.AmbientLight(0x606060, 1.5); // Ambient light for blending
+	const ambientLight = new THREE.AmbientLight(
+		config.ambientColor,
+		1.5 * config.intensityMultiplier,
+	);
 	scene.add(ambientLight);
 
 	// Large museum floor plane - dark but receives shadows

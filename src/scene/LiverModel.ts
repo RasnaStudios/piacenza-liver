@@ -271,18 +271,27 @@ export class LiverModel {
 				flipY: false,
 			});
 
-			// Configure base color and ORM textures
-			[baseColor, ormTex].forEach((tex) => {
-				configureTexture(tex, {
-					wrapS: THREE.ClampToEdgeWrapping,
-					wrapT: THREE.ClampToEdgeWrapping,
-					colorSpace: THREE.SRGBColorSpace,
-					flipY: baseColor.flipY,
-					// Improved filtering for smoother texture blending
-					minFilter: THREE.LinearMipmapLinearFilter,
-					magFilter: THREE.LinearFilter,
-					generateMipmaps: true,
-				});
+			// Configure base color texture
+			configureTexture(baseColor, {
+				wrapS: THREE.ClampToEdgeWrapping,
+				wrapT: THREE.ClampToEdgeWrapping,
+				colorSpace: THREE.SRGBColorSpace,
+				flipY: baseColor.flipY,
+				// Improved filtering for smoother texture blending
+				minFilter: THREE.LinearMipmapLinearFilter,
+				magFilter: THREE.LinearFilter,
+				generateMipmaps: true,
+			});
+
+			// Configure ORM texture separately (non-color data)
+			configureTexture(ormTex, {
+				wrapS: THREE.ClampToEdgeWrapping,
+				wrapT: THREE.ClampToEdgeWrapping,
+				colorSpace: THREE.NoColorSpace,
+				flipY: ormTex.flipY,
+				minFilter: THREE.LinearMipmapLinearFilter,
+				magFilter: THREE.LinearFilter,
+				generateMipmaps: true,
 			});
 
 			// Configure normal map separately with proper settings
@@ -331,6 +340,8 @@ export class LiverModel {
 			}
 
 			// Create base material with PBR settings
+			// Three.js automatically handles ORM texture channel mapping:
+			// R channel = Ambient Occlusion, G channel = Roughness, B channel = Metallic
 			const baseMaterial = new THREE.MeshStandardMaterial({
 				// Texture maps
 				map: baseColor,
@@ -346,9 +357,9 @@ export class LiverModel {
 				depthTest: true,
 
 				// Material properties for color reproduction and blending
-				metalness: 0.1, // Metalness to reduce harsh reflections
-				roughness: 0.8, // Roughness for softer, larger reflections
-				aoMapIntensity: 0.8, // AO intensity for smoother transitions
+				metalness: 1.0, // Let the texture control metalness
+				roughness: 1.0, // Let the texture control roughness
+				aoMapIntensity: 1.0, // Full AO intensity from texture
 				flatShading: false, // Smooth shading for lighting response
 				// Additional properties for blending
 				normalScale: new THREE.Vector2(1.0, 1.0), // Full normal intensity with proper configuration
