@@ -1,4 +1,5 @@
 import { Box, Drawer, Paper, Stack, Title } from "@mantine/core";
+import { useDrag } from "@use-gesture/react";
 import { useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 import {
@@ -28,8 +29,67 @@ export function DeityPanel({
 	const [panelHeight, setPanelHeight] = useState(33); // Start at 33vh
 	const [isDragging, setIsDragging] = useState(false);
 	const [dragOffset, setDragOffset] = useState(0);
-	const dragStartY = useRef(0);
+	const dragStartHeight = useRef(33);
+	const panelRef = useRef<HTMLDivElement>(null);
 	const prevInscriptionId = useRef<number | null>(null);
+
+	const bind = useDrag(
+		({ down, movement: [, my], event }) => {
+			const target = event?.target as HTMLElement;
+			const isInScrollableArea = target?.closest(".scrollbar");
+
+			// Don't drag if touching scrollable content
+			if (isInScrollableArea) return;
+
+			if (down) {
+				// Start dragging
+				setIsDragging(true);
+				dragStartHeight.current = panelHeight;
+				if (panelRef.current) {
+					panelRef.current.style.transition = "none";
+				}
+			} else {
+				// End dragging
+				setIsDragging(false);
+				if (panelRef.current) {
+					panelRef.current.style.transition = "all 0.3s ease-out";
+				}
+
+				// Calculate final height based on drag distance
+				const viewportHeight = window.innerHeight;
+				const deltaVh = (my / viewportHeight) * 100;
+				const newHeight = Math.min(
+					90,
+					Math.max(33, dragStartHeight.current - deltaVh),
+				);
+
+				// Check if should close (dragged down more than current height)
+				const currentPanelHeight =
+					(dragStartHeight.current / 100) * viewportHeight;
+				if (my > currentPanelHeight) {
+					onClose();
+				} else {
+					setPanelHeight(newHeight);
+				}
+			}
+
+			// Update drag offset for live preview
+			setDragOffset(my);
+		},
+		{
+			filterTaps: true,
+			rubberband: true,
+		},
+	);
+
+	const getCurrentHeight = () => {
+		if (isDragging && panelRef.current) {
+			const viewportHeight = window.innerHeight;
+			const deltaVh = (dragOffset / viewportHeight) * 100;
+			return Math.min(90, Math.max(33, dragStartHeight.current - deltaVh));
+		}
+		return panelHeight;
+	};
 
 	// Reset to lower third when new inscription is selected
 	if (
@@ -53,83 +113,11 @@ export function DeityPanel({
 		})
 		.filter(Boolean);
 
-	const handleDragStart = (e: React.TouchEvent) => {
-		// Only start dragging if touch is in the header area (not scrollable content)
-		const target = e.target as HTMLElement;
-		const isInScrollableArea = target.closest(".scrollbar");
-
-		if (!isInScrollableArea) {
-			setIsDragging(true);
-			dragStartY.current = e.touches[0].clientY;
-			e.stopPropagation();
-		}
-	};
-
-	const handleDragMove = (e: React.TouchEvent) => {
-		if (!isDragging) return;
-		const currentY = e.touches[0].clientY;
-		const deltaY = currentY - dragStartY.current;
-		setDragOffset(deltaY);
-		e.stopPropagation();
-	};
-
-	const handleDragEnd = (e: React.TouchEvent) => {
-		if (!isDragging) return;
-		setIsDragging(false);
-
-		// Calculate actual panel position relative to viewport bottom
-		const viewportHeight = window.innerHeight;
-		const currentPanelHeight = (panelHeight / 100) * viewportHeight;
-		const panelBottomPosition = dragOffset; // How far panel moved from bottom
-
-		// Only close if dragged down more than the current panel height
-		if (panelBottomPosition > currentPanelHeight) {
-			onClose();
-		} else {
-			// Save the new position based on drag direction
-			if (dragOffset < 0) {
-				// Dragged up - expand panel
-				const dragUpDistance = Math.abs(dragOffset);
-				const heightIncrease = (dragUpDistance / viewportHeight) * 100; // Convert to vh
-				setPanelHeight(
-					Math.min(90, Math.max(33, panelHeight + heightIncrease)),
-				);
-			} else if (dragOffset > 0) {
-				// Dragged down - contract panel
-				const dragDownDistance = dragOffset;
-				const heightDecrease = (dragDownDistance / viewportHeight) * 100; // Convert to vh
-				setPanelHeight(
-					Math.min(90, Math.max(33, panelHeight - heightDecrease)),
-				);
-			}
-		}
-
-		setDragOffset(0);
-		e.stopPropagation();
-	};
-
-	const getCurrentHeight = () => {
-		if (isDragging) {
-			const viewportHeight = window.innerHeight;
-			if (dragOffset > 0) {
-				// When dragging down, show live height decrease
-				const dragDownDistance = dragOffset;
-				const heightDecrease = (dragDownDistance / viewportHeight) * 100;
-				return Math.min(90, Math.max(33, panelHeight - heightDecrease));
-			} else if (dragOffset < 0) {
-				// When dragging up, show live height increase
-				const dragUpDistance = Math.abs(dragOffset);
-				const heightIncrease = (dragUpDistance / viewportHeight) * 100;
-				return Math.min(90, Math.max(33, panelHeight + heightIncrease));
-			}
-		}
-		return panelHeight;
-	};
-
 	// Mobile portrait: custom bottom sheet
 	if (isMobile && isPortrait) {
 		return (
 			<Paper
+				ref={panelRef}
 				className="bg-primary text-primary"
 				style={{
 					position: "fixed",
@@ -142,6 +130,7 @@ export function DeityPanel({
 					zIndex: 100,
 					transition: isDragging ? "none" : "all 0.3s ease-out",
 				}}
+				{...bind()}
 			>
 				{/* Drag handle */}
 				<Box
@@ -154,9 +143,6 @@ export function DeityPanel({
 						padding: "8px 0 4px 0",
 						touchAction: "none",
 					}}
-					onTouchStart={handleDragStart}
-					onTouchMove={handleDragMove}
-					onTouchEnd={handleDragEnd}
 				>
 					<Box
 						style={{
@@ -178,9 +164,6 @@ export function DeityPanel({
 					}}
 				>
 					<Box
-						onTouchStart={handleDragStart}
-						onTouchMove={handleDragMove}
-						onTouchEnd={handleDragEnd}
 						style={{
 							cursor: "grab",
 							touchAction: "none",

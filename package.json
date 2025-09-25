@@ -93,6 +93,7 @@
 		"@mantine/core": "^8.3.2",
 		"@mantine/hooks": "^8.3.2",
 		"@tabler/icons-react": "^3.35.0",
+		"@use-gesture/react": "^10.3.1",
 		"gsap": "^3.13.0",
 		"react": "^19.1.1",
 		"react-device-detect": "^2.2.3",

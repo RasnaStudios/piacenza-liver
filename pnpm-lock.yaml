@@ -17,6 +17,9 @@ importers:
       '@tabler/icons-react':
         specifier: ^3.35.0
         version: 3.35.0(react@19.1.1)
+      '@use-gesture/react':
+        specifier: ^10.3.1
+        version: 10.3.1(react@19.1.1)
       gsap:
         specifier: ^3.13.0
         version: 3.13.0
@@ -1065,6 +1068,14 @@ packages:
 
   '@types/webxr@0.5.23':
     resolution: {integrity: sha512-GPe4AsfOSpqWd3xA/0gwoKod13ChcfV67trvxaW2krUbgb9gxQjnCx8zGshzMl8LSHZlNH5gQ8LNScsDuc7nGQ==}
+
+  '@use-gesture/core@10.3.1':
+    resolution: {integrity: sha512-WcINiDt8WjqBdUXye25anHiNxPc0VOrlT8F6LLkU6cycrOGUDyY/yyFmsg3k8i5OLvv25llc0QC45GhR/C8llw==}
+
+  '@use-gesture/react@10.3.1':
+    resolution: {integrity: sha512-Yy19y6O2GJq8f7CHf7L0nxL8bf4PZCPaVOCgJrusOeFHY1LvHgYXnmnXg6N5iwAnbgbZCDjo60SiM6IPJi9C5g==}
+    peerDependencies:
+      react: '>= 16.8.0'
 
   '@vitejs/plugin-react@5.0.3':
     resolution: {integrity: sha512-PFVHhosKkofGH0Yzrw1BipSedTH68BFF8ZWy1kfUpCtJcouXXY0+racG8sExw7hw0HoX36813ga5o3LTWZ4FUg==}
@@ -3329,6 +3340,13 @@ snapshots:
   '@types/trusted-types@2.0.7': {}
 
   '@types/webxr@0.5.23': {}
+
+  '@use-gesture/core@10.3.1': {}
+
+  '@use-gesture/react@10.3.1(react@19.1.1)':
+    dependencies:
+      '@use-gesture/core': 10.3.1
+      react: 19.1.1
 
   '@vitejs/plugin-react@5.0.3(vite@7.1.7(terser@5.44.0)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:

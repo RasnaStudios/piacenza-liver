@@ -652,7 +652,7 @@ function setupLighting(scene: THREE.Scene) {
 	);
 	keyLight.position.set(0, 6, 3);
 	keyLight.target.position.set(0, 0, 0);
-	keyLight.angle = Math.PI / 3;
+	keyLight.angle = Math.PI / 6; // Narrower spotlight (30 degrees instead of 60)
 	keyLight.penumbra = 0.95;
 	keyLight.decay = 2;
 	keyLight.distance = 15;
@@ -662,7 +662,7 @@ function setupLighting(scene: THREE.Scene) {
 	keyLight.shadow.camera.near = 0.1;
 	keyLight.shadow.camera.far = 15;
 	keyLight.shadow.camera.fov = 45;
-	keyLight.shadow.bias = -0.0005;
+	keyLight.shadow.bias = -0.0001;
 	keyLight.shadow.normalBias = 0.02;
 	(keyLight.shadow as unknown as THREE.DirectionalLightShadow).radius = 12;
 	scene.add(keyLight);
@@ -671,7 +671,7 @@ function setupLighting(scene: THREE.Scene) {
 	// 2. FILL LIGHT - Softer light to fill shadows (front-left)
 	const fillLight = new THREE.DirectionalLight(
 		config.lightColor,
-		0.8 * config.intensityMultiplier,
+		0.4 * config.intensityMultiplier,
 	);
 	fillLight.position.set(-6, 4, 4);
 	fillLight.target.position.set(0, 0, 0);
@@ -691,7 +691,7 @@ function setupLighting(scene: THREE.Scene) {
 	// 3. BACK LIGHT - Rim lighting from behind (creates separation)
 	const backLight = new THREE.DirectionalLight(
 		config.lightColor,
-		0.8 * config.intensityMultiplier,
+		0.4 * config.intensityMultiplier,
 	);
 	backLight.position.set(-2, 6, -8);
 	backLight.target.position.set(0, 0, 0);
@@ -704,7 +704,7 @@ function setupLighting(scene: THREE.Scene) {
 	backLight.shadow.camera.right = 10;
 	backLight.shadow.camera.top = 10;
 	backLight.shadow.camera.bottom = -10;
-	backLight.shadow.bias = -0.0005;
+	backLight.shadow.bias = -0.0001;
 	scene.add(backLight);
 	scene.add(backLight.target);
 
