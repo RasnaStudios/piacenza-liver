@@ -15,6 +15,7 @@ import type { HoveredSection } from "./types";
 import { BraveDisclaimer } from "./ui/components/BraveDisclaimer";
 import { DataSummary } from "./ui/components/DataSummary";
 import { HoverTooltip } from "./ui/components/HoverTooltip";
+import { ResetInstruction } from "./ui/components/ResetInstruction";
 // UI Components
 import { DeityPanel } from "./ui/DeityPanel";
 import { InscriptionList } from "./ui/InscriptionList";
@@ -61,6 +62,7 @@ function PiacenzaLiverScene({
 		offsetTargetScreenPos?: { x: number; y: number };
 	} | null>(null);
 	const [isModifierKeyPressed, setIsModifierKeyPressed] = useState(false);
+	const [hasViewChanged, setHasViewChanged] = useState(false);
 
 	// Refs for 3D objects and controllers
 	const containerRef = useRef<HTMLDivElement | null>(null);
@@ -118,10 +120,15 @@ function PiacenzaLiverScene({
 		setSelectedInscription(null);
 		setHasInteracted(false);
 		setIsInteracting(false);
+		setHasViewChanged(false);
 		if (interactionManagerRef.current) {
 			interactionManagerRef.current.resetZoomState();
 		}
 	}, [setHasInteracted]);
+
+	const handleViewChange = useCallback(() => {
+		setHasViewChanged(true);
+	}, []);
 
 	const handleInscriptionClick = useCallback(
 		(payload: {
@@ -416,6 +423,7 @@ function PiacenzaLiverScene({
 					onMouseMove: handleMouseMove,
 					onModifierKeyChange: handleModifierKeyChange,
 					onReset: handleReset,
+					onViewChange: handleViewChange,
 				},
 			);
 			interactionManagerRef.current = interactionManager;
@@ -428,6 +436,7 @@ function PiacenzaLiverScene({
 		handleMouseMove,
 		handleModifierKeyChange,
 		handleReset,
+		handleViewChange,
 	]);
 
 	// Clear hovered inscription when mouse enters panel area
@@ -513,6 +522,11 @@ function PiacenzaLiverScene({
 					isPanelOpen={!!selectedInscription}
 					isModifierKeyPressed={isModifierKeyPressed}
 					isMouseOverPanel={isMouseOverPanel}
+				/>
+
+				<ResetInstruction
+					isPanelOpen={!!selectedInscription}
+					hasViewChanged={hasViewChanged}
 				/>
 
 				{/* Debug Overlay */}

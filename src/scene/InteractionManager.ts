@@ -16,6 +16,7 @@ export interface InteractionCallbacks {
 	) => void;
 	onModifierKeyChange: (isPressed: boolean) => void;
 	onReset: () => void;
+	onViewChange: () => void;
 }
 
 export class InteractionManager {
@@ -293,6 +294,8 @@ export class InteractionManager {
 	private handleControlsEnd() {
 		this.isPanningOrRotating = false;
 		this.checkForZoom();
+		// Notify that view has changed (rotation/pan)
+		this.callbacks.onViewChange();
 	}
 
 	private handleWheel(_event: WheelEvent) {
@@ -319,6 +322,9 @@ export class InteractionManager {
 			// Clear any selected inscription when zoom is detected
 			this.callbacks.onBackgroundClick();
 		}
+
+		// Notify that view has changed (zoom)
+		this.callbacks.onViewChange();
 	}
 
 	private handleClick(event: MouseEvent) {
