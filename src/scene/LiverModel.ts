@@ -1,4 +1,5 @@
 import { gsap } from "gsap";
+import { isMobile } from "react-device-detect";
 import * as THREE from "three";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
@@ -666,29 +667,93 @@ export class LiverModel {
 
 		const inscriptions = liverInscriptions.slice();
 		const overlays: THREE.Mesh[] = [];
-
-		// Use configuration from SceneConfig
 		const config = SceneConfig.pulse;
 
+		// Check if mobile - skip individual inscription animation (flipper effect)
+
+		console.log(
+			"Pulse animation starting, isMobile:",
+			isMobile,
+			"userAgent:",
+			navigator.userAgent,
+			"width:",
+			window.innerWidth,
+		);
+
+		if (isMobile) {
+			// Mobile: Skip individual inscription animation, go straight to smooth pulse
+			console.log("Mobile detected, starting smooth pulse in 2 seconds...");
+			setTimeout(() => {
+				console.log("Starting mobile smooth pulse animation...");
+				// Smooth pulse animation: 0 → 0.5 → 0
+				const pulseOverlays: THREE.Mesh[] = [];
+				inscriptions.forEach((inscription) => {
+					const material = this.hoveredMaterial?.clone();
+					if (!material || !this.mesh?.geometry) return;
+
+					material.opacity = 0; // Start from 0
+					this.applyHighlightToMaterial(inscription.id, material, 0.4);
+
+					const mesh = new THREE.Mesh(this.mesh.geometry, material);
+					mesh.position.copy(this.mesh.position);
+					mesh.rotation.copy(this.mesh.rotation);
+					mesh.scale.copy(this.mesh.scale);
+
+					(this.mesh?.parent || this.scene).add(mesh);
+					pulseOverlays.push(mesh);
+				});
+
+				// Smooth GSAP animation: 0 → 0.5 → 0
+				gsap
+					.timeline()
+					.to(
+						pulseOverlays.map((m) => m.material),
+						{
+							opacity: 0.5,
+							duration: 1.0,
+							ease: "power2.out",
+						},
+					)
+					.to(
+						pulseOverlays.map((m) => m.material),
+						{
+							opacity: 0,
+							duration: 1.0,
+							ease: "power2.in",
+							onComplete: () => {
+								// Cleanup
+								pulseOverlays.forEach((mesh) => {
+									(mesh.parent || this.scene).remove(mesh);
+									if (Array.isArray(mesh.material)) {
+										mesh.material.forEach((mat) => {
+											mat.dispose();
+										});
+									} else {
+										mesh.material.dispose();
+									}
+								});
+							},
+						},
+					);
+			}, 2000); // 2 second delay for mobile
+			return;
+		}
+
+		// Desktop: Full animation with individual inscription flipper effect
 		let index = 0;
 
 		const addNext = () => {
 			if (index >= inscriptions.length) {
 				// Wait for trail to finish, then do final pulse
 				setTimeout(() => {
-					// Create final pulse with all inscriptions
-					const finalOverlays: THREE.Mesh[] = [];
-
+					// Smooth pulse animation: 0 → 0.5 → 0
+					const pulseOverlays: THREE.Mesh[] = [];
 					inscriptions.forEach((inscription) => {
 						const material = this.hoveredMaterial?.clone();
 						if (!material || !this.mesh?.geometry) return;
 
-						material.opacity = config.finalColor.startOpacity;
-						this.applyHighlightToMaterial(
-							inscription.id,
-							material,
-							config.finalColor.highlightOpacity,
-						);
+						material.opacity = 0; // Start from 0
+						this.applyHighlightToMaterial(inscription.id, material, 0.4);
 
 						const mesh = new THREE.Mesh(this.mesh.geometry, material);
 						mesh.position.copy(this.mesh.position);
@@ -696,41 +761,29 @@ export class LiverModel {
 						mesh.scale.copy(this.mesh.scale);
 
 						(this.mesh?.parent || this.scene).add(mesh);
-						finalOverlays.push(mesh);
+						pulseOverlays.push(mesh);
 					});
 
-					// Final pulse animation - simple light pulse
+					// Smooth GSAP animation: 0 → 0.5 → 0
 					gsap
 						.timeline()
 						.to(
-							finalOverlays.map((m) => m.material),
+							pulseOverlays.map((m) => m.material),
 							{
-								opacity: config.finalPulse.peakOpacity,
+								opacity: 0.5,
 								duration: config.finalPulse.riseDuration,
 								ease: "power2.out",
 							},
 						)
 						.to(
-							finalOverlays.map((m) => m.material),
+							pulseOverlays.map((m) => m.material),
 							{
 								opacity: 0,
 								duration: config.finalPulse.fallDuration,
 								ease: "power2.in",
 								onComplete: () => {
-									// Cleanup final overlays
-									finalOverlays.forEach((mesh) => {
-										(mesh.parent || this.scene).remove(mesh);
-										if (Array.isArray(mesh.material)) {
-											mesh.material.forEach((mat) => {
-												mat.dispose();
-											});
-										} else {
-											mesh.material.dispose();
-										}
-									});
-
-									// Cleanup trail overlays
-									overlays.forEach((mesh) => {
+									// Cleanup
+									pulseOverlays.forEach((mesh) => {
 										(mesh.parent || this.scene).remove(mesh);
 										if (Array.isArray(mesh.material)) {
 											mesh.material.forEach((mat) => {

@@ -28,14 +28,12 @@ function PiacenzaLiverScene({
 	setLoadingProgress,
 	hasInteracted,
 	setHasInteracted,
-	setIsTitleHidden,
 }: {
 	isLoading: boolean;
 	setIsLoading: (loading: boolean) => void;
 	setLoadingProgress: (progress: number) => void;
 	hasInteracted: boolean;
 	setHasInteracted: (interacted: boolean) => void;
-	setIsTitleHidden: (hidden: boolean) => void;
 }) {
 	// Orientation detection
 	const isPortrait = useOrientation();
@@ -123,19 +121,14 @@ function PiacenzaLiverScene({
 		setHasInteracted(false);
 		setIsInteracting(false);
 		setHasViewChanged(false);
-		setIsTitleHidden(false);
 		if (interactionManagerRef.current) {
 			interactionManagerRef.current.resetZoomState();
 		}
-	}, [setHasInteracted, setIsTitleHidden]);
+	}, [setHasInteracted]);
 
 	const handleViewChange = useCallback(() => {
 		setHasViewChanged(true);
 	}, []);
-
-	const handleZoomInDetected = useCallback(() => {
-		setIsTitleHidden(true);
-	}, [setIsTitleHidden]);
 
 	const handleInscriptionClick = useCallback(
 		(payload: {
@@ -427,7 +420,6 @@ function PiacenzaLiverScene({
 					onBackgroundClick: handleBackgroundClick,
 					onMarkerHover: handleMarkerHover,
 					onZoomDetected: handleZoomDetected,
-					onZoomInDetected: handleZoomInDetected,
 					onMouseMove: handleMouseMove,
 					onModifierKeyChange: handleModifierKeyChange,
 					onReset: handleReset,
@@ -441,7 +433,6 @@ function PiacenzaLiverScene({
 		handleBackgroundClick,
 		handleMarkerHover,
 		handleZoomDetected,
-		handleZoomInDetected,
 		handleMouseMove,
 		handleModifierKeyChange,
 		handleReset,
@@ -841,14 +832,12 @@ export default function Scene({
 	setLoadingProgress,
 	hasInteracted,
 	setHasInteracted,
-	setIsTitleHidden,
 }: {
 	isLoading: boolean;
 	setIsLoading: (loading: boolean) => void;
 	setLoadingProgress: (progress: number) => void;
 	hasInteracted: boolean;
 	setHasInteracted: (interacted: boolean) => void;
-	setIsTitleHidden: (hidden: boolean) => void;
 }) {
 	return (
 		<PiacenzaLiverScene
@@ -857,7 +846,6 @@ export default function Scene({
 			setLoadingProgress={setLoadingProgress}
 			hasInteracted={hasInteracted}
 			setHasInteracted={setHasInteracted}
-			setIsTitleHidden={setIsTitleHidden}
 		/>
 	);
 }

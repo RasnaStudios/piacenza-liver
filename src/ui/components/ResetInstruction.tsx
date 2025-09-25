@@ -1,5 +1,5 @@
 import { Box, Text, Transition } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isMobile } from "react-device-detect";
 
 interface ResetInstructionProps {
@@ -12,21 +12,25 @@ export function ResetInstruction({
 	hasViewChanged,
 }: ResetInstructionProps) {
 	const [showInstruction, setShowInstruction] = useState(false);
-	const [hideTimer, setHideTimer] = useState<number | null>(null);
-	const [showTimer, setShowTimer] = useState<number | null>(null);
+	const hideTimerRef = useRef<number | null>(null);
+	const showTimerRef = useRef<number | null>(null);
 
 	useEffect(() => {
 		// Clear any existing timers
-		if (hideTimer) clearTimeout(hideTimer);
-		if (showTimer) clearTimeout(showTimer);
+		if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+		if (showTimerRef.current) clearTimeout(showTimerRef.current);
 
 		if (hasViewChanged && !isPanelOpen) {
-			// Wait 2 seconds before showing (user might still be moving)
+			// Wait 4 seconds before showing (user might still be moving)
 			const timer = setTimeout(() => {
 				setShowInstruction(true);
-				setHideTimer(hideTimer);
+				// Auto-hide after some seconds
+				const hideTimer = setTimeout(() => {
+					setShowInstruction(false);
+				}, 10000);
+				hideTimerRef.current = hideTimer;
 			}, 4000);
-			setShowTimer(timer);
+			showTimerRef.current = timer;
 		} else {
 			// Hide immediately if panel opens or view resets
 			setShowInstruction(false);
@@ -34,10 +38,10 @@ export function ResetInstruction({
 
 		// Cleanup timers on unmount
 		return () => {
-			if (hideTimer) clearTimeout(hideTimer);
-			if (showTimer) clearTimeout(showTimer);
+			if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+			if (showTimerRef.current) clearTimeout(showTimerRef.current);
 		};
-	}, [hasViewChanged, isPanelOpen, hideTimer, showTimer]);
+	}, [hasViewChanged, isPanelOpen]);
 
 	const shouldShow = showInstruction;
 
