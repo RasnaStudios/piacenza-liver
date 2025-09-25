@@ -10,6 +10,7 @@ function App() {
 	const [loadingProgress, setLoadingProgress] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
 	const [hasInteracted, setHasInteracted] = useState(false);
+	const [isTitleHidden, setIsTitleHidden] = useState(false);
 
 	return (
 		<MantineProvider>
@@ -20,8 +21,9 @@ function App() {
 					setLoadingProgress={setLoadingProgress}
 					hasInteracted={hasInteracted}
 					setHasInteracted={setHasInteracted}
+					setIsTitleHidden={setIsTitleHidden}
 				/>
-				<TitleOverlay hasInteracted={hasInteracted} />
+				<TitleOverlay hasInteracted={isTitleHidden} />
 				<LoadingScreen progress={loadingProgress} isLoading={isLoading} />
 			</StrictMode>
 		</MantineProvider>

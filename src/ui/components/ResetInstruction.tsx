@@ -37,7 +37,7 @@ export function ResetInstruction({
 			if (hideTimer) clearTimeout(hideTimer);
 			if (showTimer) clearTimeout(showTimer);
 		};
-	}, [hasViewChanged, isPanelOpen]);
+	}, [hasViewChanged, isPanelOpen, hideTimer, showTimer]);
 
 	const shouldShow = showInstruction;
 
@@ -64,20 +64,9 @@ export function ResetInstruction({
 						fw={200}
 						ta="center"
 						ff="Cinzel"
+						className="title-gradient title-subtle"
 						style={{
 							...styles,
-							fontSize: "clamp(10px, 1.2vw, 16px)",
-							letterSpacing: "1px",
-							background:
-								"linear-gradient(45deg, #2c2c2c 0%, #6b6b6b 30%, #c9a876 60%, #2c2c2c 100%)",
-							backgroundSize: "400% 200%",
-							WebkitBackgroundClip: "text",
-							WebkitTextFillColor: "transparent",
-							backgroundClip: "text",
-							filter:
-								"drop-shadow(0.5px 0.5px 1px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 4px rgba(139, 101, 65, 0.15)) drop-shadow(0 0 8px rgba(201, 168, 118, 0.08))",
-							WebkitTextStroke: "0.2px rgba(139, 101, 65, 0.15)",
-							animation: "wavyGradient 30s ease-in-out infinite",
 						}}
 					>
 						{isMobile ? "Double tap to reset" : "Double-click to reset"}

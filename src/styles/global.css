@@ -508,3 +508,41 @@ html {
 .webgl-error li {
 	margin-bottom: 8px;
 }
+
+/* Title Styles */
+.title-gradient {
+	background: linear-gradient(
+		45deg,
+		#2c2c2c 0%,
+		#6b6b6b 30%,
+		#c9a876 60%,
+		#2c2c2c 100%
+	);
+	background-size: 400% 200%;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+	animation: wavyGradient 30s ease-in-out infinite;
+}
+
+.title-main {
+	font-family: Cinzel, serif;
+	font-weight: 300;
+	letter-spacing: 6px;
+	font-size: clamp(28px, 4.5vw, 60px);
+	filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))
+		drop-shadow(0 0 15px rgba(139, 101, 65, 0.3))
+		drop-shadow(0 0 30px rgba(201, 168, 118, 0.1));
+	-webkit-text-stroke: 0.5px rgba(139, 101, 65, 0.2);
+}
+
+.title-subtle {
+	font-family: Cinzel, serif;
+	font-weight: 200;
+	letter-spacing: 1px;
+	font-size: clamp(10px, 1.2vw, 16px);
+	filter: drop-shadow(0.5px 0.5px 1px rgba(0, 0, 0, 0.4))
+		drop-shadow(0 0 4px rgba(139, 101, 65, 0.15))
+		drop-shadow(0 0 8px rgba(201, 168, 118, 0.08));
+	-webkit-text-stroke: 0.2px rgba(139, 101, 65, 0.15);
+}

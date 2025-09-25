@@ -10,6 +10,7 @@ export interface InteractionCallbacks {
 	onBackgroundClick: () => void;
 	onMarkerHover: (section: HoveredSection | null) => void;
 	onZoomDetected: () => void;
+	onZoomInDetected: () => void;
 	onMouseMove: (
 		position: { x: number; y: number },
 		isOverCanvas: boolean,
@@ -316,9 +317,11 @@ export class InteractionManager {
 		const currentDistance = camera.position.length();
 		const initialDistance = this.initialCameraDistance;
 
+		// Detect zoom in (getting closer) - hide title
 		if (currentDistance < initialDistance * 0.8 && !this.hasZoomed) {
 			this.hasZoomed = true;
 			this.callbacks.onZoomDetected();
+			this.callbacks.onZoomInDetected(); // New callback for title hiding
 			// Clear any selected inscription when zoom is detected
 			this.callbacks.onBackgroundClick();
 		}

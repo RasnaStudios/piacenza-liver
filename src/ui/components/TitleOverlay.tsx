@@ -48,22 +48,10 @@ export function TitleOverlay({ hasInteracted }: TitleOverlayProps) {
 						fw={100}
 						ta="center"
 						ff="Cinzel"
+						className="title-gradient title-main"
 						style={{
 							...styles,
-							fontSize: "clamp(28px, 4.5vw, 60px)",
-							letterSpacing: "6px",
-							background:
-								"linear-gradient(45deg, #2c2c2c 0%, #6b6b6b 30%, #c9a876 60%, #2c2c2c 100%)",
-							backgroundSize: "400% 200%",
-							WebkitBackgroundClip: "text",
-							WebkitTextFillColor: "transparent",
-							backgroundClip: "text",
-							filter:
-								"drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8)) drop-shadow(0 0 15px rgba(139, 101, 65, 0.3)) drop-shadow(0 0 30px rgba(201, 168, 118, 0.1))",
-							WebkitTextStroke: "0.5px rgba(139, 101, 65, 0.2)",
-							animation: "wavyGradient 30s ease-in-out infinite",
 						}}
-						className="title-responsive"
 					>
 						Piacenza Liver
 					</Text>
