@@ -1,5 +1,4 @@
 import { gsap } from "gsap";
-import { isMobile } from "react-device-detect";
 import * as THREE from "three";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js";
@@ -679,46 +678,7 @@ export class LiverModel {
 		const overlays: THREE.Mesh[] = [];
 		const config = SceneConfig.pulse;
 
-		// Check if mobile - skip individual inscription animation (flipper effect)
-
-		console.log(
-			"Pulse animation starting, isMobile:",
-			isMobile,
-			"userAgent:",
-			navigator.userAgent,
-			"width:",
-			window.innerWidth,
-		);
-
-		if (isMobile) {
-			// Mobile: Simple pulse animation with single overlay
-			console.log("Mobile detected, starting simple pulse in 2 seconds...");
-			setTimeout(() => {
-				console.log("Starting mobile simple pulse animation...");
-				// Use existing hovered material for simple pulse
-				if (this.hoveredMaterial) {
-					this.hoveredMaterial.opacity = 0;
-					this.hoveredMaterial.color.setHex(0xffc107);
-
-					// Simple pulse animation: 0 → 0.3 → 0
-					gsap
-						.timeline()
-						.to(this.hoveredMaterial, {
-							opacity: 0.3,
-							duration: 1.0,
-							ease: "power2.out",
-						})
-						.to(this.hoveredMaterial, {
-							opacity: 0,
-							duration: 1.0,
-							ease: "power2.in",
-						});
-				}
-			}, 2000);
-			return;
-		}
-
-		// Desktop: Simplified animation with fewer meshes
+		// Use desktop animation for all devices
 		let index = 0;
 		const maxConcurrentMeshes = 5; // Limit concurrent meshes
 

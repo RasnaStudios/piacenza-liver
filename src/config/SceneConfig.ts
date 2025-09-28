@@ -39,6 +39,12 @@ export const SceneConfig = {
 		shadowRadius: 8, // Shadow softness radius
 	},
 
+	// Performance and interaction configuration
+	performance: {
+		raycastThrottleMs: 10, // Throttle raycast and mouse updates to 1/X*1000 fps
+		mouseMoveThreshold: 5, // Skip raycast if mouse moved less than X pixels
+	},
+
 	// Pulse animation configuration
 	pulse: {
 		trailSpeed: 80, // milliseconds between each inscription (lower = faster)

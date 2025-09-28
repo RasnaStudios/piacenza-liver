@@ -47,7 +47,7 @@ function PiacenzaLiverScene({
 	const [isInteracting, setIsInteracting] = useState(false);
 	const [isSceneReady, setIsSceneReady] = useState(false);
 	const [animationTriggered, setAnimationTriggered] = useState(false);
-	const [mousePosition, setMousePosition] = useState({
+	const [immediateMousePosition, setImmediateMousePosition] = useState({
 		x: 0,
 		y: 0,
 		isOverCanvas: true,
@@ -277,7 +277,7 @@ function PiacenzaLiverScene({
 		setHasInteracted(true);
 	}, [setHasInteracted]);
 
-	// Throttled mouse move handler
+	// Mouse move handler with throttling to match raycast timing
 	const mouseMoveTimeoutRef = useRef<number | null>(null);
 	const handleMouseMove = useCallback(
 		(position: { x: number; y: number }, isOverCanvas: boolean) => {
@@ -286,11 +286,11 @@ function PiacenzaLiverScene({
 				clearTimeout(mouseMoveTimeoutRef.current);
 			}
 
-			// Throttle updates to max 60fps (16ms)
+			// Throttle updates
 			mouseMoveTimeoutRef.current = window.setTimeout(() => {
-				setMousePosition({ ...position, isOverCanvas });
+				setImmediateMousePosition({ ...position, isOverCanvas });
 				mouseMoveTimeoutRef.current = null;
-			}, 16);
+			}, SceneConfig.performance.raycastThrottleMs);
 		},
 		[],
 	);
@@ -613,7 +613,7 @@ function PiacenzaLiverScene({
 
 				<HoverTooltip
 					hoveredSection={hoveredSection}
-					mousePosition={mousePosition}
+					mousePosition={immediateMousePosition}
 					isPanelOpen={!!selectedInscription}
 					isModifierKeyPressed={isModifierKeyPressed}
 					isMouseOverPanel={isMouseOverPanel}

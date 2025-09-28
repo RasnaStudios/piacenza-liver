@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { worldToModelSpace } from "../camera/InscriptionPositions";
+import { SceneConfig } from "../config/SceneConfig";
 import type { HoveredSection, InscriptionClickPayload } from "../types";
 import type { Inscription } from "./LiverData";
 import type { LiverModel } from "./LiverModel";
@@ -561,11 +562,11 @@ export class InteractionManager {
 	}
 
 	private throttledRaycast(clientX: number, clientY: number) {
-		// Check if mouse moved significantly (more than 5 pixels)
+		// Check if mouse moved significantly
 		if (this.lastRaycastPosition) {
 			const deltaX = Math.abs(clientX - this.lastRaycastPosition.x);
 			const deltaY = Math.abs(clientY - this.lastRaycastPosition.y);
-			const threshold = 5;
+			const threshold = SceneConfig.performance.mouseMoveThreshold;
 
 			if (deltaX < threshold && deltaY < threshold) {
 				return; // Skip raycast if mouse hasn't moved much
@@ -577,12 +578,12 @@ export class InteractionManager {
 			clearTimeout(this.raycastThrottleTimeout);
 		}
 
-		// Throttle raycast to max 30fps (33ms)
+		// Throttle raycast to match mouse position updates
 		this.raycastThrottleTimeout = window.setTimeout(() => {
 			this.lastRaycastPosition = { x: clientX, y: clientY };
 			this.performHoverRaycast(clientX, clientY);
 			this.raycastThrottleTimeout = null;
-		}, 10);
+		}, SceneConfig.performance.raycastThrottleMs);
 	}
 
 	private performHoverRaycast(clientX: number, clientY: number) {

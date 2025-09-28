@@ -46,7 +46,9 @@
 				"CNAME",
 				"robots.txt",
 				"sitemap.xml",
-				".env*"
+				".env*",
+				"*.lock",
+				"pnpm-lock.yaml"
 			]
 		},
 		"formatter": {
