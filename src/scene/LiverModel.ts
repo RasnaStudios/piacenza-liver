@@ -504,11 +504,6 @@ export class LiverModel {
 
 	setSelectedInscription(inscriptionId: number) {
 		this.currentSelectedId = inscriptionId;
-		// Clear hover state when selecting to prevent overlap
-		if (inscriptionId > 0) {
-			this.currentHoveredId = 0;
-			this.updateHoveredHighlight();
-		}
 		this.updateSelectedHighlight();
 	}
 
