@@ -30,6 +30,8 @@ export class InteractionManager {
 	private isPanningOrRotating = false;
 	private mouseDownPosition: { x: number; y: number } | null = null;
 	private mouseMovedDuringClick = false;
+	private lastRaycastPosition: { x: number; y: number } | null = null;
+	private raycastThrottleTimeout: number | null = null;
 
 	// Model rotation state
 	private isRotatingModel = false;
@@ -271,20 +273,8 @@ export class InteractionManager {
 			}
 		}
 
-		if (!this.liverModel.getMaskTexture()) return;
-
-		const intersection = this.performRaycast(event.clientX, event.clientY);
-		const inscription = this.getInscriptionFromIntersection(intersection);
-
-		if (inscription) {
-			this.liverModel.setHoveredInscription(inscription.id);
-			this.callbacks.onMarkerHover(inscription);
-			this.renderer.domElement.style.cursor = "pointer";
-		} else {
-			this.liverModel.setHoveredInscription(0);
-			this.callbacks.onMarkerHover(null);
-			this.renderer.domElement.style.cursor = "grab";
-		}
+		// Use throttled raycast for hover detection
+		this.throttledRaycast(event.clientX, event.clientY);
 	}
 
 	private handleControlsStart() {
@@ -570,6 +560,48 @@ export class InteractionManager {
 		return intersects.length > 0 ? intersects[0] : null;
 	}
 
+	private throttledRaycast(clientX: number, clientY: number) {
+		// Check if mouse moved significantly (more than 5 pixels)
+		if (this.lastRaycastPosition) {
+			const deltaX = Math.abs(clientX - this.lastRaycastPosition.x);
+			const deltaY = Math.abs(clientY - this.lastRaycastPosition.y);
+			const threshold = 5;
+
+			if (deltaX < threshold && deltaY < threshold) {
+				return; // Skip raycast if mouse hasn't moved much
+			}
+		}
+
+		// Clear existing timeout
+		if (this.raycastThrottleTimeout) {
+			clearTimeout(this.raycastThrottleTimeout);
+		}
+
+		// Throttle raycast to max 30fps (33ms)
+		this.raycastThrottleTimeout = window.setTimeout(() => {
+			this.lastRaycastPosition = { x: clientX, y: clientY };
+			this.performHoverRaycast(clientX, clientY);
+			this.raycastThrottleTimeout = null;
+		}, 10);
+	}
+
+	private performHoverRaycast(clientX: number, clientY: number) {
+		if (!this.liverModel.getMaskTexture()) return;
+
+		const intersection = this.performRaycast(clientX, clientY);
+		const inscription = this.getInscriptionFromIntersection(intersection);
+
+		if (inscription) {
+			this.liverModel.setHoveredInscription(inscription.id);
+			this.callbacks.onMarkerHover(inscription);
+			this.renderer.domElement.style.cursor = "pointer";
+		} else {
+			this.liverModel.setHoveredInscription(0);
+			this.callbacks.onMarkerHover(null);
+			this.renderer.domElement.style.cursor = "grab";
+		}
+	}
+
 	private getInscriptionFromIntersection(
 		intersection: THREE.Intersection | null,
 	) {
@@ -591,6 +623,12 @@ export class InteractionManager {
 	}
 
 	public dispose() {
+		// Clear raycast timeout
+		if (this.raycastThrottleTimeout) {
+			clearTimeout(this.raycastThrottleTimeout);
+			this.raycastThrottleTimeout = null;
+		}
+
 		const domElement = this.renderer.domElement;
 
 		// Mouse events

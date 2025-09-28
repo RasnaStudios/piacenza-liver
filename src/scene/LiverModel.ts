@@ -107,6 +107,7 @@ export class LiverModel {
 
 	private currentHoveredId: number = 0;
 	private currentSelectedId: number = 0;
+	private textureCloneCache: Map<string, THREE.Texture> = new Map();
 
 	private getHighlightColor(id: number): THREE.Color {
 		// Apply the same ID remapping as the highlighting system
@@ -576,8 +577,15 @@ export class LiverModel {
 
 		const { repeat, offset } = this.calculateUVCoordinates(labelId);
 
-		// Create a clone of the atlas texture for this material
-		const textureClone = this.atlasTexture?.clone();
+		// Use cached texture clone or create new one
+		const cacheKey = `${labelId}-${repeat.x}-${repeat.y}-${offset.x}-${offset.y}`;
+		let textureClone = this.textureCloneCache.get(cacheKey);
+
+		if (!textureClone && this.atlasTexture) {
+			textureClone = this.atlasTexture.clone();
+			this.textureCloneCache.set(cacheKey, textureClone);
+		}
+
 		if (textureClone) {
 			textureClone.repeat.copy(repeat);
 			textureClone.offset.copy(offset);
@@ -657,6 +665,11 @@ export class LiverModel {
 		this.hoveredMaterial = null;
 		this.atlasTexture?.dispose();
 		this.atlasTexture = null;
+
+		// Clean up texture cache
+		this.textureCloneCache.forEach((texture) => texture.dispose());
+		this.textureCloneCache.clear();
+
 		this.maskCanvas = null;
 		this.maskCtx = null;
 	}
@@ -681,123 +694,54 @@ export class LiverModel {
 		);
 
 		if (isMobile) {
-			// Mobile: Skip individual inscription animation, go straight to smooth pulse
-			console.log("Mobile detected, starting smooth pulse in 2 seconds...");
+			// Mobile: Simple pulse animation with single overlay
+			console.log("Mobile detected, starting simple pulse in 2 seconds...");
 			setTimeout(() => {
-				console.log("Starting mobile smooth pulse animation...");
-				// Smooth pulse animation: 0 → 0.5 → 0
-				const pulseOverlays: THREE.Mesh[] = [];
-				inscriptions.forEach((inscription) => {
-					const material = this.hoveredMaterial?.clone();
-					if (!material || !this.mesh?.geometry) return;
+				console.log("Starting mobile simple pulse animation...");
+				// Use existing hovered material for simple pulse
+				if (this.hoveredMaterial) {
+					this.hoveredMaterial.opacity = 0;
+					this.hoveredMaterial.color.setHex(0xffc107);
 
-					material.opacity = 0; // Start from 0
-					this.applyHighlightToMaterial(inscription.id, material, 0.4);
-
-					const mesh = new THREE.Mesh(this.mesh.geometry, material);
-					mesh.position.copy(this.mesh.position);
-					mesh.rotation.copy(this.mesh.rotation);
-					mesh.scale.copy(this.mesh.scale);
-
-					(this.mesh?.parent || this.scene).add(mesh);
-					pulseOverlays.push(mesh);
-				});
-
-				// Smooth GSAP animation: 0 → 0.5 → 0
-				gsap
-					.timeline()
-					.to(
-						pulseOverlays.map((m) => m.material),
-						{
-							opacity: 0.5,
+					// Simple pulse animation: 0 → 0.3 → 0
+					gsap
+						.timeline()
+						.to(this.hoveredMaterial, {
+							opacity: 0.3,
 							duration: 1.0,
 							ease: "power2.out",
-						},
-					)
-					.to(
-						pulseOverlays.map((m) => m.material),
-						{
+						})
+						.to(this.hoveredMaterial, {
 							opacity: 0,
 							duration: 1.0,
 							ease: "power2.in",
-							onComplete: () => {
-								// Cleanup
-								pulseOverlays.forEach((mesh) => {
-									(mesh.parent || this.scene).remove(mesh);
-									if (Array.isArray(mesh.material)) {
-										mesh.material.forEach((mat) => {
-											mat.dispose();
-										});
-									} else {
-										mesh.material.dispose();
-									}
-								});
-							},
-						},
-					);
-			}, 2000); // 2 second delay for mobile
+						});
+				}
+			}, 2000);
 			return;
 		}
 
-		// Desktop: Full animation with individual inscription flipper effect
+		// Desktop: Simplified animation with fewer meshes
 		let index = 0;
+		const maxConcurrentMeshes = 5; // Limit concurrent meshes
 
 		const addNext = () => {
 			if (index >= inscriptions.length) {
-				// Wait for trail to finish, then do final pulse
-				setTimeout(() => {
-					// Smooth pulse animation: 0 → 0.5 → 0
-					const pulseOverlays: THREE.Mesh[] = [];
-					inscriptions.forEach((inscription) => {
-						const material = this.hoveredMaterial?.clone();
-						if (!material || !this.mesh?.geometry) return;
-
-						material.opacity = 0; // Start from 0
-						this.applyHighlightToMaterial(inscription.id, material, 0.4);
-
-						const mesh = new THREE.Mesh(this.mesh.geometry, material);
-						mesh.position.copy(this.mesh.position);
-						mesh.rotation.copy(this.mesh.rotation);
-						mesh.scale.copy(this.mesh.scale);
-
-						(this.mesh?.parent || this.scene).add(mesh);
-						pulseOverlays.push(mesh);
-					});
-
-					// Smooth GSAP animation: 0 → 0.5 → 0
-					gsap
-						.timeline()
-						.to(
-							pulseOverlays.map((m) => m.material),
-							{
-								opacity: 0.5,
-								duration: config.finalPulse.riseDuration,
-								ease: "power2.out",
-							},
-						)
-						.to(
-							pulseOverlays.map((m) => m.material),
-							{
-								opacity: 0,
-								duration: config.finalPulse.fallDuration,
-								ease: "power2.in",
-								onComplete: () => {
-									// Cleanup
-									pulseOverlays.forEach((mesh) => {
-										(mesh.parent || this.scene).remove(mesh);
-										if (Array.isArray(mesh.material)) {
-											mesh.material.forEach((mat) => {
-												mat.dispose();
-											});
-										} else {
-											mesh.material.dispose();
-										}
-									});
-								},
-							},
-						);
-				}, config.trailDuration + config.finalPulseDelay); // Wait for trail to finish
 				return;
+			}
+
+			// Limit concurrent meshes to prevent performance issues
+			if (overlays.length >= maxConcurrentMeshes) {
+				// Remove oldest overlay
+				const oldestOverlay = overlays.shift();
+				if (oldestOverlay) {
+					(oldestOverlay.parent || this.scene).remove(oldestOverlay);
+					if (Array.isArray(oldestOverlay.material)) {
+						oldestOverlay.material.forEach((mat) => mat.dispose());
+					} else {
+						oldestOverlay.material.dispose();
+					}
+				}
 			}
 
 			// Create overlay for current inscription

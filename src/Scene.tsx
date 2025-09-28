@@ -82,6 +82,54 @@ function PiacenzaLiverScene({
 	// Timeout refs to prevent panel re-opening after reset
 	const panelTimeoutRef = useRef<number | null>(null);
 
+	// Click debouncing to prevent rapid clicks
+	const lastClickTimeRef = useRef<number>(0);
+	const clickDebounceDelay = 300; // 300ms debounce
+
+	// Particle animation refs
+	const particleRefs = useRef<{
+		particles: THREE.Points | null;
+		particlePositions: Float32Array | null;
+		particleVelocities: Float32Array | null;
+		particleCount: number;
+	}>({
+		particles: null,
+		particlePositions: null,
+		particleVelocities: null,
+		particleCount: 0,
+	});
+
+	// Debug camera info update (throttled)
+	const updateDebugInfo = useCallback(() => {
+		if (
+			import.meta.env.VITE_DEBUG_ENABLED === "true" &&
+			import.meta.env.VITE_DEBUG_SHOW_CAMERA_INFO === "true" &&
+			cameraRef.current &&
+			controlsRef.current
+		) {
+			const modelMatrix = liverModelRef.current?.getModelMatrix();
+			const modelMatrixInverse = modelMatrix?.clone().invert();
+
+			const worldPosition = cameraRef.current.position.clone();
+			const worldTarget = controlsRef.current.target.clone();
+
+			let localPosition = worldPosition.clone();
+			let localTarget = worldTarget.clone();
+
+			if (modelMatrixInverse) {
+				localPosition = worldPosition.clone().applyMatrix4(modelMatrixInverse);
+				localTarget = worldTarget.clone().applyMatrix4(modelMatrixInverse);
+			}
+
+			setCameraDebugInfo({
+				position: worldPosition,
+				target: worldTarget,
+				localPosition: localPosition,
+				localTarget: localTarget,
+			});
+		}
+	}, []);
+
 	// Optimized callback handlers
 	const handleMarkerHover = useCallback((section: HoveredSection | null) => {
 		setHoveredSection(section);
@@ -128,8 +176,11 @@ function PiacenzaLiverScene({
 
 	const handleViewChange = useCallback(() => {
 		setHasViewChanged(true);
-	}, []);
-
+		// Update debug info when view changes (throttled by requestAnimationFrame)
+		if (import.meta.env.VITE_DEBUG_ENABLED === "true") {
+			requestAnimationFrame(updateDebugInfo);
+		}
+	}, [updateDebugInfo]);
 	const handleInscriptionClick = useCallback(
 		(payload: {
 			inscriptionId: number;
@@ -137,6 +188,13 @@ function PiacenzaLiverScene({
 			cameraLocalTarget: THREE.Vector3; // Camera target relative to liver model
 			modelMatrix: THREE.Matrix4; // Transforms model-local coords to world coords (accounts for liver rotation when moved by the user with shift key)
 		}) => {
+			// Debounce rapid clicks
+			const now = Date.now();
+			if (now - lastClickTimeRef.current < clickDebounceDelay) {
+				return;
+			}
+			lastClickTimeRef.current = now;
+
 			const { inscriptionId, modelMatrix } = payload;
 			const inscription = liverInscriptions.find(
 				(ins) => ins.id === inscriptionId,
@@ -151,11 +209,14 @@ function PiacenzaLiverScene({
 			setHasInteracted(true);
 			liverModelRef.current.setSelectedInscription(inscriptionId);
 
+			// Show panel immediately for better responsiveness
+			setSelectedInscription(inscription);
+
 			if (cameraControllerRef.current) {
 				cameraControllerRef.current.focusOn(
 					inscription.cameraTarget,
 					inscription.cameraPosition,
-					1000,
+					600,
 					true,
 					undefined,
 					modelMatrix,
@@ -165,9 +226,8 @@ function PiacenzaLiverScene({
 					clearTimeout(panelTimeoutRef.current);
 				}
 			}
-			setSelectedInscription(inscription);
 		},
-		[setHasInteracted],
+		[setHasInteracted, clickDebounceDelay],
 	);
 
 	const handleInscriptionListClick = useCallback(
@@ -180,7 +240,7 @@ function PiacenzaLiverScene({
 			cameraControllerRef.current.focusOn(
 				inscription.cameraTarget,
 				inscription.cameraPosition,
-				800,
+				500,
 				true,
 				undefined,
 				liverModelRef.current.getModelMatrix(),
@@ -217,9 +277,20 @@ function PiacenzaLiverScene({
 		setHasInteracted(true);
 	}, [setHasInteracted]);
 
+	// Throttled mouse move handler
+	const mouseMoveTimeoutRef = useRef<number | null>(null);
 	const handleMouseMove = useCallback(
 		(position: { x: number; y: number }, isOverCanvas: boolean) => {
-			setMousePosition({ ...position, isOverCanvas });
+			// Clear existing timeout
+			if (mouseMoveTimeoutRef.current) {
+				clearTimeout(mouseMoveTimeoutRef.current);
+			}
+
+			// Throttle updates to max 60fps (16ms)
+			mouseMoveTimeoutRef.current = window.setTimeout(() => {
+				setMousePosition({ ...position, isOverCanvas });
+				mouseMoveTimeoutRef.current = null;
+			}, 16);
 		},
 		[],
 	);
@@ -286,6 +357,19 @@ function PiacenzaLiverScene({
 		controlsRef.current = controls;
 		setupLighting(scene);
 
+		// Store particle references after lighting setup
+		const particles = scene.children.find(
+			(child) => child instanceof THREE.Points,
+		) as THREE.Points;
+		if (particles) {
+			particleRefs.current.particles = particles;
+			particleRefs.current.particlePositions = particles.geometry.attributes
+				.position.array as Float32Array;
+			particleRefs.current.particleVelocities = particles.geometry.attributes
+				.velocity.array as Float32Array;
+			particleRefs.current.particleCount = 40; // particleCount from setupLighting
+		}
+
 		// Initialize controllers and models
 		const cameraController = new CameraController(camera, controls);
 		cameraControllerRef.current = cameraController;
@@ -339,34 +423,39 @@ function PiacenzaLiverScene({
 			animationIdRef.current = requestAnimationFrame(animate);
 			controls.update();
 
-			// Update camera debug info
-			if (
-				import.meta.env.VITE_DEBUG_ENABLED === "true" &&
-				import.meta.env.VITE_DEBUG_SHOW_CAMERA_INFO === "true"
-			) {
-				// Convert world coordinates to model-local coordinates
-				const modelMatrix = liverModelRef.current?.getModelMatrix();
-				const modelMatrixInverse = modelMatrix?.clone().invert();
+			// Animate particles in main loop (throttled to 30fps)
+			if (Math.random() < 0.5 && particleRefs.current.particles) {
+				// ~30fps throttling
+				const {
+					particlePositions,
+					particleVelocities,
+					particleCount,
+					particles,
+				} = particleRefs.current;
+				if (particlePositions && particleVelocities) {
+					for (let i = 0; i < particleCount; i++) {
+						const i3 = i * 3;
 
-				const worldPosition = camera.position.clone();
-				const worldTarget = controls.target.clone();
+						particlePositions[i3] += particleVelocities[i3];
+						particlePositions[i3 + 1] += particleVelocities[i3 + 1];
+						particlePositions[i3 + 2] += particleVelocities[i3 + 2];
 
-				let localPosition = worldPosition.clone();
-				let localTarget = worldTarget.clone();
+						if (
+							particlePositions[i3 + 1] < -1 ||
+							Math.abs(particlePositions[i3]) > 2 ||
+							Math.abs(particlePositions[i3 + 2] - 1.5) > 2
+						) {
+							const height = Math.random() * 6;
+							const radius = (height / 6) * 1.8 * Math.random();
+							const angle = Math.random() * Math.PI * 2;
 
-				if (modelMatrixInverse) {
-					localPosition = worldPosition
-						.clone()
-						.applyMatrix4(modelMatrixInverse);
-					localTarget = worldTarget.clone().applyMatrix4(modelMatrixInverse);
+							particlePositions[i3] = Math.cos(angle) * radius;
+							particlePositions[i3 + 1] = 6 - height;
+							particlePositions[i3 + 2] = Math.sin(angle) * radius + 1.5;
+						}
+					}
+					particles.geometry.attributes.position.needsUpdate = true;
 				}
-
-				setCameraDebugInfo({
-					position: worldPosition,
-					target: worldTarget,
-					localPosition: localPosition,
-					localTarget: localTarget,
-				});
 			}
 
 			renderer.render(scene, camera);
@@ -382,6 +471,12 @@ function PiacenzaLiverScene({
 			if (panelTimeoutRef.current) {
 				clearTimeout(panelTimeoutRef.current);
 				panelTimeoutRef.current = null;
+			}
+
+			// Clear mouse move timeout
+			if (mouseMoveTimeoutRef.current) {
+				clearTimeout(mouseMoveTimeoutRef.current);
+				mouseMoveTimeoutRef.current = null;
 			}
 
 			cameraController?.dispose();
@@ -774,37 +869,6 @@ function setupLighting(scene: THREE.Scene) {
 
 	const particles = new THREE.Points(particleGeometry, particleMaterial);
 	scene.add(particles);
-
-	const animateParticles = () => {
-		const positions = particles.geometry.attributes.position.array;
-		const velocities = particles.geometry.attributes.velocity.array;
-
-		for (let i = 0; i < particleCount; i++) {
-			const i3 = i * 3;
-
-			positions[i3] += velocities[i3];
-			positions[i3 + 1] += velocities[i3 + 1];
-			positions[i3 + 2] += velocities[i3 + 2];
-
-			if (
-				positions[i3 + 1] < -1 ||
-				Math.abs(positions[i3]) > 2 ||
-				Math.abs(positions[i3 + 2] - 1.5) > 2
-			) {
-				const height = Math.random() * 6;
-				const radius = (height / 6) * 1.8 * Math.random();
-				const angle = Math.random() * Math.PI * 2;
-
-				positions[i3] = Math.cos(angle) * radius;
-				positions[i3 + 1] = 6 - height;
-				positions[i3 + 2] = Math.sin(angle) * radius + 1.5;
-			}
-		}
-
-		particles.geometry.attributes.position.needsUpdate = true;
-		requestAnimationFrame(animateParticles);
-	};
-	animateParticles();
 
 	// Minimal ambient light for dramatic museum effect
 	const ambientLight = new THREE.AmbientLight(
