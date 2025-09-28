@@ -56,7 +56,7 @@ export function BraveDisclaimer() {
 		setTimeout(() => {
 			setShowModal(true);
 		}, 2000);
-	}, [safeLocalStorage.getItem]);
+	}, []); // Empty dependency array - only run once on mount
 
 	const handleDismiss = () => {
 		setShowModal(false);
