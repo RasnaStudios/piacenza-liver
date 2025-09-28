@@ -93,6 +93,7 @@ export function InscriptionList({
 							fontSize: "16px",
 							fontFamily:
 								"'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
+							textShadow: "0px 1px 5px rgba(205, 127, 50, 0.3)",
 						}}
 					>
 						{getGodsDisplayNames(inscription.gods)}
