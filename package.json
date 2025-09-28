@@ -21,7 +21,7 @@
 			"useIgnoreFile": true
 		},
 		"files": {
-			"ignoreUnknown": false,
+			"ignoreUnknown": true,
 			"includes": [
 				"src/**/*",
 				"*.ts",
@@ -35,7 +35,18 @@
 				"node_modules/**/*",
 				"public/data/**/*",
 				"*.py",
-				"venv/**/*"
+				"venv/**/*",
+				".venv/**/*",
+				".husky/**/*",
+				"prepare/**/*",
+				"pre-push/**/*",
+				"*.xml",
+				"*.svg",
+				"LICENSE",
+				"CNAME",
+				"robots.txt",
+				"sitemap.xml",
+				".env*"
 			]
 		},
 		"formatter": {
