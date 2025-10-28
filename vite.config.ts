@@ -10,7 +10,7 @@ export default defineConfig({
 			disable: true, // Disable for now, to prevent caching issues
 			registerType: "autoUpdate",
 			injectRegister: "auto",
-			includeAssets: ["icon.svg"],
+			includeAssets: ["favicon.png"],
 			workbox: {
 				cleanupOutdatedCaches: true,
 				navigateFallback: "index.html",
@@ -50,7 +50,7 @@ export default defineConfig({
 				display: "standalone",
 				background_color: "#000000",
 				theme_color: "#000000",
-				icons: [{ src: "icon.svg", sizes: "any", type: "image/svg+xml" }],
+				icons: [{ src: "favicon.png", sizes: "any", type: "image/svg+xml" }],
 			},
 		}),
 	],
