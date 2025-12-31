@@ -7,25 +7,25 @@ export default defineConfig({
 	plugins: [
 		react(),
 		VitePWA({
-			disable: true, // Disable for now, to prevent caching issues
+			disable: true,
 			registerType: "autoUpdate",
 			injectRegister: "auto",
 			includeAssets: ["favicon.png"],
 			workbox: {
 				cleanupOutdatedCaches: true,
 				navigateFallback: "index.html",
-				// Precache app shell and static assets including images/OBJ/JSON
 				globPatterns: ["**/*.{js,css,html,png,jpg,jpeg,gif,svg,webp,obj,json}"],
-				// Allow large assets (textures / OBJ) to be precached
 				maximumFileSizeToCacheInBytes: 150 * 1024 * 1024,
-				// Optional runtime caching for images/OBJ/JSON
 				runtimeCaching: [
 					{
 						urlPattern: /\.(?:png|jpg|jpeg|gif|svg|webp)$/,
 						handler: "CacheFirst",
 						options: {
 							cacheName: "images",
-							expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
+							expiration: {
+								maxEntries: 100,
+								maxAgeSeconds: 60 * 60 * 24 * 30,
+							},
 						},
 					},
 					{
@@ -33,7 +33,10 @@ export default defineConfig({
 						handler: "CacheFirst",
 						options: {
 							cacheName: "models",
-							expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 30 },
+							expiration: {
+								maxEntries: 20,
+								maxAgeSeconds: 60 * 60 * 24 * 30,
+							},
 						},
 					},
 					{
@@ -59,23 +62,33 @@ export default defineConfig({
 			"Cache-Control": "no-cache, no-store, must-revalidate",
 			Pragma: "no-cache",
 			Expires: "0",
+			"Strict-Transport-Security":
+				"max-age=31536000; includeSubDomains; preload",
+			"X-Content-Type-Options": "nosniff",
+			"X-Frame-Options": "DENY",
+			"X-XSS-Protection": "1; mode=block",
+			"Referrer-Policy": "strict-origin-when-cross-origin",
 		},
 	},
 	preview: {
 		headers: {
-			"/data/inscriptions.json": {
-				"Content-Type": "application/json",
-				"Cache-Control": "public, max-age=86400, s-maxage=86400",
-			},
+			"Strict-Transport-Security":
+				"max-age=31536000; includeSubDomains; preload",
+			"X-Content-Type-Options": "nosniff",
+			"X-Frame-Options": "DENY",
+			"X-XSS-Protection": "1; mode=block",
+			"Referrer-Policy": "strict-origin-when-cross-origin",
 		},
 	},
 	build: {
 		chunkSizeWarningLimit: 1024,
+		cssCodeSplit: true,
 		rollupOptions: {
 			output: {
 				manualChunks: {
 					three: ["three"],
 					vendor: ["react", "react-dom"],
+					mantine: ["@mantine/core", "@mantine/hooks"],
 				},
 			},
 		},

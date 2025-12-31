@@ -12,8 +12,8 @@ export function ResetInstruction({
 	hasViewChanged,
 }: ResetInstructionProps) {
 	const [showInstruction, setShowInstruction] = useState(false);
-	const hideTimerRef = useRef<number | null>(null);
-	const showTimerRef = useRef<number | null>(null);
+	const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const showTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	useEffect(() => {
 		// Clear any existing timers

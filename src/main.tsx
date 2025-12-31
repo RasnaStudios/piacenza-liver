@@ -4,7 +4,6 @@ import { createRoot } from "react-dom/client";
 import Scene from "./Scene";
 import { TitleOverlay } from "./ui/components/TitleOverlay";
 import { LoadingScreen } from "./ui/LoadingScreen";
-import "@mantine/core/styles.css";
 
 function App() {
 	const [loadingProgress, setLoadingProgress] = useState(0);
