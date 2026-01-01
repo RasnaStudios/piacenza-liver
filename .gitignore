@@ -23,6 +23,10 @@ public/data/inscriptions.json
 .env.test.local
 .env.production.local
 
+# Python virtual environment
+venv/
+.venv/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
