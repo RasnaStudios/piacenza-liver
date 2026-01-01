@@ -1,5 +1,5 @@
 echo "🔍 Checking staged files with Biome..."
-pnpm biome check --staged
+pnpm biome check --staged --no-errors-on-unmatched
 
 if [ $? -ne 0 ]; then
     echo "❌ Lint check failed! Please run 'pnpm lint:fix' to fix the errors before committing."
