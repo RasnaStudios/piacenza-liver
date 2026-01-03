@@ -773,7 +773,6 @@ function setupLighting(scene: THREE.Scene) {
   keyLight.shadow.camera.fov = 45
   keyLight.shadow.bias = -0.0001
   keyLight.shadow.normalBias = 0.02
-  ;(keyLight.shadow as unknown as THREE.DirectionalLightShadow).radius = 12
   scene.add(keyLight)
   scene.add(keyLight.target)
 
@@ -793,7 +792,9 @@ function setupLighting(scene: THREE.Scene) {
   fillLight.shadow.camera.right = 10
   fillLight.shadow.camera.top = 10
   fillLight.shadow.camera.bottom = -10
-  fillLight.shadow.bias = -0.0005
+  fillLight.shadow.bias = -0.0001
+  fillLight.shadow.normalBias = 0.02
+  fillLight.shadow.radius = 8
   scene.add(fillLight)
   scene.add(fillLight.target)
 
@@ -814,6 +815,8 @@ function setupLighting(scene: THREE.Scene) {
   backLight.shadow.camera.top = 10
   backLight.shadow.camera.bottom = -10
   backLight.shadow.bias = -0.0001
+  backLight.shadow.normalBias = 0.02
+  backLight.shadow.radius = 8
   scene.add(backLight)
   scene.add(backLight.target)
 
