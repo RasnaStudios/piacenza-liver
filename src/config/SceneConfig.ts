@@ -5,7 +5,7 @@ export const SceneConfig = {
   // Initial positions
   model: {
     position: new THREE.Vector3(0.2, 0.5, 0),
-    rotation: new THREE.Vector3(-1.5, 3.15, 0.0), // Anatomical orientation
+    rotation: new THREE.Vector3(0.15, 3.0, 0.0), // Anatomical orientation
     scale: 1.0,
   },
 
@@ -25,7 +25,7 @@ export const SceneConfig = {
     lightColor: 0xfff8e7, // Warm white light
     ambientColor: 0x7a6b5a, // Warm ambient light for blending
     intensityMultiplier: 1.0, // Global intensity multiplier
-    shadowMapSize: 1024, // Shadow map resolution
+    shadowMapSize: 4096, // Shadow map resolution
     shadowBias: -0.0001, // Shadow bias to prevent acne
     shadowNormalBias: 0.02, // Additional shadow bias
     shadowRadius: 8, // Shadow softness radius
