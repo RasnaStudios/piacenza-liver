@@ -7,33 +7,9 @@
   <!-- Main application page -->
   <url>
     <loc>https://liver.rasna.dev/</loc>
-    <lastmod>2026-01-06</lastmod>
+    <lastmod>2026-01-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-  </url>
-  
-  <!-- Data endpoint for crawlers -->
-  <url>
-    <loc>https://liver.rasna.dev/data/inscriptions.json</loc>
-    <lastmod>2026-01-06</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  
-  <!-- Static assets -->
-  <url>
-    <loc>https://liver.rasna.dev/homepage.png</loc>
-    <lastmod>2026-01-06</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <!-- Favicon for Google indexing -->
-  <url>
-    <loc>https://liver.rasna.dev/favicon.ico</loc>
-    <lastmod>2026-01-06</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.5</priority>
   </url>
   
 </urlset>

@@ -130,45 +130,62 @@
 </head>
 
 <body>
-  <!-- Hidden semantic content for crawlers -->
-  <div style="display: none;">
+  <!-- Semantic content for crawlers and accessibility -->
+  <noscript>
+    <div style="padding: 20px; max-width: 800px; margin: 0 auto;">
+      <h1>Piacenza Liver - 3D Etruscan Archaeological Reconstruction</h1>
+      <p>Interactive 3D visualization of the ancient Etruscan Piacenza Liver with all 42 authentic inscriptions and
+        scholarly annotations. Created by Lorenzo Andraghetti for archaeological research and education.</p>
+
+      <section>
+        <h2>About the Piacenza Liver</h2>
+        <p>The Piacenza Liver is an ancient Etruscan bronze artifact dating to approximately 100 BCE, used for hepatoscopy
+          (liver divination). It contains 42 inscriptions representing various Etruscan deities organized into
+          cosmological zones.</p>
+      </section>
+
+      <section>
+        <h2>Key Information</h2>
+        <p>The liver contains 42 inscriptions representing 25 Etruscan deities organized into 9 cosmological zones: Sky,
+          Water, Earth, Underworld, Pars Familiaris, Gall Bladder, Central Section, Pars Hostilis, and Back/Bottom.</p>
+        <p>Major deities include Tinia (Jupiter), Nethuns (Neptune), Turan (Venus), Laran (Ares), Hercle (Hercules), Usil
+          (Sun), and Tiur (Moon).</p>
+      </section>
+
+      <section>
+        <h2>Data Access</h2>
+        <p>Complete dataset is available for researchers and crawlers:</p>
+        <ul>
+          <li><a href="/data/inscriptions.json" rel="alternate" type="application/json"
+              title="Download Piacenza Liver inscriptions dataset in JSON format">All 42 Etruscan inscriptions with
+              translations (JSON)</a></li>
+        </ul>
+        <p>The inscriptions dataset contains all 42 Etruscan deity inscriptions with translations, scholarly annotations,
+          cosmological groupings, and archaeological metadata. Available in JSON format for programmatic access and
+          research purposes.</p>
+      </section>
+
+      <footer>
+        <p>Created by <strong>Lorenzo Andraghetti</strong> - Interactive 3D Archaeological Reconstruction</p>
+        <p>Source: <a href="https://liver.rasna.dev/"
+            title="Piacenza Liver - 3D Etruscan Archaeological Reconstruction">https://liver.rasna.dev/</a></p>
+      </footer>
+    </div>
+  </noscript>
+  
+  <!-- Visible semantic content for SEO (hidden visually but accessible to crawlers) -->
+  <div style="position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden;">
     <h1>Piacenza Liver - 3D Etruscan Archaeological Reconstruction</h1>
     <p>Interactive 3D visualization of the ancient Etruscan Piacenza Liver with all 42 authentic inscriptions and
       scholarly annotations. Created by Lorenzo Andraghetti for archaeological research and education.</p>
-
-    <section>
-      <h2>About the Piacenza Liver</h2>
-      <p>The Piacenza Liver is an ancient Etruscan bronze artifact dating to approximately 100 BCE, used for hepatoscopy
-        (liver divination). It contains 42 inscriptions representing various Etruscan deities organized into
-        cosmological zones.</p>
-    </section>
-
-    <section>
-      <h2>Key Information</h2>
-      <p>The liver contains 42 inscriptions representing 25 Etruscan deities organized into 9 cosmological zones: Sky,
-        Water, Earth, Underworld, Pars Familiaris, Gall Bladder, Central Section, Pars Hostilis, and Back/Bottom.</p>
-      <p>Major deities include Tinia (Jupiter), Nethuns (Neptune), Turan (Venus), Laran (Ares), Hercle (Hercules), Usil
-        (Sun), and Tiur (Moon).</p>
-    </section>
-
-    <section>
-      <h2>Data Access</h2>
-      <p>Complete dataset is available for researchers and crawlers:</p>
-      <ul>
-        <li><a href="/data/inscriptions.json" rel="alternate" type="application/json"
-            title="Download Piacenza Liver inscriptions dataset in JSON format">All 42 Etruscan inscriptions with
-            translations (JSON)</a></li>
-      </ul>
-      <p>The inscriptions dataset contains all 42 Etruscan deity inscriptions with translations, scholarly annotations,
-        cosmological groupings, and archaeological metadata. Available in JSON format for programmatic access and
-        research purposes.</p>
-    </section>
-
-    <footer>
-      <p>Created by <strong>Lorenzo Andraghetti</strong> - Interactive 3D Archaeological Reconstruction</p>
-      <p>Source: <a href="https://liver.rasna.dev/"
-          title="Piacenza Liver - 3D Etruscan Archaeological Reconstruction">https://liver.rasna.dev/</a></p>
-    </footer>
+    <p>The Piacenza Liver is an ancient Etruscan bronze artifact dating to approximately 100 BCE, used for hepatoscopy
+      (liver divination). It contains 42 inscriptions representing various Etruscan deities organized into
+      cosmological zones.</p>
+    <p>The liver contains 42 inscriptions representing 25 Etruscan deities organized into 9 cosmological zones: Sky,
+      Water, Earth, Underworld, Pars Familiaris, Gall Bladder, Central Section, Pars Hostilis, and Back/Bottom.</p>
+    <p>Major deities include Tinia (Jupiter), Nethuns (Neptune), Turan (Venus), Laran (Ares), Hercle (Hercules), Usil
+      (Sun), and Tiur (Moon).</p>
+    <p><a href="/data/inscriptions.json">Download all 42 Etruscan inscriptions with translations in JSON format</a></p>
   </div>
 
   <div id="root"></div>
