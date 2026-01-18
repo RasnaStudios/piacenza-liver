@@ -2,7 +2,7 @@
   width: 100%;
   min-height: 100vh;
   background: #000000;
-  padding: 120px 80px 80px;
+  padding: 120px 100px 80px;
   color: #c9a876;
   padding-bottom: 200px;
 }
@@ -59,6 +59,7 @@
   margin: 0 auto;
   overflow-x: hidden;
   box-sizing: border-box;
+  padding: 0 32px;
 }
 
 .exploration-section-title {
@@ -320,7 +321,7 @@
 
 @media (max-width: 768px) {
   .inscription-exploration {
-    padding: 80px 20px 60px;
+    padding: 90px 26px 80px;
     padding-bottom: 200px;
   }
 
@@ -335,6 +336,7 @@
 
   .exploration-header {
     margin: 0 auto 80px;
+    padding: 0 20px;
   }
 
   .exploration-title {
