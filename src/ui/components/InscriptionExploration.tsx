@@ -1,6 +1,6 @@
 import { Box, Group, Paper, Stack, Text } from "@mantine/core"
 import { IconArrowLeft } from "@tabler/icons-react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import YAML from "yaml"
@@ -190,6 +190,20 @@ export function InscriptionExploration() {
   const { t: tCommon } = useTranslation("common")
   const { t: tLiverData } = useTranslation("liverData")
   const navigate = useNavigate()
+  const deityLookup = useMemo(() => {
+    const map = new Map<string, string>()
+    Object.entries(liverGods).forEach(([id, god]) => {
+      const lowerId = id.toLowerCase()
+      if (!map.has(lowerId)) {
+        map.set(lowerId, id)
+      }
+      const nameKey = god.name?.toLowerCase()
+      if (nameKey && !map.has(nameKey)) {
+        map.set(nameKey, id)
+      }
+    })
+    return map
+  }, [])
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [selectedInscriptionId, setSelectedInscriptionId] = useState<
     number | null
@@ -277,13 +291,8 @@ export function InscriptionExploration() {
         return
       }
 
-      const deity = Object.entries(liverGods).find(
-        ([id, god]) =>
-          id.toLowerCase() === hash.toLowerCase() ||
-          god.name.toLowerCase() === hash.toLowerCase(),
-      )
-      if (deity) {
-        const [godId] = deity
+      const godId = deityLookup.get(hash.toLowerCase())
+      if (godId) {
         setTimeout(() => {
           const section = document.querySelector(
             `.group-section[data-section="${godId}"]`,
