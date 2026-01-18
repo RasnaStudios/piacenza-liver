@@ -6,6 +6,7 @@ interface InteractionButtonProps {
   size?: "sm" | "md" | "lg"
   variant?: "filled" | "outline" | "text"
   isEnabled?: boolean
+  disableAnimation?: boolean
 }
 
 export function InteractionButton({
@@ -14,6 +15,7 @@ export function InteractionButton({
   size = "md",
   variant = "filled",
   isEnabled,
+  disableAnimation = false,
 }: InteractionButtonProps) {
   if (isEnabled === false) {
     return null
@@ -28,7 +30,11 @@ export function InteractionButton({
       type="button"
     >
       {variant === "text" ? (
-        <span className="title-gradient title-subtle interaction-button-text-content">
+        <span
+          className={`title-subtle interaction-button-text-content ${
+            disableAnimation ? "" : "title-gradient"
+          }`}
+        >
           {children}
         </span>
       ) : (

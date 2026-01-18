@@ -1,10 +1,12 @@
 import { Box, Text, Transition } from "@mantine/core"
+import { useTranslation } from "react-i18next"
 
 interface TitleOverlayProps {
   isVisible: boolean
 }
 
 export function TitleOverlay({ isVisible }: TitleOverlayProps) {
+  const { t } = useTranslation("common")
   return (
     <Box
       pos="fixed"
@@ -30,7 +32,7 @@ export function TitleOverlay({ isVisible }: TitleOverlayProps) {
             className="title-gradient title-main"
             style={styles}
           >
-            Piacenza Liver
+            {t("titles.piacenzaLiver")}
           </Text>
         )}
       </Transition>

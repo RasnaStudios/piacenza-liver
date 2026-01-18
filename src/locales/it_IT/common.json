@@ -1,0 +1,56 @@
+{
+  "buttons": {
+    "aboutLiver": "Informazioni sul Fegato",
+    "exploreInscriptions": "Esplora le iscrizioni",
+    "controls": "Controlli",
+    "language": "Lingua",
+    "viewIn3D": "Visualizza in 3D",
+    "downloadDataset": "Scarica dataset",
+    "contribute": "Contribuisci",
+    "exploreLiver": "Esplora il fegato",
+    "continue": "Continua"
+  },
+  "labels": {
+    "involvedDeities": "Divinità coinvolte",
+    "exploreByZone": "Esplora per zona",
+    "exploreByDeity": "Esplora per divinità",
+    "createdBy": "Creato da"
+  },
+  "actions": {
+    "closePanel": "Chiudi pannello",
+    "closeControls": "Chiudi controlli",
+    "goToInscription": "Vai all'iscrizione"
+  },
+  "connectors": {
+    "as": "come",
+    "with": "con",
+    "roman": "Romana:",
+    "greek": "Greca:"
+  },
+  "instructions": {
+    "doubleTapToReset": "Tocca due volte per resettare",
+    "doubleClickToReset": "Doppio clic per resettare",
+    "doubleTapOnModelToReset": "Tocca due volte sul modello per resettare la vista"
+  },
+  "aria": {
+    "closePanel": "Chiudi pannello",
+    "closeControls": "Chiudi controlli",
+    "linkedIn": "LinkedIn",
+    "github": "GitHub"
+  },
+  "titles": {
+    "piacenzaLiver": "Fegato di Piacenza"
+  },
+  "footer": {
+    "compiledBy": "Informazioni compilate da",
+    "incorrectInfo": "Vedi errori nelle traduzioni o nelle informazioni?",
+    "writeMe": "Scrivimi",
+    "mailtoSubject": "Feedback sulle informazioni del Fegato di Piacenza",
+    "mailtoBody": "Ho notato le seguenti informazioni errate o incomplete:\n\n"
+  },
+  "language": {
+    "title": "Seleziona Lingua",
+    "developerText": "Sei uno sviluppatore?",
+    "contributeOnGitHub": "Contribuisci su GitHub"
+  }
+}

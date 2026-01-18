@@ -1,0 +1,152 @@
+{
+  "groups": {
+    "sky": {
+      "name": "Sky",
+      "description": "The first three houses are occupied by Tinia, the supreme god linked to the Greek god Zeus, followed by Cilens (an epithet of Tinia, possibly related to night or boundaries), and Thufltha (a divine power associated with fate and judgment, appearing as an aspect of Tinia), and Nethuns, in the form of divinity of atmospheric humidity. In fourth place is Uni, wife of Tinia, protectress of cities and births."
+    },
+    "water": {
+      "name": "Water",
+      "description": "The second four houses are occupied by Tecum, a still-mysterious figure: the sanctuary of Tuoro on Lake Trasimeno is dedicated to this diety. Lusal occupies the next space, followed by Nethuns, originally the diety of fresh-water, only later identified with the Greek god Poseidon. Catha, the sun goddess, occupies the last house."
+    },
+    "earth": {
+      "name": "Earth",
+      "description": "The terrestrial realm of vegetation, boundaries, and earth spirits. Governs agricultural cycles, forest boundaries, and land-based divine forces."
+    },
+    "underworld": {
+      "name": "Underworld",
+      "description": "The chthonic realm of earth goddesses, protective spirits, and underworld deities. Controls death omens, protection, and liminal passages."
+    },
+    "pars_familiaris": {
+      "name": "Pars Familiaris",
+      "description": "The familiar/favorable realm containing household spirits and benevolent deities. Represents favorable omens and domestic divine protection."
+    },
+    "gall_bladder": {
+      "name": "Gall Bladder",
+      "description": "The bile reservoir representing concentrated divine energy, generative forces, and seasonal transitions. Contains powerful fertility and war deities."
+    },
+    "central_section": {
+      "name": "Central Section",
+      "description": "The central power zone containing heroic protectors and generating forces. Represents the heart of divine power and cosmic balance."
+    },
+    "pars_hostilis": {
+      "name": "Pars Hostilis",
+      "description": "The hostile/unfavorable realm containing border guardians and infernal deities. Represents challenging omens and protective boundaries."
+    },
+    "back": {
+      "name": "Back",
+      "description": "The foundational cosmic anchors representing the Sun and Moon. These mark the fundamental celestial cycles underlying all divination."
+    }
+  },
+  "deities": {
+    "equivalentGods": "Equivalent Gods",
+    "alsoAppearsIn": "Also Appears in",
+    "tinia": {
+      "description": "Supreme sky god and father of the gods in the Etruscan pantheon.",
+      "romanEquivalent": "Jupiter",
+      "greekEquivalent": "Zeus"
+    },
+    "cilens": {
+      "description": "Epithet of Tinia, possibly related to night or boundaries.",
+      "romanEquivalent": "Nocturnus"
+    },
+    "thufltha": {
+      "description": "Divine power associated with fate and judgment, often appearing as an aspect of Tinia representing avenging or punitive forces.",
+      "romanEquivalent": "Fortuna"
+    },
+    "nethuns": {
+      "description": "God of fresh water, sea, and atmospheric moisture.",
+      "romanEquivalent": "Neptune",
+      "greekEquivalent": "Poseidon"
+    },
+    "uni": {
+      "description": "Wife of Tinia, guardian of marriage, fertility, birth, and cities.",
+      "romanEquivalent": "Juno",
+      "greekEquivalent": "Hera"
+    },
+    "mae": {
+      "description": "Possibly maternal or generative attribute deity.",
+      "romanEquivalent": "Maius"
+    },
+    "tecvm": {
+      "description": "God of the lucomenes, or ruling class."
+    },
+    "lusal": {
+      "description": "Unidentified water deity, possibly related to light or purification."
+    },
+    "catha": {
+      "description": "Goddess of the sun in her solar-nymph form.",
+      "greekEquivalent": "Leucothea"
+    },
+    "fufluns": {
+      "description": "God of wine, inebriation, and vegetation cycles.",
+      "romanEquivalent": "Bacchus",
+      "greekEquivalent": "Dionysus"
+    },
+    "selvans": {
+      "description": "God of borders and forest boundaries.",
+      "romanEquivalent": "Silvanus"
+    },
+    "tluscva": {
+      "description": "Nymphs tied to water cult and sacred offerings."
+    },
+    "cels": {
+      "description": "Goddess of the earth and chthonic forces.",
+      "romanEquivalent": "Gea"
+    },
+    "culsans": {
+      "description": "Benevolent protector of doors and thresholds.",
+      "romanEquivalent": "Janus"
+    },
+    "alpans": {
+      "description": "Protective spirit associated with Culsans."
+    },
+    "vetis": {
+      "description": "Underworld \"Apollo\", chthonic version of the light god.",
+      "romanEquivalent": "Veiovis"
+    },
+    "pul": {
+      "description": "Uncertain deity, possibly related to purification."
+    },
+    "lasl": {
+      "description": "Household female spirit, domestic protection. Companion of Turan.",
+      "romanEquivalent": "Lares"
+    },
+    "maris": {
+      "description": "Generative force and generating power of all the gods."
+    },
+    "laran": {
+      "description": "God of war, representing martial force. Also associated with underworld and boundary maintenance.",
+      "romanEquivalent": "Ares"
+    },
+    "tvnth": {
+      "description": "Uncertain deity in the gall bladder zone."
+    },
+    "hercle": {
+      "description": "Hero-protector, divine strength and protection.",
+      "romanEquivalent": "Hercules"
+    },
+    "metlvmth": {
+      "description": "Epithet or attribute associated with Lethams."
+    },
+    "marutl": {
+      "description": "Double epithet associated with Tluscva."
+    },
+    "letham": {
+      "description": "Underworld goddess associated with the dead and chthonic forces. Appears on the Liver of Piacenza and in ritual inscriptions."
+    },
+    "velch": {
+      "description": "Infernal form of Sethlans (Vulcan), fire deity.",
+      "romanEquivalent": "Vulcan"
+    },
+    "satres": {
+      "description": "God of the underworld and temporal cycles.",
+      "romanEquivalent": "Saturn"
+    },
+    "usil": {
+      "description": "The sun god, representing solar power and illumination."
+    },
+    "tiur": {
+      "description": "The moon god, representing lunar cycles and night illumination."
+    }
+  }
+}

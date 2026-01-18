@@ -1,0 +1,47 @@
+{
+  "title": "Controlli",
+  "mobile": [
+    {
+      "command": "Tocca",
+      "description": "Seleziona iscrizioni"
+    },
+    {
+      "command": "Doppio tocco",
+      "description": "Ripristina la vista predefinita"
+    },
+    {
+      "command": "Trascina con un dito",
+      "description": "Ruota la vista della telecamera"
+    },
+    {
+      "command": "Pizzica",
+      "description": "Ingrandisci e rimpicciolisci"
+    },
+    {
+      "command": "Trascina con tre dita",
+      "description": "Sposta la posizione del modello"
+    }
+  ],
+  "desktop": [
+    {
+      "command": "Doppio clic",
+      "description": "Ripristina la vista predefinita"
+    },
+    {
+      "command": "Mouse",
+      "description": "Ruota il modello 3D"
+    },
+    {
+      "command": "Alt + Mouse",
+      "description": "Panoramica della vista della telecamera"
+    },
+    {
+      "command": "Scroll",
+      "description": "Ingrandisci e rimpicciolisci"
+    },
+    {
+      "command": "⇧ + Trascina",
+      "description": "Sposta la posizione del modello"
+    }
+  ]
+}

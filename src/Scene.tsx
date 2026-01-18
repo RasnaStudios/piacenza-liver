@@ -480,11 +480,12 @@ function PiacenzaLiverScene({
   }, [interactionMode, setHasInteracted, setTitleVisible])
 
   const handleModelRotate = useCallback(() => {
+    if (interactionMode === InteractionMode.About) return
     if (!hasInteracted) {
       setHasInteracted(true)
     }
     setHasViewChanged(true)
-  }, [hasInteracted, setHasInteracted])
+  }, [hasInteracted, setHasInteracted, interactionMode])
 
   // Mouse move handler with throttling to match raycast timing
   const mouseMoveTimeoutRef = useRef<number | null>(null)
@@ -853,6 +854,21 @@ function PiacenzaLiverScene({
     }
   }, [isMouseOverPanel])
 
+  // Ensure title is always visible when in About mode
+  useEffect(() => {
+    if (isAboutMode) {
+      setTitleVisible(true)
+    }
+  }, [isAboutMode, setTitleVisible])
+
+  // Clear highlighted inscription when entering About mode
+  useEffect(() => {
+    if (isAboutMode && liverModelRef.current) {
+      liverModelRef.current.setHoveredInscription(0)
+      setHoveredSection(null)
+    }
+  }, [isAboutMode])
+
   // Handle hash-based navigation (e.g., #inscription-3)
   useEffect(() => {
     // Check for #about hash on initial mount
@@ -1002,6 +1018,7 @@ function PiacenzaLiverScene({
         <ResetInstruction
           isPanelOpen={isInscriptionMode}
           hasViewChanged={hasViewChanged}
+          isAboutMode={isAboutMode}
         />
         {isSceneReady && !isLoading && !isAboutMode && (
           <>

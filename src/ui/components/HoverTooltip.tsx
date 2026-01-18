@@ -1,7 +1,7 @@
 import { Paper } from "@mantine/core"
 import { isMobile } from "react-device-detect"
+import { getGodsDisplayNames } from "../../scene/LiverData"
 import type { HoveredSection } from "../../types"
-import { getGodsDisplayNames } from "../../utils/liverUtils"
 import { NumberBadge } from "./NumberBadge"
 
 interface HoverTooltipProps {

@@ -1,0 +1,14 @@
+{
+  "htmlTitle": "Piacenza Liver - 3D Etruscan Archaeological Reconstruction",
+  "description": "3D interactive visualization of the Etruscan Piacenza Liver with 42 inscriptions and scholarly annotations.",
+  "keywords": "Piacenza Liver, Etruscan, archaeology, 3D visualization, hepatoscopy, divination",
+  "ogTitle": "Piacenza Liver - 3D Interactive Visualization",
+  "ogDescription": "Interactive 3D visualization of the ancient Etruscan Piacenza Liver with all 42 authentic inscriptions and scholarly annotations. Created by Lorenzo Andraghetti for archaeological research and education.",
+  "ogImageAlt": "3D visualization of the Piacenza Liver showing Etruscan inscriptions",
+  "ogSiteName": "Piacenza Liver Reconstruction",
+  "structuredData": {
+    "aboutDescription": "Ancient Etruscan bronze liver used for hepatoscopy (liver divination)",
+    "datasetName": "Piacenza Liver Inscriptions Dataset",
+    "datasetDescription": "Complete dataset of all 42 Etruscan deity inscriptions with translations and scholarly annotations"
+  }
+}

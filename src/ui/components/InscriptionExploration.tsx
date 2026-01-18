@@ -1,21 +1,21 @@
 import { Box, Group, Paper, Stack, Text } from "@mantine/core"
 import { IconArrowLeft } from "@tabler/icons-react"
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import YAML from "yaml"
 import { AppConfig } from "../../config/AppConfig"
-import { getInscriptionHash } from "../../navigation"
+import { getInscriptionHash, setAboutHash } from "../../navigation"
 import type { Inscription, LiverGod } from "../../scene/LiverData"
-import {
-  liverGods,
-  liverGroups,
-  liverInscriptions,
-} from "../../scene/LiverData"
 import {
   getGodInscriptions,
   getGodsDisplayNames,
   getInscriptionGroup,
-} from "../../utils/liverUtils"
+  liverGods,
+  liverGroups,
+  liverInscriptions,
+} from "../../scene/LiverData"
+import { ActionMenu } from "./ActionMenu"
 import { DeityCard } from "./DeityCard"
 import { Footer } from "./Footer"
 import { InteractionButton } from "./InteractionButton"
@@ -147,6 +147,7 @@ function InscriptionDetailsPanel({
   onInscriptionSelect,
   sectionId,
 }: InscriptionDetailsPanelProps) {
+  const { t: tCommon } = useTranslation("common")
   return (
     <Box className="inscription-details-container" data-section={sectionId}>
       <Paper
@@ -176,7 +177,7 @@ function InscriptionDetailsPanel({
             </div>
           </div>
           <InteractionButton onClick={onViewIn3D} size="md" variant="outline">
-            View in 3D Visualization
+            {tCommon("buttons.viewIn3D")}
           </InteractionButton>
         </Stack>
       </Paper>
@@ -185,6 +186,9 @@ function InscriptionDetailsPanel({
 }
 
 export function InscriptionExploration() {
+  const { t } = useTranslation("exploration")
+  const { t: tCommon } = useTranslation("common")
+  const { t: tLiverData } = useTranslation("liverData")
   const navigate = useNavigate()
   const [hoveredId, setHoveredId] = useState<number | null>(null)
   const [selectedInscriptionId, setSelectedInscriptionId] = useState<
@@ -251,7 +255,7 @@ export function InscriptionExploration() {
               `.inscription-card[data-inscription-id="${inscriptionId}"]`,
             )
             if (card) {
-              card.scrollIntoView({ behavior: "smooth", block: "center" })
+              card.scrollIntoView({ behavior: "smooth", block: "start" })
             }
           }, 100)
           return
@@ -259,9 +263,7 @@ export function InscriptionExploration() {
       }
 
       const group = Object.values(liverGroups).find(
-        (g) =>
-          g.id.toLowerCase() === hash.toLowerCase() ||
-          g.name.toLowerCase() === hash.toLowerCase(),
+        (g) => g.id.toLowerCase() === hash.toLowerCase(),
       )
       if (group) {
         setTimeout(() => {
@@ -344,16 +346,55 @@ export function InscriptionExploration() {
     setSelectedInscriptionId(id)
     window.history.pushState(null, "", `/inscriptions#${id}`)
 
-    setTimeout(() => {
-      const card = document.querySelector(
-        `.inscription-card[data-inscription-id="${id}"]`,
-      )
-      if (card) {
-        card.scrollIntoView({ behavior: "smooth", block: "center" })
-      } else if (sectionId) {
-        scrollToDetails(sectionId)
-      }
-    }, 100)
+    const inscription = liverInscriptions.find((ins) => ins.id === id)
+    if (!inscription) return
+
+    const targetGroup = sectionId
+      ? Object.values(liverGroups).find((g) => g.id === sectionId) ||
+        getInscriptionGroup(id)
+      : getInscriptionGroup(id)
+    if (!targetGroup) return
+
+    const scrollToDetailsPanel = (attempts = 0) => {
+      if (attempts > 10) return
+
+      requestAnimationFrame(() => {
+        const groupSection = document.querySelector(
+          `.group-section[data-section="${targetGroup.id}"]`,
+        )
+        const selectedCard = document.querySelector(
+          `.inscription-card[data-inscription-id="${id}"]`,
+        )
+        const detailsContainer =
+          document.querySelector(
+            `.group-section[data-section="${targetGroup.id}"] .inscription-details-container`,
+          ) ||
+          document.querySelector(
+            `.inscription-details-container[data-section="${targetGroup.id}"]`,
+          )
+
+        if (groupSection && selectedCard) {
+          selectedCard.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          })
+        } else if (groupSection) {
+          groupSection.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          })
+        } else if (detailsContainer) {
+          detailsContainer.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          })
+        } else {
+          setTimeout(() => scrollToDetailsPanel(attempts + 1), 50)
+        }
+      })
+    }
+
+    setTimeout(() => scrollToDetailsPanel(), 100)
   }
 
   const handleViewIn3D = (inscription: Inscription, e: React.MouseEvent) => {
@@ -362,31 +403,30 @@ export function InscriptionExploration() {
   }
 
   const handleDownloadYAML = () => {
-    const zones = Object.entries(liverGroups).map(([zoneId, group]) => {
-      const inscriptions = liverInscriptions
-        .filter((ins) => getInscriptionGroup(ins.id)?.id === zoneId)
-        .map((ins) => {
-          const entry: {
-            id: number
-            etruscanText: string
-            transcription: string
-            gods: string[]
-            description?: string
-          } = {
-            id: ins.id,
-            etruscanText: ins.etruscanText,
-            transcription: ins.transcription,
-            gods: ins.gods.map((g) => (typeof g === "string" ? g : g.id)),
-          }
-          if (ins.description) entry.description = ins.description
-          return entry
-        })
-      return {
-        id: zoneId,
-        name: group.name,
-        description: group.description,
-        inscriptions,
+    const zones = Object.entries(liverGroups).map(([zoneId, group]) => ({
+      id: zoneId,
+      name: tLiverData(`groups.${group.id}.name`),
+      description: tLiverData(`groups.${group.id}.description`),
+    }))
+
+    const inscriptions = liverInscriptions.map((ins) => {
+      const group = getInscriptionGroup(ins.id)
+      const entry: {
+        id: number
+        zoneId: string
+        etruscanText: string
+        transcription: string
+        gods: string[]
+        description?: string
+      } = {
+        id: ins.id,
+        zoneId: group?.id || "",
+        etruscanText: ins.etruscanText,
+        transcription: ins.transcription,
+        gods: ins.gods.map((g) => (typeof g === "string" ? g : g.id)),
       }
+      if (ins.description) entry.description = ins.description
+      return entry
     })
 
     const deities = Object.entries(liverGods).map(([id, deity]) => {
@@ -395,13 +435,25 @@ export function InscriptionExploration() {
         name: string
         romanEquivalent: string
         greekEquivalent?: string
+        description?: string
       } = {
         id,
         name: deity.name,
-        romanEquivalent: (deity as LiverGod).romanEquivalent ?? "N/A",
+        romanEquivalent:
+          tLiverData(`deities.${id}.romanEquivalent`, {
+            defaultValue: "",
+          }) || "N/A",
       }
-      const greek = (deity as LiverGod).greekEquivalent
-      if (greek) d.greekEquivalent = greek
+      const greek = tLiverData(`deities.${id}.greekEquivalent`, {
+        defaultValue: "",
+      })
+      if (greek) {
+        d.greekEquivalent = greek
+      }
+      const description = tLiverData(`deities.${id}.description`)
+      if (description) {
+        d.description = description
+      }
       return d
     })
 
@@ -415,6 +467,7 @@ export function InscriptionExploration() {
         source: "https://liver.rasna.dev/",
       },
       zones,
+      inscriptions,
       deities,
     }
 
@@ -463,24 +516,31 @@ export function InscriptionExploration() {
       <Box className="back-button-container" onClick={() => navigate("/")}>
         <IconArrowLeft size={24} stroke={1.5} />
       </Box>
+      <ActionMenu
+        onAboutClick={() => {
+          navigate("/")
+          setAboutHash()
+        }}
+        onExploreClick={() => {}}
+        isVisible={true}
+        hideExploreInscriptions={true}
+        hideControls={true}
+      />
       <div className="exploration-header">
-        <h2 className="exploration-title">Explore All Inscriptions</h2>
-        <p className="exploration-subtitle">
-          Click any inscription to view details. &quot;View in 3D
-          Visualization&quot; opens the 3D scene.
-        </p>
+        <h2 className="exploration-title">{t("title")}</h2>
+        <p className="exploration-subtitle">{t("subtitle")}</p>
         <InteractionButton
           onClick={handleDownloadYAML}
           size="md"
           variant="outline"
         >
-          Download Dataset
+          {tCommon("buttons.downloadDataset")}
         </InteractionButton>
       </div>
 
       <div className="exploration-content">
         <h2 className="exploration-section-title" style={{ marginTop: 0 }}>
-          Explore by Zone
+          {t("exploreByZone")}
         </h2>
         {inscriptionsByGroup.map(({ group, inscriptions }) => {
           const selectedInscription = selectedInscriptionId
@@ -500,9 +560,11 @@ export function InscriptionExploration() {
                 className="group-header"
                 style={{ borderLeftColor: group.color }}
               >
-                <h3 className="group-title">{group.name}</h3>
+                <h3 className="group-title">
+                  {tLiverData(`groups.${group.id}.name`)}
+                </h3>
                 <Text className="group-description description-text">
-                  {group.description}
+                  {tLiverData(`groups.${group.id}.description`)}
                 </Text>
               </div>
               <div className="inscriptions-grid">
@@ -540,7 +602,7 @@ export function InscriptionExploration() {
           )
         })}
 
-        <h2 className="exploration-section-title">Explore by Deity</h2>
+        <h2 className="exploration-section-title">{t("exploreByDeity")}</h2>
         {deitiesWithInscriptions.map(({ godId, god, inscriptions }) => {
           const headerColor = getGroupColor(inscriptions[0]?.id) || "#8B6541"
 
@@ -562,41 +624,49 @@ export function InscriptionExploration() {
                     {god.name}
                   </h3>
                   <Text className="deity-inscription-count">
-                    {inscriptions.length} inscription
-                    {inscriptions.length !== 1 ? "s" : ""}
+                    {inscriptions.length}{" "}
+                    {inscriptions.length === 1
+                      ? t("inscriptionCount.singular")
+                      : t("inscriptionCount.plural")}
                   </Text>
                 </div>
-                {((god as LiverGod).romanEquivalent ||
-                  (god as LiverGod).greekEquivalent) && (
-                  <div className="deity-equivalents">
-                    {(god as LiverGod).romanEquivalent && (
-                      <span>
-                        <span className="deity-equiv-label">Roman:</span>{" "}
-                        <span className="deity-equiv-value">
-                          {(god as LiverGod).romanEquivalent}
+                {(() => {
+                  const roman = tLiverData(`deities.${godId}.romanEquivalent`, {
+                    defaultValue: "",
+                  })
+                  const greek = tLiverData(`deities.${godId}.greekEquivalent`, {
+                    defaultValue: "",
+                  })
+                  return roman || greek ? (
+                    <div className="deity-equivalents">
+                      {roman && (
+                        <span>
+                          <span className="deity-equiv-label">
+                            {tCommon("connectors.roman")}{" "}
+                          </span>
+                          <span className="deity-equiv-value">{roman}</span>
                         </span>
-                      </span>
-                    )}
-                    {(god as LiverGod).romanEquivalent &&
-                      (god as LiverGod).greekEquivalent && (
+                      )}
+                      {roman && greek && (
                         <span className="deity-equiv-separator"> • </span>
                       )}
-                    {(god as LiverGod).greekEquivalent && (
-                      <span>
-                        <span className="deity-equiv-label">Greek:</span>{" "}
-                        <span className="deity-equiv-value">
-                          {(god as LiverGod).greekEquivalent}
+                      {greek && (
+                        <span>
+                          <span className="deity-equiv-label">
+                            {tCommon("connectors.greek")}{" "}
+                          </span>
+                          <span className="deity-equiv-value">{greek}</span>
                         </span>
-                      </span>
-                    )}
-                  </div>
-                )}
-                {god.description && (
+                      )}
+                    </div>
+                  ) : null
+                })()}
+                {tLiverData(`deities.${god.id}.description`) && (
                   <Text
                     className="group-description description-text"
                     style={{ marginTop: "12px" }}
                   >
-                    {god.description}
+                    {tLiverData(`deities.${god.id}.description`)}
                   </Text>
                 )}
               </div>
@@ -625,7 +695,7 @@ export function InscriptionExploration() {
                           size="sm"
                           variant="outline"
                         >
-                          View in 3D Visualization
+                          {tCommon("buttons.viewIn3D")}
                         </InteractionButton>
                       </div>
                     )}

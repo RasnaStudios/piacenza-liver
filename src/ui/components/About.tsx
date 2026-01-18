@@ -1,5 +1,5 @@
 import { Box, Stack, Text, Transition } from "@mantine/core"
-import { aboutContent } from "../../config/AboutContent"
+import { useTranslation } from "react-i18next"
 import {
   liverGods,
   liverGroups,
@@ -19,6 +19,8 @@ export function About({
   isVisible,
   isLoading,
 }: AboutProps) {
+  const { t } = useTranslation("about")
+  const { t: tCommon } = useTranslation("common")
   const totalInscriptions = liverInscriptions.length
   const totalZones = Object.keys(liverGroups).length
   const totalDeities = Object.keys(liverGods).length
@@ -27,12 +29,10 @@ export function About({
     return null
   }
 
-  const interpolateText = (text: string): string => {
-    return text
-      .replace(/{totalInscriptions}/g, totalInscriptions.toString())
-      .replace(/{totalZones}/g, totalZones.toString())
-      .replace(/{totalDeities}/g, totalDeities.toString())
-  }
+  const sections = t("sections", { returnObjects: true }) as Array<{
+    heading: string
+    content: string
+  }>
 
   return (
     <Transition
@@ -44,26 +44,37 @@ export function About({
       {(styles) => (
         <Box className="about-container" style={styles}>
           <Stack align="center" gap="xl" className="about-stack">
-            <Text className="about-subtitle">{aboutContent.subtitle}</Text>
+            <Text className="about-subtitle">{t("subtitle")}</Text>
             <Text component="p" className="description-text">
-              {interpolateText(aboutContent.intro)}
+              {t("intro", { totalInscriptions, totalZones, totalDeities })}
             </Text>
-            {aboutContent.sections.map((section) => (
-              <div key={section.heading}>
-                <Text component="h3" className="about-subtitle">
-                  {section.heading}
-                </Text>
-                <Text component="p" className="description-text">
-                  {interpolateText(section.content)}
-                </Text>
-              </div>
-            ))}
+            {sections.map((section, index) => {
+              const heading = t(`sections.${index}.heading`, {
+                defaultValue: section.heading,
+              })
+              const content = t(`sections.${index}.content`, {
+                totalInscriptions,
+                totalZones,
+                totalDeities,
+                defaultValue: section.content,
+              })
+              return (
+                <div key={heading || index}>
+                  <Text component="h3" className="about-subtitle">
+                    {heading}
+                  </Text>
+                  <Text component="p" className="description-text">
+                    {content}
+                  </Text>
+                </div>
+              )
+            })}
             <InteractionButton
               onClick={onStartInteraction}
               variant="text"
               size="lg"
             >
-              {aboutContent.buttonText}
+              {tCommon("buttons.exploreLiver")}
             </InteractionButton>
           </Stack>
         </Box>

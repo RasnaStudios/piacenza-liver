@@ -1,6 +1,9 @@
 import { Badge } from "@mantine/core"
-import { type Inscription, liverInscriptions } from "../../scene/LiverData"
-import { getInscriptionGroup } from "../../utils/liverUtils"
+import {
+  getInscriptionGroup,
+  type Inscription,
+  liverInscriptions,
+} from "../../scene/LiverData"
 
 interface NumberBadgeProps {
   value: number | string

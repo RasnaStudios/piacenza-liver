@@ -10,6 +10,8 @@ export const AppConfig = {
   feedbackEmail:
     import.meta.env.VITE_FEEDBACK_EMAIL || "andraghetti.l+liver@gmail.com",
 
+  repositoryUrl: "https://github.com/rasnastudios/piacenza-liver",
+
   creator: {
     name: "Lorenzo Andraghetti",
     role: "Developer",

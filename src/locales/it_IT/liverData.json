@@ -1,0 +1,152 @@
+{
+  "groups": {
+    "sky": {
+      "name": "Cielo",
+      "description": "Le prime tre caselle sono occupate da Tinia, il dio supremo legato al dio greco Zeus, seguito da Cilens (un epiteto di Tinia, possibilmente relativo alla notte o ai confini), e Thufltha (un potere divino associato al destino e al giudizio, che appare come un aspetto di Tinia), e Nethuns, nella forma di divinità dell'umidità atmosferica. Al quarto posto c'è Uni, moglie di Tinia, protettrice delle città e delle nascite."
+    },
+    "water": {
+      "name": "Acqua",
+      "description": "Le seconde quattro caselle sono occupate da Tecum, una figura ancora misteriosa: il santuario di Tuoro sul Lago Trasimeno è dedicato a questa divinità. Lusal occupa lo spazio successivo, seguito da Nethuns, originariamente la divinità dell'acqua dolce, solo in seguito identificata con il dio greco Poseidone. Catha, la dea del sole, occupa l'ultima casa."
+    },
+    "earth": {
+      "name": "Terra",
+      "description": "Il regno terrestre della vegetazione, dei confini e degli spiriti della terra. Governa i cicli agricoli, i confini delle foreste e le forze divine terrestri."
+    },
+    "underworld": {
+      "name": "Oltretomba",
+      "description": "Il regno ctonio delle dee della terra, degli spiriti protettori e delle divinità dell'oltretomba. Controlla gli auspici di morte, la protezione e i passaggi liminali."
+    },
+    "pars_familiaris": {
+      "name": "Pars Familiaris",
+      "description": "Il regno familiare/favorevole contenente spiriti domestici e divinità benevole. Rappresenta auspici favorevoli e protezione divina domestica."
+    },
+    "gall_bladder": {
+      "name": "Cistifellea",
+      "description": "Il serbatoio della bile che rappresenta energia divina concentrata, forze generative e transizioni stagionali. Contiene potenti divinità della fertilità e della guerra."
+    },
+    "central_section": {
+      "name": "Sezione Centrale",
+      "description": "La zona di potere centrale contenente protettori eroici e forze generatrici. Rappresenta il cuore del potere divino e l'equilibrio cosmico."
+    },
+    "pars_hostilis": {
+      "name": "Pars Hostilis",
+      "description": "Il regno ostile/sfavorevole contenente guardiani dei confini e divinità infernali. Rappresenta auspici difficili e confini protettivi."
+    },
+    "back": {
+      "name": "Posteriore",
+      "description": "Gli ancoraggi cosmici fondamentali che rappresentano il Sole e la Luna. Questi segnano i cicli celesti fondamentali alla base di tutta la divinazione."
+    }
+  },
+  "deities": {
+    "equivalentGods": "Divinità Equivalenti",
+    "alsoAppearsIn": "Appare anche in",
+    "tinia": {
+      "description": "Dio supremo del cielo e padre degli dei nel pantheon etrusco.",
+      "romanEquivalent": "Giove",
+      "greekEquivalent": "Zeus"
+    },
+    "cilens": {
+      "description": "Epiteto di Tinia, possibilmente relativo alla notte o ai confini.",
+      "romanEquivalent": "Notturno"
+    },
+    "thufltha": {
+      "description": "Potere divino associato al destino e al giudizio, spesso appare come un aspetto di Tinia che rappresenta forze vendicative o punitive.",
+      "romanEquivalent": "Fortuna"
+    },
+    "nethuns": {
+      "description": "Dio dell'acqua dolce, del mare e dell'umidità atmosferica.",
+      "romanEquivalent": "Nettuno",
+      "greekEquivalent": "Poseidone"
+    },
+    "uni": {
+      "description": "Moglie di Tinia, guardiana del matrimonio, della fertilità, della nascita e delle città.",
+      "romanEquivalent": "Giunone",
+      "greekEquivalent": "Era"
+    },
+    "mae": {
+      "description": "Possibilmente divinità attributo materno o generativo.",
+      "romanEquivalent": "Maius"
+    },
+    "tecvm": {
+      "description": "Dio dei lucomeni, o classe dirigente."
+    },
+    "lusal": {
+      "description": "Divinità dell'acqua non identificata, possibilmente relativa alla luce o alla purificazione."
+    },
+    "catha": {
+      "description": "Dea del sole nella sua forma di ninfa solare.",
+      "greekEquivalent": "Leucotea"
+    },
+    "fufluns": {
+      "description": "Dio del vino, dell'ebbrezza e dei cicli della vegetazione.",
+      "romanEquivalent": "Bacco",
+      "greekEquivalent": "Dioniso"
+    },
+    "selvans": {
+      "description": "Dio dei confini e dei limiti delle foreste.",
+      "romanEquivalent": "Silvano"
+    },
+    "tluscva": {
+      "description": "Ninfe legate al culto dell'acqua e alle offerte sacre."
+    },
+    "cels": {
+      "description": "Dea della terra e delle forze ctonie.",
+      "romanEquivalent": "Gea"
+    },
+    "culsans": {
+      "description": "Protettore benevolo di porte e soglie.",
+      "romanEquivalent": "Giano"
+    },
+    "alpans": {
+      "description": "Spirito protettivo associato a Culsans."
+    },
+    "vetis": {
+      "description": "\"Apollo\" dell'oltretomba, versione ctonia del dio della luce.",
+      "romanEquivalent": "Veiove"
+    },
+    "pul": {
+      "description": "Divinità incerta, possibilmente relativa alla purificazione."
+    },
+    "lasl": {
+      "description": "Spirito femminile domestico, protezione domestica. Compagna di Turan.",
+      "romanEquivalent": "Lari"
+    },
+    "maris": {
+      "description": "Forza generativa e potere generatore di tutti gli dei."
+    },
+    "laran": {
+      "description": "Dio della guerra, che rappresenta la forza marziale. Anche associato all'oltretomba e alla manutenzione dei confini.",
+      "romanEquivalent": "Marte"
+    },
+    "tvnth": {
+      "description": "Divinità incerta nella zona della cistifellea."
+    },
+    "hercle": {
+      "description": "Eroe-protettore, forza divina e protezione.",
+      "romanEquivalent": "Ercole"
+    },
+    "metlvmth": {
+      "description": "Epiteto o attributo associato a Lethams."
+    },
+    "marutl": {
+      "description": "Doppio epiteto associato a Tluscva."
+    },
+    "letham": {
+      "description": "Dea dell'oltretomba associata ai morti e alle forze ctonie. Appare sul Fegato di Piacenza e nelle iscrizioni rituali."
+    },
+    "velch": {
+      "description": "Forma infernale di Sethlans (Vulcano), divinità del fuoco.",
+      "romanEquivalent": "Vulcano"
+    },
+    "satres": {
+      "description": "Dio dell'oltretomba e dei cicli temporali.",
+      "romanEquivalent": "Saturno"
+    },
+    "usil": {
+      "description": "Il dio del sole, che rappresenta il potere solare e l'illuminazione."
+    },
+    "tiur": {
+      "description": "Il dio della luna, che rappresenta i cicli lunari e l'illuminazione notturna."
+    }
+  }
+}

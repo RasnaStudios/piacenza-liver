@@ -1,16 +1,20 @@
 import { Box, Text, Transition } from "@mantine/core"
 import { useEffect, useRef, useState } from "react"
 import { isMobile } from "react-device-detect"
+import { useTranslation } from "react-i18next"
 
 interface ResetInstructionProps {
   isPanelOpen: boolean
   hasViewChanged: boolean
+  isAboutMode: boolean
 }
 
 export function ResetInstruction({
   isPanelOpen,
   hasViewChanged,
+  isAboutMode,
 }: ResetInstructionProps) {
+  const { t } = useTranslation("common")
   const [showInstruction, setShowInstruction] = useState(false)
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const showTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -19,6 +23,12 @@ export function ResetInstruction({
     // Clear any existing timers
     if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
     if (showTimerRef.current) clearTimeout(showTimerRef.current)
+
+    if (isAboutMode) {
+      // Never show reset instruction in About mode
+      setShowInstruction(false)
+      return
+    }
 
     if (hasViewChanged && !isPanelOpen) {
       // Wait 4 seconds before showing (user might still be moving)
@@ -41,7 +51,7 @@ export function ResetInstruction({
       if (hideTimerRef.current) clearTimeout(hideTimerRef.current)
       if (showTimerRef.current) clearTimeout(showTimerRef.current)
     }
-  }, [hasViewChanged, isPanelOpen])
+  }, [hasViewChanged, isPanelOpen, isAboutMode])
 
   const shouldShow = showInstruction
 
@@ -73,7 +83,9 @@ export function ResetInstruction({
               ...styles,
             }}
           >
-            {isMobile ? "Double tap to reset" : "Double-click to reset"}
+            {isMobile
+              ? t("instructions.doubleTapToReset")
+              : t("instructions.doubleClickToReset")}
           </Text>
         )}
       </Transition>

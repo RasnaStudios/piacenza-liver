@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 
 interface LoadingScreenProps {
   progress: number
@@ -24,11 +25,11 @@ export function LoadingScreen({
   isLoading,
   showLoadingUI,
 }: LoadingScreenProps) {
+  const { t } = useTranslation("loading")
   const [isDissolving, setIsDissolving] = useState(false)
   const [shouldRender, setShouldRender] = useState(true)
-  const [loadingText, setLoadingText] = useState(
-    "Decoding ancient inscriptions",
-  )
+  const messages = t("messages", { returnObjects: true }) as string[]
+  const [loadingText, setLoadingText] = useState(messages[0] || "")
   const [etruscanParticles, setEtruscanParticles] = useState<
     EtruscanParticle[]
   >([])
@@ -75,13 +76,7 @@ export function LoadingScreen({
   ]
 
   useEffect(() => {
-    const texts = [
-      "Decoding ancient inscriptions",
-      "Interpreting divine symbols",
-      "Aligning celestial patterns",
-      "Unveiling sacred knowledge",
-      "Channeling ethereal energies",
-    ]
+    const texts = messages
     let currentIndex = 0
 
     const interval = setInterval(() => {
@@ -90,7 +85,7 @@ export function LoadingScreen({
     }, 3000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [messages])
 
   useEffect(() => {
     const particles: EtruscanParticle[] = Array.from({ length: 80 }, (_, i) => {
@@ -380,7 +375,7 @@ export function LoadingScreen({
         </div>
       ))}
       <div style={contentStyles}>
-        <p style={subtitleStyles}>Ancient Etruscan Divination</p>
+        <p style={subtitleStyles}>{t("subtitle")}</p>
 
         <div style={progressContainerStyles}>
           <div

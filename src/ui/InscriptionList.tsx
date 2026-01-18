@@ -2,8 +2,12 @@ import { Box, Group } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 import { useEffect, useRef, useState } from "react"
 import { isMobile } from "react-device-detect"
-import { type Inscription, liverInscriptions } from "../scene/LiverData"
-import { getGodsDisplayNames, getInscriptionGroup } from "../utils/liverUtils"
+import {
+  getGodsDisplayNames,
+  getInscriptionGroup,
+  type Inscription,
+  liverInscriptions,
+} from "../scene/LiverData"
 import { NumberBadge } from "./components/NumberBadge"
 
 interface InscriptionListProps {
