@@ -62,6 +62,8 @@ i18n
     supportedLngs: supportedLanguages,
     interpolation: {
       escapeValue: false,
+      prefix: "{",
+      suffix: "}",
     },
     detection: {
       order: ["localStorage", "navigator"],
