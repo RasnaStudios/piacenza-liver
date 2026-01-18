@@ -6,6 +6,11 @@ import type { HoveredSection, InscriptionClickPayload } from "../types"
 import type { Inscription } from "./LiverData"
 import type { LiverModel } from "./LiverModel"
 
+export enum InteractionManagerMode {
+  Normal = "normal",
+  ModelNavigation = "model-navigation",
+}
+
 export interface InteractionCallbacks {
   onInscriptionClick: (payload: InscriptionClickPayload) => void
   onBackgroundClick: (clickedOnLiver?: boolean) => void
@@ -29,6 +34,8 @@ export class InteractionManager {
   private liverInscriptions: Inscription[]
   private callbacks: InteractionCallbacks
 
+  private currentMode: InteractionManagerMode = InteractionManagerMode.Normal
+
   private isPanningOrRotating = false
   private mouseDownPosition: { x: number; y: number } | null = null
   private mouseMovedDuringClick = false
@@ -40,6 +47,7 @@ export class InteractionManager {
   private isShiftPressed = false
   private isMetaPressed = false
   private lastMousePosition = { x: 0, y: 0 }
+  private hasMovedDuringRotation = false
 
   // Touch state
   private touchStartPosition: { x: number; y: number } | null = null
@@ -136,16 +144,38 @@ export class InteractionManager {
     this.controls.addEventListener("end", this.boundHandleControlsEnd)
   }
 
+  private updateMode() {
+    const shouldBeInNavigationMode =
+      this.isShiftPressed ||
+      this.isRotatingModel ||
+      (this.isShiftPressed && this.isMetaPressed)
+
+    const newMode = shouldBeInNavigationMode
+      ? InteractionManagerMode.ModelNavigation
+      : InteractionManagerMode.Normal
+
+    if (newMode !== this.currentMode) {
+      this.currentMode = newMode
+      // Clear hover state when entering model navigation mode
+      if (this.currentMode === InteractionManagerMode.ModelNavigation) {
+        this.liverModel.setHoveredInscription(0)
+        this.callbacks.onMarkerHover(null)
+      }
+    }
+  }
+
   private handleMouseDown(event: MouseEvent) {
     if (!this.interactionEnabled) return
     this.mouseDownPosition = { x: event.clientX, y: event.clientY }
     this.mouseMovedDuringClick = false
     this.lastMousePosition = { x: event.clientX, y: event.clientY }
+    this.hasMovedDuringRotation = false
 
     // Check if Shift is pressed for model rotation
     if (this.isShiftPressed) {
       this.isRotatingModel = true
       this.controls.enabled = false // Disable camera controls
+      this.updateMode()
       event.preventDefault()
     }
   }
@@ -155,6 +185,11 @@ export class InteractionManager {
     if (this.isRotatingModel) {
       this.isRotatingModel = false
       this.controls.enabled = true // Re-enable camera controls
+      // If we moved during rotation, mark that we shouldn't process clicks
+      if (this.hasMovedDuringRotation) {
+        this.mouseMovedDuringClick = true
+      }
+      this.updateMode()
     }
   }
 
@@ -172,6 +207,7 @@ export class InteractionManager {
     }
 
     if (modifierChanged) {
+      this.updateMode()
       this.callbacks.onModifierKeyChange(
         this.isShiftPressed || this.isMetaPressed,
       )
@@ -231,6 +267,7 @@ export class InteractionManager {
     }
 
     if (modifierChanged) {
+      this.updateMode()
       this.callbacks.onModifierKeyChange(
         this.isShiftPressed || this.isMetaPressed,
       )
@@ -254,19 +291,39 @@ export class InteractionManager {
       isOverCanvas,
     )
 
+    // Disable hover highlighting in model navigation mode
+    if (this.currentMode === InteractionManagerMode.ModelNavigation) {
+      this.liverModel.setHoveredInscription(0)
+      this.callbacks.onMarkerHover(null)
+      this.renderer.domElement.style.cursor = "grab"
+    }
+
     // Handle model rotation when Shift+drag is active
     if (this.isRotatingModel && this.isShiftPressed) {
       const deltaX = event.clientX - this.lastMousePosition.x
       const deltaY = event.clientY - this.lastMousePosition.y
+
+      // Track if we've moved during rotation
+      if (Math.abs(deltaX) > 2 || Math.abs(deltaY) > 2) {
+        this.hasMovedDuringRotation = true
+      }
 
       const liverObject = this.liverModel.getObject()
       if (liverObject) {
         // Rotation sensitivity
         const rotationSpeed = 0.01
 
-        // Apply rotation: horizontal movement = Y rotation, vertical movement = X rotation
-        liverObject.rotation.y += deltaX * rotationSpeed
-        liverObject.rotation.x += deltaY * rotationSpeed
+        // Apply rotation in global/world space:
+        // horizontal movement = rotation around world Y axis
+        // vertical movement = rotation around world X axis
+        liverObject.rotateOnWorldAxis(
+          new THREE.Vector3(0, 1, 0),
+          deltaX * rotationSpeed,
+        )
+        liverObject.rotateOnWorldAxis(
+          new THREE.Vector3(1, 0, 0),
+          deltaY * rotationSpeed,
+        )
       }
 
       this.callbacks.onModelRotate()
@@ -338,6 +395,12 @@ export class InteractionManager {
   private handleClick(event: MouseEvent) {
     if (!this.clickEnabled) return
     if (this.isPanningOrRotating) {
+      return
+    }
+
+    // Disable inscription clicks in model navigation mode
+    if (this.currentMode === InteractionManagerMode.ModelNavigation) {
+      this.callbacks.onBackgroundClick(false)
       return
     }
 
@@ -424,9 +487,17 @@ export class InteractionManager {
           // Rotation sensitivity for touch (slightly higher than mouse)
           const rotationSpeed = 0.015
 
-          // Apply rotation: horizontal movement = Y rotation, vertical movement = X rotation
-          liverObject.rotation.y += deltaX * rotationSpeed
-          liverObject.rotation.x += deltaY * rotationSpeed
+          // Apply rotation in global/world space:
+          // horizontal movement = rotation around world Y axis
+          // vertical movement = rotation around world X axis
+          liverObject.rotateOnWorldAxis(
+            new THREE.Vector3(0, 1, 0),
+            deltaX * rotationSpeed,
+          )
+          liverObject.rotateOnWorldAxis(
+            new THREE.Vector3(1, 0, 0),
+            deltaY * rotationSpeed,
+          )
         }
       }
 
@@ -557,6 +628,12 @@ export class InteractionManager {
     const intersection = this.performRaycast(clientX, clientY)
     const inscription = this.getInscriptionFromIntersection(intersection)
 
+    // Disable inscription clicks in model navigation mode
+    if (this.currentMode === InteractionManagerMode.ModelNavigation) {
+      this.callbacks.onBackgroundClick(!!intersection)
+      return
+    }
+
     if (inscription) {
       const cameraData = this.calculateCameraPositions()
 
@@ -599,6 +676,7 @@ export class InteractionManager {
       this.isMetaPressed = false
       this.mouseDownPosition = null
       this.mouseMovedDuringClick = false
+      this.currentMode = InteractionManagerMode.Normal
       this.renderer.domElement.style.cursor = "default"
       this.liverModel.setHoveredInscription(0)
       this.callbacks.onMarkerHover(null)
@@ -671,6 +749,14 @@ export class InteractionManager {
   private performHoverRaycast(clientX: number, clientY: number) {
     if (!this.hoverEnabled || !this.interactionEnabled) return
     if (!this.liverModel.getMaskTexture()) return
+
+    // Disable hover highlighting in model navigation mode
+    if (this.currentMode === InteractionManagerMode.ModelNavigation) {
+      this.liverModel.setHoveredInscription(0)
+      this.callbacks.onMarkerHover(null)
+      this.renderer.domElement.style.cursor = "grab"
+      return
+    }
 
     const intersection = this.performRaycast(clientX, clientY)
     const inscription = this.getInscriptionFromIntersection(intersection)
