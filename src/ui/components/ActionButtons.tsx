@@ -12,6 +12,7 @@ interface ActionButtonsProps {
   disableAnimation?: boolean
   hideExploreInscriptions?: boolean
   hideControls?: boolean
+  align?: "left" | "right"
 }
 
 export function ActionButtons({
@@ -21,6 +22,7 @@ export function ActionButtons({
   disableAnimation = false,
   hideExploreInscriptions = false,
   hideControls = false,
+  align = "left",
 }: ActionButtonsProps) {
   const { t, i18n } = useTranslation("common")
   const [controlsOpened, setControlsOpened] = useState(false)
@@ -35,9 +37,17 @@ export function ActionButtons({
     return null
   }
 
+  const alignStyles =
+    align === "right"
+      ? {
+          alignItems: "flex-end",
+          textAlign: "right" as const,
+        }
+      : undefined
+
   return (
     <>
-      <Stack gap="xs">
+      <Stack gap="xs" style={alignStyles}>
         <InteractionButton
           onClick={onAboutClick}
           variant="text"
@@ -56,16 +66,6 @@ export function ActionButtons({
             {t("buttons.exploreInscriptions")}
           </InteractionButton>
         )}
-        {!hideControls && (
-          <InteractionButton
-            onClick={() => setControlsOpened(true)}
-            variant="text"
-            size="md"
-            disableAnimation={disableAnimation}
-          >
-            {t("buttons.controls")}
-          </InteractionButton>
-        )}
         {showLanguageSwitcher && (
           <InteractionButton
             onClick={() => setLanguageModalOpened(true)}
@@ -74,6 +74,16 @@ export function ActionButtons({
             disableAnimation={disableAnimation}
           >
             {languageButtonText}
+          </InteractionButton>
+        )}
+        {!hideControls && (
+          <InteractionButton
+            onClick={() => setControlsOpened(true)}
+            variant="text"
+            size="md"
+            disableAnimation={disableAnimation}
+          >
+            {t("buttons.controls")}
           </InteractionButton>
         )}
       </Stack>

@@ -29,20 +29,21 @@
 }
 
 .exploration-title {
-  font-size: clamp(32px, 4vw, 48px);
+  font-size: clamp(30px, 3.2vw, 48px);
   font-weight: 300;
   letter-spacing: 4px;
-  margin-bottom: 16px;
+  margin-bottom: 22px;
   text-shadow:
     0 0 20px rgba(201, 168, 118, 0.3),
     0 2px 4px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
 }
 
 .exploration-subtitle {
-  font-size: clamp(16px, 1.2vw, 18px);
+  font-size: clamp(16px, 1.3vw, 19px);
   color: rgba(244, 230, 211, 0.7);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .download-yaml-button {
@@ -330,6 +331,26 @@
 
   .group-section {
     margin-bottom: 60px;
+  }
+
+  .exploration-header {
+    margin: 0 auto 80px;
+  }
+
+  .exploration-title {
+    font-size: clamp(26px, 7vw, 34px);
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+    white-space: normal;
+  }
+
+  .exploration-subtitle {
+    font-size: clamp(14px, 4vw, 16px);
+    margin-bottom: 32px;
+  }
+
+  .download-yaml-button {
+    margin-top: 18px;
   }
 
   .inscriptions-grid {

@@ -9,6 +9,10 @@ export const SceneConfig = {
     scale: 1.0,
   },
 
+  inscriptions: {
+    cameraDistance: 1, // model-space distance from inscription center
+  },
+
   camera: {
     lateral: new THREE.Vector3(5, 20, 20), // Camera position for "About" mode (liver on the side)
     initial: new THREE.Vector3(0, 2, 10), // Starting camera position
@@ -33,7 +37,7 @@ export const SceneConfig = {
 
   // Performance and interaction configuration
   performance: {
-    raycastThrottleMs: 5, // Throttle raycast and mouse updates to 1/X*1000 fps (higher = faster)
+    raycastThrottleMs: 7, // Throttle raycast and mouse updates to 1/X*1000 fps (lower = faster)
     mouseMoveThreshold: 5, // Skip raycast if mouse moved less than X pixels
   },
 

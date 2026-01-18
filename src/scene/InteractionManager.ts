@@ -287,38 +287,121 @@ export class InteractionManager {
     }
 
     // Debug camera position logging
-    if (
-      import.meta.env.VITE_DEBUG_ENABLED === "true" &&
-      event.key.toLowerCase() === "r"
-    ) {
-      console.log("=== CAMERA DEBUG INFO ===")
+    if (import.meta.env.VITE_DEBUG_ENABLED === "true") {
+      const key = event.key.toLowerCase()
+      if (key === "r") {
+        console.log("=== CAMERA DEBUG INFO ===")
 
-      // Convert world coordinates to model-local coordinates
-      const modelMatrix = this.liverModel.getModelMatrix()
-      const modelMatrixInverse = modelMatrix.clone().invert()
+        // Convert world coordinates to model-local coordinates
+        const modelMatrix = this.liverModel.getModelMatrix()
+        const modelMatrixInverse = modelMatrix.clone().invert()
 
-      const localCameraPos = this.camera.position
-        .clone()
-        .applyMatrix4(modelMatrixInverse)
-      const localCameraTarget = this.controls.target
-        .clone()
-        .applyMatrix4(modelMatrixInverse)
+        const localCameraPos = this.camera.position
+          .clone()
+          .applyMatrix4(modelMatrixInverse)
+        const localCameraTarget = this.controls.target
+          .clone()
+          .applyMatrix4(modelMatrixInverse)
 
-      console.log("World coordinates:")
-      console.log(
-        `World Position: ${this.camera.position.x.toFixed(3)}, ${this.camera.position.y.toFixed(3)}, ${this.camera.position.z.toFixed(3)}`,
+        console.log("World coordinates:")
+        console.log(
+          `World Position: ${this.camera.position.x.toFixed(3)}, ${this.camera.position.y.toFixed(3)}, ${this.camera.position.z.toFixed(3)}`,
+        )
+        console.log(
+          `World Target: ${this.controls.target.x.toFixed(3)}, ${this.controls.target.y.toFixed(3)}, ${this.controls.target.z.toFixed(3)}`,
+        )
+        console.log("Model-local coordinates:")
+        console.log(
+          `cameraPosition: new THREE.Vector3(${localCameraPos.x.toFixed(3)}, ${localCameraPos.y.toFixed(3)}, ${localCameraPos.z.toFixed(3)}),`,
+        )
+        console.log(
+          `cameraTarget: new THREE.Vector3(${localCameraTarget.x.toFixed(3)}, ${localCameraTarget.y.toFixed(3)}, ${localCameraTarget.z.toFixed(3)}),`,
+        )
+        console.log("========================")
+      }
+
+      // Debug helper: persist current pose for selected inscription
+      if (key === "f") {
+        event.preventDefault()
+        void this.handleDebugCapturePose()
+      }
+    }
+  }
+
+  private async handleDebugCapturePose() {
+    const selectedId = this.liverModel.getSelectedInscriptionId?.()
+
+    if (!selectedId) {
+      console.warn(
+        "No inscription selected. Select one before pressing F to capture camera pose.",
       )
-      console.log(
-        `World Target: ${this.controls.target.x.toFixed(3)}, ${this.controls.target.y.toFixed(3)}, ${this.controls.target.z.toFixed(3)}`,
-      )
-      console.log("Model-local coordinates:")
-      console.log(
-        `cameraPosition: new THREE.Vector3(${localCameraPos.x.toFixed(3)}, ${localCameraPos.y.toFixed(3)}, ${localCameraPos.z.toFixed(3)}),`,
-      )
-      console.log(
-        `cameraTarget: new THREE.Vector3(${localCameraTarget.x.toFixed(3)}, ${localCameraTarget.y.toFixed(3)}, ${localCameraTarget.z.toFixed(3)}),`,
-      )
-      console.log("========================")
+      return
+    }
+
+    const modelMatrix = this.liverModel.getModelMatrix()
+    const modelMatrixInverse = modelMatrix.clone().invert()
+
+    const localCameraPos = this.camera.position
+      .clone()
+      .applyMatrix4(modelMatrixInverse)
+    const localCameraTarget = this.controls.target
+      .clone()
+      .applyMatrix4(modelMatrixInverse)
+
+    const snippet = `// Inscription ${selectedId}\n    cameraPosition: new THREE.Vector3(${localCameraPos.x.toFixed(3)}, ${localCameraPos.y.toFixed(3)}, ${localCameraPos.z.toFixed(3)}),\n    cameraTarget: new THREE.Vector3(${localCameraTarget.x.toFixed(3)}, ${localCameraTarget.y.toFixed(3)}, ${localCameraTarget.z.toFixed(3)}),`
+
+    console.log(
+      `Copy/paste into src/scene/LiverData.ts for inscription ${selectedId}:`,
+    )
+    console.log(snippet)
+
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard
+        .writeText(snippet)
+        .then(() =>
+          console.log("Camera pose copied to clipboard (model space)."),
+        )
+        .catch((err) =>
+          console.warn("Clipboard copy failed:", err?.message || err),
+        )
+    }
+
+    // Dev-only: send pose to local Vite server to update LiverData.ts directly
+    if (import.meta.env.DEV) {
+      try {
+        const res = await fetch("/__inscription_pose", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            id: selectedId,
+            cameraPosition: {
+              x: Number(localCameraPos.x.toFixed(3)),
+              y: Number(localCameraPos.y.toFixed(3)),
+              z: Number(localCameraPos.z.toFixed(3)),
+            },
+            cameraTarget: {
+              x: Number(localCameraTarget.x.toFixed(3)),
+              y: Number(localCameraTarget.y.toFixed(3)),
+              z: Number(localCameraTarget.z.toFixed(3)),
+            },
+          }),
+        })
+        if (!res.ok) {
+          const text = await res.text()
+          console.warn(
+            `Failed to persist pose to LiverData.ts (status ${res.status}): ${text}`,
+          )
+        } else {
+          console.log(
+            `Persisted camera pose for inscription ${selectedId} to src/scene/LiverData.ts`,
+          )
+        }
+      } catch (err) {
+        console.warn(
+          "Error sending camera pose to dev server:",
+          (err as Error)?.message || err,
+        )
+      }
     }
   }
 

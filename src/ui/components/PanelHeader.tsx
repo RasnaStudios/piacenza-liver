@@ -60,7 +60,7 @@ export function PanelHeader({
           margin: "24px",
         }}
       >
-        <IconX size={24} stroke={1.5} />
+        <IconX size={32} stroke={2} />
       </Box>
     </Group>
   )

@@ -488,6 +488,10 @@ export class LiverModel {
     this.updateSelectedHighlight()
   }
 
+  getSelectedInscriptionId(): number {
+    return this.currentSelectedId
+  }
+
   private updateHighlight(
     material: THREE.MeshStandardMaterial | null,
     inscriptionId: number,

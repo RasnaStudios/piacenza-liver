@@ -523,7 +523,7 @@ export function InscriptionExploration() {
       }}
     >
       <Box className="back-button-container" onClick={() => navigate("/")}>
-        <IconArrowLeft size={24} stroke={1.5} />
+        <IconArrowLeft size={32} stroke={2} />
       </Box>
       <ActionMenu
         onAboutClick={() => {

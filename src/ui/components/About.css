@@ -59,28 +59,28 @@
 
 @media (max-width: 768px) {
   .about-container {
-    top: 100px;
+    top: 140px;
     width: 100%;
     max-width: 100%;
-    height: calc(100vh - 180px);
-    padding: 0 100px;
+    height: calc(100vh - 220px);
+    padding: 0 60px;
   }
 
   .about-stack {
-    margin: 20px auto 80px;
+    margin: 60px auto 120px;
   }
 }
 
 @media (max-aspect-ratio: 1 / 1) {
   .about-container {
-    top: 110px;
+    top: 140px;
     width: 100%;
     max-width: 100%;
-    height: calc(100vh - 160px);
-    padding: 0 60px;
+    height: calc(100vh - 220px);
+    padding: 0 50px;
   }
 
   .about-stack {
-    margin: 40px auto 200px;
+    margin: 80px auto 140px;
   }
 }

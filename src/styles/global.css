@@ -467,8 +467,8 @@ html:hover::-webkit-scrollbar-corner {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.6);
   border: 2px solid rgba(201, 168, 118, 0.4);
@@ -507,24 +507,15 @@ html:hover::-webkit-scrollbar-corner {
 }
 
 .action-menu-icon {
-  width: 20px;
-  height: 2px;
-  background: #c9a876;
-  border-radius: 1px;
-  transition: all 0.3s ease;
-}
-
-.action-menu-button .action-menu-icon:first-child {
-  transform: none;
-}
-
-.action-menu-button.is-open .action-menu-icon:first-child {
-  transform: rotate(45deg) translate(5px, 5px);
+  color: #c9a876;
+  width: 32px;
+  height: 32px;
+  stroke-width: 2.4;
 }
 
 .back-button-container svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
 }
 
 @media (max-width: 768px) {
@@ -532,22 +523,24 @@ html:hover::-webkit-scrollbar-corner {
   .close-button-container,
   .back-button-container,
   .action-menu-button {
-    width: 40px;
-    height: 40px;
+    width: 56px;
+    height: 56px;
   }
 
   .action-menu-container {
-    top: 16px;
+    top: auto;
+    bottom: 16px;
     right: 16px;
   }
 
   .action-menu-icon {
-    width: 18px;
+    width: 30px;
+    height: 30px;
   }
 
   .back-button-container svg {
-    width: 20px;
-    height: 20px;
+    width: 28px;
+    height: 28px;
   }
 }
 
@@ -556,22 +549,23 @@ html:hover::-webkit-scrollbar-corner {
   .close-button-container,
   .back-button-container,
   .action-menu-button {
-    width: 36px;
-    height: 36px;
+    width: 52px;
+    height: 52px;
   }
 
   .action-menu-container {
-    top: 12px;
+    top: auto;
+    bottom: 12px;
     right: 12px;
   }
 
   .action-menu-icon {
-    width: 16px;
+    width: 28px;
   }
 
   .back-button-container svg {
-    width: 18px;
-    height: 18px;
+    width: 26px;
+    height: 26px;
   }
 }
 
@@ -809,8 +803,9 @@ html:hover::-webkit-scrollbar-corner {
 
 .title-main {
   font-weight: 300;
-  letter-spacing: 6px;
-  font-size: clamp(28px, 4.5vw, 60px);
+  letter-spacing: 4px;
+  font-size: clamp(24px, 3.6vw, 56px);
+  white-space: nowrap;
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))
     drop-shadow(0 0 15px rgba(139, 101, 65, 0.3))
     drop-shadow(0 0 30px rgba(201, 168, 118, 0.1));
@@ -825,4 +820,12 @@ html:hover::-webkit-scrollbar-corner {
     drop-shadow(0 0 4px rgba(139, 101, 65, 0.15))
     drop-shadow(0 0 8px rgba(201, 168, 118, 0.08));
   -webkit-text-stroke: 0.2px rgba(139, 101, 65, 0.15);
+}
+
+@media (max-width: 600px) {
+  .title-main {
+    font-size: clamp(22px, 6vw, 42px);
+    letter-spacing: 2px;
+    white-space: normal;
+  }
 }
