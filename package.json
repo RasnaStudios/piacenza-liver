@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "postbuild": "node scripts/update-sw-cache-version.mjs",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "format": "biome format --write",
