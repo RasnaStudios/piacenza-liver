@@ -29,10 +29,10 @@ export function About({
     return null
   }
 
-  const sections = t("sections", { returnObjects: true }) as Array<{
-    heading: string
-    content: string
-  }>
+  const sections = t("sections", {
+    returnObjects: true,
+  }) as Record<string, { heading: string; content: string }>
+  const sectionEntries = Object.entries(sections)
 
   return (
     <Transition
@@ -48,18 +48,18 @@ export function About({
             <Text component="p" className="description-text">
               {t("intro", { totalInscriptions, totalZones, totalDeities })}
             </Text>
-            {sections.map((section, index) => {
-              const heading = t(`sections.${index}.heading`, {
-                defaultValue: section.heading,
+            {sectionEntries.map(([key, section]) => {
+              const heading = t(`sections.${key}.heading`, {
+                defaultValue: section?.heading,
               })
-              const content = t(`sections.${index}.content`, {
+              const content = t(`sections.${key}.content`, {
                 totalInscriptions,
                 totalZones,
                 totalDeities,
-                defaultValue: section.content,
+                defaultValue: section?.content,
               })
               return (
-                <div key={heading || index}>
+                <div key={heading || key}>
                   <Text component="h3" className="about-subtitle">
                     {heading}
                   </Text>
