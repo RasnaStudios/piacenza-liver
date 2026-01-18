@@ -465,13 +465,7 @@ export function InscriptionExploration() {
       </Box>
       <div className="exploration-header">
         <h2 className="exploration-title">Explore All Inscriptions</h2>
-        <p
-          className="exploration-subtitle"
-          style={{
-            fontFamily:
-              "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-          }}
-        >
+        <p className="exploration-subtitle">
           Click any inscription to view details. &quot;View in 3D
           Visualization&quot; opens the 3D scene.
         </p>
@@ -507,13 +501,7 @@ export function InscriptionExploration() {
                 style={{ borderLeftColor: group.color }}
               >
                 <h3 className="group-title">{group.name}</h3>
-                <Text
-                  className="group-description description-text"
-                  style={{
-                    fontFamily:
-                      "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                  }}
-                >
+                <Text className="group-description description-text">
                   {group.description}
                 </Text>
               </div>
@@ -606,11 +594,7 @@ export function InscriptionExploration() {
                 {god.description && (
                   <Text
                     className="group-description description-text"
-                    style={{
-                      marginTop: "12px",
-                      fontFamily:
-                        "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-                    }}
+                    style={{ marginTop: "12px" }}
                   >
                     {god.description}
                   </Text>

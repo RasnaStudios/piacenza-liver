@@ -49,6 +49,7 @@ html {
   height: 100%;
   overflow: hidden;
   color: #c9a876;
+  font-family: var(--font-primary);
   scroll-behavior: smooth;
   background: #000000;
   background-color: #000000;
@@ -338,16 +339,23 @@ html:hover::-webkit-scrollbar-corner {
   );
   --gradient-tooltip: linear-gradient(
     135deg,
-    rgba(20, 16, 12, 0.95) 0%,
-    rgba(32, 26, 20, 0.95) 25%,
+    rgba(45, 34, 23, 0.95) 0%,
+    rgba(57, 46, 35, 0.95) 25%,
     rgba(44, 36, 28, 0.95) 50%,
     rgba(58, 48, 38, 0.95) 75%,
     rgba(70, 58, 46, 0.95) 100%
   );
-  --font-primary: "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
-  --font-display: "'Inter', 'Futura', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif";
-  --font-serif: "'Cormorant Garamond', Georgia, 'Times New Roman', serif";
-  --font-etruscan: "Noto Sans Old Italic, Aegean, serif";
+  --font-primary: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display:
+    "Inter", Futura, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-etruscan: "Noto Sans Old Italic", Aegean, serif;
+  --font-cinzel: Cinzel, serif;
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --text-shadow-light: 0 1px 2px rgba(0, 0, 0, 0.6);
+  --text-shadow-medium: 0 2px 4px rgba(0, 0, 0, 0.6);
+  --text-shadow-heavy:
+    0 2px 6px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
 /* Background Colors */
@@ -450,74 +458,10 @@ html:hover::-webkit-scrollbar-corner {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 
-/* Panel Animations */
-@keyframes panelSlideIn {
-  0% {
-    opacity: 0;
-    transform: translateX(100%) scale(0.95);
-    filter: blur(5px);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translateX(20%) scale(0.98);
-    filter: blur(2px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-    filter: blur(0);
-  }
-}
-
-@keyframes panelSlideInMobile {
-  from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/* Panel Styles */
-.deity-panel-desktop {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 500px;
-  height: 100vh;
-  background: var(--primary-bg);
-  border: 1px solid var(--border-primary);
-  border-radius: 12px 0 0 12px;
-  color: var(--primary-text);
-  font-family: var(--font-primary);
-  box-shadow: var(--shadow-primary);
-  z-index: 1000;
-  animation: panelSlideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.deity-panel-mobile {
-  position: fixed;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  width: 100vw;
-  height: 100vh;
-  background: var(--primary-bg);
-  color: var(--primary-text);
-  font-family: var(--font-primary);
-  z-index: 9999;
-  animation: panelSlideInMobile 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-  border: none;
-  border-radius: 0;
-  margin: 0;
-  padding: 0;
-}
-
-.close-button-container {
+/* Circle Button Base - shared by close and back buttons */
+.circle-btn,
+.close-button-container,
+.back-button-container {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -528,17 +472,22 @@ html:hover::-webkit-scrollbar-corner {
   background: rgba(0, 0, 0, 0.6);
   border: 2px solid rgba(201, 168, 118, 0.4);
   color: #c9a876;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-smooth);
   backdrop-filter: blur(8px);
 }
 
-.close-button-container:hover {
+.circle-btn:hover,
+.close-button-container:hover,
+.back-button-container:hover {
   border-color: #c9a876;
   background: rgba(201, 168, 118, 0.1);
-  transform: scale(1.1);
   box-shadow:
     0 4px 12px rgba(0, 0, 0, 0.6),
     0 0 20px rgba(201, 168, 118, 0.2);
+}
+
+.close-button-container:hover {
+  transform: scale(1.1);
 }
 
 .close-button-container:active {
@@ -546,14 +495,18 @@ html:hover::-webkit-scrollbar-corner {
 }
 
 @media (max-width: 768px) {
-  .close-button-container {
+  .circle-btn,
+  .close-button-container,
+  .back-button-container {
     width: 40px;
     height: 40px;
   }
 }
 
 @media (max-width: 480px) {
-  .close-button-container {
+  .circle-btn,
+  .close-button-container,
+  .back-button-container {
     width: 36px;
     height: 36px;
   }
@@ -622,48 +575,6 @@ html:hover::-webkit-scrollbar-corner {
   opacity: 1;
 }
 
-/* Deity Equivalents Styles */
-.deity-equivalents {
-  font-family: var(--font-primary);
-  font-size: clamp(16px, 1.3vw, 19px);
-  line-height: 1.5;
-}
-
-@media (max-width: 768px) {
-  .deity-equivalents {
-    font-size: 16px;
-  }
-
-  .deity-equiv-label {
-    font-size: 14px;
-  }
-
-  .deity-equiv-value {
-    font-size: 16px;
-  }
-}
-
-.deity-equiv-label {
-  font-size: clamp(14px, 1.2vw, 16px);
-  color: rgba(201, 168, 118, 0.6);
-  font-weight: 500;
-  font-style: italic;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.deity-equiv-value {
-  color: #c9a876;
-  font-weight: 600;
-  font-size: clamp(16px, 1.4vw, 20px);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-}
-
-.deity-equiv-separator {
-  color: rgba(201, 168, 118, 0.4);
-  margin: 0 8px;
-}
-
 /* Shared Description Text Style */
 .description-text,
 .exploration-subtitle {
@@ -679,13 +590,64 @@ html:hover::-webkit-scrollbar-corner {
 
 /* Button Hover Effects */
 .fancy-button {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-smooth);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .fancy-button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Outline Button Base - shared by download, footer, view-3d buttons */
+.btn-outline,
+.download-yaml-button,
+.footer-write-me,
+.view-3d-button,
+.view-3d-button-compact {
+  background: transparent;
+  border: 2px solid var(--border-primary);
+  border-radius: 6px;
+  color: var(--bronze-text);
+  font-family: var(--font-cinzel);
+  font-weight: 400;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition-smooth);
+  text-shadow: var(--shadow-secondary);
+}
+
+.btn-outline:hover,
+.download-yaml-button:hover,
+.footer-write-me:hover,
+.view-3d-button:hover,
+.view-3d-button-compact:hover {
+  border-color: var(--border-accent);
+  color: var(--accent-gold);
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-2px);
+}
+
+.btn-outline:active,
+.download-yaml-button:active,
+.footer-write-me:active,
+.view-3d-button:active,
+.view-3d-button-compact:active {
+  transform: translateY(0);
+}
+
+/* Cinzel Text Base - shared font and color for all Cinzel text */
+.cinzel-text,
+.section-heading,
+.exploration-title,
+.exploration-section-title,
+.group-title,
+.about-subtitle,
+.footer-name,
+.title-main,
+.title-subtle {
+  font-family: var(--font-cinzel);
+  color: #c9a876;
 }
 
 /* Inscription List Styles */
@@ -766,7 +728,6 @@ html:hover::-webkit-scrollbar-corner {
 }
 
 .title-main {
-  font-family: Cinzel, serif;
   font-weight: 300;
   letter-spacing: 6px;
   font-size: clamp(28px, 4.5vw, 60px);
@@ -777,7 +738,6 @@ html:hover::-webkit-scrollbar-corner {
 }
 
 .title-subtle {
-  font-family: Cinzel, serif;
   font-weight: 200;
   letter-spacing: 1px;
   font-size: clamp(10px, 1.2vw, 16px);

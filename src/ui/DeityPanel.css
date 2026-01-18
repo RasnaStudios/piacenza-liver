@@ -1,0 +1,108 @@
+/* Panel Animations */
+@keyframes panelSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(100%) scale(0.95);
+    filter: blur(5px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(20%) scale(0.98);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes panelSlideInMobile {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Panel Styles */
+.deity-panel-desktop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 500px;
+  height: 100vh;
+  background: var(--primary-bg);
+  border: 1px solid var(--border-primary);
+  border-radius: 12px 0 0 12px;
+  color: var(--primary-text);
+  font-family: var(--font-primary);
+  box-shadow: var(--shadow-primary);
+  z-index: 1000;
+  animation: panelSlideIn 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.deity-panel-mobile {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--primary-bg);
+  color: var(--primary-text);
+  font-family: var(--font-primary);
+  z-index: 9999;
+  animation: panelSlideInMobile 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* Deity Equivalents Styles */
+.deity-equivalents {
+  font-family: var(--font-primary);
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .deity-equivalents {
+    font-size: 16px;
+  }
+
+  .deity-equiv-label {
+    font-size: 14px;
+  }
+
+  .deity-equiv-value {
+    font-size: 16px;
+  }
+}
+
+.deity-equiv-label {
+  font-size: clamp(14px, 1.2vw, 16px);
+  color: rgba(201, 168, 118, 0.6);
+  font-weight: 500;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.deity-equiv-value {
+  color: #c9a876;
+  font-weight: 600;
+  font-size: clamp(16px, 1.4vw, 20px);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.deity-equiv-separator {
+  color: rgba(201, 168, 118, 0.4);
+  margin: 0 8px;
+}

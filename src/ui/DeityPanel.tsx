@@ -9,11 +9,11 @@ import {
   liverGods,
   liverInscriptions,
 } from "../scene/LiverData"
-import { getGodsDisplayNames } from "../utils/liverUtils"
 import { DeityCard } from "./components/DeityCard"
 import { GroupSection } from "./components/GroupSection"
 import { PanelHeader } from "./components/PanelHeader"
 import { PanelLegend } from "./components/PanelLegend"
+import "./DeityPanel.css"
 
 interface DeityPanelProps {
   selectedInscription: Inscription | null
@@ -108,9 +108,6 @@ export function DeityPanel({
 
   if (!selectedInscription) return null
 
-  // Get display names for the gods in this inscription
-  const deityNames = getGodsDisplayNames(selectedInscription.gods || [])
-
   // Get god objects for DeityCard components
   const gods = (selectedInscription.gods || [])
     .map((god) => {
@@ -178,7 +175,6 @@ export function DeityPanel({
           >
             <PanelHeader
               selectedInscription={selectedInscription}
-              deityNames={deityNames}
               onClose={onClose}
             />
           </Box>
@@ -283,7 +279,6 @@ export function DeityPanel({
     >
       <PanelHeader
         selectedInscription={selectedInscription}
-        deityNames={deityNames}
         onClose={onClose}
       />
       <Box

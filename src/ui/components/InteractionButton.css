@@ -1,10 +1,10 @@
 .interaction-button {
-  font-family: "Cinzel", serif;
+  font-family: var(--font-cinzel);
   font-weight: 400;
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-smooth);
   display: flex;
   align-items: center;
   border-radius: 8px;
