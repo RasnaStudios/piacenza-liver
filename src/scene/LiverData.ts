@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next"
 import * as THREE from "three"
 
 // ================================================================================================
@@ -42,47 +41,47 @@ export const liverGroups = {
   sky: {
     id: "sky",
     positions: [1, 2, 3, 4],
-    color: "#87CEEB",
+    color: "#8ad8ff",
   },
   water: {
     id: "water",
     positions: [5, 6, 7, 8],
-    color: "#008B8B",
+    color: "#2be5d0",
   },
   earth: {
     id: "earth",
     positions: [9, 10, 11, 12],
-    color: "#CD853F",
+    color: "#ffb76b",
   },
   underworld: {
     id: "underworld",
     positions: [13, 14, 15, 16],
-    color: "#808000",
+    color: "#c4d84f",
   },
   pars_familiaris: {
     id: "pars_familiaris",
     positions: [17, 18, 19, 20, 21, 22, 23, 24],
-    color: "#FF0000",
+    color: "#ff6b7c",
   },
   gall_bladder: {
     id: "gall_bladder",
     positions: [25, 26, 27, 28],
-    color: "#FF8C00",
+    color: "#ffd27f",
   },
   central_section: {
     id: "central_section",
     positions: [29, 30, 37, 38, 39, 40],
-    color: "#FFA500",
+    color: "#ffe18a",
   },
   pars_hostilis: {
     id: "pars_hostilis",
     positions: [31, 32, 33, 34, 35, 36],
-    color: "#9370DB",
+    color: "#d3a6ff",
   },
   back: {
     id: "back",
     positions: [41, 42],
-    color: "#808080",
+    color: "#cfd3d8",
   },
 }
 
@@ -732,38 +731,4 @@ export function getGodsDisplayNames(gods: GodEntry[]): string {
       return godData?.name || godId
     })
     .join(" + ")
-}
-
-// ================================================================================================
-// LOCALIZATION UTILITIES
-// ================================================================================================
-
-export function useLocalizedGroup(group: LiverGroup) {
-  const { t } = useTranslation("liverData")
-  return Object.assign({}, group, {
-    name: t(`groups.${group.id}.name`),
-    description: t(`groups.${group.id}.description`),
-  }) as LiverGroup & { name: string; description: string }
-}
-
-export function useLocalizedGod(god: LiverGod) {
-  const { t } = useTranslation("liverData")
-  return Object.assign({}, god, {
-    description: t(`deities.${god.id}.description`),
-  }) as LiverGod & { description: string }
-}
-
-export function useLocalizedGroups(groups: Record<string, LiverGroup>) {
-  const { t } = useTranslation("liverData")
-  const localized: Record<
-    string,
-    LiverGroup & { name: string; description: string }
-  > = {}
-  for (const [key, group] of Object.entries(groups)) {
-    localized[key] = Object.assign({}, group, {
-      name: t(`groups.${group.id}.name`),
-      description: t(`groups.${group.id}.description`),
-    }) as LiverGroup & { name: string; description: string }
-  }
-  return localized
 }
