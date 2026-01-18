@@ -1,6 +1,7 @@
 import { Box, Transition } from "@mantine/core"
 import { useState } from "react"
 import { isMobile } from "react-device-detect"
+import { FiMenu, FiX } from "react-icons/fi"
 import { ActionButtons } from "./ActionButtons"
 
 interface ActionMenuProps {
@@ -19,6 +20,7 @@ export function ActionMenu({
   hideControls = false,
 }: ActionMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const useBottomMenu = isMobile
 
   if (!isVisible) return null
 
@@ -40,7 +42,7 @@ export function ActionMenu({
     <Box className="action-menu-container">
       <Transition
         mounted={isOpen}
-        transition="slide-down"
+        transition={useBottomMenu ? "slide-up" : "slide-down"}
         duration={300}
         timingFunction="ease-out"
       >
@@ -49,7 +51,8 @@ export function ActionMenu({
             style={{
               ...styles,
               position: "absolute",
-              top: "60px",
+              top: useBottomMenu ? undefined : "60px",
+              bottom: useBottomMenu ? "60px" : undefined,
               right: 0,
               background: "rgba(0, 0, 0, 0.85)",
               backdropFilter: "blur(10px)",
@@ -76,20 +79,14 @@ export function ActionMenu({
         type="button"
         onClick={toggleMenu}
         className={`action-menu-button ${isOpen ? "is-open" : ""}`}
+        aria-label={isOpen ? "Close menu" : "Open menu"}
+        title={isOpen ? "Close menu" : "Open menu"}
       >
-        <Box className="action-menu-icon" />
-        <Box
-          className="action-menu-icon"
-          style={{
-            opacity: isOpen ? 0 : 1,
-          }}
-        />
-        <Box
-          className="action-menu-icon"
-          style={{
-            transform: isOpen ? "rotate(-45deg) translate(5px, -5px)" : "none",
-          }}
-        />
+        {isOpen ? (
+          <FiX className="action-menu-icon" />
+        ) : (
+          <FiMenu className="action-menu-icon" />
+        )}
       </button>
     </Box>
   )

@@ -1,6 +1,7 @@
 import { Box } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { FiArrowLeft } from "react-icons/fi"
 import { useNavigate } from "react-router-dom"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
@@ -24,10 +25,10 @@ import { LiverModel } from "./scene/LiverModel"
 import type { HoveredSection } from "./types"
 import { InteractionMode } from "./types/interaction"
 import { About } from "./ui/components/About"
+import { ActionButtons } from "./ui/components/ActionButtons"
 import { ActionMenu } from "./ui/components/ActionMenu"
 import { BraveDisclaimer } from "./ui/components/BraveDisclaimer"
 import { HoverTooltip } from "./ui/components/HoverTooltip"
-import { InteractionButton } from "./ui/components/InteractionButton"
 import { ResetInstruction } from "./ui/components/ResetInstruction"
 // UI Components
 import { DeityPanel } from "./ui/DeityPanel"
@@ -343,6 +344,23 @@ function PiacenzaLiverScene({
       requestAnimationFrame(updateDebugInfo)
     }
   }, [interactionMode, setTitleVisible, updateDebugInfo])
+  const getScaledCameraPosition = useCallback(
+    (position: THREE.Vector3, target: THREE.Vector3) => {
+      const desiredDistance = SceneConfig.inscriptions.cameraDistance
+      const direction = position.clone().sub(target)
+      const currentLength = direction.length()
+      if (!Number.isFinite(currentLength) || currentLength < 1e-3) {
+        return target
+          .clone()
+          .add(new THREE.Vector3(0, 1, 0).multiplyScalar(desiredDistance))
+      }
+      return target
+        .clone()
+        .add(direction.multiplyScalar(desiredDistance / currentLength))
+    },
+    [],
+  )
+
   const handleInscriptionClick = useCallback(
     (payload: {
       inscriptionId: number
@@ -384,9 +402,13 @@ function PiacenzaLiverScene({
       setInscriptionHash(inscriptionId)
 
       if (cameraControllerRef.current) {
+        const scaledCameraPos = getScaledCameraPosition(
+          inscription.cameraPosition,
+          inscription.cameraTarget,
+        )
         cameraControllerRef.current.focusOn(
           inscription.cameraTarget,
-          inscription.cameraPosition,
+          scaledCameraPos,
           600,
           true,
           undefined,
@@ -418,9 +440,13 @@ function PiacenzaLiverScene({
       liverModelRef.current.setSelectedInscription(inscription.id)
       setSelectedInscription(inscription)
       setInscriptionHash(inscription.id)
+      const scaledCameraPos = getScaledCameraPosition(
+        inscription.cameraPosition,
+        inscription.cameraTarget,
+      )
       cameraControllerRef.current.focusOn(
         inscription.cameraTarget,
-        inscription.cameraPosition,
+        scaledCameraPos,
         500,
         true,
         undefined,
@@ -1020,6 +1046,22 @@ function PiacenzaLiverScene({
           hasViewChanged={hasViewChanged}
           isAboutMode={isAboutMode}
         />
+        {isSceneReady && isAboutMode && (
+          <Box
+            className="back-button-container"
+            onClick={startInteraction}
+            aria-label="Back to 3D scene"
+            title="Back to 3D scene"
+            style={{
+              position: "fixed",
+              left: isSmallScreen ? "16px" : "24px",
+              bottom: isSmallScreen ? "16px" : "24px",
+              zIndex: 30,
+            }}
+          >
+            <FiArrowLeft size={32} />
+          </Box>
+        )}
         {isSceneReady && !isLoading && !isAboutMode && (
           <>
             {!isPortrait && (
@@ -1036,20 +1078,14 @@ function PiacenzaLiverScene({
                   pointerEvents: "auto",
                 }}
               >
-                <InteractionButton
-                  onClick={handleReturnToIntro}
-                  variant="text"
-                  size="md"
-                >
-                  About the Liver
-                </InteractionButton>
-                <InteractionButton
-                  onClick={() => navigate("/inscriptions")}
-                  variant="text"
-                  size="md"
-                >
-                  Explore inscriptions
-                </InteractionButton>
+                <ActionButtons
+                  onAboutClick={handleReturnToIntro}
+                  onExploreClick={() => navigate("/inscriptions")}
+                  showLanguageSwitcher={true}
+                  disableAnimation={false}
+                  align="right"
+                  hideControls={false}
+                />
               </Box>
             )}
             <ActionMenu

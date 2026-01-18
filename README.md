@@ -106,6 +106,16 @@ This will generate both:
 python3 scripts/create_segmentation_map.py --size 2048 --tile 512 --no-atlas
 ```
 
+### Recompute inscription centers
+
+If the liver OBJ or segmentation map changes, update the inscription surface centers (camera targets) and camera positions with:
+
+```bash
+node scripts/recompute-inscription-centers.mjs
+```
+
+By default it samples every 4th pixel of `src/assets/segmentation.png` for speed; lower `SAMPLE_STEP` inside the script for finer accuracy. Camera targets are rederived from the segmentation; camera positions are placed along the surface normal using the uniform distance configured in `SceneConfig.inscriptions.cameraDistance`. It overwrites both `cameraTarget` and `cameraPosition` entries in `src/scene/LiverData.ts`.
+
 ## 🛠️ Built With
 
 - **React** - UI framework
