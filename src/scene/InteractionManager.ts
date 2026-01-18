@@ -164,6 +164,79 @@ export class InteractionManager {
     }
   }
 
+  private rotateModelAroundCenter(
+    deltaX: number,
+    deltaY: number,
+    rotationSpeed: number,
+  ): void {
+    const liverObject = this.liverModel.getObject()
+    if (!liverObject) return
+
+    liverObject.updateMatrixWorld(false)
+    this.camera.updateMatrixWorld(false)
+
+    // Calculate liver center dynamically from current world bounding box
+    // This ensures it's always correct after rotation
+    const worldBoundingBox = new THREE.Box3()
+    worldBoundingBox.setFromObject(liverObject)
+    const liverCenter = new THREE.Vector3()
+    worldBoundingBox.getCenter(liverCenter)
+
+    const worldPos = new THREE.Vector3()
+    liverObject.getWorldPosition(worldPos)
+    const offset = worldPos.clone().sub(liverCenter)
+
+    // Get camera's transformation matrix to transform axes into camera space
+    const cameraMatrix = new THREE.Matrix4()
+    cameraMatrix.extractRotation(this.camera.matrixWorld)
+
+    // Start with global axes
+    const globalRight = new THREE.Vector3(1, 0, 0)
+    const globalUp = new THREE.Vector3(0, 1, 0)
+
+    // Transform global axes into camera's reference system
+    const cameraRight = globalRight.applyMatrix4(cameraMatrix).normalize()
+    const cameraUp = globalUp.applyMatrix4(cameraMatrix).normalize()
+
+    // Translate to pivot (center)
+    liverObject.position.sub(offset)
+
+    // Create rotation quaternions in camera's reference system
+    // Horizontal drag: rotate around camera's up axis (vertical on screen)
+    // Vertical drag: rotate around camera's right axis (horizontal on screen)
+    const qY = new THREE.Quaternion().setFromAxisAngle(
+      cameraUp,
+      deltaX * rotationSpeed,
+    )
+    const qX = new THREE.Quaternion().setFromAxisAngle(
+      cameraRight,
+      deltaY * rotationSpeed,
+    )
+
+    // Apply rotations (order: Y first, then X)
+    liverObject.quaternion.premultiply(qY)
+    liverObject.quaternion.premultiply(qX)
+
+    // Rotate the offset vector by the combined rotation
+    const combinedRotation = qX.clone().multiply(qY)
+    offset.applyQuaternion(combinedRotation)
+
+    // Translate back
+    liverObject.position.add(offset)
+    liverObject.updateMatrixWorld(true)
+    this.callbacks.onModelRotate()
+  }
+
+  private hasMovedBeyondThreshold(
+    startPos: { x: number; y: number },
+    currentPos: { x: number; y: number },
+    threshold: number,
+  ): boolean {
+    const deltaX = Math.abs(currentPos.x - startPos.x)
+    const deltaY = Math.abs(currentPos.y - startPos.y)
+    return deltaX > threshold || deltaY > threshold
+  }
+
   private handleMouseDown(event: MouseEvent) {
     if (!this.interactionEnabled) return
     this.mouseDownPosition = { x: event.clientX, y: event.clientY }
@@ -308,35 +381,20 @@ export class InteractionManager {
         this.hasMovedDuringRotation = true
       }
 
-      const liverObject = this.liverModel.getObject()
-      if (liverObject) {
-        // Rotation sensitivity
-        const rotationSpeed = 0.01
+      this.rotateModelAroundCenter(deltaX, deltaY, 0.01)
 
-        // Apply rotation in global/world space:
-        // horizontal movement = rotation around world Y axis
-        // vertical movement = rotation around world X axis
-        liverObject.rotateOnWorldAxis(
-          new THREE.Vector3(0, 1, 0),
-          deltaX * rotationSpeed,
-        )
-        liverObject.rotateOnWorldAxis(
-          new THREE.Vector3(1, 0, 0),
-          deltaY * rotationSpeed,
-        )
-      }
-
-      this.callbacks.onModelRotate()
       this.lastMousePosition = { x: event.clientX, y: event.clientY }
       return // Skip normal hover detection when rotating model
     }
 
     if (this.mouseDownPosition) {
-      const deltaX = Math.abs(event.clientX - this.mouseDownPosition.x)
-      const deltaY = Math.abs(event.clientY - this.mouseDownPosition.y)
-      const moveThreshold = 5
-
-      if (deltaX > moveThreshold || deltaY > moveThreshold) {
+      if (
+        this.hasMovedBeyondThreshold(
+          this.mouseDownPosition,
+          { x: event.clientX, y: event.clientY },
+          5,
+        )
+      ) {
         this.mouseMovedDuringClick = true
       }
     }
@@ -464,10 +522,13 @@ export class InteractionManager {
       if (!this.clickEnabled) return
       if (this.touchStartPosition && event.touches.length === 1) {
         const touch = event.touches[0]
-        const deltaX = Math.abs(touch.clientX - this.touchStartPosition.x)
-        const deltaY = Math.abs(touch.clientY - this.touchStartPosition.y)
-        const moveThreshold = 10
-        if (deltaX > moveThreshold || deltaY > moveThreshold) {
+        if (
+          this.hasMovedBeyondThreshold(
+            this.touchStartPosition,
+            { x: touch.clientX, y: touch.clientY },
+            10,
+          )
+        ) {
           this.touchMovedDuringTouch = true
         }
       }
@@ -482,23 +543,7 @@ export class InteractionManager {
         const deltaX = currentPosition.x - this.lastThreeFingerPosition.x
         const deltaY = currentPosition.y - this.lastThreeFingerPosition.y
 
-        const liverObject = this.liverModel.getObject()
-        if (liverObject) {
-          // Rotation sensitivity for touch (slightly higher than mouse)
-          const rotationSpeed = 0.015
-
-          // Apply rotation in global/world space:
-          // horizontal movement = rotation around world Y axis
-          // vertical movement = rotation around world X axis
-          liverObject.rotateOnWorldAxis(
-            new THREE.Vector3(0, 1, 0),
-            deltaX * rotationSpeed,
-          )
-          liverObject.rotateOnWorldAxis(
-            new THREE.Vector3(1, 0, 0),
-            deltaY * rotationSpeed,
-          )
-        }
+        this.rotateModelAroundCenter(deltaX, deltaY, 0.015)
       }
 
       this.lastThreeFingerPosition = currentPosition
@@ -515,11 +560,13 @@ export class InteractionManager {
 
     if (this.touchStartPosition && event.touches.length === 1) {
       const touch = event.touches[0]
-      const deltaX = Math.abs(touch.clientX - this.touchStartPosition.x)
-      const deltaY = Math.abs(touch.clientY - this.touchStartPosition.y)
-      const moveThreshold = 10 // Slightly higher threshold for touch
-
-      if (deltaX > moveThreshold || deltaY > moveThreshold) {
+      if (
+        this.hasMovedBeyondThreshold(
+          this.touchStartPosition,
+          { x: touch.clientX, y: touch.clientY },
+          10,
+        )
+      ) {
         this.touchMovedDuringTouch = true
       }
     }
