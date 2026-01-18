@@ -63,44 +63,6 @@ export class LiverModel {
     offsetX: 0,
     offsetY: 0,
     idOffset: 0,
-    idMap: {
-      // Row 0 (1-8) should map to Row 4 (33-40)
-      1: 33,
-      2: 34,
-      3: 35,
-      4: 36,
-      5: 37,
-      6: 38,
-      7: 39,
-      8: 40,
-      // Row 1 (9-16) should map to Row 3 (25-32)
-      9: 25,
-      10: 26,
-      11: 27,
-      12: 28,
-      13: 29,
-      14: 30,
-      15: 31,
-      16: 32,
-      // Row 3 (25-32) should map to Row 1 (9-16)
-      25: 9,
-      26: 10,
-      27: 11,
-      28: 12,
-      29: 13,
-      30: 14,
-      31: 15,
-      32: 16,
-      // Row 4 (33-40) should map to Row 0 (1-8)
-      33: 1,
-      34: 2,
-      35: 3,
-      36: 4,
-      37: 5,
-      38: 6,
-      39: 7,
-      40: 8,
-    },
   }
 
   private currentHoveredId: number = 0
@@ -562,15 +524,19 @@ export class LiverModel {
     const { flipX, flipY, repeatScaleX, repeatScaleY, offsetX, offsetY } =
       this.atlasTweak
 
+    const scaledRepeatX = baseU * (repeatScaleX || 1)
+    const scaledRepeatY = baseV * (repeatScaleY || 1)
+
+    // For negative repeats, offset to the far edge so the sampled band stays on the intended tile.
+    const repeatX = (flipX ? -1 : 1) * scaledRepeatX
+    const repeatY = (flipY ? -1 : 1) * scaledRepeatY
+
+    const atlasOffsetX = (flipX ? tile.col + 1 : tile.col) * baseU + offsetX
+    const atlasOffsetY = (flipY ? tile.row + 1 : tile.row) * baseV + offsetY
+
     return {
-      repeat: new THREE.Vector2(
-        (flipX ? -1 : 1) * baseU * (repeatScaleX || 1),
-        (flipY ? -1 : 1) * baseV * (repeatScaleY || 1),
-      ),
-      offset: new THREE.Vector2(
-        (flipX ? (tile.col + 1) * baseU : tile.col * baseU) + offsetX,
-        (flipY ? 1 - (tile.row + 1) * baseV : tile.row * baseV) + offsetY,
-      ),
+      repeat: new THREE.Vector2(repeatX, repeatY),
+      offset: new THREE.Vector2(atlasOffsetX, atlasOffsetY),
     }
   }
 

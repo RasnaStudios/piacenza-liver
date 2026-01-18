@@ -228,7 +228,7 @@ def main():
     parser.add_argument('--atlas-output', default='src/assets/segmentation_atlas.png', help='Output path for atlas PNG')
     parser.add_argument('--atlas-meta', default='src/assets/segmentation_atlas.json', help='Output path for atlas JSON metadata')
     parser.add_argument('--tile', type=int, default=256, help='Atlas tile size in pixels (default: 256)')
-    parser.add_argument('--cols', type=int, default=8, help='Atlas number of columns (default: 8)')
+    parser.add_argument('--cols', type=int, default=7, help='Atlas number of columns (default: 7)')
     
     args = parser.parse_args()
     
