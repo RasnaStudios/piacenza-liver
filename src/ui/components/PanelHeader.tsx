@@ -1,5 +1,6 @@
 import { Box, Group, Title } from "@mantine/core"
 import { IconX } from "@tabler/icons-react"
+import { useTranslation } from "react-i18next"
 import type { Inscription } from "../../scene/LiverData"
 import { NumberBadge } from "./NumberBadge"
 
@@ -12,6 +13,7 @@ export function PanelHeader({
   selectedInscription,
   onClose,
 }: PanelHeaderProps) {
+  const { t } = useTranslation("common")
   if (!selectedInscription) return null
 
   return (
@@ -49,8 +51,8 @@ export function PanelHeader({
       <Box
         className="close-button-container"
         onClick={onClose}
-        aria-label="Close panel"
-        title="Close panel"
+        aria-label={t("aria.closePanel")}
+        title={t("aria.closePanel")}
         style={{
           position: "absolute",
           right: 0,

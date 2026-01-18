@@ -1,6 +1,7 @@
 import { Box, Divider, Group, Modal, Stack, Text, Title } from "@mantine/core"
 import { IconX } from "@tabler/icons-react"
 import { isMobile } from "react-device-detect"
+import { useTranslation } from "react-i18next"
 
 interface ControlsModalProps {
   opened: boolean
@@ -8,54 +9,23 @@ interface ControlsModalProps {
 }
 
 export function ControlsModal({ opened, onClose }: ControlsModalProps) {
+  const { t } = useTranslation("controls")
+  const { t: tCommon } = useTranslation("common")
+
   const getControlsData = () => {
     if (isMobile) {
-      return [
-        {
-          command: "Tap",
-          description: "Select inscriptions",
-        },
-        {
-          command: "Double tap",
-          description: "Reset to default view",
-        },
-        {
-          command: "Single finger drag",
-          description: "Rotate the camera view",
-        },
-        {
-          command: "Pinch",
-          description: "Zoom in and out",
-        },
-        {
-          command: "Three finger drag",
-          description: "Move the model position",
-        },
-      ]
+      const mobileControls = t("mobile", { returnObjects: true }) as Array<{
+        command: string
+        description: string
+      }>
+      return mobileControls
     }
 
-    return [
-      {
-        command: "Double-click",
-        description: "Reset to default view",
-      },
-      {
-        command: "Mouse",
-        description: "Rotate the 3D model around",
-      },
-      {
-        command: "Alt + Mouse",
-        description: "Pan the camera view",
-      },
-      {
-        command: "Scroll",
-        description: "Zoom in and out",
-      },
-      {
-        command: "⇧ + Drag",
-        description: "Move the model position",
-      },
-    ]
+    const desktopControls = t("desktop", { returnObjects: true }) as Array<{
+      command: string
+      description: string
+    }>
+    return desktopControls
   }
 
   const controls = getControlsData()
@@ -82,13 +52,13 @@ export function ControlsModal({ opened, onClose }: ControlsModalProps) {
     >
       <Group align="center" justify="space-between" p="lg" pb="md">
         <Title order={3} className="text-bronze font-display">
-          Controls
+          {t("title")}
         </Title>
         <Box
           className="close-button-container"
           onClick={onClose}
-          aria-label="Close controls"
-          title="Close controls"
+          aria-label={tCommon("aria.closeControls")}
+          title={tCommon("aria.closeControls")}
         >
           <IconX size={24} stroke={1.5} />
         </Box>
@@ -96,8 +66,8 @@ export function ControlsModal({ opened, onClose }: ControlsModalProps) {
       <Divider color="var(--border-secondary)" />
       <Box p="lg">
         <Stack gap="xs">
-          {controls.map((control) => (
-            <Box key={control.command}>
+          {controls.map((control, index) => (
+            <Box key={control.command || index}>
               <Box className="bg-overlay-secondary border-secondary" p="xs">
                 <Stack gap="xs">
                   <Text size="lg" className="text-bronze font-display">

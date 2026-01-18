@@ -1,0 +1,10 @@
+{
+  "title": "Iscrizioni",
+  "subtitle": "Clicca su qualsiasi iscrizione per vedere i dettagli. \"Visualizza in 3D\" apre la scena 3D.",
+  "exploreByZone": "Esplora per zona",
+  "exploreByDeity": "Esplora per divinità",
+  "inscriptionCount": {
+    "singular": "iscrizione",
+    "plural": "iscrizioni"
+  }
+}

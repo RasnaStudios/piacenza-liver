@@ -1,4 +1,5 @@
 import { Button, Group, Text } from "@mantine/core"
+import { useTranslation } from "react-i18next"
 import { type LiverGod, liverGods } from "../../scene/LiverData"
 import { NumberBadge } from "./NumberBadge"
 
@@ -17,6 +18,7 @@ export function InscriptionChip({
   onClick,
   godVariation,
 }: InscriptionChipProps) {
+  const { t } = useTranslation("common")
   const associatedGods = associatedGodIds
     .map((id) => (liverGods as Record<string, LiverGod>)[id])
     .filter(Boolean)
@@ -45,7 +47,7 @@ export function InscriptionChip({
         e.currentTarget.style.border = `1px solid ${groupColor}40`
         e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.1)"
       }}
-      title={`Go to inscription ${inscriptionId}${associatedGods.length > 0 ? ` (with ${associatedGods.map((g) => g.name).join(", ")})` : ""}`}
+      title={`${t("actions.goToInscription")} ${inscriptionId}${associatedGods.length > 0 ? ` (${t("connectors.with")} ${associatedGods.map((g) => g.name).join(", ")})` : ""}`}
     >
       <Group gap="xs" wrap="nowrap">
         <NumberBadge value={inscriptionId} color={groupColor} />
@@ -53,7 +55,7 @@ export function InscriptionChip({
         {godVariation && (
           <Text>
             <Text component="span" size="lg" style={{ color: "white" }}>
-              as{" "}
+              {t("connectors.as")}{" "}
             </Text>
             <Text
               component="span"
@@ -69,9 +71,9 @@ export function InscriptionChip({
         )}
 
         {associatedGods.length > 0 && (
-          <Text className="font-serif">
+          <>
             <Text component="span" size="lg" style={{ color: "white" }}>
-              with{" "}
+              {t("connectors.with")}{" "}
             </Text>
             <Text
               component="span"
@@ -84,7 +86,7 @@ export function InscriptionChip({
             >
               {associatedGods.map((god) => god.name).join(", ")}
             </Text>
-          </Text>
+          </>
         )}
       </Group>
     </Button>

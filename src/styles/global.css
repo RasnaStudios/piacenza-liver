@@ -727,6 +727,23 @@ html:hover::-webkit-scrollbar-corner {
   animation: wavyGradient 30s ease-in-out infinite;
 }
 
+.title-gradient-no-animation {
+  background: linear-gradient(
+    45deg,
+    #d4af37 0%,
+    #f0d67c 25%,
+    #ffeb9e 50%,
+    #f0d67c 75%,
+    #d4af37 100%
+  );
+  background-size: 200% 200%;
+  background-position: center;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: brightness(1.5);
+}
+
 .title-main {
   font-weight: 300;
   letter-spacing: 6px;

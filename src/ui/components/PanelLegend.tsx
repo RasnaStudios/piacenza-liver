@@ -1,11 +1,10 @@
 import { Anchor, Box, Divider, Stack, Text } from "@mantine/core"
-import { useState } from "react"
 import { isMobile } from "react-device-detect"
+import { useTranslation } from "react-i18next"
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa"
 import { SiArtstation } from "react-icons/si"
 import { AppConfig } from "../../config/AppConfig"
-import { ControlsModal } from "./ControlsModal"
-import { InteractionButton } from "./InteractionButton"
+import { ActionButtons } from "./ActionButtons"
 
 interface PanelLegendProps {
   onAboutClick?: () => void
@@ -16,32 +15,19 @@ export function PanelLegend({
   onAboutClick,
   onExploreClick,
 }: PanelLegendProps) {
-  const [controlsOpened, setControlsOpened] = useState(false)
+  const { t } = useTranslation("common")
 
   return (
     <Box p="md">
       <Stack gap="md">
         {/* Action Buttons Section - Landscape mode only */}
-        {!isMobile && onAboutClick && onExploreClick && (
-          <Stack gap="xs">
-            <InteractionButton onClick={onAboutClick} variant="text" size="md">
-              About the Liver
-            </InteractionButton>
-            <InteractionButton
-              onClick={onExploreClick}
-              variant="text"
-              size="md"
-            >
-              Explore inscriptions
-            </InteractionButton>
-            <InteractionButton
-              onClick={() => setControlsOpened(true)}
-              variant="text"
-              size="md"
-            >
-              Controls
-            </InteractionButton>
-          </Stack>
+        {!isMobile && (
+          <ActionButtons
+            onAboutClick={onAboutClick}
+            onExploreClick={onExploreClick}
+            showLanguageSwitcher={true}
+            disableAnimation={true}
+          />
         )}
 
         {/* Mobile: Reset instruction */}
@@ -54,7 +40,7 @@ export function PanelLegend({
               textAlign: "center",
             }}
           >
-            Double tap on the model to reset the view
+            {t("instructions.doubleTapOnModelToReset")}
           </Text>
         )}
 
@@ -63,7 +49,7 @@ export function PanelLegend({
         {/* Credits Section */}
         <Stack gap="lg" style={{ textAlign: "center" }}>
           <Text size="lg" className="text-bronze" tt="uppercase">
-            Created by
+            {t("labels.createdBy")}
           </Text>
 
           {/* Team Members - Side by Side */}
@@ -180,7 +166,7 @@ export function PanelLegend({
             }}
           >
             <Anchor
-              href="https://github.com/rasnastudios/piacenza-liver"
+              href={AppConfig.repositoryUrl}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -192,18 +178,11 @@ export function PanelLegend({
                 gap: "8px",
               }}
             >
-              Contribute <FaGithub size={30} />
+              {t("buttons.contribute")} <FaGithub size={30} />
             </Anchor>
           </Box>
         </Stack>
       </Stack>
-
-      {!isMobile && (
-        <ControlsModal
-          opened={controlsOpened}
-          onClose={() => setControlsOpened(false)}
-        />
-      )}
     </Box>
   )
 }

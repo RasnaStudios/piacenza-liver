@@ -1,0 +1,10 @@
+{
+  "title": "Explore All Inscriptions",
+  "subtitle": "Click any inscription to view details. \"View in 3D Visualization\" opens the 3D scene.",
+  "exploreByZone": "Explore by Zone",
+  "exploreByDeity": "Explore by Deity",
+  "inscriptionCount": {
+    "singular": "inscription",
+    "plural": "inscriptions"
+  }
+}

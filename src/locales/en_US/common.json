@@ -1,0 +1,56 @@
+{
+  "buttons": {
+    "aboutLiver": "About the Liver",
+    "exploreInscriptions": "Explore inscriptions",
+    "controls": "Controls",
+    "language": "Language",
+    "viewIn3D": "View in 3D Visualization",
+    "downloadDataset": "Download Dataset",
+    "contribute": "Contribute",
+    "exploreLiver": "Explore the liver",
+    "continue": "Continue"
+  },
+  "labels": {
+    "involvedDeities": "Involved deities",
+    "exploreByZone": "Explore by Zone",
+    "exploreByDeity": "Explore by Deity",
+    "createdBy": "Created by"
+  },
+  "actions": {
+    "closePanel": "Close panel",
+    "closeControls": "Close controls",
+    "goToInscription": "Go to inscription"
+  },
+  "connectors": {
+    "as": "as",
+    "with": "with",
+    "roman": "Roman:",
+    "greek": "Greek:"
+  },
+  "instructions": {
+    "doubleTapToReset": "Double tap to reset",
+    "doubleClickToReset": "Double-click to reset",
+    "doubleTapOnModelToReset": "Double tap on the model to reset the view"
+  },
+  "aria": {
+    "closePanel": "Close panel",
+    "closeControls": "Close controls",
+    "linkedIn": "LinkedIn",
+    "github": "GitHub"
+  },
+  "titles": {
+    "piacenzaLiver": "Piacenza Liver"
+  },
+  "footer": {
+    "compiledBy": "Information compiled by",
+    "incorrectInfo": "Do you see errors in the translations or in the information?",
+    "writeMe": "Contact me",
+    "mailtoSubject": "Feedback on Piacenza Liver information",
+    "mailtoBody": "I noticed the following incorrect or incomplete information:\n\n"
+  },
+  "language": {
+    "title": "Select Language",
+    "developerText": "Are you a developer?",
+    "contributeOnGitHub": "Contribute on GitHub"
+  }
+}

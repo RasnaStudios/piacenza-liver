@@ -1,0 +1,35 @@
+{
+  "subtitle": "Artefatto Divinatorio Etrusco Antico",
+  "intro": "Un modello in bronzo della fine del II secolo a.C. all'inizio del I secolo a.C., che mappa la struttura cosmologica delle credenze religiose etrusche attraverso {totalInscriptions} iscrizioni in {totalZones} zone divine.",
+  "sections": [
+    {
+      "heading": "Scoperta Storica",
+      "content": "Il Fegato di Piacenza fu scoperto nel 1877 vicino a Gossolengo, appena fuori Piacenza, in Italia. Questo straordinario artefatto in bronzo risale alla fine del II secolo a.C. all'inizio del I secolo a.C., rendendolo uno dei documenti più significativi sopravvissuti della pratica religiosa etrusca. Il modello del fegato rappresenta una mappa cosmologica completa, meticolosamente incisa con i nomi delle divinità e dei loro domini divini."
+    },
+    {
+      "heading": "Epatoscopia",
+      "content": "L'epatoscopia, o aruspicina, era l'antica pratica etrusca di divinazione attraverso l'esame dei fegati degli animali. I sacerdoti noti come aruspici sacrificavano animali e studiavano attentamente la forma, il colore, la consistenza del fegato e qualsiasi segno insolito. Ogni sezione del fegato corrispondeva a una specifica divinità o regno cosmico, permettendo ai sacerdoti di interpretare gli auspici e la volontà divina. Questa pratica era così centrale nella religione etrusca che influenzò le tradizioni religiose romane per secoli."
+    },
+    {
+      "heading": "Struttura Cosmologica",
+      "content": "Il fegato è diviso in {totalZones} distinte zone cosmologiche, ognuna rappresentante un regno fondamentale dell'esistenza. La zona del Cielo contiene le divinità supreme, mentre la zona dell'Acqua governa le forze atmosferiche e acquatiche. La zona della Terra rappresenta i poteri terrestri, e l'Oltretomba contiene divinità ctonie. La Pars Familiaris e la Pars Hostilis rappresentano rispettivamente auspici favorevoli e sfavorevoli, mentre la Cistifellea e la Sezione Centrale contengono potenti forze generative. La zona Posteriore ancorava l'intero sistema con il Sole e la Luna."
+    },
+    {
+      "heading": "Il Pantheon Etrusco",
+      "content": "Le {totalInscriptions} iscrizioni rivelano {totalDeities} distinte divinità etrusche, molte delle quali hanno paralleli nella mitologia greca e romana. Tinia, il dio supremo, corrisponde a Zeus e Giove. Nethuns rappresenta Poseidone e Nettuno, mentre Turan si allinea con Afrodite e Venere. Tuttavia, molte divinità rimangono unicamente etrusche, come Thufltha, un potere divino associato al destino e al giudizio che appare spesso come un aspetto di Tinia, e Cilens, un epiteto di Tinia possibilmente relativo alla notte o ai confini. Il posizionamento di ogni divinità sul fegato riflette il loro ruolo nell'ordine cosmico."
+    },
+    {
+      "heading": "Significato Archeologico",
+      "content": "Come uno dei pochi artefatti religiosi etruschi sopravvissuti con iscrizioni estese, il Fegato di Piacenza fornisce una visione preziosa di una civiltà i cui documenti scritti sono in gran parte perduti. L'artefatto dimostra la sofisticazione del pensiero religioso etrusco e il loro approccio sistematico alla divinazione. Serve come ponte tra le pratiche religiose etrusche, greche e romane, mostrando come queste culture si influenzarono a vicenda."
+    },
+    {
+      "heading": "Interpretazione Accademica",
+      "content": "La moderna erudizione si basa sull'analisi epigrafica fondamentale di Adriano Maggiani (1982) e sull'interpretazione cosmologica di Antonio Gottarelli, che organizzano le iscrizioni in gruppi teologici coerenti. Questo quadro rivela come gli Etruschi comprendessero la relazione tra forze divine, fenomeni naturali e affari umani. Il modello del fegato fu probabilmente usato come strumento didattico per apprendisti aruspici, fornendo un riferimento standardizzato per interpretare i fegati sacrificali."
+    },
+    {
+      "heading": "Dettagli Tecnici",
+      "content": "Il modello in bronzo misura approssimativamente 12,6 cm di lunghezza e 7,6 cm di larghezza, rappresentando accuratamente le proporzioni di un fegato di pecora reale. Le iscrizioni sono scritte nell'alfabeto etrusco, derivato dall'alfabeto greco ma adattato per la lingua etrusca. Ogni iscrizione segna una specifica regione anatomica, creando una mappa precisa che sarebbe stata memorizzata dagli aruspici praticanti."
+    }
+  ],
+  "buttonText": "Esplora il fegato"
+}

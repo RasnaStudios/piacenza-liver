@@ -1,9 +1,10 @@
 import { Group, Paper, Text, Title } from "@mantine/core"
-import type { LiverGod } from "../../scene/LiverData"
+import { useTranslation } from "react-i18next"
 import {
   getGodInscriptionData,
   getGodVariationInInscription,
-} from "../../utils/liverUtils"
+  type LiverGod,
+} from "../../scene/LiverData"
 import { InscriptionChip } from "./InscriptionChip"
 
 interface DeityCardProps {
@@ -17,8 +18,26 @@ export function DeityCard({
   onInscriptionClick,
   selectedInscriptionId,
 }: DeityCardProps) {
+  const { t } = useTranslation("common")
+  const { t: tLiverData } = useTranslation("liverData")
   const godData = getGodInscriptionData(god.id)
   const { godInscriptions } = godData
+
+  const localizedDescription = tLiverData(`deities.${god.id}.description`)
+
+  const localizedRomanEquivalent = tLiverData(
+    `deities.${god.id}.romanEquivalent`,
+    {
+      defaultValue: "",
+    },
+  )
+
+  const localizedGreekEquivalent = tLiverData(
+    `deities.${god.id}.greekEquivalent`,
+    {
+      defaultValue: "",
+    },
+  )
 
   // Get the god's form from the selected inscription (if any) or first available inscription
   const godForm = selectedInscriptionId
@@ -62,7 +81,7 @@ export function DeityCard({
           {godForm && (
             <Text>
               <Text component="span" size="lg" mr="xs">
-                as
+                {t("connectors.as")}
               </Text>
               <Text
                 component="span"
@@ -78,10 +97,12 @@ export function DeityCard({
           )}
         </Group>
       </Group>
-      <Text size="xl" fw={400}>
-        {god.description}
-      </Text>
-      {(god.romanEquivalent || god.greekEquivalent) && (
+      {localizedDescription && (
+        <Text size="xl" fw={400}>
+          {localizedDescription}
+        </Text>
+      )}
+      {(localizedRomanEquivalent || localizedGreekEquivalent) && (
         <div>
           <Title
             className="text-bronze"
@@ -92,22 +113,30 @@ export function DeityCard({
             mt="xl"
             mb="sm"
           >
-            Equivalent Gods
+            {tLiverData("deities.equivalentGods")}
           </Title>
           <div className="deity-equivalents">
-            {god.romanEquivalent && (
+            {localizedRomanEquivalent && (
               <span>
-                <span className="deity-equiv-label">Roman:</span>{" "}
-                <span className="deity-equiv-value">{god.romanEquivalent}</span>
+                <span className="deity-equiv-label">
+                  {t("connectors.roman")}{" "}
+                </span>
+                <span className="deity-equiv-value">
+                  {localizedRomanEquivalent}
+                </span>
               </span>
             )}
-            {god.romanEquivalent && god.greekEquivalent && (
+            {localizedRomanEquivalent && localizedGreekEquivalent && (
               <span className="deity-equiv-separator"> • </span>
             )}
-            {god.greekEquivalent && (
+            {localizedGreekEquivalent && (
               <span>
-                <span className="deity-equiv-label">Greek:</span>{" "}
-                <span className="deity-equiv-value">{god.greekEquivalent}</span>
+                <span className="deity-equiv-label">
+                  {t("connectors.greek")}{" "}
+                </span>
+                <span className="deity-equiv-value">
+                  {localizedGreekEquivalent}
+                </span>
               </span>
             )}
           </div>
@@ -126,7 +155,7 @@ export function DeityCard({
             mt="xl"
             mb="sm"
           >
-            Also Appears in
+            {tLiverData("deities.alsoAppearsIn")}
           </Title>
           <Group gap="xs" style={{ display: "flex", flexWrap: "wrap" }}>
             {filteredInscriptions.map((inscription) => (

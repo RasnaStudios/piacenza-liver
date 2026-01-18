@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from "react"
 import { isMobile } from "react-device-detect"
+import { useTranslation } from "react-i18next"
 
 // Safe localStorage access with error handling
 const safeLocalStorage = {
@@ -21,6 +22,7 @@ const safeLocalStorage = {
 }
 
 export function BraveDisclaimer() {
+  const { t } = useTranslation("brave")
   const [showModal, setShowModal] = useState(false)
   const [dontShowAgain, setDontShowAgain] = useState(false)
   const checkboxId = useId()
@@ -136,7 +138,7 @@ export function BraveDisclaimer() {
               color: "#f4e6d3",
             }}
           >
-            Brave Browser Notice
+            {t("title")}
           </h3>
           <p
             style={{
@@ -146,10 +148,7 @@ export function BraveDisclaimer() {
               color: "#c9a876",
             }}
           >
-            For reliable inscription selection, please disable Brave Shields for
-            this site. We don't save any personal data and we don't use any
-            analytics. We cannot detect if your shields are enabled, so if you
-            have already disabled them, please check the checkbox below.
+            {t("description")}
           </p>
 
           <div
@@ -193,7 +192,7 @@ export function BraveDisclaimer() {
                     lineHeight: "1.4",
                   }}
                 >
-                  Don't show this message again
+                  {t("dontShowAgain")}
                 </label>
               </div>
             )}
@@ -215,7 +214,7 @@ export function BraveDisclaimer() {
               boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
             }}
           >
-            Continue
+            {t("continue")}
           </button>
         </div>
       </div>

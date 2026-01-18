@@ -2,6 +2,8 @@ import { MantineProvider } from "@mantine/core"
 import { StrictMode, useState } from "react"
 import { createRoot } from "react-dom/client"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
+import "./i18n/config"
+import { MetaTags } from "./components/MetaTags"
 import Scene from "./Scene"
 import { InscriptionExploration } from "./ui/components/InscriptionExploration"
 import { TitleOverlay } from "./ui/components/TitleOverlay"
@@ -17,6 +19,7 @@ function App() {
   return (
     <MantineProvider>
       <StrictMode>
+        <MetaTags />
         <BrowserRouter>
           <Routes>
             <Route path="/inscriptions" element={<InscriptionExploration />} />

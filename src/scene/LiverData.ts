@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next"
 import * as THREE from "three"
 
 // ================================================================================================
@@ -7,19 +8,14 @@ import * as THREE from "three"
 export interface LiverGod {
   id: string
   name: string
-  romanEquivalent?: string
-  greekEquivalent?: string
-  description?: string
   etruscanScript?: string
   transcription?: string
 }
 
 export interface LiverGroup {
   id: string
-  name: string
   positions: number[]
   color: string
-  description: string
 }
 
 export interface Inscription {
@@ -41,260 +37,174 @@ export interface Inscription {
 //
 // ================================================================================================
 
-// GROUPS: Cosmological zones with descriptions and colors (matching color key)
+// GROUPS: Cosmological zones with colors (names and descriptions are in locale files)
 export const liverGroups = {
   sky: {
     id: "sky",
-    name: "Sky",
     positions: [1, 2, 3, 4],
-    color: "#87CEEB", // Sky-blue
-    description:
-      "The first three houses are occupied by Tinia, the supreme god linked to the Greek god Zeus, followed by Cilens (an epithet of Tinia, possibly related to night or boundaries), and Thufltha (a divine power associated with fate and judgment, appearing as an aspect of Tinia), and Nethuns, in the form of divinity of atmospheric humidity. In fourth place is Uni, wife of Tinia, protectress of cities and births.",
+    color: "#87CEEB",
   },
   water: {
     id: "water",
-    name: "Water",
     positions: [5, 6, 7, 8],
-    color: "#008B8B", // Teal
-    description:
-      "The second four houses are occupied by Tecum, a still-mysterious figure: the sanctuary of Tuoro on Lake Trasimeno is dedicated to this diety. Lusal occupies the next space, followed by Nethuns, originally the diety of fresh-water, only later identified with the Greek god Poseidon. Catha, the sun goddess, occupies the last house.",
+    color: "#008B8B",
   },
   earth: {
     id: "earth",
-    name: "Earth",
     positions: [9, 10, 11, 12],
-    color: "#CD853F", // Brown-ochre
-    description:
-      "The terrestrial realm of vegetation, boundaries, and earth spirits. Governs agricultural cycles, forest boundaries, and land-based divine forces.",
+    color: "#CD853F",
   },
   underworld: {
     id: "underworld",
-    name: "Underworld",
     positions: [13, 14, 15, 16],
-    color: "#808000", // Olive-green
-    description:
-      "The chthonic realm of earth goddesses, protective spirits, and underworld deities. Controls death omens, protection, and liminal passages.",
+    color: "#808000",
   },
   pars_familiaris: {
     id: "pars_familiaris",
-    name: "Pars Familiaris",
     positions: [17, 18, 19, 20, 21, 22, 23, 24],
-    color: "#FF0000", // Bright red
-    description:
-      "The familiar/favorable realm containing household spirits and benevolent deities. Represents favorable omens and domestic divine protection.",
+    color: "#FF0000",
   },
   gall_bladder: {
     id: "gall_bladder",
-    name: "Gall Bladder",
     positions: [25, 26, 27, 28],
-    color: "#FF8C00", // Deep orange
-    description:
-      "The bile reservoir representing concentrated divine energy, generative forces, and seasonal transitions. Contains powerful fertility and war deities.",
+    color: "#FF8C00",
   },
   central_section: {
     id: "central_section",
-    name: "Central Section",
     positions: [29, 30, 37, 38, 39, 40],
-    color: "#FFA500", // Light orange
-    description:
-      "The central power zone containing heroic protectors and generating forces. Represents the heart of divine power and cosmic balance.",
+    color: "#FFA500",
   },
   pars_hostilis: {
     id: "pars_hostilis",
-    name: "Pars Hostilis",
     positions: [31, 32, 33, 34, 35, 36],
-    color: "#9370DB", // Purple-lavender
-    description:
-      "The hostile/unfavorable realm containing border guardians and infernal deities. Represents challenging omens and protective boundaries.",
+    color: "#9370DB",
   },
   back: {
     id: "back",
-    name: "Back",
     positions: [41, 42],
-    color: "#808080", // Gray
-    description:
-      "The foundational cosmic anchors representing the Sun and Moon. These mark the fundamental celestial cycles underlying all divination.",
+    color: "#808080",
   },
 }
 
-// INDIVIDUAL GODS: Complete deity information
+// INDIVIDUAL GODS: Deity information (descriptions and equivalents are in locale files)
 export const liverGods = {
   tinia: {
     id: "tinia",
     name: "Tinia",
-    romanEquivalent: "Jupiter",
-    greekEquivalent: "Zeus",
-    description:
-      "Supreme sky god and father of the gods in the Etruscan pantheon.",
   },
   cilens: {
     id: "cilens",
     name: "Cilens",
-    romanEquivalent: "Nocturnus",
-    description:
-      "Epithet of Tinia, possibly related to night or boundaries. Appears on the liver as 'Tin Cilens'.",
   },
   thufltha: {
     id: "thufltha",
     name: "Thufltha",
-    romanEquivalent: "Fortuna",
-    description:
-      "Divine power associated with fate and judgment, often appearing as an aspect of Tinia representing avenging or punitive forces. Appears on the liver as 'Tin Θufltha'.",
   },
   nethuns: {
     id: "nethuns",
     name: "Nethuns",
-    romanEquivalent: "Neptune",
-    greekEquivalent: "Poseidon",
-    description: "God of fresh water, sea, and atmospheric moisture.",
   },
   uni: {
     id: "uni",
     name: "Uni",
-    romanEquivalent: "Juno",
-    greekEquivalent: "Hera",
-    description:
-      "Wife of Tinia, guardian of marriage, fertility, birth, and cities.",
   },
   mae: {
     id: "mae",
     name: "Mae",
-    romanEquivalent: "Maius",
-    description: "Possibly maternal or generative attribute deity.",
   },
   tecvm: {
     id: "tecvm",
     name: "Tecum",
-    description: "God of the lucomenes, or ruling class.",
   },
   lusal: {
     id: "lusal",
     name: "Lusal",
-    description:
-      "Unidentified water deity, possibly related to light or purification.",
   },
   catha: {
     id: "catha",
     name: "Catha",
-    greekEquivalent: "Leucothea",
-    description: "Goddess of the sun in her solar-nymph form.",
   },
   fufluns: {
     id: "fufluns",
     name: "Fufluns",
-    romanEquivalent: "Bacchus",
-    greekEquivalent: "Dionysus",
-    description: "God of wine, inebriation, and vegetation cycles.",
   },
   selvans: {
     id: "selvans",
     name: "Selvans",
-    romanEquivalent: "Silvanus",
-    description: "God of borders and forest boundaries.",
   },
   tluscva: {
     id: "tluscva",
     name: "Tluscva",
-    description: "Nymphs tied to water cult and sacred offerings.",
   },
   cels: {
     id: "cels",
     name: "Cels",
-    romanEquivalent: "Gea",
-    description: "Goddess of the earth and chthonic forces.",
   },
   culsans: {
     id: "culsans",
     name: "Culsans",
-    romanEquivalent: "Janus",
-    description: "Benevolent protector of doors and thresholds.",
   },
   alpans: {
     id: "alpans",
     name: "Alpans",
-    description: "Protective spirit associated with Culsans.",
   },
   vetis: {
     id: "vetis",
     name: "Vetis",
-    romanEquivalent: "Veiovis",
-    description: 'Underworld "Apollo", chthonic version of the light god.',
   },
   pul: {
     id: "pul",
     name: "Pul",
-    description: "Uncertain deity, possibly related to purification.",
   },
   lasl: {
     id: "lasl",
     name: "Lasl",
-    romanEquivalent: "Lares",
-    description:
-      "Household female spirit, domestic protection. Companion of Turan.",
   },
   maris: {
     id: "maris",
     name: "Maris",
     transcription: "mar",
-    description: "Generative force and generating power of all the gods.",
   },
   laran: {
     id: "laran",
     name: "Laran",
     transcription: "lar",
-    romanEquivalent: "Ares",
-    description:
-      "God of war, representing martial force. Also associated with underworld and boundary maintenance.",
   },
   tvnth: {
     id: "tvnth",
     name: "Tvnth",
-    description: "Uncertain deity in the gall bladder zone.",
   },
   hercle: {
     id: "hercle",
     name: "Hercle",
-    romanEquivalent: "Hercules",
-    description: "Hero-protector, divine strength and protection.",
   },
   metlvmth: {
     id: "metlvmth",
     name: "Metlvmth",
-    description: "Epithet or attribute associated with Lethams.",
   },
   marutl: {
     id: "marutl",
     name: "Marutl",
-    description: "Double epithet associated with Tluscva.",
   },
   letham: {
     id: "letham",
     name: "Letham",
-    description:
-      "Underworld goddess associated with the dead and chthonic forces. Appears on the Liver of Piacenza and in ritual inscriptions.",
   },
   velch: {
     id: "velch",
     name: "Velch",
-    romanEquivalent: "Vulcan",
-    description: "Infernal form of Sethlans (Vulcan), fire deity.",
   },
   satres: {
     id: "satres",
     name: "Satres",
-    romanEquivalent: "Saturn",
-    description: "God of the underworld and temporal cycles.",
   },
   usil: {
     id: "usil",
     name: "Usil",
-    description: "The sun god, representing solar power and illumination.",
   },
   tiur: {
     id: "tiur",
     name: "Tiur",
-    description:
-      "The moon god, representing lunar cycles and night illumination.",
   },
 }
 
@@ -666,3 +576,194 @@ export const liverInscriptions = [
     cameraTarget: new THREE.Vector3(-0.1, -1.0, 1.0),
   },
 ]
+
+// ================================================================================================
+// UTILITY FUNCTIONS
+// ================================================================================================
+
+// Type definition for god entries in inscriptions
+export type GodEntry = string | { id: string; form: string }
+
+// Helper function to extract god ID from god entry
+function getGodId(godEntry: GodEntry): string {
+  return typeof godEntry === "string" ? godEntry : godEntry.id
+}
+
+// Helper function to extract form from god entry
+function getGodForm(godEntry: GodEntry): string | null {
+  return typeof godEntry === "string" ? null : godEntry.form
+}
+
+// Get group for an inscription by checking which group's positions array contains the inscription ID
+export function getInscriptionGroup(inscriptionId: number) {
+  for (const group of Object.values(liverGroups)) {
+    if (group.positions.includes(inscriptionId)) {
+      return group
+    }
+  }
+  return null
+}
+
+// Get all inscriptions where a specific god appears
+export function getGodInscriptions(godId: string) {
+  return liverInscriptions.filter((inscription) =>
+    inscription.gods.some((god) => getGodId(god) === godId),
+  )
+}
+
+// Get all unique forms/variations of a god's name from inscriptions
+export function getGodNameVariations(godId: string): string[] {
+  const inscriptions = getGodInscriptions(godId)
+  const variations = new Set<string>()
+
+  inscriptions.forEach((inscription) => {
+    inscription.gods.forEach((god) => {
+      if (getGodId(god) === godId) {
+        const form = getGodForm(god)
+        if (form) {
+          variations.add(form)
+        } else {
+          // Fallback to extracting from Etruscan text for old format
+          const etruscanParts = inscription.etruscanText.split(" / ")
+          const godIndex = inscription.gods.findIndex(
+            (g) => getGodId(g) === godId,
+          )
+          if (godIndex !== -1 && etruscanParts[godIndex]) {
+            variations.add(etruscanParts[godIndex].trim())
+          }
+        }
+      }
+    })
+  })
+
+  return Array.from(variations)
+}
+
+// Get the specific name variation for a god in a particular inscription
+export function getGodVariationInInscription(
+  godId: string,
+  inscriptionId: number,
+): string | null {
+  const inscription = liverInscriptions.find(
+    (insc) => insc.id === inscriptionId,
+  )
+
+  if (!inscription) return null
+
+  // Find the god entry in the inscription
+  const godEntry = inscription.gods.find((god) => getGodId(god) === godId)
+  if (!godEntry) return null
+
+  // If it has a form field, use that
+  const form = getGodForm(godEntry)
+  if (form) {
+    return form
+  }
+
+  // Fallback to extracting from Etruscan text for old format
+  const etruscanParts = inscription.etruscanText.split(" / ")
+  const godIndex = inscription.gods.findIndex((god) => getGodId(god) === godId)
+
+  if (godIndex !== -1 && etruscanParts[godIndex]) {
+    return etruscanParts[godIndex].trim()
+  }
+
+  return null
+}
+
+// Get inscription data with group information for a god
+export function getGodInscriptionData(godId: string) {
+  const inscriptions = getGodInscriptions(godId)
+  const nameVariations = getGodNameVariations(godId)
+
+  // Create combined inscription entries with format "X with [OtherGod] as [Variation]"
+  const combinedEntries = inscriptions.map((inscription) => {
+    const otherGods = inscription.gods.filter((god) => getGodId(god) !== godId)
+    const godVariation =
+      getGodVariationInInscription(godId, inscription.id) ||
+      nameVariations.find((variation) =>
+        inscription.etruscanText
+          .toLowerCase()
+          .includes(variation.toLowerCase()),
+      ) ||
+      (liverGods as Record<string, LiverGod>)[godId]?.name ||
+      godId
+
+    if (otherGods.length > 0) {
+      const otherGodNames = otherGods
+        .map(
+          (god) =>
+            (liverGods as Record<string, LiverGod>)[getGodId(god)]?.name ||
+            getGodId(god),
+        )
+        .join(", ")
+      return `${inscription.id} with ${otherGodNames} as ${godVariation.toUpperCase()}`
+    } else {
+      return `${inscription.id} as ${godVariation.toUpperCase()}`
+    }
+  })
+
+  // Create godInscriptions with group color and other god data
+  const godInscriptions = inscriptions.map((inscription) => {
+    const group = getInscriptionGroup(inscription.id)
+    const otherGods = inscription.gods.filter((god) => getGodId(god) !== godId)
+
+    return {
+      id: inscription.id,
+      groupColor: group?.color || "#8B6541",
+      otherGods: otherGods.map((god) => getGodId(god)),
+    }
+  })
+
+  return {
+    inscriptions,
+    nameVariations,
+    combinedEntries,
+    godInscriptions,
+  }
+}
+
+// Get display names for gods in an inscription (used by HoverTooltip, PanelHeader, etc.)
+export function getGodsDisplayNames(gods: GodEntry[]): string {
+  return gods
+    .map((god) => {
+      const godId = getGodId(god)
+      const godData = (liverGods as Record<string, LiverGod>)[godId]
+      return godData?.name || godId
+    })
+    .join(" + ")
+}
+
+// ================================================================================================
+// LOCALIZATION UTILITIES
+// ================================================================================================
+
+export function useLocalizedGroup(group: LiverGroup) {
+  const { t } = useTranslation("liverData")
+  return Object.assign({}, group, {
+    name: t(`groups.${group.id}.name`),
+    description: t(`groups.${group.id}.description`),
+  }) as LiverGroup & { name: string; description: string }
+}
+
+export function useLocalizedGod(god: LiverGod) {
+  const { t } = useTranslation("liverData")
+  return Object.assign({}, god, {
+    description: t(`deities.${god.id}.description`),
+  }) as LiverGod & { description: string }
+}
+
+export function useLocalizedGroups(groups: Record<string, LiverGroup>) {
+  const { t } = useTranslation("liverData")
+  const localized: Record<
+    string,
+    LiverGroup & { name: string; description: string }
+  > = {}
+  for (const [key, group] of Object.entries(groups)) {
+    localized[key] = Object.assign({}, group, {
+      name: t(`groups.${group.id}.name`),
+      description: t(`groups.${group.id}.description`),
+    }) as LiverGroup & { name: string; description: string }
+  }
+  return localized
+}

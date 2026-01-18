@@ -11,8 +11,7 @@ import atlasMeta from "../assets/segmentation_atlas.json"
 import atlasPngUrl from "../assets/segmentation_atlas.png"
 import { SceneConfig } from "../config/SceneConfig"
 import type { AtlasMeta, AtlasTweak } from "../types"
-import { getInscriptionGroup } from "../utils/liverUtils"
-import { liverInscriptions } from "./LiverData"
+import { getInscriptionGroup, liverInscriptions } from "./LiverData"
 
 export class LiverModel {
   private scene: THREE.Scene

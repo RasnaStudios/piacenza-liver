@@ -1,12 +1,13 @@
 import { Group, Paper, Text, Title } from "@mantine/core"
-import type { Inscription } from "../../scene/LiverData"
-import { getInscriptionGroup } from "../../utils/liverUtils"
+import { useTranslation } from "react-i18next"
+import { getInscriptionGroup, type Inscription } from "../../scene/LiverData"
 
 interface GroupSectionProps {
   selectedInscription: Inscription | null
 }
 
 export function GroupSection({ selectedInscription }: GroupSectionProps) {
+  const { t } = useTranslation("liverData")
   if (!selectedInscription) return null
 
   const group = getInscriptionGroup(selectedInscription.id)
@@ -14,6 +15,9 @@ export function GroupSection({ selectedInscription }: GroupSectionProps) {
   if (!group) {
     return null
   }
+
+  const localizedName = t(`groups.${group.id}.name`)
+  const localizedDescription = t(`groups.${group.id}.description`)
 
   return (
     <Paper
@@ -36,12 +40,12 @@ export function GroupSection({ selectedInscription }: GroupSectionProps) {
           }}
         />
         <Title order={3} className="text-bronze">
-          {group.name}
+          {localizedName}
         </Title>
       </Group>
 
       <Text size="xl" fw={400}>
-        {group.description}
+        {localizedDescription}
       </Text>
     </Paper>
   )

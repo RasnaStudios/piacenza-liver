@@ -1,23 +1,24 @@
-import { Box, Stack, Transition } from "@mantine/core"
+import { Box, Transition } from "@mantine/core"
 import { useState } from "react"
-import { useOrientation } from "../../hooks/useOrientation"
-import { ControlsModal } from "./ControlsModal"
-import { InteractionButton } from "./InteractionButton"
+import { isMobile } from "react-device-detect"
+import { ActionButtons } from "./ActionButtons"
 
 interface ActionMenuProps {
   onAboutClick: () => void
   onExploreClick: () => void
   isVisible: boolean
+  hideExploreInscriptions?: boolean
+  hideControls?: boolean
 }
 
 export function ActionMenu({
   onAboutClick,
   onExploreClick,
   isVisible,
+  hideExploreInscriptions = false,
+  hideControls = false,
 }: ActionMenuProps) {
-  const isPortrait = useOrientation()
   const [isOpen, setIsOpen] = useState(false)
-  const [controlsOpened, setControlsOpened] = useState(false)
 
   if (!isVisible) return null
 
@@ -35,27 +36,18 @@ export function ActionMenu({
     setIsOpen(false)
   }
 
-  const handleControlsClick = () => {
-    setControlsOpened(true)
-    setIsOpen(false)
-  }
-
-  if (!isPortrait) {
-    return null
-  }
-
   return (
     <Box
       style={{
         position: "fixed",
-        bottom: "20px",
+        top: "20px",
         right: "20px",
         zIndex: 1000,
       }}
     >
       <Transition
         mounted={isOpen}
-        transition="slide-up"
+        transition="slide-down"
         duration={300}
         timingFunction="ease-out"
       >
@@ -64,47 +56,28 @@ export function ActionMenu({
             style={{
               ...styles,
               position: "absolute",
-              bottom: "60px",
+              top: "60px",
               right: 0,
               background: "rgba(0, 0, 0, 0.85)",
               backdropFilter: "blur(10px)",
               borderRadius: "12px",
               padding: "12px",
-              minWidth: "200px",
+              minWidth: isMobile ? "200px" : "350px",
               boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
+              border: "1px solid rgba(97, 80, 53, 0.41)",
             }}
           >
-            <Stack gap="xs" align="flex-start">
-              <InteractionButton
-                onClick={handleAboutClick}
-                variant="text"
-                size="md"
-              >
-                About the Liver
-              </InteractionButton>
-              <InteractionButton
-                onClick={handleExploreClick}
-                variant="text"
-                size="md"
-              >
-                Explore inscriptions
-              </InteractionButton>
-              <InteractionButton
-                onClick={handleControlsClick}
-                variant="text"
-                size="md"
-              >
-                Controls
-              </InteractionButton>
-            </Stack>
+            <ActionButtons
+              onAboutClick={handleAboutClick}
+              onExploreClick={handleExploreClick}
+              showLanguageSwitcher={true}
+              disableAnimation={true}
+              hideExploreInscriptions={hideExploreInscriptions}
+              hideControls={hideControls}
+            />
           </Box>
         )}
       </Transition>
-
-      <ControlsModal
-        opened={controlsOpened}
-        onClose={() => setControlsOpened(false)}
-      />
 
       <button
         type="button"

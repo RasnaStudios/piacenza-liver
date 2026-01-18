@@ -2,6 +2,7 @@ import { Box, Drawer, Paper, Stack, Title } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 import { useDrag } from "@use-gesture/react"
 import { useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useOrientation } from "../hooks/useOrientation"
 import {
   type Inscription,
@@ -30,6 +31,7 @@ export function DeityPanel({
   onAboutClick,
   onExploreClick,
 }: DeityPanelProps) {
+  const { t } = useTranslation("common")
   const isPortrait = useOrientation()
   const isSmallScreen = useMediaQuery("(max-width: 768px)")
   const [panelHeight, setPanelHeight] = useState(33) // Start at 33vh
@@ -201,7 +203,7 @@ export function DeityPanel({
                   fw={400}
                   className="text-bronze"
                 >
-                  Involved deities
+                  {t("labels.involvedDeities")}
                 </Title>
 
                 <Stack gap="md">
