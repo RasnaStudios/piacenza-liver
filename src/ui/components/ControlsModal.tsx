@@ -1,5 +1,6 @@
 import { Box, Divider, Group, Modal, Stack, Text, Title } from "@mantine/core"
 import { IconX } from "@tabler/icons-react"
+import { isMobile } from "react-device-detect"
 
 interface ControlsModalProps {
   opened: boolean
@@ -8,6 +9,31 @@ interface ControlsModalProps {
 
 export function ControlsModal({ opened, onClose }: ControlsModalProps) {
   const getControlsData = () => {
+    if (isMobile) {
+      return [
+        {
+          command: "Tap",
+          description: "Select inscriptions",
+        },
+        {
+          command: "Double tap",
+          description: "Reset to default view",
+        },
+        {
+          command: "Single finger drag",
+          description: "Rotate the camera view",
+        },
+        {
+          command: "Pinch",
+          description: "Zoom in and out",
+        },
+        {
+          command: "Three finger drag",
+          description: "Move the model position",
+        },
+      ]
+    }
+
     return [
       {
         command: "Double-click",
