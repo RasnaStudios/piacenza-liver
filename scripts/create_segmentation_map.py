@@ -35,7 +35,7 @@ def smooth_mask(mask_array, blur_radius=2, dilate_iterations=1):
     return (mask_float * 255).astype(np.uint8)
 
 def parse_annotations(xml_file):
-    """Parse the CVAT annotations XML file and extract polylines."""
+    """Parse the CVAT annotations XML file and extract polylines and polygons."""
     tree = ET.parse(xml_file)
     root = tree.getroot()
     
@@ -45,6 +45,23 @@ def parse_annotations(xml_file):
     for polyline in root.findall('.//polyline'):
         label = int(polyline.get('label'))
         points_str = polyline.get('points')
+        
+        # Parse points: "x1,y1;x2,y2;x3,y3;..."
+        points = []
+        for point_str in points_str.split(';'):
+            if point_str.strip():
+                x, y = map(float, point_str.split(','))
+                points.append((x, y))
+        
+        polylines.append({
+            'label': label,
+            'points': points
+        })
+    
+    # Find all polygon elements
+    for polygon in root.findall('.//polygon'):
+        label = int(polygon.get('label'))
+        points_str = polygon.get('points')
         
         # Parse points: "x1,y1;x2,y2;x3,y3;..."
         points = []
