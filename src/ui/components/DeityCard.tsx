@@ -78,15 +78,7 @@ export function DeityCard({
           )}
         </Group>
       </Group>
-      <Text
-        className="font-primary"
-        size="xl"
-        fw={400}
-        style={{
-          fontFamily:
-            "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
-        }}
-      >
+      <Text size="xl" fw={400}>
         {god.description}
       </Text>
       {(god.romanEquivalent || god.greekEquivalent) && (

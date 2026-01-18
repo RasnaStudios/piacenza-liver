@@ -12,27 +12,10 @@
   top: 24px;
   left: 24px;
   z-index: 1000;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: rgba(0, 0, 0, 0.6);
-  border: 2px solid rgba(201, 168, 118, 0.4);
-  color: #c9a876;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(8px);
 }
 
 .back-button-container:hover {
-  border-color: #c9a876;
-  background: rgba(201, 168, 118, 0.1);
   transform: translateX(-4px);
-  box-shadow:
-    0 4px 12px rgba(0, 0, 0, 0.6),
-    0 0 20px rgba(201, 168, 118, 0.2);
 }
 
 .back-button-container:active {
@@ -46,11 +29,9 @@
 }
 
 .exploration-title {
-  font-family: "Cinzel", serif;
   font-size: clamp(32px, 4vw, 48px);
   font-weight: 300;
   letter-spacing: 4px;
-  color: #c9a876;
   margin-bottom: 16px;
   text-shadow:
     0 0 20px rgba(201, 168, 118, 0.3),
@@ -66,30 +47,9 @@
 
 .download-yaml-button {
   padding: 12px 24px;
-  background: transparent;
-  border: 2px solid var(--border-primary);
-  border-radius: 6px;
-  color: var(--bronze-text);
-  font-family: "Cinzel", serif;
   font-size: clamp(13px, 1.1vw, 15px);
-  font-weight: 400;
   letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-shadow: var(--shadow-secondary);
   margin-top: 16px;
-}
-
-.download-yaml-button:hover {
-  border-color: var(--border-accent);
-  color: var(--accent-gold);
-  box-shadow: var(--shadow-primary);
-  transform: translateY(-2px);
-}
-
-.download-yaml-button:active {
-  transform: translateY(0);
 }
 
 .exploration-content {
@@ -101,11 +61,9 @@
 }
 
 .exploration-section-title {
-  font-family: "Cinzel", serif;
   font-size: clamp(28px, 3.5vw, 42px);
   font-weight: 300;
   letter-spacing: 4px;
-  color: #c9a876;
   margin-top: 100px;
   margin-bottom: 48px;
   text-align: center;
@@ -154,13 +112,11 @@
 }
 
 .group-title {
-  font-family: "Cinzel", serif;
   font-size: clamp(24px, 2.5vw, 32px);
   font-weight: 400;
-  color: #c9a876;
   margin-bottom: 8px;
   letter-spacing: 2px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+  text-shadow: var(--text-shadow-medium);
 }
 
 .group-meta {
@@ -202,7 +158,7 @@
   border: 2px solid;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: var(--transition-smooth);
   backdrop-filter: blur(4px);
   display: flex;
   align-items: flex-start;
@@ -320,30 +276,9 @@
 
 .view-3d-button {
   padding: 14px 28px;
-  background: transparent;
-  border: 2px solid var(--border-primary);
-  border-radius: 6px;
-  color: var(--bronze-text);
-  font-family: "Cinzel", serif;
   font-size: clamp(13px, 1.1vw, 15px);
-  font-weight: 400;
   letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-shadow: var(--shadow-secondary);
   margin-top: 8px;
-}
-
-.view-3d-button:hover {
-  border-color: var(--border-accent);
-  color: var(--accent-gold);
-  box-shadow: var(--shadow-primary);
-  transform: translateY(-2px);
-}
-
-.view-3d-button:active {
-  transform: translateY(0);
 }
 
 .deity-inscription-tooltip {
@@ -377,30 +312,9 @@
 
 .view-3d-button-compact {
   padding: 10px 20px;
-  background: transparent;
-  border: 2px solid var(--border-primary);
-  border-radius: 6px;
-  color: var(--bronze-text);
-  font-family: "Cinzel", serif;
   font-size: clamp(12px, 1vw, 14px);
-  font-weight: 400;
   letter-spacing: 1.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  text-shadow: var(--shadow-secondary);
   white-space: nowrap;
-}
-
-.view-3d-button-compact:hover {
-  border-color: var(--border-accent);
-  color: var(--accent-gold);
-  box-shadow: var(--shadow-primary);
-  transform: translateY(-2px);
-}
-
-.view-3d-button-compact:active {
-  transform: translateY(0);
 }
 
 @media (max-width: 768px) {
@@ -412,8 +326,6 @@
   .back-button-container {
     top: 16px;
     left: 16px;
-    width: 40px;
-    height: 40px;
   }
 
   .group-section {
@@ -522,8 +434,6 @@
   .back-button-container {
     top: 12px;
     left: 12px;
-    width: 36px;
-    height: 36px;
   }
 
   .inscriptions-grid {

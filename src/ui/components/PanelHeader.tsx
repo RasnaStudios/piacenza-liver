@@ -5,13 +5,11 @@ import { NumberBadge } from "./NumberBadge"
 
 interface PanelHeaderProps {
   selectedInscription: Inscription | null
-  deityNames: string
   onClose: () => void
 }
 
 export function PanelHeader({
   selectedInscription,
-  deityNames,
   onClose,
 }: PanelHeaderProps) {
   if (!selectedInscription) return null
@@ -44,7 +42,7 @@ export function PanelHeader({
             letterSpacing: "0.2px",
           }}
         >
-          {deityNames}
+          {selectedInscription.transcription}
         </Title>
       </div>
 

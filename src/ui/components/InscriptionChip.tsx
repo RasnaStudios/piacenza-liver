@@ -80,8 +80,6 @@ export function InscriptionChip({
               style={{
                 color: groupColor,
                 textShadow: `0 0 8px ${groupColor}40, 0 1px 2px rgba(0, 0, 0, 0.8)`,
-                fontFamily:
-                  "'Inter', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
               }}
             >
               {associatedGods.map((god) => god.name).join(", ")}
