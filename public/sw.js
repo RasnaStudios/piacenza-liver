@@ -1,4 +1,5 @@
-const CACHE_VERSION = "v1"
+// CACHE_VERSION is overwritten at build time by scripts/update-sw-cache-version.mjs
+const CACHE_VERSION = "dev"
 const CACHE_NAME = `piacenza-liver-${CACHE_VERSION}`
 
 const CACHEABLE_PATTERNS = [
