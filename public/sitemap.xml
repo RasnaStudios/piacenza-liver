@@ -7,9 +7,17 @@
   <!-- Main application page -->
   <url>
     <loc>https://liver.rasna.dev/</loc>
-    <lastmod>2026-01-07</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>yearly</changefreq>
     <priority>1.0</priority>
+  </url>
+
+  <!-- Inscriptions listing -->
+  <url>
+    <loc>https://liver.rasna.dev/inscriptions</loc>
+    <lastmod>2026-01-18</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.9</priority>
   </url>
   
 </urlset>
