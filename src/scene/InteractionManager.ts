@@ -8,9 +8,10 @@ import type { LiverModel } from "./LiverModel"
 
 export interface InteractionCallbacks {
   onInscriptionClick: (payload: InscriptionClickPayload) => void
-  onBackgroundClick: () => void
+  onBackgroundClick: (clickedOnLiver?: boolean) => void
   onMarkerHover: (section: HoveredSection | null) => void
   onZoomDetected: () => void
+  onModelRotate: () => void
   onMouseMove: (
     position: { x: number; y: number },
     isOverCanvas: boolean,
@@ -54,6 +55,9 @@ export class InteractionManager {
   private initialCameraDistance: number | null = null
   private hasZoomed = false
   private isIntroAnimation = false
+  private interactionEnabled = true
+  private hoverEnabled = true
+  private clickEnabled = true
 
   private boundHandleMouseMove: (event: MouseEvent) => void
   private boundHandleClick: (event: MouseEvent) => void
@@ -133,6 +137,7 @@ export class InteractionManager {
   }
 
   private handleMouseDown(event: MouseEvent) {
+    if (!this.interactionEnabled) return
     this.mouseDownPosition = { x: event.clientX, y: event.clientY }
     this.mouseMovedDuringClick = false
     this.lastMousePosition = { x: event.clientX, y: event.clientY }
@@ -146,6 +151,7 @@ export class InteractionManager {
   }
 
   private handleMouseUp(_event: MouseEvent) {
+    if (!this.interactionEnabled) return
     if (this.isRotatingModel) {
       this.isRotatingModel = false
       this.controls.enabled = true // Re-enable camera controls
@@ -153,6 +159,7 @@ export class InteractionManager {
   }
 
   private handleKeyDown(event: KeyboardEvent) {
+    if (!this.interactionEnabled) return
     let modifierChanged = false
 
     if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
@@ -207,6 +214,7 @@ export class InteractionManager {
   }
 
   private handleKeyUp(event: KeyboardEvent) {
+    if (!this.interactionEnabled) return
     let modifierChanged = false
 
     if (event.code === "ShiftLeft" || event.code === "ShiftRight") {
@@ -230,6 +238,7 @@ export class InteractionManager {
   }
 
   private handleMouseMove(event: MouseEvent) {
+    if (!this.interactionEnabled) return
     // Check if mouse is over the canvas element
     const canvas = this.renderer.domElement
     const canvasRect = canvas.getBoundingClientRect()
@@ -260,6 +269,7 @@ export class InteractionManager {
         liverObject.rotation.x += deltaY * rotationSpeed
       }
 
+      this.callbacks.onModelRotate()
       this.lastMousePosition = { x: event.clientX, y: event.clientY }
       return // Skip normal hover detection when rotating model
     }
@@ -275,14 +285,18 @@ export class InteractionManager {
     }
 
     // Use throttled raycast for hover detection
-    this.throttledRaycast(event.clientX, event.clientY)
+    if (this.hoverEnabled) {
+      this.throttledRaycast(event.clientX, event.clientY)
+    }
   }
 
   private handleControlsStart() {
+    if (!this.interactionEnabled) return
     this.isPanningOrRotating = true
   }
 
   private handleControlsEnd() {
+    if (!this.interactionEnabled) return
     this.isPanningOrRotating = false
     this.checkForZoom()
     // Notify that view has changed (rotation/pan)
@@ -290,10 +304,12 @@ export class InteractionManager {
   }
 
   private handleWheel(_event: WheelEvent) {
+    if (!this.interactionEnabled) return
     this.checkForZoom()
   }
 
   private checkForZoom() {
+    if (!this.interactionEnabled) return
     if (this.isIntroAnimation) return
 
     const camera = this.camera as THREE.PerspectiveCamera
@@ -320,6 +336,7 @@ export class InteractionManager {
   }
 
   private handleClick(event: MouseEvent) {
+    if (!this.clickEnabled) return
     if (this.isPanningOrRotating) {
       return
     }
@@ -337,6 +354,16 @@ export class InteractionManager {
   }
 
   private handleTouchStart(event: TouchEvent) {
+    if (!this.interactionEnabled) {
+      if (!this.clickEnabled) return
+      if (event.touches.length !== 1) return
+      const touch = event.touches[0]
+      this.touchStartPosition = { x: touch.clientX, y: touch.clientY }
+      this.touchMovedDuringTouch = false
+      this.isMultiTouch = false
+      this.isThreeFingerTouch = false
+      return
+    }
     if (event.touches.length === 3) {
       // 3-finger touch for model rotation
       this.isThreeFingerTouch = true
@@ -370,6 +397,19 @@ export class InteractionManager {
   }
 
   private handleTouchMove(event: TouchEvent) {
+    if (!this.interactionEnabled) {
+      if (!this.clickEnabled) return
+      if (this.touchStartPosition && event.touches.length === 1) {
+        const touch = event.touches[0]
+        const deltaX = Math.abs(touch.clientX - this.touchStartPosition.x)
+        const deltaY = Math.abs(touch.clientY - this.touchStartPosition.y)
+        const moveThreshold = 10
+        if (deltaX > moveThreshold || deltaY > moveThreshold) {
+          this.touchMovedDuringTouch = true
+        }
+      }
+      return
+    }
     if (event.touches.length === 3 && this.isThreeFingerTouch) {
       // 3-finger model rotation
       const touch = event.touches[0] // Use first touch as reference
@@ -415,6 +455,20 @@ export class InteractionManager {
   }
 
   private handleTouchEnd(event: TouchEvent) {
+    if (!this.interactionEnabled) {
+      if (!this.clickEnabled) return
+      if (this.touchMovedDuringTouch || !this.touchStartPosition) {
+        this.touchStartPosition = null
+        this.touchMovedDuringTouch = false
+        return
+      }
+      const touch = this.touchStartPosition
+      this.touchStartPosition = null
+      this.touchMovedDuringTouch = false
+      event.preventDefault()
+      this.processClick(touch.x, touch.y)
+      return
+    }
     // Reset 3-finger touch state
     if (this.isThreeFingerTouch) {
       this.isThreeFingerTouch = false
@@ -516,7 +570,7 @@ export class InteractionManager {
         modelMatrix: cameraData.modelMatrix,
       })
     } else {
-      this.callbacks.onBackgroundClick()
+      this.callbacks.onBackgroundClick(!!intersection)
     }
   }
 
@@ -534,6 +588,34 @@ export class InteractionManager {
 
   public getIsIntroAnimation(): boolean {
     return this.isIntroAnimation
+  }
+
+  public setInteractionEnabled(enabled: boolean) {
+    this.interactionEnabled = enabled
+    if (!enabled) {
+      this.isPanningOrRotating = false
+      this.isRotatingModel = false
+      this.isShiftPressed = false
+      this.isMetaPressed = false
+      this.mouseDownPosition = null
+      this.mouseMovedDuringClick = false
+      this.renderer.domElement.style.cursor = "default"
+      this.liverModel.setHoveredInscription(0)
+      this.callbacks.onMarkerHover(null)
+    }
+  }
+
+  public setHoverEnabled(enabled: boolean) {
+    this.hoverEnabled = enabled
+    if (!enabled) {
+      this.renderer.domElement.style.cursor = "default"
+      this.liverModel.setHoveredInscription(0)
+      this.callbacks.onMarkerHover(null)
+    }
+  }
+
+  public setClickEnabled(enabled: boolean) {
+    this.clickEnabled = enabled
   }
 
   public resetZoomState() {
@@ -587,6 +669,7 @@ export class InteractionManager {
   }
 
   private performHoverRaycast(clientX: number, clientY: number) {
+    if (!this.hoverEnabled || !this.interactionEnabled) return
     if (!this.liverModel.getMaskTexture()) return
 
     const intersection = this.performRaycast(clientX, clientY)

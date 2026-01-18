@@ -1,69 +1,51 @@
-import { Anchor, Box, Button, Divider, Stack, Text } from "@mantine/core"
-import { useEffect, useState } from "react"
+import { Anchor, Box, Divider, Stack, Text } from "@mantine/core"
+import { useState } from "react"
 import { isMobile } from "react-device-detect"
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa"
 import { SiArtstation } from "react-icons/si"
+import { AppConfig } from "../../config/AppConfig"
 import { ControlsModal } from "./ControlsModal"
+import { InteractionButton } from "./InteractionButton"
 
-export function PanelLegend() {
-  const [platform, setPlatform] = useState("mac")
+interface PanelLegendProps {
+  onAboutClick?: () => void
+  onExploreClick?: () => void
+}
+
+export function PanelLegend({
+  onAboutClick,
+  onExploreClick,
+}: PanelLegendProps) {
   const [controlsOpened, setControlsOpened] = useState(false)
-
-  useEffect(() => {
-    // Detect platform
-    const userAgent = navigator.userAgent.toLowerCase()
-    if (userAgent.includes("mac")) {
-      setPlatform("mac")
-    } else if (userAgent.includes("win")) {
-      setPlatform("windows")
-    } else {
-      setPlatform("linux")
-    }
-  }, [])
 
   return (
     <Box p="md">
       <Stack gap="md">
-        {/* Controls Section */}
-        {!isMobile ? (
-          <Box style={{ textAlign: "center" }}>
-            <Button
-              variant="filled"
+        {/* Action Buttons Section - Landscape mode only */}
+        {!isMobile && onAboutClick && onExploreClick && (
+          <Stack gap="xs">
+            <InteractionButton onClick={onAboutClick} variant="text" size="md">
+              About the Liver
+            </InteractionButton>
+            <InteractionButton
+              onClick={onExploreClick}
+              variant="text"
               size="md"
-              onClick={() => setControlsOpened(true)}
-              className="text-primary fancy-button"
-              style={{
-                backgroundColor: "var(--primary-bg)",
-                border: "1px solid var(--accent-bronze)",
-                borderRadius: "24px",
-                fontFamily: "var(--font-display)",
-                fontSize: "16px",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                padding: "12px 24px",
-                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-                transition: "all 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--accent-gold)"
-                e.currentTarget.style.color = "var(--primary-bg)"
-                e.currentTarget.style.transform = "translateY(-2px)"
-                e.currentTarget.style.boxShadow =
-                  "0 6px 16px rgba(0, 0, 0, 0.4)"
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = "var(--accent-bronze)"
-                e.currentTarget.style.color = "var(--primary-text)"
-                e.currentTarget.style.transform = "translateY(0)"
-                e.currentTarget.style.boxShadow =
-                  "0 4px 12px rgba(0, 0, 0, 0.3)"
-              }}
             >
-              🎮 Controls
-            </Button>
-          </Box>
-        ) : (
+              Explore inscriptions
+            </InteractionButton>
+            <InteractionButton
+              onClick={() => setControlsOpened(true)}
+              variant="text"
+              size="md"
+            >
+              Controls
+            </InteractionButton>
+          </Stack>
+        )}
+
+        {/* Mobile: Reset instruction */}
+        {isMobile && (
           <Text
             size="lg"
             className="text-tertiary"
@@ -102,14 +84,14 @@ export function PanelLegend() {
                   fontWeight: 600,
                 }}
               >
-                Lorenzo Andraghetti
+                {AppConfig.creator.name}
               </Text>
               <Text
                 size="lg"
                 className="text-tertiary"
                 style={{ fontStyle: "italic", marginBottom: "12px" }}
               >
-                Developer
+                {AppConfig.creator.role}
               </Text>
               <Box
                 style={{
@@ -119,14 +101,14 @@ export function PanelLegend() {
                 }}
               >
                 <Anchor
-                  href="https://linkedin.com/in/andraghetti"
+                  href={AppConfig.creator.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <FaLinkedin size={30} color="var(--bronze-text)" />
                 </Anchor>
                 <Anchor
-                  href="https://github.com/andraghetti"
+                  href={AppConfig.creator.github}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -145,7 +127,7 @@ export function PanelLegend() {
                   fontWeight: 600,
                 }}
               >
-                Luca Tampieri
+                {AppConfig.tampieri.name}
               </Text>
               <Text
                 size="lg"
@@ -153,7 +135,7 @@ export function PanelLegend() {
                 mb="12px"
                 style={{ fontStyle: "italic" }}
               >
-                3D Artist
+                {AppConfig.tampieri.role}
               </Text>
               <Box
                 style={{
@@ -163,21 +145,21 @@ export function PanelLegend() {
                 }}
               >
                 <Anchor
-                  href="https://linkedin.com/in/luca-tampieri"
+                  href={AppConfig.tampieri.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <FaLinkedin size={30} color="var(--bronze-text)" />
                 </Anchor>
                 <Anchor
-                  href="https://www.artstation.com/lukedt"
+                  href={AppConfig.tampieri.artstation}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <SiArtstation size={30} color="var(--bronze-text)" />
                 </Anchor>
                 <Anchor
-                  href="https://www.instagram.com/heythereluke/"
+                  href={AppConfig.tampieri.instagram}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -216,12 +198,10 @@ export function PanelLegend() {
         </Stack>
       </Stack>
 
-      {/* Desktop Controls Modal */}
       {!isMobile && (
         <ControlsModal
           opened={controlsOpened}
           onClose={() => setControlsOpened(false)}
-          platform={platform}
         />
       )}
     </Box>

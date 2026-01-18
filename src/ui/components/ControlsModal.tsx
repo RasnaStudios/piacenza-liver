@@ -1,20 +1,13 @@
-import { Box, Button, Modal, Stack, Text, Title } from "@mantine/core"
+import { Box, Divider, Group, Modal, Stack, Text, Title } from "@mantine/core"
+import { IconX } from "@tabler/icons-react"
 
 interface ControlsModalProps {
   opened: boolean
   onClose: () => void
-  platform: string
 }
 
-export function ControlsModal({
-  opened,
-  onClose,
-  platform,
-}: ControlsModalProps) {
+export function ControlsModal({ opened, onClose }: ControlsModalProps) {
   const getControlsData = () => {
-    const modifier = platform === "mac" ? "⌘" : "Alt"
-    const shift = "⇧"
-
     return [
       {
         command: "Double-click",
@@ -25,7 +18,7 @@ export function ControlsModal({
         description: "Rotate the 3D model around",
       },
       {
-        command: `${modifier} + Mouse`,
+        command: "Alt + Mouse",
         description: "Pan the camera view",
       },
       {
@@ -33,7 +26,7 @@ export function ControlsModal({
         description: "Zoom in and out",
       },
       {
-        command: `${shift} + Drag`,
+        command: "⇧ + Drag",
         description: "Move the model position",
       },
     ]
@@ -61,85 +54,30 @@ export function ControlsModal({
         },
       }}
     >
-      <Box
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "20px 24px 16px 24px",
-          borderBottom: "1px solid var(--border-secondary)",
-        }}
-      >
-        <Title
-          order={3}
-          className="text-bronze"
-          style={{
-            fontFamily: "var(--font-display)",
-            fontWeight: 600,
-          }}
-        >
-          🎮 Controls
+      <Group align="center" justify="space-between" p="lg" pb="md">
+        <Title order={3} className="text-bronze font-display">
+          Controls
         </Title>
-        <Button
-          variant="subtle"
-          size="sm"
+        <Box
+          className="close-button-container"
           onClick={onClose}
-          style={{
-            color: "var(--bronze-text)",
-            backgroundColor: "transparent",
-            border: "none",
-            padding: "4px",
-            minWidth: "auto",
-            width: "32px",
-            height: "32px",
-            borderRadius: "50%",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor =
-              "var(--bg-overlay-secondary)"
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent"
-          }}
+          aria-label="Close controls"
+          title="Close controls"
         >
-          ✕
-        </Button>
-      </Box>
-      <Box style={{ padding: "24px" }}>
+          <IconX size={24} stroke={1.5} />
+        </Box>
+      </Group>
+      <Divider color="var(--border-secondary)" />
+      <Box p="lg">
         <Stack gap="xs">
           {controls.map((control) => (
             <Box key={control.command}>
-              <Box
-                className="bg-overlay-secondary"
-                p="xs"
-                style={{
-                  borderRadius: "8px",
-                  border: "1px solid var(--border-secondary)",
-                  transition: "all 0.2s ease",
-                }}
-              >
+              <Box className="bg-overlay-secondary border-secondary" p="xs">
                 <Stack gap="xs">
-                  <Text
-                    size="lg"
-                    className="text-accent-gold"
-                    style={{
-                      fontFamily: "var(--font-display)",
-                      fontWeight: 600,
-                      letterSpacing: "0.5px",
-                      textTransform: "uppercase",
-                    }}
-                  >
+                  <Text size="lg" className="text-bronze font-display">
                     {control.command}
                   </Text>
-                  <Text
-                    size="md"
-                    className="text-secondary"
-                    style={{
-                      fontFamily: "var(--font-primary)",
-                      lineHeight: 1.5,
-                      fontStyle: "italic",
-                    }}
-                  >
+                  <Text size="md" className="text-secondary font-primary">
                     {control.description}
                   </Text>
                 </Stack>

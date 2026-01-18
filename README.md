@@ -10,6 +10,20 @@ An interactive 3D visualization of the ancient Etruscan Piacenza Liver (Fegato d
 - **Authentic Etruscan Script**: All 42 inscriptions displayed in original Etruscan Unicode characters (𐌀-𐌚)
 - **Scholarly Annotations**: Comprehensive deity information, divination meanings, and archaeological notes
 - **Cosmological Grouping**: Organized by the six structural groups (A-G) of the liver's layout
+- **Direct Linking**: Share specific inscriptions, regions, or deities with URL hash navigation
+
+## 🔗 Direct Linking
+
+You can link directly to specific content using URL hashes:
+
+- **Inscription by ID**: `/inscriptions#1` - Scrolls to and highlights inscription #1
+- **Region/Zone**: `/inscriptions#sky` or `/inscriptions#water` - Jumps to a specific cosmological region
+- **Deity**: `/inscriptions#tinia` or `/inscriptions#uni` - Navigates to a specific deity section
+
+Examples:
+- `https://liver.rasna.dev/inscriptions#5` - View inscription 5
+- `https://liver.rasna.dev/inscriptions#sky` - Explore the Sky region
+- `https://liver.rasna.dev/inscriptions#tinia` - See all inscriptions mentioning Tinia
 
 ## 🌐 Access the Website
 

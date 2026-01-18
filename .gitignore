@@ -37,3 +37,7 @@ venv/
 *.sln
 *.sw?
 .cursor/
+
+# caches
+.pnpm-store
+node_modules

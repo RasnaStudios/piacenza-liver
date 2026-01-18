@@ -1,7 +1,0 @@
-# URL Canonicalization - Redirect all variations to preferred URL
-# Redirect www to non-www
-https://www.liver.rasna.dev/* https://liver.rasna.dev/:splat 301!
-http://www.liver.rasna.dev/* https://liver.rasna.dev/:splat 301!
-# Redirect http to https
-http://liver.rasna.dev/* https://liver.rasna.dev/:splat 301!
-
