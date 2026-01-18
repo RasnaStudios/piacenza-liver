@@ -1,4 +1,5 @@
 import { Box, Transition } from "@mantine/core"
+import { useMediaQuery } from "@mantine/hooks"
 import { useState } from "react"
 import { isMobile } from "react-device-detect"
 import { FiMenu, FiX } from "react-icons/fi"
@@ -20,7 +21,8 @@ export function ActionMenu({
   hideControls = false,
 }: ActionMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const useBottomMenu = isMobile
+  const isNarrow = useMediaQuery("(max-width: 1100px)")
+  const useBottomMenu = isMobile || isNarrow
 
   if (!isVisible) return null
 
@@ -38,8 +40,16 @@ export function ActionMenu({
     setIsOpen(false)
   }
 
+  const containerStyle = useBottomMenu
+    ? {
+        top: "auto",
+        bottom: isMobile ? "16px" : "20px",
+        right: isMobile ? "16px" : "20px",
+      }
+    : undefined
+
   return (
-    <Box className="action-menu-container">
+    <Box className="action-menu-container" style={containerStyle}>
       <Transition
         mounted={isOpen}
         transition={useBottomMenu ? "slide-up" : "slide-down"}
@@ -51,8 +61,8 @@ export function ActionMenu({
             style={{
               ...styles,
               position: "absolute",
-              top: useBottomMenu ? undefined : "60px",
-              bottom: useBottomMenu ? "60px" : undefined,
+              top: useBottomMenu ? undefined : "200px",
+              bottom: useBottomMenu ? "68px" : undefined, // open upward above the button on mobile/tablet
               right: 0,
               background: "rgba(0, 0, 0, 0.85)",
               backdropFilter: "blur(10px)",

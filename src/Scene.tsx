@@ -111,6 +111,8 @@ function PiacenzaLiverScene({
   const clickDebounceDelay = 300 // 300ms debounce
   const introTimeoutRef = useRef<number | null>(null)
   const initialAnimationTriggeredRef = useRef<boolean>(false)
+  const initialCameraDistanceRef = useRef<number | null>(null)
+  const initialCameraTargetRef = useRef<THREE.Vector3 | null>(null)
 
   const getIntroPose = useCallback(() => {
     const aspect = window.innerWidth / window.innerHeight
@@ -337,13 +339,36 @@ function PiacenzaLiverScene({
 
   const handleViewChange = useCallback(() => {
     if (interactionMode === InteractionMode.About) return
+
+    const camera = cameraRef.current
+    const controls = controlsRef.current
+    let isZoomOrPan = true
+
+    if (camera && controls) {
+      if (initialCameraDistanceRef.current == null) {
+        initialCameraDistanceRef.current = camera.position.length()
+      }
+      if (!initialCameraTargetRef.current) {
+        initialCameraTargetRef.current = controls.target.clone()
+      }
+      const baselineDist =
+        initialCameraDistanceRef.current ?? camera.position.length()
+      const baselineTarget =
+        initialCameraTargetRef.current ?? controls.target.clone()
+      const distDelta = Math.abs(camera.position.length() - baselineDist)
+      const targetDelta = controls.target.distanceTo(baselineTarget)
+      isZoomOrPan = distDelta > 0.05 || targetDelta > 0.05
+    }
+
     setHasViewChanged(true)
-    setTitleVisible(false)
+    if (isZoomOrPan) {
+      setTitleVisible(false)
+    }
     // Update debug info when view changes (throttled by requestAnimationFrame)
     if (import.meta.env.VITE_DEBUG_ENABLED === "true") {
       requestAnimationFrame(updateDebugInfo)
     }
-  }, [interactionMode, setTitleVisible, updateDebugInfo])
+  }, [interactionMode, setHasViewChanged, setTitleVisible, updateDebugInfo])
   const getScaledCameraPosition = useCallback(
     (position: THREE.Vector3, target: THREE.Vector3) => {
       const desiredDistance = SceneConfig.inscriptions.cameraDistance
