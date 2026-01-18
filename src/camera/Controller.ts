@@ -9,11 +9,11 @@ const isPortraitOrientation = () => {
   return window.innerHeight > window.innerWidth
 }
 
-// Helper function to get orientation-specific camera animation offsets
-const getCameraAnimationOffsets = () => {
+// Helper function to get the final camera position based on orientation
+const getFinalCameraPosition = () => {
   return isPortraitOrientation()
-    ? SceneConfig.animation.camera.portrait
-    : SceneConfig.animation.camera.landscape
+    ? SceneConfig.camera.final.portrait.clone()
+    : SceneConfig.camera.final.landscape.clone()
 }
 
 export class CameraController {
@@ -33,14 +33,9 @@ export class CameraController {
     this.controls = controls
 
     // Track user's manual positions
-    // Calculate intro end position and target using config
-    const cameraOffsets = getCameraAnimationOffsets()
-    const endPos = SceneConfig.camera.initial
-      .clone()
-      .add(cameraOffsets.positionOffset)
+    // Use final camera position from config
+    const endPos = getFinalCameraPosition()
     const endTarget = new THREE.Vector3(0, 0, 0)
-      .clone()
-      .add(cameraOffsets.targetOffset)
     this.lastManualPosition = endPos
     this.lastManualTarget = endTarget
 
@@ -203,13 +198,12 @@ export class CameraController {
     this.stopAnimation()
 
     const startPos = this.camera.position.clone()
-    const cameraOffsets = getCameraAnimationOffsets()
-    const endPos = startPos.clone().add(cameraOffsets.positionOffset)
+    const endPos = getFinalCameraPosition()
     const endTarget = finalTarget?.clone() || new THREE.Vector3(0, 0, 0)
 
     // Start with the camera looking at the origin, then smoothly transition to the liver center
     const startTarget = new THREE.Vector3(0, 0, 0)
-    const duration = SceneConfig.animation.camera.duration
+    const duration = SceneConfig.camera.animationDuration
 
     this.isAnimating = true
     const tween = gsap.to(
@@ -263,10 +257,7 @@ export class CameraController {
     const startPosition = this.camera.position.clone()
     const startTarget = this.controls.target.clone()
 
-    const cameraOffsets = getCameraAnimationOffsets()
-    const endPosition = SceneConfig.camera.initial
-      .clone()
-      .add(cameraOffsets.positionOffset)
+    const endPosition = getFinalCameraPosition()
     const endTarget =
       liverModel?.getLiverCenter().clone() || new THREE.Vector3(0, 0, 0)
 

@@ -89,6 +89,38 @@ export function DeityCard({
       >
         {god.description}
       </Text>
+      {(god.romanEquivalent || god.greekEquivalent) && (
+        <div>
+          <Title
+            className="text-bronze"
+            order={2}
+            size="md"
+            fw={600}
+            tt="uppercase"
+            mt="xl"
+            mb="sm"
+          >
+            Equivalent Gods
+          </Title>
+          <div className="deity-equivalents">
+            {god.romanEquivalent && (
+              <span>
+                <span className="deity-equiv-label">Roman:</span>{" "}
+                <span className="deity-equiv-value">{god.romanEquivalent}</span>
+              </span>
+            )}
+            {god.romanEquivalent && god.greekEquivalent && (
+              <span className="deity-equiv-separator"> • </span>
+            )}
+            {god.greekEquivalent && (
+              <span>
+                <span className="deity-equiv-label">Greek:</span>{" "}
+                <span className="deity-equiv-value">{god.greekEquivalent}</span>
+              </span>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Also appears in inscriptions */}
       {filteredInscriptions.length > 0 && (
@@ -99,7 +131,8 @@ export function DeityCard({
             size="md"
             fw={600}
             tt="uppercase"
-            my="sm"
+            mt="xl"
+            mb="sm"
           >
             Also Appears in
           </Title>

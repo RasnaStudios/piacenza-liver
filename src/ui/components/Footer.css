@@ -1,0 +1,109 @@
+.site-footer {
+  margin-top: 80px;
+  padding: 40px 24px 60px;
+  border-top: 1px solid rgba(201, 168, 118, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-credit {
+  font-family: var(--font-primary);
+  font-size: clamp(14px, 1.2vw, 17px);
+  color: rgba(244, 230, 211, 0.8);
+  margin-bottom: 12px;
+}
+
+.footer-name {
+  font-family: "Cinzel", serif;
+  font-weight: 500;
+  color: #c9a876;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.footer-creator-links {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.footer-creator-links a {
+  color: var(--bronze-text);
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.footer-creator-links a svg {
+  fill: currentColor;
+}
+
+.footer-creator-links a:hover {
+  color: var(--accent-gold);
+  opacity: 1;
+}
+
+.footer-feedback {
+  margin-top: 8px;
+}
+
+.footer-feedback-text {
+  font-family: var(--font-primary);
+  font-size: clamp(14px, 1.2vw, 16px);
+  color: rgba(244, 230, 211, 0.7);
+}
+
+.footer-write-me {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 8px 18px;
+  background: transparent;
+  border: 2px solid var(--border-primary);
+  border-radius: 6px;
+  color: var(--bronze-text);
+  font-family: "Cinzel", serif;
+  font-size: clamp(12px, 1.1vw, 14px);
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-shadow: var(--shadow-secondary);
+}
+
+.footer-write-me:hover {
+  border-color: var(--border-accent);
+  color: var(--accent-gold);
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-2px);
+}
+
+.footer-write-me:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .site-footer {
+    margin-top: 60px;
+    padding: 32px 16px 48px;
+  }
+
+  .footer-feedback-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .footer-write-me {
+    margin-left: 0;
+    margin-top: 0;
+  }
+}

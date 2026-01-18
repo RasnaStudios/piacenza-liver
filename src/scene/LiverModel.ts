@@ -123,26 +123,13 @@ export class LiverModel {
     return new THREE.Color(0xffc107)
   }
 
+  private loadedAssets = 0
+  private totalAssets = 7
+
   constructor(scene: THREE.Scene, onProgress?: (progress: number) => void) {
     this.scene = scene
     this.onProgress = onProgress
-    // Centralized loading manager for accurate progress reporting
     this.loadingManager = new THREE.LoadingManager()
-    this.loadingManager.onStart = () => {
-      this.reportProgress(0)
-    }
-    this.loadingManager.onProgress = (_url, itemsLoaded, itemsTotal) => {
-      // Unified progress across ALL resources (gltf, bin, textures, segmentation)
-      const percent =
-        itemsTotal > 0
-          ? Math.min(95, Math.round((itemsLoaded / itemsTotal) * 95))
-          : 0
-      this.reportProgress(percent)
-    }
-    this.loadingManager.onLoad = () => {
-      // Manager finished loading all tracked resources
-      if (this.lastProgress < 95) this.reportProgress(95)
-    }
 
     if (!this.checkWebGLSupport()) {
       console.error("WebGL not supported on this device")
@@ -241,17 +228,50 @@ export class LiverModel {
     }
   }
 
+  private markAssetLoaded() {
+    this.loadedAssets++
+    const percent = Math.min(
+      95,
+      Math.round((this.loadedAssets / this.totalAssets) * 95),
+    )
+    this.reportProgress(percent)
+  }
+
+  private async loadTextureWithProgress(
+    loader: THREE.TextureLoader,
+    url: string,
+  ): Promise<THREE.Texture> {
+    const texture = await loader.loadAsync(url)
+    this.markAssetLoaded()
+    return texture
+  }
+
+  private async loadFontWithProgress(): Promise<void> {
+    try {
+      const font = new FontFace("Cinzel", "url(/fonts/cinzel-400.woff2)")
+      await font.load()
+      document.fonts.add(font)
+    } catch {
+      console.warn("Failed to preload Cinzel font, will use fallback")
+    }
+    this.markAssetLoaded()
+  }
+
   private async loadLiverModel() {
     try {
-      // Load PBR textures available in /src/assets/liver-model
+      this.reportProgress(0)
       const textureLoader = new THREE.TextureLoader(this.loadingManager)
-      const [baseColor, normalTex, ormTex, maskTex, atlasTex] =
+
+      const [[baseColor, normalTex, ormTex, maskTex, atlasTex]] =
         await Promise.all([
-          textureLoader.loadAsync(baseColorUrl),
-          textureLoader.loadAsync(normalUrl),
-          textureLoader.loadAsync(ormUrl),
-          textureLoader.loadAsync(maskUrl),
-          textureLoader.loadAsync(atlasPngUrl),
+          Promise.all([
+            this.loadTextureWithProgress(textureLoader, baseColorUrl),
+            this.loadTextureWithProgress(textureLoader, normalUrl),
+            this.loadTextureWithProgress(textureLoader, ormUrl),
+            this.loadTextureWithProgress(textureLoader, maskUrl),
+            this.loadTextureWithProgress(textureLoader, atlasPngUrl),
+          ]),
+          this.loadFontWithProgress(),
         ])
 
       // Configure textures
@@ -387,6 +407,7 @@ export class LiverModel {
       // Load OBJ geometry
       const objLoader = new OBJLoader(this.loadingManager)
       const object = await objLoader.loadAsync(objUrl)
+      this.markAssetLoaded()
 
       object.traverse((child) => {
         if ((child as THREE.Object3D & { isMesh?: boolean }).isMesh) {

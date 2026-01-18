@@ -30,6 +30,17 @@
   box-sizing: border-box;
 }
 
+/* Custom text selection color */
+::selection {
+  background-color: rgba(201, 168, 118, 0.3);
+  color: #e6d4b8;
+}
+
+::-moz-selection {
+  background-color: rgba(201, 168, 118, 0.3);
+  color: #e6d4b8;
+}
+
 body,
 html {
   margin: 0;
@@ -38,11 +49,137 @@ html {
   height: 100%;
   overflow: hidden;
   color: #c9a876;
+  scroll-behavior: smooth;
+  background: #000000;
+  background-color: #000000;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color 0.15s ease-in-out;
 }
 
-/* Basic app styling */
+body::-webkit-scrollbar,
+html::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+body::-webkit-scrollbar-track,
+html::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+body::-webkit-scrollbar-thumb,
+html::-webkit-scrollbar-thumb {
+  background: rgba(196, 168, 118, 0.4);
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border: none;
+  opacity: 0;
+  transition:
+    opacity 0.15s ease-in-out,
+    background 0.15s ease-in-out;
+}
+
+body::-webkit-scrollbar-corner,
+html::-webkit-scrollbar-corner {
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+body:hover,
+html:hover {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2);
+}
+
+body:hover::-webkit-scrollbar,
+html:hover::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+body:hover::-webkit-scrollbar-track,
+html:hover::-webkit-scrollbar-track {
+  opacity: 1;
+}
+
+body:hover::-webkit-scrollbar-thumb,
+html:hover::-webkit-scrollbar-thumb {
+  opacity: 1;
+}
+
+body:hover::-webkit-scrollbar-thumb:hover,
+html:hover::-webkit-scrollbar-thumb:hover {
+  background: rgba(196, 168, 118, 0.6);
+}
+
+body:hover::-webkit-scrollbar-corner,
+html:hover::-webkit-scrollbar-corner {
+  opacity: 1;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000000;
+  background-color: #000000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+[data-mantine-color-scheme] {
+  background: transparent;
+  background-color: transparent;
+}
+
+[data-mantine-color-scheme] * {
+  background: transparent;
+  background-color: transparent;
+}
+
+.app-container {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  color: #c9a876;
+  position: relative;
+  overflow: hidden;
+}
+
+.split-layout {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.scene-side {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100vh;
+  z-index: 10;
+  clip-path: inset(0 0 0 0);
+}
+
+.scene-side.interaction-enabled {
+  width: 100%;
+  transition: width 1.5s ease-in-out;
+}
+
 .piacenza-liver-app {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   margin: 0;
   padding: 0;
@@ -65,6 +202,11 @@ html {
   overflow: hidden;
   background: #000000; /* Pure black museum background */
   transition: transform 0.3s ease-out;
+}
+
+.three-container.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* Desktop: move canvas left to make room for right panel */
@@ -119,7 +261,8 @@ html {
   body,
   html {
     font-size: 14px;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .piacenza-liver-app {
@@ -374,6 +517,48 @@ html {
   padding: 0;
 }
 
+.close-button-container {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(201, 168, 118, 0.4);
+  color: #c9a876;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+}
+
+.close-button-container:hover {
+  border-color: #c9a876;
+  background: rgba(201, 168, 118, 0.1);
+  transform: scale(1.1);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(201, 168, 118, 0.2);
+}
+
+.close-button-container:active {
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .close-button-container {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .close-button-container {
+    width: 36px;
+    height: 36px;
+  }
+}
+
 /* Scrollbar Styles */
 .scrollbar {
   scrollbar-width: thin;
@@ -435,6 +620,61 @@ html {
 
 .scrollbar:hover::-webkit-scrollbar-corner {
   opacity: 1;
+}
+
+/* Deity Equivalents Styles */
+.deity-equivalents {
+  font-family: var(--font-primary);
+  font-size: clamp(16px, 1.3vw, 19px);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .deity-equivalents {
+    font-size: 16px;
+  }
+
+  .deity-equiv-label {
+    font-size: 14px;
+  }
+
+  .deity-equiv-value {
+    font-size: 16px;
+  }
+}
+
+.deity-equiv-label {
+  font-size: clamp(14px, 1.2vw, 16px);
+  color: rgba(201, 168, 118, 0.6);
+  font-weight: 500;
+  font-style: italic;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.deity-equiv-value {
+  color: #c9a876;
+  font-weight: 600;
+  font-size: clamp(16px, 1.4vw, 20px);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.deity-equiv-separator {
+  color: rgba(201, 168, 118, 0.4);
+  margin: 0 8px;
+}
+
+/* Shared Description Text Style */
+.description-text,
+.exploration-subtitle {
+  font-family: var(--font-primary);
+  color: var(--secondary-text);
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.6;
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.9),
+    0 1px 3px rgba(0, 0, 0, 0.8),
+    0 0 15px rgba(0, 0, 0, 0.5);
 }
 
 /* Button Hover Effects */

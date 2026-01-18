@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface LoadingScreenProps {
   progress: number
   isLoading: boolean
+  showLoadingUI: boolean
 }
 
 interface EtruscanParticle {
@@ -18,7 +19,11 @@ interface EtruscanParticle {
   id: number
 }
 
-export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
+export function LoadingScreen({
+  progress,
+  isLoading,
+  showLoadingUI,
+}: LoadingScreenProps) {
   const [isDissolving, setIsDissolving] = useState(false)
   const [shouldRender, setShouldRender] = useState(true)
   const [loadingText, setLoadingText] = useState(
@@ -27,17 +32,19 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
   const [etruscanParticles, setEtruscanParticles] = useState<
     EtruscanParticle[]
   >([])
+  const hasShownRef = useRef(false)
+  if (showLoadingUI && isLoading) hasShownRef.current = true
 
   useEffect(() => {
-    if ((progress >= 100 || !isLoading) && !isDissolving) {
-      // Start dissolve animation when loading completes (100%) or isLoading becomes false
+    if (
+      (progress >= 100 || !isLoading) &&
+      !isDissolving &&
+      hasShownRef.current
+    ) {
       setIsDissolving(true)
-
-      // Remove from DOM after dissolve animation completes
       const timer = setTimeout(() => {
         setShouldRender(false)
-      }, 2800) // extended to 2.8s to avoid snapping
-
+      }, 2800)
       return () => clearTimeout(timer)
     }
   }, [progress, isLoading, isDissolving])
@@ -58,7 +65,6 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
     "𐌏",
     "𐌐",
     "𐌑",
-    "𐌒",
     "𐌓",
     "𐌔",
     "𐌕",
@@ -66,7 +72,6 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
     "𐌗",
     "𐌛",
     "𐌜",
-    "𐌝",
   ]
 
   useEffect(() => {
@@ -180,7 +185,11 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
     }
   }, [])
 
-  if (!shouldRender) {
+  const shouldShow =
+    (showLoadingUI && isLoading) ||
+    (isDissolving && hasShownRef.current) ||
+    (hasShownRef.current && (progress >= 100 || !isLoading))
+  if (!shouldRender || !shouldShow) {
     return null
   }
 
@@ -263,13 +272,13 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
       top: `${particle.y}%`,
       fontSize: `${scaledSize}px`,
       fontWeight: "200" as const,
-      color: `rgba(212, 175, 55, ${Math.max(0.08, Math.min(finalOpacity, 0.28))})`,
-      textShadow: `0 0 ${Math.max(1, glowIntensity * 0.6)}px rgba(212, 175, 55, 0.22)`,
+      color: `rgba(201, 168, 118, ${Math.max(0.08, Math.min(finalOpacity, 0.28))})`,
+      textShadow: `0 0 ${Math.max(1, glowIntensity * 0.6)}px rgba(201, 168, 118, 0.22)`,
       ...animationStyles,
       pointerEvents: "none" as const,
       fontFamily: "Times, serif",
       transform: "translate(-50%, -50%)",
-      filter: `drop-shadow(0 0 2px rgba(212, 175, 55, 0.12))`,
+      filter: `drop-shadow(0 0 2px rgba(201, 168, 118, 0.12))`,
       zIndex: 1,
       "--max-opacity": finalOpacity,
       "--move-x": `${particle.vx * 200}px`,
@@ -289,7 +298,7 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
   }
 
   const subtitleStyles = {
-    color: "rgba(244, 230, 211, 0.7)",
+    color: "var(--bronze-text)",
     fontSize: "clamp(1rem, 3vw, 1.5rem)",
     margin: "0 0 60px 0",
     fontStyle: "italic",
@@ -310,7 +319,7 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
   const progressBarStyles = {
     height: 2,
     width: "90%",
-    background: "rgba(139, 101, 65, 0.3)",
+    background: "rgba(139, 101, 65, 0.35)",
     overflow: "hidden",
     position: "relative" as const,
     borderRadius: "1px",
@@ -320,16 +329,16 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
   const progressFillStyles = {
     height: "100%",
     background:
-      "linear-gradient(90deg, transparent, #d4af37, #f0d67c, #d4af37, transparent)",
+      "linear-gradient(90deg, transparent, #c9a876, #e6d4b8, #c9a876, transparent)",
     width: `${progress}%`,
     transition: "width 0.3s ease-out",
     animation: "shimmer 2s linear infinite",
-    boxShadow: "0 0 20px rgba(212, 175, 55, 0.6)",
+    boxShadow: "0 0 20px rgba(201, 168, 118, 0.5)",
     borderRadius: "1px",
   }
 
   const percentageStyles = {
-    color: "#d4af37",
+    color: "#c9a876",
     fontSize: "clamp(2rem, 6vw, 3rem)",
     fontWeight: 700,
     marginTop: 24,
@@ -342,7 +351,7 @@ export function LoadingScreen({ progress, isLoading }: LoadingScreenProps) {
   }
 
   const loadingTextStyles = {
-    color: "rgba(244, 230, 211, 0.6)",
+    color: "var(--tertiary-text)",
     fontSize: "clamp(0.9rem, 2.5vw, 1.2rem)",
     fontStyle: "italic",
     marginTop: 24,

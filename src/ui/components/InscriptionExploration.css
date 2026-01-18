@@ -1,0 +1,603 @@
+.inscription-exploration {
+  width: 100%;
+  min-height: 100vh;
+  background: #000000;
+  padding: 120px 80px 80px;
+  color: #c9a876;
+  padding-bottom: 200px;
+}
+
+.back-button-container {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  z-index: 1000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(201, 168, 118, 0.4);
+  color: #c9a876;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(8px);
+}
+
+.back-button-container:hover {
+  border-color: #c9a876;
+  background: rgba(201, 168, 118, 0.1);
+  transform: translateX(-4px);
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(201, 168, 118, 0.2);
+}
+
+.back-button-container:active {
+  transform: translateX(-2px);
+}
+
+.exploration-header {
+  max-width: 1200px;
+  margin: 0 auto 60px;
+  text-align: center;
+}
+
+.exploration-title {
+  font-family: "Cinzel", serif;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: #c9a876;
+  margin-bottom: 16px;
+  text-shadow:
+    0 0 20px rgba(201, 168, 118, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.exploration-subtitle {
+  font-size: clamp(16px, 1.2vw, 18px);
+  color: rgba(244, 230, 211, 0.7);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  margin-bottom: 24px;
+}
+
+.download-yaml-button {
+  padding: 12px 24px;
+  background: transparent;
+  border: 2px solid var(--border-primary);
+  border-radius: 6px;
+  color: var(--bronze-text);
+  font-family: "Cinzel", serif;
+  font-size: clamp(13px, 1.1vw, 15px);
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-shadow: var(--shadow-secondary);
+  margin-top: 16px;
+}
+
+.download-yaml-button:hover {
+  border-color: var(--border-accent);
+  color: var(--accent-gold);
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-2px);
+}
+
+.download-yaml-button:active {
+  transform: translateY(0);
+}
+
+.exploration-content {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+
+.exploration-section-title {
+  font-family: "Cinzel", serif;
+  font-size: clamp(28px, 3.5vw, 42px);
+  font-weight: 300;
+  letter-spacing: 4px;
+  color: #c9a876;
+  margin-top: 100px;
+  margin-bottom: 48px;
+  text-align: center;
+  text-transform: uppercase;
+  position: relative;
+  padding-bottom: 24px;
+  text-shadow:
+    0 0 20px rgba(201, 168, 118, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.exploration-section-title::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--accent-bronze),
+    transparent
+  );
+}
+
+.group-section {
+  margin-bottom: 80px;
+}
+
+.group-header {
+  padding: 24px 32px;
+  border-left: 4px solid;
+  margin-bottom: 32px;
+  background: rgba(201, 168, 118, 0.03);
+  border-radius: 4px;
+}
+
+.deity-inscription-count {
+  font-family: var(--font-primary);
+  font-size: clamp(16px, 1.3vw, 18px);
+  color: rgba(201, 168, 118, 0.7);
+  font-weight: 600;
+  font-style: italic;
+}
+
+.group-title {
+  font-family: "Cinzel", serif;
+  font-size: clamp(24px, 2.5vw, 32px);
+  font-weight: 400;
+  color: #c9a876;
+  margin-bottom: 8px;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.group-meta {
+  font-family: var(--font-primary);
+  font-size: clamp(16px, 1.2vw, 16px);
+  color: rgba(201, 168, 118, 0.7);
+  font-style: italic;
+  margin-top: 4px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.inscription-exploration .group-description,
+.inscription-exploration .description-text {
+  font-size: clamp(16px, 1.2vw, 17px);
+  color: rgba(244, 230, 211, 0.85);
+  line-height: 1.6;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.inscriptions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 280px));
+  gap: 12px;
+  min-width: 0;
+}
+
+@media (max-width: 768px) {
+  .inscriptions-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+.inscription-card {
+  padding: 8px;
+  border: 2px solid;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+.inscription-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(201, 168, 118, 0.1);
+}
+
+.inscription-card.selected {
+  box-shadow:
+    0 0 30px rgba(201, 168, 118, 0.2),
+    inset 0 0 20px rgba(201, 168, 118, 0.05);
+}
+
+.inscription-etruscan {
+  font-family: var(--font-etruscan);
+  font-size: clamp(16px, 1.4vw, 22px);
+  color: #d4af37;
+  font-weight: 600;
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.9),
+    0 1px 3px rgba(0, 0, 0, 0.8);
+  line-height: 1.1;
+  margin: 0;
+  text-align: left;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.inscription-transcription {
+  font-family: var(--font-primary);
+  font-size: clamp(16px, 1.4vw, 20px);
+  color: rgba(201, 168, 118, 1);
+  font-style: italic;
+  text-transform: lowercase;
+  letter-spacing: 0.3px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  margin: 0;
+  line-height: 1.1;
+  text-align: left;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.inscription-gods,
+.inscription-gods.mantine-Text-root {
+  font-family: var(--font-primary);
+  font-size: clamp(16px, 1.2vw, 17px);
+  color: var(--secondary-text);
+  font-weight: 400;
+  margin: 0;
+  padding-top: 8px;
+  line-height: 1.3;
+  text-align: left;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.inscription-details-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 32px auto 0;
+  padding: 0;
+  display: block;
+}
+
+.inscription-details-panel {
+  width: 100%;
+  padding: 32px;
+  border: 2px solid;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  animation: panelExpand 0.3s ease-out;
+}
+
+@keyframes panelExpand {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.details-text {
+  font-family: var(--font-primary);
+  font-size: clamp(16px, 1.2vw, 16px);
+  color: var(--secondary-text);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.deities-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.view-3d-button {
+  padding: 14px 28px;
+  background: transparent;
+  border: 2px solid var(--border-primary);
+  border-radius: 6px;
+  color: var(--bronze-text);
+  font-family: "Cinzel", serif;
+  font-size: clamp(13px, 1.1vw, 15px);
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-shadow: var(--shadow-secondary);
+  margin-top: 8px;
+}
+
+.view-3d-button:hover {
+  border-color: var(--border-accent);
+  color: var(--accent-gold);
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-2px);
+}
+
+.view-3d-button:active {
+  transform: translateY(0);
+}
+
+.deity-inscription-tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.95);
+  border: 2px solid var(--border-primary);
+  border-radius: 6px;
+  z-index: 100;
+  animation: tooltipFadeIn 0.2s ease-out;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(201, 168, 118, 0.2);
+  pointer-events: auto;
+}
+
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.view-3d-button-compact {
+  padding: 10px 20px;
+  background: transparent;
+  border: 2px solid var(--border-primary);
+  border-radius: 6px;
+  color: var(--bronze-text);
+  font-family: "Cinzel", serif;
+  font-size: clamp(12px, 1vw, 14px);
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-shadow: var(--shadow-secondary);
+  white-space: nowrap;
+}
+
+.view-3d-button-compact:hover {
+  border-color: var(--border-accent);
+  color: var(--accent-gold);
+  box-shadow: var(--shadow-primary);
+  transform: translateY(-2px);
+}
+
+.view-3d-button-compact:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+  .inscription-exploration {
+    padding: 80px 20px 60px;
+    padding-bottom: 200px;
+  }
+
+  .back-button-container {
+    top: 16px;
+    left: 16px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .group-section {
+    margin-bottom: 60px;
+  }
+
+  .inscriptions-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .group-header {
+    padding: 20px 16px;
+  }
+
+  .inscription-card {
+    padding: 12px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .inscription-card .mantine-Group-root {
+    margin: 0;
+    padding: 0;
+    gap: 10px;
+  }
+
+  .inscription-card .mantine-Stack-root {
+    gap: 4px;
+  }
+
+  .inscription-card > .mantine-Group-root > .mantine-Box-root:first-child {
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+
+  .inscription-card .mantine-Badge-root {
+    min-width: 28px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .inscription-etruscan {
+    font-size: 18px;
+    line-height: 1.2;
+  }
+
+  .inscription-transcription {
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .inscription-gods {
+    font-size: 16px;
+    padding-top: 6px;
+    line-height: 1.4;
+  }
+
+  .exploration-subtitle {
+    font-size: 16px;
+  }
+
+  .inscription-exploration .group-description,
+  .inscription-exploration .description-text {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .deity-inscription-count {
+    font-size: 16px;
+  }
+
+  .details-text {
+    font-size: 16px;
+  }
+
+  .inscription-details-container {
+    padding: 0 20px;
+  }
+
+  .inscription-details-panel {
+    padding: 20px;
+  }
+
+  .deities-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .deity-inscription-tooltip {
+    left: 0;
+    right: 0;
+    transform: none;
+    margin-left: 8px;
+    margin-right: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .inscription-exploration {
+    padding: 60px 12px 40px;
+    padding-bottom: 160px;
+  }
+
+  .back-button-container {
+    top: 12px;
+    left: 12px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .inscriptions-grid {
+    gap: 8px;
+  }
+
+  .inscription-card {
+    padding: 10px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .inscription-card .mantine-Group-root {
+    margin: 0;
+    padding: 0;
+    gap: 8px;
+  }
+
+  .inscription-card .mantine-Stack-root {
+    gap: 3px;
+  }
+
+  .inscription-card > .mantine-Group-root > .mantine-Box-root:first-child {
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .inscription-card .mantine-Badge-root {
+    min-width: 24px;
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  .inscription-etruscan {
+    font-size: 16px;
+    line-height: 1.2;
+  }
+
+  .inscription-transcription {
+    font-size: 16px;
+    line-height: 1.3;
+  }
+
+  .inscription-gods {
+    font-size: 16px;
+    padding-top: 4px;
+    line-height: 1.4;
+  }
+
+  .exploration-subtitle {
+    font-size: 16px;
+  }
+
+  .inscription-exploration .group-description,
+  .inscription-exploration .description-text {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  .deity-inscription-count {
+    font-size: 16px;
+  }
+
+  .details-text {
+    font-size: 16px;
+  }
+
+  .group-header {
+    padding: 16px 12px;
+  }
+
+  .view-3d-button-compact {
+    font-size: 11px;
+    padding: 8px 16px;
+  }
+}

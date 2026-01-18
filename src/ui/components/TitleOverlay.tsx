@@ -1,31 +1,10 @@
 import { Box, Text, Transition } from "@mantine/core"
-import { useEffect, useState } from "react"
 
 interface TitleOverlayProps {
-  hasInteracted: boolean
+  isVisible: boolean
 }
 
-export function TitleOverlay({ hasInteracted }: TitleOverlayProps) {
-  const [isVisible, setIsVisible] = useState(true) // Show immediately
-  const [shouldRender, setShouldRender] = useState(true) // Show by default
-
-  useEffect(() => {
-    if (hasInteracted && shouldRender) {
-      // User interacted - fade out
-      setIsVisible(false)
-      // Remove from DOM after animation completes
-      setTimeout(() => setShouldRender(false), 800)
-    } else if (!hasInteracted && !shouldRender) {
-      // User reset - bring back the title
-      setShouldRender(true)
-      setIsVisible(true)
-    }
-  }, [hasInteracted, shouldRender])
-
-  if (!shouldRender) {
-    return null
-  }
-
+export function TitleOverlay({ isVisible }: TitleOverlayProps) {
   return (
     <Box
       pos="fixed"
@@ -49,9 +28,7 @@ export function TitleOverlay({ hasInteracted }: TitleOverlayProps) {
             ta="center"
             ff="Cinzel"
             className="title-gradient title-main"
-            style={{
-              ...styles,
-            }}
+            style={styles}
           >
             Piacenza Liver
           </Text>

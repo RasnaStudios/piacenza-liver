@@ -1,5 +1,7 @@
+import { Box } from "@mantine/core"
+import { useMediaQuery } from "@mantine/hooks"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { isMobile } from "react-device-detect"
+import { useNavigate } from "react-router-dom"
 import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 // Core 3D logic
@@ -7,14 +9,25 @@ import { CameraController } from "./camera/Controller"
 import { SceneConfig } from "./config/SceneConfig"
 // Hooks
 import { useOrientation } from "./hooks/useOrientation"
+import {
+  clearAboutHash,
+  clearInscriptionHash,
+  isAboutHash,
+  parseInscriptionIdFromHash,
+  setAboutHash,
+  setInscriptionHash,
+} from "./navigation"
 import { InteractionManager } from "./scene/InteractionManager"
 // Data
 import { type Inscription, liverInscriptions } from "./scene/LiverData"
 import { LiverModel } from "./scene/LiverModel"
 import type { HoveredSection } from "./types"
+import { InteractionMode } from "./types/interaction"
+import { About } from "./ui/components/About"
+import { ActionMenu } from "./ui/components/ActionMenu"
 import { BraveDisclaimer } from "./ui/components/BraveDisclaimer"
-import { DataSummary } from "./ui/components/DataSummary"
 import { HoverTooltip } from "./ui/components/HoverTooltip"
+import { InteractionButton } from "./ui/components/InteractionButton"
 import { ResetInstruction } from "./ui/components/ResetInstruction"
 // UI Components
 import { DeityPanel } from "./ui/DeityPanel"
@@ -28,15 +41,24 @@ function PiacenzaLiverScene({
   setLoadingProgress,
   hasInteracted,
   setHasInteracted,
+  setTitleVisible,
 }: {
   isLoading: boolean
   setIsLoading: (loading: boolean) => void
   setLoadingProgress: (progress: number) => void
   hasInteracted: boolean
   setHasInteracted: (interacted: boolean) => void
+  setTitleVisible: (visible: boolean) => void
 }) {
+  const navigate = useNavigate()
   // Orientation detection
   const isPortrait = useOrientation()
+  const isSmallScreen = useMediaQuery("(max-width: 768px)")
+  const [interactionMode, setInteractionMode] = useState<InteractionMode>(
+    InteractionMode.Loading,
+  )
+  const isAboutMode = interactionMode === InteractionMode.About
+  const isInscriptionMode = interactionMode === InteractionMode.Inscription
 
   // State management
   const [selectedInscription, setSelectedInscription] =
@@ -46,7 +68,7 @@ function PiacenzaLiverScene({
   )
   const [isInteracting, setIsInteracting] = useState(false)
   const [isSceneReady, setIsSceneReady] = useState(false)
-  const [animationTriggered, setAnimationTriggered] = useState(false)
+  const [isIntroTransitioning, setIsIntroTransitioning] = useState(false)
   const [immediateMousePosition, setImmediateMousePosition] = useState({
     x: 0,
     y: 0,
@@ -54,6 +76,7 @@ function PiacenzaLiverScene({
   })
   const [isMouseOverPanel, setIsMouseOverPanel] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [viewportKey, setViewportKey] = useState(0)
   const [cameraDebugInfo, setCameraDebugInfo] = useState<{
     position: THREE.Vector3
     target: THREE.Vector3
@@ -85,6 +108,23 @@ function PiacenzaLiverScene({
   // Click debouncing to prevent rapid clicks
   const lastClickTimeRef = useRef<number>(0)
   const clickDebounceDelay = 300 // 300ms debounce
+  const introTimeoutRef = useRef<number | null>(null)
+  const initialAnimationTriggeredRef = useRef<boolean>(false)
+
+  const getIntroPose = useCallback(() => {
+    const aspect = window.innerWidth / window.innerHeight
+    const minAspect = 1
+    const maxAspect = 2.4
+    const clamped = Math.min(Math.max(aspect, minAspect), maxAspect)
+    const t = (clamped - minAspect) / (maxAspect - minAspect)
+    const targetX = 4 + t * 4
+    const position = SceneConfig.camera.lateral.clone()
+    position.x += t * 5
+    return {
+      position,
+      target: new THREE.Vector3(targetX, 0, 0),
+    }
+  }, [])
 
   // Particle animation refs
   const particleRefs = useRef<{
@@ -131,16 +171,85 @@ function PiacenzaLiverScene({
   }, [])
 
   // Optimized callback handlers
-  const handleMarkerHover = useCallback((section: HoveredSection | null) => {
-    setHoveredSection(section)
-    if (liverModelRef.current) {
-      if (section?.id) {
-        liverModelRef.current.setHoveredInscription(section.id)
-      } else {
-        liverModelRef.current.setHoveredInscription(0)
+  const handleMarkerHover = useCallback(
+    (section: HoveredSection | null) => {
+      if (interactionMode === InteractionMode.About) {
+        if (liverModelRef.current) {
+          liverModelRef.current.setHoveredInscription(0)
+        }
+        setHoveredSection(null)
+        return
       }
+
+      setHoveredSection(section)
+      if (liverModelRef.current) {
+        if (section?.id) {
+          liverModelRef.current.setHoveredInscription(section.id)
+        } else {
+          liverModelRef.current.setHoveredInscription(0)
+        }
+      }
+    },
+    [interactionMode],
+  )
+
+  const enableInteractionNow = useCallback(() => {
+    setHasInteracted(true)
+    setIsIntroTransitioning(false)
+    setHasViewChanged(true)
+    if (interactionManagerRef.current) {
+      interactionManagerRef.current.setIntroAnimationMode(false)
+      interactionManagerRef.current.setInteractionEnabled(true)
+      interactionManagerRef.current.setHoverEnabled(true)
+      interactionManagerRef.current.setClickEnabled(true)
     }
-  }, [])
+    if (controlsRef.current) {
+      controlsRef.current.enabled = true
+    }
+    if (cameraRef.current && interactionManagerRef.current) {
+      interactionManagerRef.current.setInitialCameraDistance(
+        cameraRef.current.position.length(),
+      )
+    }
+  }, [setHasInteracted, setTitleVisible])
+
+  const startInteraction = useCallback(() => {
+    if (
+      hasInteracted ||
+      isIntroTransitioning ||
+      isLoading ||
+      !isSceneReady ||
+      !cameraControllerRef.current
+    ) {
+      return
+    }
+
+    clearAboutHash()
+    setInteractionMode(InteractionMode.ThreeD)
+    setIsIntroTransitioning(true)
+
+    if (interactionManagerRef.current) {
+      interactionManagerRef.current.setIntroAnimationMode(true)
+    }
+
+    enableInteractionNow()
+
+    cameraControllerRef.current?.resetToDefault(
+      liverModelRef.current,
+      SceneConfig.camera.animationDuration,
+      () => {
+        liverModelRef.current?.pulseAllInscriptions()
+      },
+    )
+  }, [
+    hasInteracted,
+    isIntroTransitioning,
+    isLoading,
+    isSceneReady,
+    enableInteractionNow,
+    setTitleVisible,
+    setInteractionMode,
+  ])
 
   const handleReset = useCallback(() => {
     if (!cameraControllerRef.current) return
@@ -149,6 +258,10 @@ function PiacenzaLiverScene({
     if (panelTimeoutRef.current) {
       clearTimeout(panelTimeoutRef.current)
       panelTimeoutRef.current = null
+    }
+    if (introTimeoutRef.current) {
+      clearTimeout(introTimeoutRef.current)
+      introTimeoutRef.current = null
     }
 
     if (interactionManagerRef.current) {
@@ -166,21 +279,70 @@ function PiacenzaLiverScene({
     )
 
     setSelectedInscription(null)
-    setHasInteracted(false)
+    setInteractionMode(InteractionMode.ThreeD)
+    setTitleVisible(true)
     setIsInteracting(false)
     setHasViewChanged(false)
+    clearInscriptionHash()
     if (interactionManagerRef.current) {
       interactionManagerRef.current.resetZoomState()
     }
-  }, [setHasInteracted])
+  }, [setHasInteracted, setTitleVisible, setInteractionMode])
+
+  const handleReturnToIntro = useCallback(() => {
+    if (!cameraControllerRef.current || !cameraRef.current) return
+
+    if (introTimeoutRef.current) {
+      clearTimeout(introTimeoutRef.current)
+      introTimeoutRef.current = null
+    }
+
+    setSelectedInscription(null)
+    setInteractionMode(InteractionMode.About)
+    setTitleVisible(true)
+    setHasInteracted(false)
+    setIsIntroTransitioning(false)
+    setIsInteracting(false)
+    setHasViewChanged(false)
+    clearInscriptionHash()
+    setAboutHash()
+
+    if (interactionManagerRef.current) {
+      interactionManagerRef.current.setIntroAnimationMode(true)
+      interactionManagerRef.current.setInteractionEnabled(false)
+      interactionManagerRef.current.setHoverEnabled(false)
+      interactionManagerRef.current.setClickEnabled(true)
+      interactionManagerRef.current.resetZoomState()
+    }
+
+    if (liverModelRef.current) {
+      liverModelRef.current.setHoveredInscription(0)
+    }
+
+    const introPose = getIntroPose()
+    cameraControllerRef.current.focusOn(
+      introPose.target,
+      introPose.position,
+      800,
+      false,
+      () => {
+        interactionManagerRef.current?.setIntroAnimationMode(false)
+        if (controlsRef.current) {
+          controlsRef.current.enabled = false
+        }
+      },
+    )
+  }, [getIntroPose, setHasInteracted, setInteractionMode])
 
   const handleViewChange = useCallback(() => {
+    if (interactionMode === InteractionMode.About) return
     setHasViewChanged(true)
+    setTitleVisible(false)
     // Update debug info when view changes (throttled by requestAnimationFrame)
     if (import.meta.env.VITE_DEBUG_ENABLED === "true") {
       requestAnimationFrame(updateDebugInfo)
     }
-  }, [updateDebugInfo])
+  }, [interactionMode, setTitleVisible, updateDebugInfo])
   const handleInscriptionClick = useCallback(
     (payload: {
       inscriptionId: number
@@ -188,6 +350,11 @@ function PiacenzaLiverScene({
       cameraLocalTarget: THREE.Vector3 // Camera target relative to liver model
       modelMatrix: THREE.Matrix4 // Transforms model-local coords to world coords (accounts for liver rotation when moved by the user with shift key)
     }) => {
+      if (interactionMode === InteractionMode.About) {
+        startInteraction()
+        return
+      }
+
       // Debounce rapid clicks
       const now = Date.now()
       if (now - lastClickTimeRef.current < clickDebounceDelay) {
@@ -207,10 +374,14 @@ function PiacenzaLiverScene({
         return
 
       setHasInteracted(true)
+      setInteractionMode(InteractionMode.Inscription)
+      setHasViewChanged(true)
       liverModelRef.current.setSelectedInscription(inscriptionId)
 
       // Show panel immediately for better responsiveness
       setSelectedInscription(inscription)
+
+      setInscriptionHash(inscriptionId)
 
       if (cameraControllerRef.current) {
         cameraControllerRef.current.focusOn(
@@ -227,16 +398,26 @@ function PiacenzaLiverScene({
         }
       }
     },
-    [setHasInteracted],
+    [
+      interactionMode,
+      startInteraction,
+      setHasInteracted,
+      setTitleVisible,
+      setInteractionMode,
+    ],
   )
 
   const handleInscriptionListClick = useCallback(
     (inscription: Inscription) => {
+      if (interactionMode === InteractionMode.About) return
       if (!cameraControllerRef.current || !liverModelRef.current) return
 
       setHasInteracted(true)
+      setInteractionMode(InteractionMode.Inscription)
+      setHasViewChanged(true)
       liverModelRef.current.setSelectedInscription(inscription.id)
       setSelectedInscription(inscription)
+      setInscriptionHash(inscription.id)
       cameraControllerRef.current.focusOn(
         inscription.cameraTarget,
         inscription.cameraPosition,
@@ -246,20 +427,39 @@ function PiacenzaLiverScene({
         liverModelRef.current.getModelMatrix(),
       )
     },
-    [setHasInteracted],
+    [interactionMode, setHasInteracted, setTitleVisible, setInteractionMode],
   )
 
-  const handleBackgroundClick = useCallback(() => {
-    setSelectedInscription(null)
-    if (liverModelRef.current) {
-      liverModelRef.current.setHoveredInscription(0)
-    }
-  }, [])
+  const handleBackgroundClick = useCallback(
+    (clickedOnLiver?: boolean) => {
+      if (interactionMode === InteractionMode.About) {
+        if (clickedOnLiver) {
+          startInteraction()
+        }
+        return
+      }
+
+      setSelectedInscription(null)
+      if (liverModelRef.current) {
+        liverModelRef.current.setHoveredInscription(0)
+      }
+      clearInscriptionHash()
+    },
+    [interactionMode, startInteraction],
+  )
 
   const handlePanelClose = useCallback(() => {
     setSelectedInscription(null)
+    setInteractionMode(InteractionMode.ThreeD)
+    clearInscriptionHash()
+    clearAboutHash()
 
-    if (cameraControllerRef.current && liverModelRef.current && !isMobile) {
+    if (
+      cameraControllerRef.current &&
+      liverModelRef.current &&
+      !isSmallScreen &&
+      !isPortrait
+    ) {
       cameraControllerRef.current.resetToDefault(
         liverModelRef.current as LiverModel,
         800,
@@ -271,11 +471,20 @@ function PiacenzaLiverScene({
     }
 
     setIsInteracting(false)
-  }, [])
+  }, [setInteractionMode, isSmallScreen, isPortrait])
 
   const handleZoomDetected = useCallback(() => {
+    if (interactionMode === InteractionMode.About) return
     setHasInteracted(true)
-  }, [setHasInteracted])
+    setTitleVisible(false)
+  }, [interactionMode, setHasInteracted, setTitleVisible])
+
+  const handleModelRotate = useCallback(() => {
+    if (!hasInteracted) {
+      setHasInteracted(true)
+    }
+    setHasViewChanged(true)
+  }, [hasInteracted, setHasInteracted])
 
   // Mouse move handler with throttling to match raycast timing
   const mouseMoveTimeoutRef = useRef<number | null>(null)
@@ -318,6 +527,90 @@ function PiacenzaLiverScene({
     }
   }, [isInteracting, hasInteracted])
 
+  useEffect(() => {
+    const handleResize = () => {
+      setViewportKey((current) => current + 1)
+    }
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
+
+  useEffect(() => {
+    if (!cameraRef.current || !controlsRef.current) return
+    if (
+      interactionMode !== InteractionMode.About ||
+      isIntroTransitioning ||
+      !isSceneReady
+    )
+      return
+    if (isPortrait) return
+
+    const introPose = getIntroPose()
+    cameraRef.current.position.copy(introPose.position)
+    controlsRef.current.target.copy(introPose.target)
+    controlsRef.current.update()
+  }, [
+    interactionMode,
+    isIntroTransitioning,
+    isSceneReady,
+    isPortrait,
+    getIntroPose,
+    viewportKey,
+  ])
+
+  useEffect(() => {
+    const isInteractive =
+      interactionMode === InteractionMode.ThreeD ||
+      interactionMode === InteractionMode.Inscription
+    if (controlsRef.current) {
+      controlsRef.current.enabled = isInteractive
+    }
+    if (interactionManagerRef.current) {
+      interactionManagerRef.current.setInteractionEnabled(isInteractive)
+      interactionManagerRef.current.setHoverEnabled(isInteractive)
+      interactionManagerRef.current.setClickEnabled(true)
+    }
+    if (!isInteractive && liverModelRef.current) {
+      liverModelRef.current.setHoveredInscription(0)
+    }
+  }, [interactionMode])
+
+  // Trigger initial camera animation when scene is ready
+  useEffect(() => {
+    if (parseInscriptionIdFromHash() || isAboutHash()) {
+      initialAnimationTriggeredRef.current = true
+      return
+    }
+    if (
+      !isSceneReady ||
+      interactionMode !== InteractionMode.ThreeD ||
+      initialAnimationTriggeredRef.current ||
+      !cameraControllerRef.current ||
+      !liverModelRef.current
+    ) {
+      return
+    }
+
+    initialAnimationTriggeredRef.current = true
+    setIsIntroTransitioning(true)
+
+    if (interactionManagerRef.current) {
+      interactionManagerRef.current.setIntroAnimationMode(true)
+    }
+
+    cameraControllerRef.current.resetToDefault(
+      liverModelRef.current,
+      SceneConfig.camera.animationDuration,
+      () => {
+        liverModelRef.current?.pulseAllInscriptions()
+        setIsIntroTransitioning(false)
+        if (interactionManagerRef.current) {
+          interactionManagerRef.current.setIntroAnimationMode(false)
+        }
+      },
+    )
+  }, [isSceneReady, interactionMode])
+
   // Initialize 3D scene
   useEffect(() => {
     const container = containerRef.current
@@ -353,7 +646,8 @@ function PiacenzaLiverScene({
     controls.maxPolarAngle = Math.PI
     controls.minDistance = 1.5
     controls.maxDistance = 10
-    controls.target.copy(new THREE.Vector3(0, 0, 0))
+    controls.target.copy(SceneConfig.model.position)
+    controls.enabled = true
     controlsRef.current = controls
     setupLighting(scene)
 
@@ -388,6 +682,7 @@ function PiacenzaLiverScene({
     liverModelRef.current?.setOnModelReady(() => {
       setIsSceneReady(true)
       setIsLoading(false)
+      setInteractionMode(InteractionMode.ThreeD)
     })
 
     // Add WebGL context loss handling
@@ -472,6 +767,10 @@ function PiacenzaLiverScene({
         clearTimeout(panelTimeoutRef.current)
         panelTimeoutRef.current = null
       }
+      if (introTimeoutRef.current) {
+        clearTimeout(introTimeoutRef.current)
+        introTimeoutRef.current = null
+      }
 
       // Clear mouse move timeout
       if (mouseMoveTimeoutRef.current) {
@@ -515,12 +814,22 @@ function PiacenzaLiverScene({
           onBackgroundClick: handleBackgroundClick,
           onMarkerHover: handleMarkerHover,
           onZoomDetected: handleZoomDetected,
+          onModelRotate: handleModelRotate,
           onMouseMove: handleMouseMove,
           onModifierKeyChange: handleModifierKeyChange,
           onReset: handleReset,
           onViewChange: handleViewChange,
         },
       )
+      interactionManager.setInteractionEnabled(
+        interactionMode === InteractionMode.ThreeD ||
+          interactionMode === InteractionMode.Inscription,
+      )
+      interactionManager.setHoverEnabled(
+        interactionMode === InteractionMode.ThreeD ||
+          interactionMode === InteractionMode.Inscription,
+      )
+      interactionManager.setClickEnabled(true)
       interactionManagerRef.current = interactionManager
     }
   }, [
@@ -532,6 +841,8 @@ function PiacenzaLiverScene({
     handleModifierKeyChange,
     handleReset,
     handleViewChange,
+    handleModelRotate,
+    interactionMode,
   ])
 
   // Clear hovered inscription when mouse enters panel area
@@ -542,6 +853,86 @@ function PiacenzaLiverScene({
     }
   }, [isMouseOverPanel])
 
+  // Handle hash-based navigation (e.g., #inscription-3)
+  useEffect(() => {
+    // Check for #about hash on initial mount
+    if (isAboutHash() && !isLoading && isSceneReady) {
+      handleReturnToIntro()
+    }
+  }, [isLoading, isSceneReady, handleReturnToIntro])
+
+  useEffect(() => {
+    const handleHashNavigation = () => {
+      // Check for #about hash
+      if (isAboutHash()) {
+        if (isSceneReady && interactionMode !== InteractionMode.About) {
+          handleReturnToIntro()
+        }
+        return
+      }
+
+      // Check for inscription hash
+      const inscriptionId = parseInscriptionIdFromHash()
+      if (inscriptionId == null) return
+
+      const inscription = liverInscriptions.find(
+        (ins) => ins.id === inscriptionId,
+      )
+      if (!inscription) return
+
+      // If scene is ready, select inscription immediately
+      if (
+        isSceneReady &&
+        cameraControllerRef.current &&
+        liverModelRef.current
+      ) {
+        // Skip loading screen and title overlay if navigating directly
+        if (!hasInteracted) {
+          setHasInteracted(true)
+          setInteractionMode(InteractionMode.ThreeD)
+          setTitleVisible(false)
+          setIsLoading(false)
+        }
+
+        // Get model matrix from liver model
+        const modelMatrix =
+          liverModelRef.current.getModelMatrix() || new THREE.Matrix4()
+
+        // Use a small delay to ensure state updates are processed
+        setTimeout(() => {
+          handleInscriptionClick({
+            inscriptionId,
+            cameraLocalPosition: inscription.cameraPosition,
+            cameraLocalTarget: inscription.cameraTarget,
+            modelMatrix,
+          })
+        }, 100)
+      }
+    }
+
+    // Check hash on mount and when scene becomes ready
+    if (isSceneReady) {
+      handleHashNavigation()
+    }
+
+    // Listen for hash changes
+    const handleHashChange = () => {
+      handleHashNavigation()
+    }
+    window.addEventListener("hashchange", handleHashChange)
+    return () => window.removeEventListener("hashchange", handleHashChange)
+  }, [
+    isSceneReady,
+    hasInteracted,
+    interactionMode,
+    handleInscriptionClick,
+    handleReturnToIntro,
+    setHasInteracted,
+    setInteractionMode,
+    setTitleVisible,
+    setIsLoading,
+  ])
+
   // Apply CSS classes to clip the Three.js canvas when panel is open
   useEffect(() => {
     const container = containerRef.current
@@ -549,7 +940,7 @@ function PiacenzaLiverScene({
 
     // Apply appropriate CSS classes based on panel state and device
     if (selectedInscription) {
-      if (isMobile && isPortrait) {
+      if (isPortrait || isSmallScreen) {
         container.classList.add("panel-open-mobile")
         container.classList.remove("panel-open-desktop")
       } else {
@@ -564,33 +955,15 @@ function PiacenzaLiverScene({
     return () => {
       container.classList.remove("panel-open-desktop", "panel-open-mobile")
     }
-  }, [selectedInscription, isPortrait])
-
-  // Trigger initial animation when scene is ready and loading is complete
-  useEffect(() => {
-    if (isSceneReady && !isLoading && !animationTriggered) {
-      setAnimationTriggered(true)
-
-      // Start the intro animation
-      setTimeout(() => {
-        if (cameraControllerRef.current && interactionManagerRef.current) {
-          interactionManagerRef.current.setIntroAnimationMode(true)
-          liverModelRef.current?.pulseAllInscriptions()
-          cameraControllerRef.current.playIntroAnimation(() => {
-            interactionManagerRef.current?.setIntroAnimationMode(false)
-            interactionManagerRef.current?.setInitialCameraDistance(
-              cameraRef.current ? cameraRef.current.position.length() : 0,
-            )
-          }, liverModelRef.current?.getLiverCenter() || undefined)
-        }
-      }, 1000)
-    }
-  }, [isSceneReady, isLoading, animationTriggered])
+  }, [selectedInscription, isPortrait, isSmallScreen])
 
   return (
     <div className="piacenza-liver-app">
       <div className="scene-container">
-        <div ref={containerRef} className="three-container" />
+        <div
+          ref={containerRef}
+          className={`three-container${isPortrait && isAboutMode ? " hidden" : ""}`}
+        />
 
         {/* Modular UI components */}
         <section
@@ -598,10 +971,17 @@ function PiacenzaLiverScene({
           onMouseEnter={() => setIsMouseOverPanel(true)}
           onMouseLeave={() => setIsMouseOverPanel(false)}
         >
+          <About
+            onStartInteraction={startInteraction}
+            isVisible={isAboutMode && !isIntroTransitioning}
+            isLoading={isLoading}
+          />
           <DeityPanel
             selectedInscription={selectedInscription}
             onClose={handlePanelClose}
             onInscriptionSelect={handleInscriptionListClick}
+            onAboutClick={handleReturnToIntro}
+            onExploreClick={() => navigate("/inscriptions")}
           />
           <InscriptionList
             onInscriptionSelect={handleInscriptionListClick}
@@ -614,15 +994,54 @@ function PiacenzaLiverScene({
         <HoverTooltip
           hoveredSection={hoveredSection}
           mousePosition={immediateMousePosition}
-          isPanelOpen={!!selectedInscription}
+          isPanelOpen={isInscriptionMode}
           isModifierKeyPressed={isModifierKeyPressed}
           isMouseOverPanel={isMouseOverPanel}
         />
 
         <ResetInstruction
-          isPanelOpen={!!selectedInscription}
+          isPanelOpen={isInscriptionMode}
           hasViewChanged={hasViewChanged}
         />
+        {isSceneReady && !isLoading && !isAboutMode && (
+          <>
+            {!isPortrait && (
+              <Box
+                style={{
+                  position: "fixed",
+                  right: isSmallScreen ? "20px" : "40px",
+                  bottom: isSmallScreen ? "20px" : "32px",
+                  zIndex: 25,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                  alignItems: "flex-end",
+                  pointerEvents: "auto",
+                }}
+              >
+                <InteractionButton
+                  onClick={handleReturnToIntro}
+                  variant="text"
+                  size="md"
+                >
+                  About the Liver
+                </InteractionButton>
+                <InteractionButton
+                  onClick={() => navigate("/inscriptions")}
+                  variant="text"
+                  size="md"
+                >
+                  Explore inscriptions
+                </InteractionButton>
+              </Box>
+            )}
+            <ActionMenu
+              onAboutClick={handleReturnToIntro}
+              onExploreClick={() => navigate("/inscriptions")}
+              isVisible={isPortrait}
+            />
+          </>
+        )}
 
         {/* Debug Overlay */}
         {import.meta.env.VITE_DEBUG_ENABLED === "true" &&
@@ -713,9 +1132,6 @@ function PiacenzaLiverScene({
               )}
             </>
           )}
-
-        {/* Data Summary */}
-        <DataSummary />
 
         {/* Brave Browser Disclaimer */}
         <BraveDisclaimer />
@@ -899,12 +1315,14 @@ export default function Scene({
   setLoadingProgress,
   hasInteracted,
   setHasInteracted,
+  setTitleVisible,
 }: {
   isLoading: boolean
   setIsLoading: (loading: boolean) => void
   setLoadingProgress: (progress: number) => void
   hasInteracted: boolean
   setHasInteracted: (interacted: boolean) => void
+  setTitleVisible: (visible: boolean) => void
 }) {
   return (
     <PiacenzaLiverScene
@@ -913,6 +1331,7 @@ export default function Scene({
       setLoadingProgress={setLoadingProgress}
       hasInteracted={hasInteracted}
       setHasInteracted={setHasInteracted}
+      setTitleVisible={setTitleVisible}
     />
   )
 }

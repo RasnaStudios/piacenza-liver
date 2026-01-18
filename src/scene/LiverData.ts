@@ -49,7 +49,7 @@ export const liverGroups = {
     positions: [1, 2, 3, 4],
     color: "#87CEEB", // Sky-blue
     description:
-      "The first three houses are occupied by Tinia, the supreme god linked to the Greek god Zeus, followed by Cilens, goddess of the night, and Thufltha, who governed the fate of men and the world, and Nethuns, in the form of divinity of atmospheric humidity. In fourth place is Uni, wife of Tinia, protectress of cities and births.",
+      "The first three houses are occupied by Tinia, the supreme god linked to the Greek god Zeus, followed by Cilens (an epithet of Tinia, possibly related to night or boundaries), and Thufltha (a divine power associated with fate and judgment, appearing as an aspect of Tinia), and Nethuns, in the form of divinity of atmospheric humidity. In fourth place is Uni, wife of Tinia, protectress of cities and births.",
   },
   water: {
     id: "water",
@@ -131,13 +131,15 @@ export const liverGods = {
     id: "cilens",
     name: "Cilens",
     romanEquivalent: "Nocturnus",
-    description: "God of the night and guide of souls between worlds.",
+    description:
+      "Epithet of Tinia, possibly related to night or boundaries. Appears on the liver as 'Tin Cilens'.",
   },
   thufltha: {
     id: "thufltha",
     name: "Thufltha",
     romanEquivalent: "Fortuna",
-    description: "Goddess of fate, healing, and oracular wisdom.",
+    description:
+      "Divine power associated with fate and judgment, often appearing as an aspect of Tinia representing avenging or punitive forces. Appears on the liver as 'Tin Θufltha'.",
   },
   nethuns: {
     id: "nethuns",
@@ -241,7 +243,8 @@ export const liverGods = {
     name: "Laran",
     transcription: "lar",
     romanEquivalent: "Ares",
-    description: "God of war and fire, representing martial force.",
+    description:
+      "God of war, representing martial force. Also associated with underworld and boundary maintenance.",
   },
   tvnth: {
     id: "tvnth",
@@ -268,7 +271,7 @@ export const liverGods = {
     id: "letham",
     name: "Letham",
     description:
-      "Goddess associated with the underworld and the protector of pregnant mothers and newborns.",
+      "Underworld goddess associated with the dead and chthonic forces. Appears on the Liver of Piacenza and in ritual inscriptions.",
   },
   velch: {
     id: "velch",

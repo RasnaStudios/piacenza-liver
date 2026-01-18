@@ -1,4 +1,5 @@
-import { ActionIcon, Group, Title } from "@mantine/core"
+import { Box, Group, Title } from "@mantine/core"
+import { IconX } from "@tabler/icons-react"
 import type { Inscription } from "../../scene/LiverData"
 import { NumberBadge } from "./NumberBadge"
 
@@ -47,20 +48,20 @@ export function PanelHeader({
         </Title>
       </div>
 
-      <ActionIcon
+      <Box
+        className="close-button-container"
         onClick={onClose}
-        variant="light"
-        radius="xl"
-        color="var(--bronze-light)"
         aria-label="Close panel"
         title="Close panel"
-        pos="absolute"
-        right={0}
-        top={0}
-        m="lg"
+        style={{
+          position: "absolute",
+          right: 0,
+          top: 0,
+          margin: "24px",
+        }}
       >
-        ✕
-      </ActionIcon>
+        <IconX size={24} stroke={1.5} />
+      </Box>
     </Group>
   )
 }

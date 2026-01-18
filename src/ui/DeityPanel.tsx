@@ -1,7 +1,8 @@
 import { Box, Drawer, Paper, Stack, Title } from "@mantine/core"
+import { useMediaQuery } from "@mantine/hooks"
 import { useDrag } from "@use-gesture/react"
 import { useRef, useState } from "react"
-import { isMobile } from "react-device-detect"
+import { useOrientation } from "../hooks/useOrientation"
 import {
   type Inscription,
   type LiverGod,
@@ -18,14 +19,19 @@ interface DeityPanelProps {
   selectedInscription: Inscription | null
   onClose: () => void
   onInscriptionSelect?: (inscription: Inscription) => void
+  onAboutClick?: () => void
+  onExploreClick?: () => void
 }
 
 export function DeityPanel({
   selectedInscription,
   onClose,
   onInscriptionSelect,
+  onAboutClick,
+  onExploreClick,
 }: DeityPanelProps) {
-  const isPortrait = window.matchMedia("(orientation: portrait)").matches
+  const isPortrait = useOrientation()
+  const isSmallScreen = useMediaQuery("(max-width: 768px)")
   const [panelHeight, setPanelHeight] = useState(33) // Start at 33vh
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState(0)
@@ -114,7 +120,7 @@ export function DeityPanel({
     .filter(Boolean)
 
   // Mobile portrait: custom bottom sheet
-  if (isMobile && isPortrait) {
+  if (isPortrait || isSmallScreen) {
     return (
       <Paper
         ref={panelRef}
@@ -226,7 +232,10 @@ export function DeityPanel({
 
               <GroupSection selectedInscription={selectedInscription} />
 
-              <PanelLegend />
+              <PanelLegend
+                onAboutClick={onAboutClick}
+                onExploreClick={onExploreClick}
+              />
             </Stack>
           </Box>
         </Box>
@@ -314,7 +323,10 @@ export function DeityPanel({
 
           <GroupSection selectedInscription={selectedInscription} />
 
-          <PanelLegend />
+          <PanelLegend
+            onAboutClick={onAboutClick}
+            onExploreClick={onExploreClick}
+          />
         </Stack>
       </Box>
     </Drawer>

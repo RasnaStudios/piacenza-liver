@@ -10,22 +10,14 @@ export const SceneConfig = {
   },
 
   camera: {
-    initial: new THREE.Vector3(0, 2, 10),
-  },
-
-  // Animation offsets (added to initial positions)
-  animation: {
-    camera: {
-      landscape: {
-        positionOffset: new THREE.Vector3(0, 2, -7), // Move up and closer
-        targetOffset: new THREE.Vector3(0, -1, -1.5),
-      },
-      portrait: {
-        positionOffset: new THREE.Vector3(0, 3, -4), // Move up and closer
-        targetOffset: new THREE.Vector3(0, 0, 0),
-      },
-      duration: 1500,
+    lateral: new THREE.Vector3(5, 20, 20), // Camera position for "About" mode (liver on the side)
+    initial: new THREE.Vector3(0, 2, 10), // Starting camera position
+    final: {
+      // Final camera positions reached after close-up animation
+      landscape: new THREE.Vector3(0, 4, 3), // initial + landscape offset
+      portrait: new THREE.Vector3(0, 6, 10), // initial + portrait offset
     },
+    animationDuration: 1800, // Animation duration in milliseconds
   },
 
   // Lighting configuration
@@ -41,7 +33,7 @@ export const SceneConfig = {
 
   // Performance and interaction configuration
   performance: {
-    raycastThrottleMs: 10, // Throttle raycast and mouse updates to 1/X*1000 fps
+    raycastThrottleMs: 5, // Throttle raycast and mouse updates to 1/X*1000 fps (higher = faster)
     mouseMoveThreshold: 5, // Skip raycast if mouse moved less than X pixels
   },
 
