@@ -274,13 +274,15 @@ export class CameraController {
           y: liverObject.position.y,
           z: liverObject.position.z,
         }
-        const startModelRotation = {
-          x: liverObject.rotation.x,
-          y: liverObject.rotation.y,
-          z: liverObject.rotation.z,
-        }
         const endModelPosition = SceneConfig.model.position
-        const endModelRotation = SceneConfig.model.rotation
+        const startModelQuaternion = liverObject.quaternion.clone()
+        const endModelQuaternion = new THREE.Quaternion().setFromEuler(
+          new THREE.Euler(
+            SceneConfig.model.rotation.x,
+            SceneConfig.model.rotation.y,
+            SceneConfig.model.rotation.z,
+          ),
+        )
 
         modelAnimation = (t: number) => {
           if (liverObject) {
@@ -293,16 +295,11 @@ export class CameraController {
             liverObject.position.z =
               startModelPosition.z +
               (endModelPosition.z - startModelPosition.z) * t
-
-            liverObject.rotation.x =
-              startModelRotation.x +
-              (endModelRotation.x - startModelRotation.x) * t
-            liverObject.rotation.y =
-              startModelRotation.y +
-              (endModelRotation.y - startModelRotation.y) * t
-            liverObject.rotation.z =
-              startModelRotation.z +
-              (endModelRotation.z - startModelRotation.z) * t
+            liverObject.quaternion.slerpQuaternions(
+              startModelQuaternion,
+              endModelQuaternion,
+              t,
+            )
           }
         }
       }
