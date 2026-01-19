@@ -357,7 +357,7 @@ export class LiverModel {
           opacity: 0.0,
           alphaMap: this.atlasTexture,
           depthWrite: false,
-          alphaTest: 0.0,
+          alphaTest: SceneConfig.highlight.alphaCutoff,
           blending: THREE.AdditiveBlending,
           depthTest: true,
         })

@@ -41,6 +41,11 @@ export const SceneConfig = {
     mouseMoveThreshold: 5, // Skip raycast if mouse moved less than X pixels
   },
 
+  // Highlight rendering configuration
+  highlight: {
+    alphaCutoff: 0.05, // Higher values = crisper highlight edges (less dilution)
+  },
+
   // Pulse animation configuration
   pulse: {
     trailSpeed: 80, // milliseconds between each inscription (lower = faster)
