@@ -94,6 +94,8 @@ function PiacenzaLiverScene({
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null)
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null)
   const controlsRef = useRef<OrbitControls | null>(null)
+  const cameraFillLightRef = useRef<THREE.SpotLight | null>(null)
+  const cameraFillTargetRef = useRef<THREE.Object3D | null>(null)
 
   // Controller refs
   const cameraControllerRef = useRef<CameraController | null>(null)
@@ -280,6 +282,11 @@ function PiacenzaLiverScene({
         }
       },
     )
+
+    if (liverModelRef.current) {
+      liverModelRef.current.setSelectedInscription(0)
+      liverModelRef.current.setHoveredInscription(0)
+    }
 
     setSelectedInscription(null)
     setInteractionMode(InteractionMode.ThreeD)
@@ -703,6 +710,25 @@ function PiacenzaLiverScene({
     controlsRef.current = controls
     setupLighting(scene)
 
+    const cameraFillLight = new THREE.SpotLight(
+      SceneConfig.lighting.lightColor,
+      SceneConfig.lighting.cameraFillIntensity,
+    )
+    cameraFillLight.angle = SceneConfig.lighting.cameraFillAngle
+    cameraFillLight.penumbra = SceneConfig.lighting.cameraFillPenumbra
+    cameraFillLight.distance = SceneConfig.lighting.cameraFillDistance
+    cameraFillLight.decay = 2
+    cameraFillLight.castShadow = false
+    scene.add(cameraFillLight)
+
+    const cameraFillTarget = new THREE.Object3D()
+    scene.add(cameraFillTarget)
+    cameraFillLight.target = cameraFillTarget
+    cameraFillLightRef.current = cameraFillLight
+    cameraFillTargetRef.current = cameraFillTarget
+
+    const cameraFillDirection = new THREE.Vector3()
+
     // Store particle references after lighting setup
     const particles = scene.children.find(
       (child) => child instanceof THREE.Points,
@@ -803,6 +829,20 @@ function PiacenzaLiverScene({
           }
           particles.geometry.attributes.position.needsUpdate = true
         }
+      }
+
+      const cameraFillLight = cameraFillLightRef.current
+      const cameraFillTarget = cameraFillTargetRef.current
+      if (cameraFillLight && cameraFillTarget) {
+        cameraFillLight.position.copy(camera.position)
+        camera.getWorldDirection(cameraFillDirection)
+        cameraFillTarget.position
+          .copy(camera.position)
+          .add(
+            cameraFillDirection.multiplyScalar(
+              SceneConfig.lighting.cameraFillTargetDistance,
+            ),
+          )
       }
 
       renderer.render(scene, camera)
@@ -1249,7 +1289,7 @@ function setupLighting(scene: THREE.Scene) {
   // Key light - spotlight for dramatic shadows on floor
   const keyLight = new THREE.SpotLight(
     config.lightColor,
-    150.0 * config.intensityMultiplier,
+    config.keyLightIntensity * config.intensityMultiplier,
   )
   keyLight.position.set(0, 6, 3)
   keyLight.target.position.set(0, 0, 0)
@@ -1270,17 +1310,6 @@ function setupLighting(scene: THREE.Scene) {
   scene.add(keyLight.target)
 
   // Fill/back lights removed per request.
-
-  // Subtle bottom fill for inscription visibility
-  const bottomFill = new THREE.PointLight(
-    config.lightColor,
-    10 * config.intensityMultiplier,
-    100,
-    2,
-  )
-  bottomFill.position.set(0, -6, 0)
-  bottomFill.castShadow = false
-  scene.add(bottomFill)
 
   // Extremely subtle dust particles
   const particleCount = 40

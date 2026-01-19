@@ -28,11 +28,17 @@ export const SceneConfig = {
   lighting: {
     lightColor: 0xfff8e7, // Warm white light
     ambientColor: 0x7a6b5a, // Warm ambient light for blending
-    intensityMultiplier: 1.0, // Global intensity multiplier
+    intensityMultiplier: 0.95, // Global intensity multiplier
+    keyLightIntensity: 135, // Main spotlight intensity
     shadowMapSize: 4096, // Shadow map resolution
     shadowBias: -0.0001, // Shadow bias to prevent acne
     shadowNormalBias: 0.02, // Additional shadow bias
     shadowRadius: 8, // Shadow softness radius
+    cameraFillIntensity: 2.5, // Soft camera-attached fill
+    cameraFillDistance: 6,
+    cameraFillAngle: Math.PI / 4,
+    cameraFillPenumbra: 0.9,
+    cameraFillTargetDistance: 3,
   },
 
   // Performance and interaction configuration
@@ -50,6 +56,8 @@ export const SceneConfig = {
   // Highlight rendering configuration
   highlight: {
     alphaCutoff: 0.03, // Higher values = crisper highlight edges (less dilution)
+    selectedOpacity: 0.3,
+    hoveredOpacity: 0.2,
   },
 
   // Pulse animation configuration

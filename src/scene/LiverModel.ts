@@ -509,7 +509,11 @@ export class LiverModel {
   }
 
   private updateSelectedHighlight() {
-    this.updateHighlight(this.selectedMaterial, this.currentSelectedId, 0.4)
+    this.updateHighlight(
+      this.selectedMaterial,
+      this.currentSelectedId,
+      SceneConfig.highlight.selectedOpacity,
+    )
   }
 
   private updateHoveredHighlight() {
@@ -518,7 +522,11 @@ export class LiverModel {
       this.currentHoveredId && this.currentHoveredId !== this.currentSelectedId
         ? this.currentHoveredId
         : 0
-    this.updateHighlight(this.hoveredMaterial, hoverId, 0.3)
+    this.updateHighlight(
+      this.hoveredMaterial,
+      hoverId,
+      SceneConfig.highlight.hoveredOpacity,
+    )
   }
 
   private calculateUVCoordinates(labelId: number) {
