@@ -148,11 +148,14 @@
   min-width: 0;
 }
 
-@media (max-width: 768px) {
-  .inscriptions-grid {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
+.inscription-details-inline {
+  width: 100%;
+  grid-column: 1 / -1;
+}
+
+.inscription-details-inline .inscription-details-container {
+  margin: 0;
+  max-width: none;
 }
 
 .inscription-card {
@@ -356,7 +359,6 @@
   }
 
   .inscriptions-grid {
-    grid-template-columns: 1fr;
     gap: 10px;
   }
 
@@ -449,6 +451,12 @@
     transform: none;
     margin-left: 8px;
     margin-right: 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .inscriptions-grid {
+    grid-template-columns: 1fr;
   }
 }
 

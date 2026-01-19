@@ -1,6 +1,7 @@
 import { Box, Group, Paper, Stack, Text } from "@mantine/core"
+import { useMediaQuery } from "@mantine/hooks"
 import { IconArrowLeft } from "@tabler/icons-react"
-import { useEffect, useMemo, useState } from "react"
+import { Fragment, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import YAML from "yaml"
@@ -190,6 +191,7 @@ export function InscriptionExploration() {
   const { t: tCommon } = useTranslation("common")
   const { t: tLiverData } = useTranslation("liverData")
   const navigate = useNavigate()
+  const isCompactLayout = useMediaQuery("(max-width: 640px)")
   const deityLookup = useMemo(() => {
     const map = new Map<string, string>()
     Object.entries(liverGods).forEach(([id, god]) => {
@@ -577,36 +579,63 @@ export function InscriptionExploration() {
                 </Text>
               </div>
               <div className="inscriptions-grid">
-                {inscriptions.map((inscription) => (
-                  <InscriptionCard
-                    key={inscription.id}
-                    inscription={inscription}
-                    isHovered={hoveredId === inscription.id}
-                    isSelected={selectedInscriptionId === inscription.id}
-                    inscriptionGroupColor={getGroupColor(inscription.id)}
-                    onMouseEnter={() => setHoveredId(inscription.id)}
-                    onMouseLeave={() => setHoveredId(null)}
-                    onClick={() =>
-                      handleInscriptionClick(inscription, group.id)
-                    }
-                  />
-                ))}
+                {inscriptions.map((inscription) => {
+                  const isSelected = selectedInscriptionId === inscription.id
+                  const showInlineDetails =
+                    isCompactLayout &&
+                    showDetailsForThisGroup &&
+                    selectedInscription &&
+                    isSelected
+
+                  return (
+                    <Fragment key={inscription.id}>
+                      <InscriptionCard
+                        inscription={inscription}
+                        isHovered={hoveredId === inscription.id}
+                        isSelected={isSelected}
+                        inscriptionGroupColor={getGroupColor(inscription.id)}
+                        onMouseEnter={() => setHoveredId(inscription.id)}
+                        onMouseLeave={() => setHoveredId(null)}
+                        onClick={() =>
+                          handleInscriptionClick(inscription, group.id)
+                        }
+                      />
+                      {showInlineDetails && (
+                        <div className="inscription-details-inline">
+                          <InscriptionDetailsPanel
+                            selectedInscription={selectedInscription}
+                            borderColor={getGroupColor(selectedInscription.id)}
+                            onViewIn3D={(e) =>
+                              handleViewIn3D(selectedInscription, e)
+                            }
+                            onInscriptionSelect={(id) =>
+                              handleInscriptionSelect(id, group.id)
+                            }
+                            sectionId={group.id}
+                          />
+                        </div>
+                      )}
+                    </Fragment>
+                  )
+                })}
               </div>
-              {showDetailsForThisGroup && selectedInscription && (
-                <InscriptionDetailsPanel
-                  selectedInscription={selectedInscription}
-                  borderColor={
-                    showDetailsForThisGroup && selectedInscription
-                      ? getGroupColor(selectedInscription.id)
-                      : group.color
-                  }
-                  onViewIn3D={(e) => handleViewIn3D(selectedInscription, e)}
-                  onInscriptionSelect={(id) =>
-                    handleInscriptionSelect(id, group.id)
-                  }
-                  sectionId={group.id}
-                />
-              )}
+              {!isCompactLayout &&
+                showDetailsForThisGroup &&
+                selectedInscription && (
+                  <InscriptionDetailsPanel
+                    selectedInscription={selectedInscription}
+                    borderColor={
+                      showDetailsForThisGroup && selectedInscription
+                        ? getGroupColor(selectedInscription.id)
+                        : group.color
+                    }
+                    onViewIn3D={(e) => handleViewIn3D(selectedInscription, e)}
+                    onInscriptionSelect={(id) =>
+                      handleInscriptionSelect(id, group.id)
+                    }
+                    sectionId={group.id}
+                  />
+                )}
             </div>
           )
         })}
