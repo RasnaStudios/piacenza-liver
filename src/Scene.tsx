@@ -1246,9 +1246,7 @@ function PiacenzaLiverScene({
 function setupLighting(scene: THREE.Scene) {
   const config = SceneConfig.lighting
 
-  // 3-Point Lighting Setup
-
-  // 1. KEY LIGHT - Spotlight for dramatic shadows on floor
+  // Key light - spotlight for dramatic shadows on floor
   const keyLight = new THREE.SpotLight(
     config.lightColor,
     150.0 * config.intensityMultiplier,
@@ -1271,49 +1269,7 @@ function setupLighting(scene: THREE.Scene) {
   scene.add(keyLight)
   scene.add(keyLight.target)
 
-  // 2. FILL LIGHT - Softer light to fill shadows (front-left)
-  const fillLight = new THREE.DirectionalLight(
-    config.lightColor,
-    0.4 * config.intensityMultiplier,
-  )
-  fillLight.position.set(-6, 4, 4)
-  fillLight.target.position.set(0, 0, 0)
-  fillLight.castShadow = true
-  fillLight.shadow.mapSize.width = config.shadowMapSize
-  fillLight.shadow.mapSize.height = config.shadowMapSize
-  fillLight.shadow.camera.near = 0.1
-  fillLight.shadow.camera.far = 20
-  fillLight.shadow.camera.left = -10
-  fillLight.shadow.camera.right = 10
-  fillLight.shadow.camera.top = 10
-  fillLight.shadow.camera.bottom = -10
-  fillLight.shadow.bias = config.shadowBias
-  fillLight.shadow.normalBias = config.shadowNormalBias
-  fillLight.shadow.radius = config.shadowRadius
-  scene.add(fillLight)
-  scene.add(fillLight.target)
-
-  // 3. BACK LIGHT - Rim lighting from behind (creates separation)
-  const backLight = new THREE.DirectionalLight(
-    config.lightColor,
-    0.4 * config.intensityMultiplier,
-  )
-  backLight.position.set(-2, 6, -8)
-  backLight.target.position.set(0, 0, 0)
-  backLight.castShadow = true
-  backLight.shadow.mapSize.width = config.shadowMapSize
-  backLight.shadow.mapSize.height = config.shadowMapSize
-  backLight.shadow.camera.near = 0.1
-  backLight.shadow.camera.far = 20
-  backLight.shadow.camera.left = -10
-  backLight.shadow.camera.right = 10
-  backLight.shadow.camera.top = 10
-  backLight.shadow.camera.bottom = -10
-  backLight.shadow.bias = config.shadowBias
-  backLight.shadow.normalBias = config.shadowNormalBias
-  backLight.shadow.radius = config.shadowRadius
-  scene.add(backLight)
-  scene.add(backLight.target)
+  // Fill/back lights removed per request.
 
   // Subtle bottom fill for inscription visibility
   const bottomFill = new THREE.PointLight(
