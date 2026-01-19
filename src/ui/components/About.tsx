@@ -1,5 +1,6 @@
 import { Box, Stack, Text, Transition } from "@mantine/core"
 import { useTranslation } from "react-i18next"
+import { SceneConfig } from "../../config/SceneConfig"
 import {
   liverGods,
   liverGroups,
@@ -38,7 +39,8 @@ export function About({
     <Transition
       mounted={isVisible}
       transition="fade"
-      duration={1600}
+      duration={SceneConfig.ui.aboutFadeDuration}
+      exitDuration={SceneConfig.ui.aboutExitDuration}
       timingFunction="ease-out"
     >
       {(styles) => (

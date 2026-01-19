@@ -41,9 +41,15 @@ export const SceneConfig = {
     mouseMoveThreshold: 5, // Skip raycast if mouse moved less than X pixels
   },
 
+  // UI timing configuration
+  ui: {
+    aboutFadeDuration: 500,
+    aboutExitDuration: 500,
+  },
+
   // Highlight rendering configuration
   highlight: {
-    alphaCutoff: 0.05, // Higher values = crisper highlight edges (less dilution)
+    alphaCutoff: 0.03, // Higher values = crisper highlight edges (less dilution)
   },
 
   // Pulse animation configuration
