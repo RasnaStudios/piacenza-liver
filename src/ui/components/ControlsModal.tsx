@@ -37,16 +37,19 @@ export function ControlsModal({ opened, onClose }: ControlsModalProps) {
       withCloseButton={false}
       size="md"
       centered
+      zIndex={2000}
       styles={{
         content: {
           backgroundColor: "var(--primary-bg)",
           border: "1px solid var(--border-primary)",
           borderRadius: "12px",
           boxShadow: "var(--shadow-primary)",
+          fontFamily: "var(--font-primary)",
         },
         body: {
           backgroundColor: "var(--primary-bg)",
           padding: "0",
+          fontFamily: "var(--font-primary)",
         },
       }}
     >

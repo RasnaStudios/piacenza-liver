@@ -427,11 +427,15 @@
   }
 
   .inscription-details-container {
-    padding: 0 20px;
+    padding: 0;
+    width: 100%;
+    max-width: none;
+    margin: 24px 0 0;
   }
 
   .inscription-details-panel {
     padding: 20px;
+    width: 100%;
   }
 
   .deities-grid {

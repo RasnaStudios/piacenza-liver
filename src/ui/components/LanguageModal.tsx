@@ -37,6 +37,7 @@ export function LanguageModal({ opened, onClose }: LanguageModalProps) {
       withCloseButton={false}
       size="md"
       centered
+      zIndex={2000}
       styles={{
         content: {
           backgroundColor: "var(--primary-bg)",

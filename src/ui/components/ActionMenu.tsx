@@ -1,6 +1,6 @@
 import { Box, Transition } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
-import { useState } from "react"
+import { type CSSProperties, useState } from "react"
 import { isMobile } from "react-device-detect"
 import { FiMenu, FiX } from "react-icons/fi"
 import { ActionButtons } from "./ActionButtons"
@@ -23,6 +23,8 @@ export function ActionMenu({
   const [isOpen, setIsOpen] = useState(false)
   const isNarrow = useMediaQuery("(max-width: 1100px)")
   const useBottomMenu = isMobile || isNarrow
+  const buttonOrder = useBottomMenu ? 2 : 1
+  const panelOrder = useBottomMenu ? 1 : 2
 
   if (!isVisible) return null
 
@@ -40,13 +42,21 @@ export function ActionMenu({
     setIsOpen(false)
   }
 
-  const containerStyle = useBottomMenu
+  const positionStyles: CSSProperties = useBottomMenu
     ? {
         top: "auto",
         bottom: isMobile ? "16px" : "20px",
         right: isMobile ? "16px" : "20px",
       }
-    : undefined
+    : {}
+
+  const containerStyle: CSSProperties = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    gap: useBottomMenu ? 12 : 10,
+    ...positionStyles,
+  }
 
   return (
     <Box className="action-menu-container" style={containerStyle}>
@@ -55,22 +65,21 @@ export function ActionMenu({
         transition={useBottomMenu ? "slide-up" : "slide-down"}
         duration={300}
         timingFunction="ease-out"
+        keepMounted
       >
         {(styles) => (
           <Box
             style={{
-              ...styles,
-              position: "absolute",
-              top: useBottomMenu ? undefined : "200px",
-              bottom: useBottomMenu ? "68px" : undefined, // open upward above the button on mobile/tablet
-              right: 0,
+              order: panelOrder,
               background: "rgba(0, 0, 0, 0.85)",
               backdropFilter: "blur(10px)",
               borderRadius: "12px",
               padding: "12px",
-              minWidth: isMobile ? "200px" : "350px",
+              minWidth: useBottomMenu ? "220px" : "340px",
+              maxWidth: "min(420px, calc(100vw - 48px))",
               boxShadow: "0 4px 20px rgba(0, 0, 0, 0.5)",
               border: "1px solid rgba(97, 80, 53, 0.41)",
+              ...styles,
             }}
           >
             <ActionButtons
@@ -80,6 +89,7 @@ export function ActionMenu({
               disableAnimation={true}
               hideExploreInscriptions={hideExploreInscriptions}
               hideControls={hideControls}
+              onAction={() => setIsOpen(false)}
             />
           </Box>
         )}
@@ -91,6 +101,7 @@ export function ActionMenu({
         className={`action-menu-button ${isOpen ? "is-open" : ""}`}
         aria-label={isOpen ? "Close menu" : "Open menu"}
         title={isOpen ? "Close menu" : "Open menu"}
+        style={{ order: buttonOrder }}
       >
         {isOpen ? (
           <FiX className="action-menu-icon" />

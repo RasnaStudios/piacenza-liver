@@ -17,7 +17,15 @@ function App() {
   const [showLoadingUI, _setShowLoadingUI] = useState(true)
 
   return (
-    <MantineProvider>
+    <MantineProvider
+      theme={{
+        fontFamily: "var(--font-primary)",
+        headings: {
+          fontFamily: "var(--font-display)",
+          fontWeight: "400",
+        },
+      }}
+    >
       <StrictMode>
         <MetaTags />
         <BrowserRouter>
