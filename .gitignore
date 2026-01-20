@@ -41,3 +41,4 @@ venv/
 # caches
 .pnpm-store
 node_modules
+.cache/

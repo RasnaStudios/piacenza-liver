@@ -116,50 +116,104 @@ export function MetaTags() {
     updateProperty("twitter:image:alt", ogImageAlt)
     updateProperty("twitter:creator", "@andraghetti")
 
+    const datasetUrl = `${baseUrl}/data/inscriptions.yaml`
+    const websiteId = `${baseUrl}/#website`
+    const webAppId = `${baseUrl}/#webapp`
+    const webPageId = `${currentUrl}#webpage`
+    const datasetId = `${datasetUrl}#dataset`
+
     const structuredData = {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      name: htmlTitle,
-      description: structuredDataDescription,
-      url: "https://liver.rasna.dev/",
-      publisher: {
-        "@type": "Organization",
-        name: ogSiteName,
-      },
-      creator: {
-        "@type": "Person",
-        name: "Lorenzo Andraghetti",
-        alternateName: "@andraghetti",
-      },
-      about: {
-        "@type": "CreativeWork",
-        name: appleMobileWebAppTitle,
-        description: t("structuredData.aboutDescription"),
-        dateCreated: "c. 100 BCE",
-      },
-      keywords: keywords,
-      isAccessibleForFree: true,
-      distribution: {
-        "@type": "DataDownload",
-        contentUrl: "https://liver.rasna.dev/data/inscriptions.json",
-        encodingFormat: "application/json",
-        name: datasetName,
-        description: datasetDescription,
-      },
-      mainEntity: {
-        "@type": "Dataset",
-        name: datasetName,
-        description: datasetDescription,
-        url: "https://liver.rasna.dev/data/inscriptions.json",
-        encodingFormat: "application/json",
-        keywords: keywords,
-        creator: {
-          "@type": "Person",
-          name: "Lorenzo Andraghetti",
-          alternateName: "@andraghetti",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": websiteId,
+          url: `${baseUrl}/`,
+          name: ogSiteName,
+          description: description,
+          inLanguage: htmlLang,
+          publisher: {
+            "@type": "Organization",
+            name: ogSiteName,
+          },
         },
-        license: "https://opensource.org/licenses/MIT",
-      },
+        {
+          "@type": "WebPage",
+          "@id": webPageId,
+          url: currentUrl,
+          name: htmlTitle,
+          description: structuredDataDescription,
+          isPartOf: {
+            "@id": websiteId,
+          },
+          primaryImageOfPage: {
+            "@type": "ImageObject",
+            url: `${baseUrl}/homepage.png`,
+          },
+          inLanguage: htmlLang,
+          about: {
+            "@type": "CreativeWork",
+            name: appleMobileWebAppTitle,
+            description: t("structuredData.aboutDescription"),
+            dateCreated: "c. 100 BCE",
+          },
+          mainEntity: {
+            "@id": webAppId,
+          },
+        },
+        {
+          "@type": "WebApplication",
+          "@id": webAppId,
+          name: htmlTitle,
+          description: structuredDataDescription,
+          url: `${baseUrl}/`,
+          applicationCategory: "EducationalApplication",
+          operatingSystem: "Web",
+          keywords: keywords,
+          isAccessibleForFree: true,
+          creator: {
+            "@type": "Person",
+            name: "Lorenzo Andraghetti",
+            alternateName: "@andraghetti",
+          },
+          publisher: {
+            "@type": "Organization",
+            name: ogSiteName,
+          },
+          about: {
+            "@type": "CreativeWork",
+            name: appleMobileWebAppTitle,
+            description: t("structuredData.aboutDescription"),
+            dateCreated: "c. 100 BCE",
+          },
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "USD",
+          },
+        },
+        {
+          "@type": "Dataset",
+          "@id": datasetId,
+          name: datasetName,
+          description: datasetDescription,
+          url: datasetUrl,
+          encodingFormat: "application/x-yaml",
+          keywords: keywords,
+          isAccessibleForFree: true,
+          creator: {
+            "@type": "Person",
+            name: "Lorenzo Andraghetti",
+            alternateName: "@andraghetti",
+          },
+          license: "https://opensource.org/licenses/MIT",
+          distribution: {
+            "@type": "DataDownload",
+            contentUrl: datasetUrl,
+            encodingFormat: "application/x-yaml",
+          },
+        },
+      ],
     }
 
     let script = document.querySelector('script[type="application/ld+json"]')
