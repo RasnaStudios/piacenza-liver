@@ -66,9 +66,10 @@ i18n
       suffix: "}",
     },
     detection: {
-      order: ["localStorage", "navigator"],
+      order: ["path", "localStorage", "navigator"],
       caches: ["localStorage"],
       lookupLocalStorage: "i18nextLng",
+      lookupFromPathIndex: 0,
       convertDetectedLanguage: (lng: string) => {
         const normalized = lng.toLowerCase().replace("_", "-")
         if (languageMap[normalized]) {

@@ -71,6 +71,19 @@ const startServer = async () => {
       res.statusCode = 200
       res.end(data)
     } catch {
+      const requestedPath = decodeURIComponent(req.url.split("?")[0])
+      if (!path.extname(requestedPath)) {
+        try {
+          const fallbackPath = path.join(distDir, "index.html")
+          const data = await readFile(fallbackPath)
+          res.setHeader("Content-Type", contentTypes[".html"])
+          res.statusCode = 200
+          res.end(data)
+          return
+        } catch {
+          // Fall through to 404 if the SPA entry is missing.
+        }
+      }
       res.statusCode = 404
       res.end("Not found")
     }
@@ -218,9 +231,33 @@ const run = async () => {
     )
     await snapshotRoute(
       page,
+      `${baseUrl}/en`,
+      "#root",
+      path.join(distDir, "en", "index.html"),
+    )
+    await snapshotRoute(
+      page,
+      `${baseUrl}/it`,
+      "#root",
+      path.join(distDir, "it", "index.html"),
+    )
+    await snapshotRoute(
+      page,
       `${baseUrl}/inscriptions`,
       ".inscription-exploration",
       path.join(distDir, "inscriptions", "index.html"),
+    )
+    await snapshotRoute(
+      page,
+      `${baseUrl}/en/inscriptions`,
+      ".inscription-exploration",
+      path.join(distDir, "en", "inscriptions", "index.html"),
+    )
+    await snapshotRoute(
+      page,
+      `${baseUrl}/it/inscriptions`,
+      ".inscription-exploration",
+      path.join(distDir, "it", "inscriptions", "index.html"),
     )
   } finally {
     await browser.close()

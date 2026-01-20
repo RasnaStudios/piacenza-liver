@@ -1,6 +1,8 @@
 import { Box, Menu } from "@mantine/core"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useLocation, useNavigate } from "react-router-dom"
+import { buildLocalizedPath, getLocalePrefix } from "../../i18n/localeRouting"
 
 const languages = [
   { code: "en_US", label: "English", flag: "🇺🇸" },
@@ -10,11 +12,16 @@ const languages = [
 export function LanguageSwitcher() {
   const { i18n } = useTranslation()
   const [opened, setOpened] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const currentLanguage =
     languages.find((lang) => lang.code === i18n.language) || languages[0]
 
   const handleLanguageChange = (langCode: string) => {
+    const locale = getLocalePrefix(langCode)
+    const nextPath = buildLocalizedPath(location.pathname, locale)
+    navigate(`${nextPath}${location.search}${location.hash}`)
     i18n.changeLanguage(langCode)
     setOpened(false)
   }

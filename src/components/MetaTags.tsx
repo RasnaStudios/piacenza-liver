@@ -1,5 +1,12 @@
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
+import { useLocation } from "react-router-dom"
+import {
+  buildLocalizedPath,
+  type LocalePrefix,
+  normalizePath,
+  stripLocalePrefix,
+} from "../i18n/localeRouting"
 
 const localeMap: Record<string, string> = {
   en_US: "en",
@@ -11,6 +18,7 @@ const localeMap: Record<string, string> = {
 
 export function MetaTags() {
   const { i18n, t } = useTranslation("meta")
+  const location = useLocation()
 
   useEffect(() => {
     const htmlLang = localeMap[i18n.language] || "en"
@@ -74,8 +82,12 @@ export function MetaTags() {
     const datasetDescription = t("structuredData.datasetDescription")
 
     const baseUrl = "https://liver.rasna.dev"
-    const currentUrl =
-      baseUrl + window.location.pathname + window.location.search
+    const currentPath = normalizePath(location.pathname)
+    const currentUrl = `${baseUrl}${
+      currentPath === "/" ? "/" : currentPath
+    }${location.search}`
+    const basePath = stripLocalePrefix(currentPath)
+    const xDefaultUrl = `${baseUrl}${basePath === "/" ? "/" : basePath}`
 
     document.title = htmlTitle
     updateMetaContent("title", htmlTitle)
@@ -86,16 +98,21 @@ export function MetaTags() {
 
     updateLink("canonical", currentUrl)
 
-    const supportedLanguages = [
-      { code: "en_US", hreflang: "en" },
-      { code: "it_IT", hreflang: "it" },
+    const supportedLanguages: Array<{
+      code: string
+      hreflang: string
+      locale: LocalePrefix
+    }> = [
+      { code: "en_US", hreflang: "en", locale: "en" },
+      { code: "it_IT", hreflang: "it", locale: "it" },
     ]
 
     supportedLanguages.forEach((lang) => {
-      updateLink("alternate", baseUrl, lang.hreflang)
+      const localizedPath = buildLocalizedPath(basePath, lang.locale)
+      updateLink("alternate", `${baseUrl}${localizedPath}`, lang.hreflang)
     })
 
-    updateLink("alternate", baseUrl, "x-default")
+    updateLink("alternate", xDefaultUrl, "x-default")
 
     updateProperty("og:type", "website")
     updateProperty("og:url", currentUrl)
@@ -162,11 +179,12 @@ export function MetaTags() {
           },
         },
         {
-          "@type": "WebApplication",
+          "@type": ["WebApplication", "SoftwareApplication"],
           "@id": webAppId,
           name: htmlTitle,
           description: structuredDataDescription,
           url: `${baseUrl}/`,
+          inLanguage: htmlLang,
           applicationCategory: "EducationalApplication",
           operatingSystem: "Web",
           keywords: keywords,
@@ -223,7 +241,7 @@ export function MetaTags() {
       document.head.appendChild(script)
     }
     script.textContent = JSON.stringify(structuredData)
-  }, [i18n.language, t])
+  }, [i18n.language, location.pathname, location.search, t])
 
   return null
 }

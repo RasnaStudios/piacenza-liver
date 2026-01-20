@@ -16,6 +16,25 @@ function App() {
   const [isTitleVisible, setIsTitleVisible] = useState(true)
   const [showLoadingUI, _setShowLoadingUI] = useState(true)
 
+  const homeElement = (
+    <>
+      <Scene
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
+        setLoadingProgress={setLoadingProgress}
+        hasInteracted={hasInteracted}
+        setHasInteracted={setHasInteracted}
+        setTitleVisible={setIsTitleVisible}
+      />
+      <TitleOverlay isVisible={isTitleVisible} />
+      <LoadingScreen
+        progress={loadingProgress}
+        isLoading={isLoading}
+        showLoadingUI={showLoadingUI}
+      />
+    </>
+  )
+
   return (
     <MantineProvider
       theme={{
@@ -27,31 +46,21 @@ function App() {
       }}
     >
       <StrictMode>
-        <MetaTags />
         <BrowserRouter>
+          <MetaTags />
           <Routes>
             <Route path="/inscriptions" element={<InscriptionExploration />} />
             <Route
-              path="/"
-              element={
-                <>
-                  <Scene
-                    isLoading={isLoading}
-                    setIsLoading={setIsLoading}
-                    setLoadingProgress={setLoadingProgress}
-                    hasInteracted={hasInteracted}
-                    setHasInteracted={setHasInteracted}
-                    setTitleVisible={setIsTitleVisible}
-                  />
-                  <TitleOverlay isVisible={isTitleVisible} />
-                  <LoadingScreen
-                    progress={loadingProgress}
-                    isLoading={isLoading}
-                    showLoadingUI={showLoadingUI}
-                  />
-                </>
-              }
+              path="/en/inscriptions"
+              element={<InscriptionExploration />}
             />
+            <Route
+              path="/it/inscriptions"
+              element={<InscriptionExploration />}
+            />
+            <Route path="/" element={homeElement} />
+            <Route path="/en" element={homeElement} />
+            <Route path="/it" element={homeElement} />
           </Routes>
         </BrowserRouter>
       </StrictMode>
