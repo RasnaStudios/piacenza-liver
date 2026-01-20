@@ -11,6 +11,7 @@ import { CameraController } from "./camera/Controller"
 import { SceneConfig } from "./config/SceneConfig"
 // Hooks
 import { useOrientation } from "./hooks/useOrientation"
+import { buildLocalizedPath, getLocalePrefix } from "./i18n/localeRouting"
 import {
   clearAboutHash,
   clearInscriptionHash,
@@ -54,7 +55,7 @@ function PiacenzaLiverScene({
 }) {
   const navigate = useNavigate()
   const { t: tMeta } = useTranslation("meta")
-  const { t: tCommon } = useTranslation("common")
+  const { i18n, t: tCommon } = useTranslation("common")
   // Orientation detection
   const isPortrait = useOrientation()
   const isSmallScreen = useMediaQuery("(max-width: 768px)")
@@ -63,6 +64,8 @@ function PiacenzaLiverScene({
   )
   const isAboutMode = interactionMode === InteractionMode.About
   const isInscriptionMode = interactionMode === InteractionMode.Inscription
+  const localePrefix = getLocalePrefix(i18n.language)
+  const inscriptionsPath = buildLocalizedPath("/inscriptions", localePrefix)
 
   // State management
   const [selectedInscription, setSelectedInscription] =
@@ -1088,7 +1091,9 @@ function PiacenzaLiverScene({
         <h1>{tMeta("htmlTitle")}</h1>
         <p>{tMeta("description")}</p>
         <p>
-          <a href="/inscriptions">{tCommon("buttons.exploreInscriptions")}</a>
+          <a href={inscriptionsPath}>
+            {tCommon("buttons.exploreInscriptions")}
+          </a>
         </p>
       </main>
       <div className="scene-container">
@@ -1113,7 +1118,7 @@ function PiacenzaLiverScene({
             onClose={handlePanelClose}
             onInscriptionSelect={handleInscriptionListClick}
             onAboutClick={handleReturnToIntro}
-            onExploreClick={() => navigate("/inscriptions")}
+            onExploreClick={() => navigate(inscriptionsPath)}
           />
           <InscriptionList
             onInscriptionSelect={handleInscriptionListClick}
@@ -1170,7 +1175,7 @@ function PiacenzaLiverScene({
               >
                 <ActionButtons
                   onAboutClick={handleReturnToIntro}
-                  onExploreClick={() => navigate("/inscriptions")}
+                  onExploreClick={() => navigate(inscriptionsPath)}
                   showLanguageSwitcher={true}
                   disableAnimation={false}
                   align="right"
@@ -1180,7 +1185,7 @@ function PiacenzaLiverScene({
             )}
             <ActionMenu
               onAboutClick={handleReturnToIntro}
-              onExploreClick={() => navigate("/inscriptions")}
+              onExploreClick={() => navigate(inscriptionsPath)}
               isVisible={isPortrait}
             />
           </>

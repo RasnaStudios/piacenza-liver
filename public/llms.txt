@@ -1,0 +1,22 @@
+# Piacenza Liver - 3D Etruscan Archaeological Reconstruction
+> Interactive WebGL visualization of the Piacenza Liver with annotations and inscriptions.
+
+## Pages
+- https://liver.rasna.dev/
+- https://liver.rasna.dev/en
+- https://liver.rasna.dev/it
+- https://liver.rasna.dev/inscriptions
+- https://liver.rasna.dev/en/inscriptions
+- https://liver.rasna.dev/it/inscriptions
+
+## Data
+- https://liver.rasna.dev/data/inscriptions.yaml
+
+## Source
+- https://github.com/rasnastudios/piacenza-liver
+
+## Author
+- Lorenzo Andraghetti
+
+## License
+- MIT License (https://opensource.org/licenses/MIT)

@@ -10,6 +10,8 @@ import {
 } from "@mantine/core"
 import { IconX } from "@tabler/icons-react"
 import { useTranslation } from "react-i18next"
+import { useLocation, useNavigate } from "react-router-dom"
+import { buildLocalizedPath, getLocalePrefix } from "../../i18n/localeRouting"
 import { FeedbackSection } from "./FeedbackSection"
 
 interface LanguageModalProps {
@@ -24,8 +26,13 @@ const languages = [
 
 export function LanguageModal({ opened, onClose }: LanguageModalProps) {
   const { i18n, t } = useTranslation("common")
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleLanguageChange = (langCode: string) => {
+    const locale = getLocalePrefix(langCode)
+    const nextPath = buildLocalizedPath(location.pathname, locale)
+    navigate(`${nextPath}${location.search}${location.hash}`)
     i18n.changeLanguage(langCode)
     onClose()
   }

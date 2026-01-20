@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import YAML from "yaml"
 import { buildLiverDataset } from "../../data/LiverDataset"
+import { buildLocalizedPath, getLocalePrefix } from "../../i18n/localeRouting"
 import { getInscriptionHash, setAboutHash } from "../../navigation"
 import type { Inscription, LiverGod } from "../../scene/LiverData"
 import {
@@ -188,9 +189,12 @@ function InscriptionDetailsPanel({
 
 export function InscriptionExploration() {
   const { t } = useTranslation("exploration")
-  const { t: tCommon } = useTranslation("common")
+  const { i18n, t: tCommon } = useTranslation("common")
   const { t: tLiverData } = useTranslation("liverData")
   const navigate = useNavigate()
+  const localePrefix = getLocalePrefix(i18n.language)
+  const inscriptionsPath = buildLocalizedPath("/inscriptions", localePrefix)
+  const homePath = buildLocalizedPath("/", localePrefix)
   const isCompactLayout = useMediaQuery("(max-width: 640px)")
   const deityLookup = useMemo(() => {
     const map = new Map<string, string>()
@@ -345,17 +349,21 @@ export function InscriptionExploration() {
   ) => {
     if (selectedInscriptionId === inscription.id) {
       setSelectedInscriptionId(null)
-      window.history.pushState(null, "", "/inscriptions")
+      window.history.pushState(null, "", inscriptionsPath)
     } else {
       setSelectedInscriptionId(inscription.id)
-      window.history.pushState(null, "", `/inscriptions#${inscription.id}`)
+      window.history.pushState(
+        null,
+        "",
+        `${inscriptionsPath}#${inscription.id}`,
+      )
       scrollToDetails(sectionId)
     }
   }
 
   const handleInscriptionSelect = (id: number, sectionId?: string) => {
     setSelectedInscriptionId(id)
-    window.history.pushState(null, "", `/inscriptions#${id}`)
+    window.history.pushState(null, "", `${inscriptionsPath}#${id}`)
 
     const inscription = liverInscriptions.find((ins) => ins.id === id)
     if (!inscription) return
@@ -410,7 +418,7 @@ export function InscriptionExploration() {
 
   const handleViewIn3D = (inscription: Inscription, e: React.MouseEvent) => {
     e.stopPropagation()
-    navigate(`/${getInscriptionHash(inscription.id)}`)
+    navigate(`${homePath}${getInscriptionHash(inscription.id)}`)
   }
 
   const handleDownloadYAML = () => {
@@ -458,12 +466,12 @@ export function InscriptionExploration() {
         background: "#000000",
       }}
     >
-      <Box className="back-button-container" onClick={() => navigate("/")}>
+      <Box className="back-button-container" onClick={() => navigate(homePath)}>
         <IconArrowLeft size={32} stroke={2} />
       </Box>
       <ActionMenu
         onAboutClick={() => {
-          navigate("/")
+          navigate(homePath)
           setAboutHash()
         }}
         onExploreClick={() => {}}
