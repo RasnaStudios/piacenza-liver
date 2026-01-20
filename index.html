@@ -47,6 +47,7 @@
   <link rel="canonical" href="https://liver.rasna.dev/" />
   <link rel="alternate" hreflang="x-default" href="https://liver.rasna.dev/" />
   <link rel="alternate" hreflang="en" href="https://liver.rasna.dev/" />
+  <link rel="alternate" hreflang="it" href="https://liver.rasna.dev/" />
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
@@ -82,48 +83,96 @@
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "Piacenza Liver - 3D Etruscan Archaeological Reconstruction",
-      "description": "Interactive 3D visualization of the ancient Etruscan Piacenza Liver with all 42 authentic inscriptions and scholarly annotations",
-      "url": "https://liver.rasna.dev/",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Piacenza Liver 3D"
-      },
-      "creator": {
-        "@type": "Person",
-        "name": "Lorenzo Andraghetti",
-        "alternateName": "@andraghetti"
-      },
-      "about": {
-        "@type": "CreativeWork",
-        "name": "Piacenza Liver",
-        "description": "Ancient Etruscan bronze liver used for hepatoscopy (liver divination)",
-        "dateCreated": "c. 100 BCE"
-      },
-      "keywords": "Piacenza Liver, Etruscan, archaeology, 3D visualization, ancient inscriptions, hepatoscopy, divination",
-      "isAccessibleForFree": true,
-      "distribution": {
-        "@type": "DataDownload",
-        "contentUrl": "https://liver.rasna.dev/data/inscriptions.json",
-        "encodingFormat": "application/json",
-        "name": "Piacenza Liver Inscriptions Dataset",
-        "description": "Complete dataset of all 42 Etruscan deity inscriptions with translations and scholarly annotations"
-      },
-      "mainEntity": {
-        "@type": "Dataset",
-        "name": "Piacenza Liver Inscriptions",
-        "description": "42 Etruscan deity inscriptions with translations, cosmological groupings, and archaeological metadata",
-        "url": "https://liver.rasna.dev/data/inscriptions.json",
-        "encodingFormat": "application/json",
-        "keywords": "Etruscan inscriptions, Piacenza Liver, 3D visualization, archaeological data, deity names, hepatoscopy",
-        "creator": {
-          "@type": "Person",
-          "name": "Lorenzo Andraghetti",
-          "alternateName": "@andraghetti"
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://liver.rasna.dev/#website",
+          "url": "https://liver.rasna.dev/",
+          "name": "Piacenza Liver Reconstruction",
+          "description": "3D interactive visualization of the Etruscan Piacenza Liver with 42 inscriptions and scholarly annotations.",
+          "inLanguage": "en",
+          "publisher": {
+            "@type": "Organization",
+            "name": "Piacenza Liver 3D"
+          }
         },
-        "license": "https://opensource.org/licenses/MIT"
-      }
+        {
+          "@type": "WebPage",
+          "@id": "https://liver.rasna.dev/#webpage",
+          "url": "https://liver.rasna.dev/",
+          "name": "Piacenza Liver - 3D Etruscan Archaeological Reconstruction",
+          "description": "Interactive 3D visualization of the ancient Etruscan Piacenza Liver with all 42 authentic inscriptions and scholarly annotations",
+          "isPartOf": {
+            "@id": "https://liver.rasna.dev/#website"
+          },
+          "primaryImageOfPage": {
+            "@type": "ImageObject",
+            "url": "https://liver.rasna.dev/homepage.png"
+          },
+          "inLanguage": "en",
+          "about": {
+            "@type": "CreativeWork",
+            "name": "Piacenza Liver",
+            "description": "Ancient Etruscan bronze liver used for hepatoscopy (liver divination)",
+            "dateCreated": "c. 100 BCE"
+          },
+          "mainEntity": {
+            "@id": "https://liver.rasna.dev/#webapp"
+          }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://liver.rasna.dev/#webapp",
+          "name": "Piacenza Liver - 3D Etruscan Archaeological Reconstruction",
+          "description": "Interactive 3D visualization of the ancient Etruscan Piacenza Liver with all 42 authentic inscriptions and scholarly annotations",
+          "url": "https://liver.rasna.dev/",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "Web",
+          "keywords": "Piacenza Liver, Etruscan, archaeology, 3D visualization, ancient inscriptions, hepatoscopy, divination",
+          "isAccessibleForFree": true,
+          "creator": {
+            "@type": "Person",
+            "name": "Lorenzo Andraghetti",
+            "alternateName": "@andraghetti"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "Piacenza Liver 3D"
+          },
+          "about": {
+            "@type": "CreativeWork",
+            "name": "Piacenza Liver",
+            "description": "Ancient Etruscan bronze liver used for hepatoscopy (liver divination)",
+            "dateCreated": "c. 100 BCE"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        },
+        {
+          "@type": "Dataset",
+          "@id": "https://liver.rasna.dev/data/inscriptions.yaml#dataset",
+          "name": "Piacenza Liver Inscriptions Dataset",
+          "description": "Complete dataset of all 42 Etruscan deity inscriptions with translations and scholarly annotations",
+          "url": "https://liver.rasna.dev/data/inscriptions.yaml",
+          "encodingFormat": "application/x-yaml",
+          "keywords": "Etruscan inscriptions, Piacenza Liver, 3D visualization, archaeological data, deity names, hepatoscopy",
+          "isAccessibleForFree": true,
+          "creator": {
+            "@type": "Person",
+            "name": "Lorenzo Andraghetti",
+            "alternateName": "@andraghetti"
+          },
+          "license": "https://opensource.org/licenses/MIT",
+          "distribution": {
+            "@type": "DataDownload",
+            "contentUrl": "https://liver.rasna.dev/data/inscriptions.yaml",
+            "encodingFormat": "application/x-yaml"
+          }
+        }
+      ]
     }
     </script>
 
@@ -133,6 +182,27 @@
 
 <body>
   <div id="root"></div>
+  <noscript>
+    <h1>Piacenza Liver - 3D Etruscan Archaeological Reconstruction</h1>
+    <p>
+      3D interactive visualization of the Etruscan Piacenza Liver with 42
+      inscriptions and scholarly annotations.
+    </p>
+    <p>
+      This site uses WebGL and JavaScript to render the 3D model. Please enable
+      JavaScript to view the visualization.
+
+      If you are using a browser that does not support WebGL, you can still view the inscriptions by clicking the button below.
+    </p>
+    <p>
+      <a
+        href="/inscriptions"
+        style="display:inline-block;padding:10px 16px;border:1px solid #c9a876;color:#c9a876;text-decoration:none;border-radius:6px;"
+      >
+        Explore inscriptions
+      </a>
+    </p>
+  </noscript>
   <script type="module" src="/src/main.tsx" defer></script>
 </body>
 

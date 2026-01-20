@@ -1,6 +1,7 @@
 import { Box } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { FiArrowLeft } from "react-icons/fi"
 import { useNavigate } from "react-router-dom"
 import * as THREE from "three"
@@ -52,6 +53,8 @@ function PiacenzaLiverScene({
   setTitleVisible: (visible: boolean) => void
 }) {
   const navigate = useNavigate()
+  const { t: tMeta } = useTranslation("meta")
+  const { t: tCommon } = useTranslation("common")
   // Orientation detection
   const isPortrait = useOrientation()
   const isSmallScreen = useMediaQuery("(max-width: 768px)")
@@ -1066,6 +1069,28 @@ function PiacenzaLiverScene({
 
   return (
     <div className="piacenza-liver-app">
+      <main
+        className="seo-content"
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          left: "-9999px",
+          top: 0,
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+          whiteSpace: "nowrap",
+          opacity: 0,
+          pointerEvents: "none",
+          zIndex: -9999,
+        }}
+      >
+        <h1>{tMeta("htmlTitle")}</h1>
+        <p>{tMeta("description")}</p>
+        <p>
+          <a href="/inscriptions">{tCommon("buttons.exploreInscriptions")}</a>
+        </p>
+      </main>
       <div className="scene-container">
         <div
           ref={containerRef}

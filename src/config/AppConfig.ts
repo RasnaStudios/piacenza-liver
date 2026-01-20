@@ -8,7 +8,7 @@
  */
 export const AppConfig = {
   feedbackEmail:
-    import.meta.env.VITE_FEEDBACK_EMAIL || "lithium.34advance@icloud.com",
+    import.meta.env?.VITE_FEEDBACK_EMAIL || "lithium.34advance@icloud.com",
 
   repositoryUrl: "https://github.com/rasnastudios/piacenza-liver",
 

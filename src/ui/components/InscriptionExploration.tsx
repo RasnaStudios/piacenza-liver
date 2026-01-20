@@ -5,7 +5,7 @@ import { Fragment, useEffect, useMemo, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useNavigate } from "react-router-dom"
 import YAML from "yaml"
-import { AppConfig } from "../../config/AppConfig"
+import { buildLiverDataset } from "../../data/LiverDataset"
 import { getInscriptionHash, setAboutHash } from "../../navigation"
 import type { Inscription, LiverGod } from "../../scene/LiverData"
 import {
@@ -414,73 +414,7 @@ export function InscriptionExploration() {
   }
 
   const handleDownloadYAML = () => {
-    const zones = Object.entries(liverGroups).map(([zoneId, group]) => ({
-      id: zoneId,
-      name: tLiverData(`groups.${group.id}.name`),
-      description: tLiverData(`groups.${group.id}.description`),
-    }))
-
-    const inscriptions = liverInscriptions.map((ins) => {
-      const group = getInscriptionGroup(ins.id)
-      const entry: {
-        id: number
-        zoneId: string
-        etruscanText: string
-        transcription: string
-        gods: string[]
-        description?: string
-      } = {
-        id: ins.id,
-        zoneId: group?.id || "",
-        etruscanText: ins.etruscanText,
-        transcription: ins.transcription,
-        gods: ins.gods.map((g) => (typeof g === "string" ? g : g.id)),
-      }
-      if (ins.description) entry.description = ins.description
-      return entry
-    })
-
-    const deities = Object.entries(liverGods).map(([id, deity]) => {
-      const d: {
-        id: string
-        name: string
-        romanEquivalent: string
-        greekEquivalent?: string
-        description?: string
-      } = {
-        id,
-        name: deity.name,
-        romanEquivalent:
-          tLiverData(`deities.${id}.romanEquivalent`, {
-            defaultValue: "",
-          }) || "N/A",
-      }
-      const greek = tLiverData(`deities.${id}.greekEquivalent`, {
-        defaultValue: "",
-      })
-      if (greek) {
-        d.greekEquivalent = greek
-      }
-      const description = tLiverData(`deities.${id}.description`)
-      if (description) {
-        d.description = description
-      }
-      return d
-    })
-
-    const data = {
-      metadata: {
-        title: "Piacenza Liver Dataset - Complete Archaeological Data",
-        totalInscriptions: liverInscriptions.length,
-        totalZones: Object.keys(liverGroups).length,
-        totalDeities: Object.keys(liverGods).length,
-        creator: AppConfig.creator.name,
-        source: "https://liver.rasna.dev/",
-      },
-      zones,
-      inscriptions,
-      deities,
-    }
+    const data = buildLiverDataset(tLiverData)
 
     const yamlContent = YAML.stringify(data)
     const blob = new Blob([yamlContent], { type: "application/x-yaml" })
