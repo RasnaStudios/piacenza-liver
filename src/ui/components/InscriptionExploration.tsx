@@ -22,7 +22,6 @@ import { DeityCard } from "./DeityCard"
 import { Footer } from "./Footer"
 import { InteractionButton } from "./InteractionButton"
 import { NumberBadge } from "./NumberBadge"
-import "../../styles/global.css"
 import "./InscriptionExploration.css"
 
 function getGodId(godEntry: { id: string; form: string } | string): string {

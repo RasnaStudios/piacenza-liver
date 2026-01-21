@@ -1,13 +1,17 @@
+import { registerSW } from "virtual:pwa-register"
 import { MantineProvider } from "@mantine/core"
-import { StrictMode, useState } from "react"
+import { lazy, StrictMode, Suspense, useState } from "react"
 import { createRoot } from "react-dom/client"
 import { BrowserRouter, Route, Routes } from "react-router-dom"
+import "@mantine/core/styles.css"
+import "./styles/global.css"
 import "./i18n/config"
 import { MetaTags } from "./components/MetaTags"
-import Scene from "./Scene"
 import { InscriptionExploration } from "./ui/components/InscriptionExploration"
 import { TitleOverlay } from "./ui/components/TitleOverlay"
 import { LoadingScreen } from "./ui/LoadingScreen"
+
+const Scene = lazy(() => import("./Scene"))
 
 function App() {
   const [loadingProgress, setLoadingProgress] = useState(0)
@@ -18,14 +22,16 @@ function App() {
 
   const homeElement = (
     <>
-      <Scene
-        isLoading={isLoading}
-        setIsLoading={setIsLoading}
-        setLoadingProgress={setLoadingProgress}
-        hasInteracted={hasInteracted}
-        setHasInteracted={setHasInteracted}
-        setTitleVisible={setIsTitleVisible}
-      />
+      <Suspense fallback={null}>
+        <Scene
+          isLoading={isLoading}
+          setIsLoading={setIsLoading}
+          setLoadingProgress={setLoadingProgress}
+          hasInteracted={hasInteracted}
+          setHasInteracted={setHasInteracted}
+          setTitleVisible={setIsTitleVisible}
+        />
+      </Suspense>
       <TitleOverlay isVisible={isTitleVisible} />
       <LoadingScreen
         progress={loadingProgress}
@@ -76,7 +82,5 @@ if (!rootElement) {
 createRoot(rootElement).render(<App />)
 
 if ("serviceWorker" in navigator) {
-  setTimeout(() => {
-    navigator.serviceWorker.register("/sw.js").catch(() => {})
-  }, 5000)
+  registerSW({ immediate: true })
 }
