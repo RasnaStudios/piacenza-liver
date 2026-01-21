@@ -35,8 +35,6 @@ import { ResetInstruction } from "./ui/components/ResetInstruction"
 // UI Components
 import { DeityPanel } from "./ui/DeityPanel"
 import { InscriptionList } from "./ui/InscriptionList"
-import "@mantine/core/styles.css"
-import "./styles/global.css"
 
 function PiacenzaLiverScene({
   isLoading,

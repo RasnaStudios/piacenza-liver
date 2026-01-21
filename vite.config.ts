@@ -2,6 +2,7 @@ import fs from "node:fs"
 import path from "node:path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
+import { VitePWA } from "vite-plugin-pwa"
 import Sitemap from "vite-plugin-sitemap"
 
 const LIVER_DATA_PATH = path.resolve("src/scene/LiverData.ts")
@@ -86,6 +87,53 @@ export default defineConfig({
       },
       generateRobotsTxt: false,
       readable: true,
+    }),
+    VitePWA({
+      registerType: "autoUpdate",
+      injectRegister: false,
+      manifest: false,
+      workbox: {
+        maximumFileSizeToCacheInBytes: 150 * 1024 * 1024,
+        globPatterns: [
+          "**/*.{js,css,html,ico,png,svg,json,txt,woff2,jpg,jpeg,obj}",
+        ],
+        cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.endsWith(".obj"),
+            handler: "CacheFirst",
+            options: {
+              cacheName: "models",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+            },
+          },
+          {
+            urlPattern: ({ request }) => request.destination === "image",
+            handler: "CacheFirst",
+            options: {
+              cacheName: "images",
+              expiration: {
+                maxEntries: 80,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+            },
+          },
+          {
+            urlPattern: ({ request }) => request.destination === "font",
+            handler: "CacheFirst",
+            options: {
+              cacheName: "fonts",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365,
+              },
+            },
+          },
+        ],
+      },
     }),
   ],
   server: {
