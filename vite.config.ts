@@ -2,8 +2,16 @@ import fs from "node:fs"
 import path from "node:path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
+import Sitemap from "vite-plugin-sitemap"
 
 const LIVER_DATA_PATH = path.resolve("src/scene/LiverData.ts")
+const SITEMAP_ROUTES = [
+  "/en",
+  "/it",
+  "/inscriptions",
+  "/en/inscriptions",
+  "/it/inscriptions",
+]
 
 const inscriptionPoseWriter = {
   name: "inscription-pose-writer",
@@ -61,7 +69,25 @@ const inscriptionPoseWriter = {
 
 export default defineConfig({
   assetsInclude: ["**/*.obj"],
-  plugins: [react(), inscriptionPoseWriter],
+  plugins: [
+    react(),
+    inscriptionPoseWriter,
+    Sitemap({
+      hostname: "https://liver.rasna.dev",
+      dynamicRoutes: SITEMAP_ROUTES,
+      changefreq: "yearly",
+      priority: {
+        "/": 1.0,
+        "/en": 0.9,
+        "/it": 0.9,
+        "/inscriptions": 0.9,
+        "/en/inscriptions": 0.8,
+        "/it/inscriptions": 0.8,
+      },
+      generateRobotsTxt: false,
+      readable: true,
+    }),
+  ],
   server: {
     headers: {
       "Cache-Control": "no-cache, no-store, must-revalidate",

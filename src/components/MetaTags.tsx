@@ -16,6 +16,13 @@ const localeMap: Record<string, string> = {
   de_DE: "de",
 }
 
+const ensureTrailingSlash = (pathname: string): string => {
+  if (pathname === "/") {
+    return "/"
+  }
+  return pathname.endsWith("/") ? pathname : `${pathname}/`
+}
+
 export function MetaTags() {
   const { i18n, t } = useTranslation("meta")
   const location = useLocation()
@@ -83,11 +90,10 @@ export function MetaTags() {
 
     const baseUrl = "https://liver.rasna.dev"
     const currentPath = normalizePath(location.pathname)
-    const currentUrl = `${baseUrl}${
-      currentPath === "/" ? "/" : currentPath
-    }${location.search}`
+    const canonicalPath = ensureTrailingSlash(currentPath)
+    const currentUrl = `${baseUrl}${canonicalPath}${location.search}`
     const basePath = stripLocalePrefix(currentPath)
-    const xDefaultUrl = `${baseUrl}${basePath === "/" ? "/" : basePath}`
+    const xDefaultUrl = `${baseUrl}${ensureTrailingSlash(basePath)}`
 
     document.title = htmlTitle
     updateMetaContent("title", htmlTitle)
@@ -108,7 +114,9 @@ export function MetaTags() {
     ]
 
     supportedLanguages.forEach((lang) => {
-      const localizedPath = buildLocalizedPath(basePath, lang.locale)
+      const localizedPath = ensureTrailingSlash(
+        buildLocalizedPath(basePath, lang.locale),
+      )
       updateLink("alternate", `${baseUrl}${localizedPath}`, lang.hreflang)
     })
 

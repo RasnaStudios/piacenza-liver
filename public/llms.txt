@@ -3,11 +3,11 @@
 
 ## Pages
 - https://liver.rasna.dev/
-- https://liver.rasna.dev/en
-- https://liver.rasna.dev/it
-- https://liver.rasna.dev/inscriptions
-- https://liver.rasna.dev/en/inscriptions
-- https://liver.rasna.dev/it/inscriptions
+- https://liver.rasna.dev/en/
+- https://liver.rasna.dev/it/
+- https://liver.rasna.dev/inscriptions/
+- https://liver.rasna.dev/en/inscriptions/
+- https://liver.rasna.dev/it/inscriptions/
 
 ## Data
 - https://liver.rasna.dev/data/inscriptions.yaml

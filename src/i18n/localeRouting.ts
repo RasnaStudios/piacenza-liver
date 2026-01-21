@@ -32,7 +32,7 @@ export const buildLocalizedPath = (
   locale: LocalePrefix,
 ): string => {
   const basePath = stripLocalePrefix(pathname)
-  const suffix = basePath === "/" ? "" : basePath
+  const suffix = basePath === "/" ? "/" : `${basePath}/`
   return `/${locale}${suffix}`
 }
 

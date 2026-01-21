@@ -99,6 +99,9 @@ importers:
       vite:
         specifier: ^7.3.0
         version: 7.3.0(@types/node@25.0.3)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2)
+      vite-plugin-sitemap:
+        specifier: ^0.8.2
+        version: 0.8.2
 
 packages:
 
@@ -1724,6 +1727,9 @@ packages:
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+
+  vite-plugin-sitemap@0.8.2:
+    resolution: {integrity: sha512-bqIw6NVOXg6je81lzX8Lm0vjf8/QSAp8di8fYQzZ3ZdVicOm8+6idBGALJiy1R1FiXNIK8rgORO6HBqXyHW+iQ==}
 
   vite@7.3.0:
     resolution: {integrity: sha512-dZwN5L1VlUBewiP6H9s2+B3e3Jg96D0vzN+Ry73sOefebhYr9f94wwkMNN/9ouoU8pV1BqA1d1zGk8928cx0rg==}
@@ -3378,6 +3384,8 @@ snapshots:
       react: 19.2.3
 
   vary@1.1.2: {}
+
+  vite-plugin-sitemap@0.8.2: {}
 
   vite@7.3.0(@types/node@25.0.3)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
