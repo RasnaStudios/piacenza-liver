@@ -4,7 +4,13 @@ import path from "node:path"
 const distDir = path.resolve("dist")
 const indexPath = path.join(distDir, "index.html")
 
-const routesNeedingEntrypoints = ["/inscriptions"]
+const routesNeedingEntrypoints = [
+  "/inscriptions",
+  "/en/inscriptions",
+  "/it/inscriptions",
+  "/en",
+  "/it",
+]
 
 if (!fs.existsSync(indexPath)) {
   throw new Error(
