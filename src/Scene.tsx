@@ -847,6 +847,26 @@ function PiacenzaLiverScene({
               SceneConfig.lighting.cameraFillTargetDistance,
             ),
           )
+
+        // Adjust intensity based on camera distance to target
+        const distanceToTarget = camera.position.distanceTo(controls.target)
+        const {
+          cameraFillDistanceMin,
+          cameraFillDistanceMax,
+          cameraFillIntensity,
+          cameraFillIntensityClose,
+        } = SceneConfig.lighting
+        const t = Math.max(
+          0,
+          Math.min(
+            1,
+            (distanceToTarget - cameraFillDistanceMin) /
+              (cameraFillDistanceMax - cameraFillDistanceMin),
+          ),
+        )
+        cameraFillLight.intensity =
+          cameraFillIntensityClose +
+          t * (cameraFillIntensity - cameraFillIntensityClose)
       }
 
       renderer.render(scene, camera)

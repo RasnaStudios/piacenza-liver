@@ -242,6 +242,7 @@ export class LiverModel {
       ) => {
         Object.assign(texture, { needsUpdate: true, ...config })
       }
+      const textureAnisotropy = SceneConfig.material.textureAnisotropy
 
       // Configure segmentation mask texture
       configureTexture(maskTex, {
@@ -259,10 +260,10 @@ export class LiverModel {
         wrapT: THREE.ClampToEdgeWrapping,
         colorSpace: THREE.SRGBColorSpace,
         flipY: baseColor.flipY,
-        // Improved filtering for smoother texture blending
         minFilter: THREE.LinearMipmapLinearFilter,
         magFilter: THREE.LinearFilter,
         generateMipmaps: true,
+        anisotropy: textureAnisotropy,
       })
 
       // Configure ORM texture separately (non-color data)
@@ -274,6 +275,7 @@ export class LiverModel {
         minFilter: THREE.LinearMipmapLinearFilter,
         magFilter: THREE.LinearFilter,
         generateMipmaps: true,
+        anisotropy: textureAnisotropy,
       })
 
       // Configure normal map separately with proper settings
@@ -285,6 +287,7 @@ export class LiverModel {
         minFilter: THREE.LinearMipmapLinearFilter,
         magFilter: THREE.LinearFilter,
         generateMipmaps: true,
+        anisotropy: textureAnisotropy,
       })
 
       // Configure atlas texture for smooth highlights
@@ -328,6 +331,7 @@ export class LiverModel {
         // Texture maps
         map: baseColor,
         normalMap: normalTex,
+        normalMapType: THREE.TangentSpaceNormalMap,
         aoMap: ormTex,
         roughnessMap: ormTex,
         metalnessMap: ormTex,
@@ -339,12 +343,11 @@ export class LiverModel {
         depthTest: true,
 
         // Material properties for color reproduction and blending
-        metalness: 1.0, // Let the texture control metalness
-        roughness: 1.0, // Let the texture control roughness
-        aoMapIntensity: 1.0, // Full AO intensity from texture
-        flatShading: false, // Smooth shading for lighting response
-        // Additional properties for blending
-        normalScale: new THREE.Vector2(1.0, 1.0), // Full normal intensity with proper configuration
+        metalness: SceneConfig.material.metalness,
+        roughness: SceneConfig.material.roughness,
+        aoMapIntensity: SceneConfig.material.aoMapIntensity,
+        flatShading: SceneConfig.material.flatShading,
+        normalScale: SceneConfig.material.normalScale,
       })
 
       baseMaterial.shadowSide = THREE.FrontSide
@@ -375,16 +378,12 @@ export class LiverModel {
           const mesh = child as THREE.Mesh
           const geom = mesh.geometry as THREE.BufferGeometry
 
-          // Compute vertex normals and bounding box for proper rendering
-          geom.computeVertexNormals()
-          geom.computeBoundingBox()
+          geom.computeTangents()
 
           mesh.material = baseMaterial
           mesh.castShadow = true
           mesh.receiveShadow = true
           this.mesh = mesh
-
-          // Ensure uv2 exists so aoMap can work; duplicate uv if missing
 
           // Create overlay meshes
           const createOverlayMesh = (
