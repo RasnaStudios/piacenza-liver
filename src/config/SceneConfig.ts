@@ -26,19 +26,33 @@ export const SceneConfig = {
 
   // Lighting configuration
   lighting: {
-    lightColor: 0xfff8e7, // Warm white light
-    ambientColor: 0x7a6b5a, // Warm ambient light for blending
-    intensityMultiplier: 0.95, // Global intensity multiplier
-    keyLightIntensity: 135, // Main spotlight intensity
+    lightColor: 0xffe3e2, // Warm light
+    ambientColor: 0x9c7a5e, // Warm ambient light for blending
+    intensityMultiplier: 1, // Global intensity multiplier
+    keyLightIntensity: 165, // Main spotlight intensity
     shadowMapSize: 4096, // Shadow map resolution
     shadowBias: -0.0001, // Shadow bias to prevent acne
     shadowNormalBias: 0.02, // Additional shadow bias
     shadowRadius: 8, // Shadow softness radius
-    cameraFillIntensity: 2.5, // Soft camera-attached fill
+    cameraFillIntensity: 3.5, // Soft camera-attached fill (at max distance)
+    cameraFillIntensityClose: 1.0, // Intensity when close to object
+    cameraFillDistanceMin: 2, // Camera distance where intensity is at minimum
+    cameraFillDistanceMax: 8, // Camera distance where intensity is at maximum
     cameraFillDistance: 6,
     cameraFillAngle: Math.PI / 4,
     cameraFillPenumbra: 0.9,
     cameraFillTargetDistance: 3,
+  },
+
+  // Material configuration
+  material: {
+    metalness: 1.0,
+    roughness: 1.0,
+    aoMapIntensity: 1.0,
+    flatShading: false,
+    // Negative Y converts DirectX normal map format (Unreal) to OpenGL (Three.js)
+    normalScale: new THREE.Vector2(1.0, -1.0),
+    textureAnisotropy: 1,
   },
 
   // Performance and interaction configuration
