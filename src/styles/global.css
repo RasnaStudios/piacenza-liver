@@ -820,6 +820,7 @@ html:hover::-webkit-scrollbar-corner {
   font-weight: 300;
   letter-spacing: 4px;
   font-size: clamp(24px, 3.6vw, 56px);
+  line-height: 1.2;
   white-space: nowrap;
   filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8))
     drop-shadow(0 0 15px rgba(139, 101, 65, 0.3))

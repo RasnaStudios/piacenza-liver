@@ -18,13 +18,13 @@
   "screenshots": [
     {
       "src": "/homepage.png",
-      "sizes": "2716x1782",
+      "sizes": "1136x1010",
       "type": "image/png",
       "form_factor": "wide"
     },
     {
-      "src": "/homepage.png",
-      "sizes": "2716x1782",
+      "src": "/homepage_vertical.png",
+      "sizes": "750x988",
       "type": "image/png",
       "form_factor": "narrow"
     }
