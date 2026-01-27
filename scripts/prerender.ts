@@ -202,7 +202,7 @@ const run = async () => {
   const executablePath = await resolveExecutablePath()
 
   const browser = await puppeteer.launch({
-    headless: "new",
+    headless: true,
     executablePath,
     args: [
       "--no-sandbox",
