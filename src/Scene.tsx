@@ -430,6 +430,7 @@ function PiacenzaLiverScene({
       setHasInteracted(true)
       setInteractionMode(InteractionMode.Inscription)
       setHasViewChanged(true)
+      setTitleVisible(false)
       liverModelRef.current.setSelectedInscription(inscriptionId)
 
       // Show panel immediately for better responsiveness
@@ -473,6 +474,7 @@ function PiacenzaLiverScene({
       setHasInteracted(true)
       setInteractionMode(InteractionMode.Inscription)
       setHasViewChanged(true)
+      setTitleVisible(false)
       liverModelRef.current.setSelectedInscription(inscription.id)
       setSelectedInscription(inscription)
       setInscriptionHash(inscription.id)
