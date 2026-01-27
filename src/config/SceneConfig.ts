@@ -10,7 +10,7 @@ export const SceneConfig = {
   },
 
   inscriptions: {
-    cameraDistance: 1, // model-space distance from inscription center
+    cameraDistance: 1.2, // model-space distance from inscription center
   },
 
   camera: {
@@ -28,8 +28,8 @@ export const SceneConfig = {
   lighting: {
     lightColor: 0xffe3e2, // Warm light
     ambientColor: 0x9c7a5e, // Warm ambient light for blending
-    intensityMultiplier: 1, // Global intensity multiplier
-    keyLightIntensity: 165, // Main spotlight intensity
+    intensityMultiplier: 2.0, // Global intensity multiplier
+    keyLightIntensity: 100, // Main spotlight intensity
     shadowMapSize: 4096, // Shadow map resolution
     shadowBias: -0.0001, // Shadow bias to prevent acne
     shadowNormalBias: 0.02, // Additional shadow bias
