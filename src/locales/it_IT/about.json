@@ -1,38 +1,38 @@
 {
-  "subtitle": "Artefatto Divinatorio Etrusco Antico",
-  "intro": "Un modello in bronzo della fine del II secolo a.C. all'inizio del I secolo a.C., che mappa la struttura cosmologica delle credenze religiose etrusche attraverso {totalInscriptions} iscrizioni in {totalZones} zone divine.",
+  "subtitle": "Artefatto Divinatorio Etrusco",
+  "intro": "Un modello in bronzo risalente tra la fine del II e l'inizio del I secolo a.C., che rappresenta la visione cosmologica etrusca attraverso {totalInscriptions} iscrizioni distribuite in {totalZones} zone divine.",
   "sections": {
     "historicalDiscovery": {
       "heading": "Scoperta Storica",
-      "content": "Il Fegato di Piacenza fu scoperto nel 1877 vicino a Gossolengo, appena fuori Piacenza, in Italia. Questo straordinario artefatto in bronzo risale alla fine del II secolo a.C. all'inizio del I secolo a.C., rendendolo uno dei documenti più significativi sopravvissuti della pratica religiosa etrusca. Il modello del fegato rappresenta una mappa cosmologica completa, meticolosamente incisa con i nomi delle divinità e dei loro domini divini."
+      "content": "Il Fegato di Piacenza venne alla luce nel 1877 nei pressi di Gossolengo, poco fuori Piacenza. Questo straordinario reperto in bronzo, databile tra la fine del II e l'inizio del I secolo a.C., è uno dei documenti più importanti giunti fino a noi sulla religione etrusca. Si tratta di una vera e propria mappa cosmologica, sulla quale sono incisi con cura i nomi delle divinità e i loro ambiti di influenza."
     },
     "hepatoscopy": {
       "heading": "Epatoscopia",
-      "content": "L'epatoscopia, o aruspicina, era l'antica pratica etrusca di divinazione attraverso l'esame dei fegati degli animali. I sacerdoti noti come aruspici sacrificavano animali e studiavano attentamente la forma, il colore, la consistenza del fegato e qualsiasi segno insolito. Ogni sezione del fegato corrispondeva a una specifica divinità o regno cosmico, permettendo ai sacerdoti di interpretare gli auspici e la volontà divina. Questa pratica era così centrale nella religione etrusca che influenzò le tradizioni religiose romane per secoli."
+      "content": "L'epatoscopia, detta anche aruspicina, era l'arte divinatoria etrusca per eccellenza: consisteva nell'esame del fegato degli animali sacrificati. I sacerdoti, chiamati aruspici, ne osservavano forma, colore, consistenza e ogni segno particolare. Ogni porzione dell'organo era associata a una divinità o a un ambito cosmico specifico, e da queste corrispondenze gli aruspici traevano presagi sulla volontà degli dèi. Questa pratica era così radicata nella cultura etrusca da influenzare profondamente anche la religione romana nei secoli successivi."
+    },
+    "liverStructure": {
+      "heading": "La Struttura del Fegato",
+      "content": "Sulla superficie viscerale del modello spiccano tre protuberanze anatomiche che fungevano da punti di riferimento fissi per la lettura divinatoria: il processus papillaris, la cistifellea e il processus pyramidalis. I due processi corrispondono a strutture reali del fegato ovino, la cui forma e dimensione potevano variare da animale ad animale, rendendoli elementi particolarmente significativi durante l'esame. La cistifellea, posta tra i due processi e rappresentata come un rigonfiamento ben distinto, era considerata un punto \"carico\", capace di rivelare la presenza di forze intense o instabili."
     },
     "cosmologicalStructure": {
       "heading": "Struttura Cosmologica",
-      "content": "Il fegato è diviso in {totalZones} distinte zone cosmologiche, ognuna rappresentante un regno fondamentale dell'esistenza. La zona del Cielo contiene le divinità supreme, mentre la zona dell'Acqua governa le forze atmosferiche e acquatiche. La zona della Terra rappresenta i poteri terrestri, e l'Oltretomba contiene divinità ctonie. La Pars Familiaris e la Pars Hostilis rappresentano rispettivamente auspici favorevoli e sfavorevoli, mentre la Cistifellea e la Sezione Centrale contengono potenti forze generative. La zona Posteriore ancorava l'intero sistema con il Sole e la Luna."
+      "content": "Il fegato è suddiviso in {totalZones} zone cosmologiche, ciascuna legata a un ambito fondamentale dell'esistenza. Al Cielo appartengono le divinità supreme; all'Acqua le forze atmosferiche e marine; alla Terra i poteri del mondo terrestre; all'Oltretomba le divinità ctonie, legate al mondo sotterraneo. La Pars Familiaris e la Pars Hostilis indicano rispettivamente presagi favorevoli e sfavorevoli, mentre la Cistifellea e la Sezione Centrale ospitano potenti forze generative. La zona Posteriore, infine, àncora l'intero sistema cosmico attraverso il Sole e la Luna."
     },
     "etruscanPantheon": {
       "heading": "Il Pantheon Etrusco",
-      "content": "Le {totalInscriptions} iscrizioni rivelano {totalDeities} distinte divinità etrusche, molte delle quali hanno paralleli nella mitologia greca e romana. Tinia, il dio supremo, corrisponde a Zeus e Giove. Nethuns rappresenta Poseidone e Nettuno, mentre Turan si allinea con Afrodite e Venere. Tuttavia, molte divinità rimangono unicamente etrusche, come Thufltha, un potere divino associato al destino e al giudizio che appare spesso come un aspetto di Tinia, e Cilens, un epiteto di Tinia possibilmente relativo alla notte o ai confini. Il posizionamento di ogni divinità sul fegato riflette il loro ruolo nell'ordine cosmico."
+      "content": "Le {totalInscriptions} iscrizioni presenti sul fegato testimoniano l'esistenza di {totalDeities} divinità etrusche distinte. Molte di esse trovano corrispondenze nel mondo greco-romano: Tinia, il dio supremo, è l'equivalente di Zeus e Giove; Nethuns corrisponde a Poseidone e Nettuno; Turan ad Afrodite e Venere. Altre divinità, invece, restano peculiari della tradizione etrusca, come Thufltha, una potenza legata al destino e al giudizio spesso intesa come un aspetto di Tinia, e Cilens, epiteto di Tinia forse connesso alla notte o ai confini. La posizione di ciascuna divinità sul modello riflette il suo ruolo nell'ordine cosmico."
     },
-    "archaeologicalSignificance": {
-      "heading": "Significato Archeologico",
-      "content": "Come uno dei pochi artefatti religiosi etruschi sopravvissuti con iscrizioni estese, il Fegato di Piacenza fornisce una visione preziosa di una civiltà i cui documenti scritti sono in gran parte perduti. L'artefatto dimostra la sofisticazione del pensiero religioso etrusco e il loro approccio sistematico alla divinazione. Serve come ponte tra le pratiche religiose etrusche, greche e romane, mostrando come queste culture si influenzarono a vicenda."
+    "significanceAndInterpretation": {
+      "heading": "Significato e Interpretazione",
+      "content": "Il Fegato di Piacenza è uno dei pochissimi manufatti religiosi etruschi con iscrizioni estese giunti fino a noi, e offre uno sguardo prezioso su una civiltà i cui documenti scritti sono in gran parte perduti. Testimonia la raffinatezza del pensiero religioso etrusco e l'approccio sistematico alla divinazione, fungendo da ponte tra le tradizioni religiose etrusche, greche e romane. Gli studi moderni si fondano sull'analisi epigrafica di Adriano Maggiani (1982) e sull'interpretazione cosmologica di Antonio Gottarelli, che hanno permesso di organizzare le iscrizioni in gruppi teologici coerenti. Da questo lavoro emerge come gli Etruschi concepissero il rapporto tra forze divine, fenomeni naturali e vicende umane. È probabile che il modello fosse usato anche come strumento didattico per i giovani aruspici in formazione."
     },
-    "scholarlyInterpretation": {
-      "heading": "Interpretazione Accademica",
-      "content": "La moderna erudizione si basa sull'analisi epigrafica fondamentale di Adriano Maggiani (1982) e sull'interpretazione cosmologica di Antonio Gottarelli, che organizzano le iscrizioni in gruppi teologici coerenti. Questo quadro rivela come gli Etruschi comprendessero la relazione tra forze divine, fenomeni naturali e affari umani. Il modello del fegato fu probabilmente usato come strumento didattico per apprendisti aruspici, fornendo un riferimento standardizzato per interpretare i fegati sacrificali."
-    },
-    "threeEscrescences": {
-      "heading": "Le tre escrescenze del fegato",
-      "content": "Sulla superficie viscerale (inferiore), tre evidenti sporgenze anatomiche funzionano come punti di riferimento fissi per l’interpretazione: il processus papillaris, la cistifellea e il processus pyramidalis. I processi papillaris e pyramidalis sono strutture reali di un fegato ovino, e la loro forma o sviluppo potevano variare negli animali sacrificati, rendendoli particolarmente significativi nella lettura divinatoria. Tra di essi si trova la cistifellea, rappresentata come un rigonfiamento a sacco ben distinguibile e considerata un elemento “carico”, dove potevano manifestarsi segnali di forze intense o instabili."
+    "dualSkySystem": {
+      "heading": "Due Sistemi Celesti",
+      "content": "Studi recenti di Antonio Paolo Pernigotti (2018) hanno proposto che gli Etruschi utilizzassero due diversi sistemi di divisione del cielo. Il primo, legato al moto diurno del sole e basato sugli assi cardinali, serviva all'osservazione e interpretazione dei fulmini (ars fulguratoria), dividendo il cielo in sedici parti uguali. Il secondo, legato invece al moto annuo del sole e basato sugli assi solstiziali, definiva le dimore celesti delle divinità. Secondo questa interpretazione, le sedici caselle del bordo esterno del fegato non sarebbero orientate secondo i punti cardinali, bensì secondo i punti di levata e tramonto del sole ai solstizi."
     },
     "technicalDetails": {
       "heading": "Dettagli Tecnici",
-      "content": "Il modello in bronzo misura approssimativamente 12,6 cm di lunghezza e 7,6 cm di larghezza, rappresentando accuratamente le proporzioni di un fegato di pecora reale. Le iscrizioni sono scritte nell'alfabeto etrusco, derivato dall'alfabeto greco ma adattato per la lingua etrusca. Ogni iscrizione segna una specifica regione anatomica, creando una mappa precisa che sarebbe stata memorizzata dagli aruspici praticanti."
+      "content": "Il modello in bronzo misura circa 12,6 cm in lunghezza e 7,6 cm in larghezza, riproducendo fedelmente le proporzioni di un vero fegato ovino. Le iscrizioni sono in alfabeto etrusco, derivato da quello greco ma adattato alla lingua locale. Ogni iscrizione corrisponde a una specifica regione anatomica, creando una mappa precisa che gli aruspici dovevano memorizzare per esercitare la loro arte."
     }
   },
   "buttonText": "Esplora il fegato"

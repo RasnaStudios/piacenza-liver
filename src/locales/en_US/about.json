@@ -10,6 +10,10 @@
       "heading": "Hepatoscopy",
       "content": "Hepatoscopy, or haruspicy, was the ancient Etruscan practice of divination through the examination of animal livers. Priests known as haruspices would sacrifice animals and carefully study the liver's shape, color, texture, and any unusual markings. Each section of the liver corresponded to a specific deity or cosmic realm, allowing priests to interpret omens and divine will. This practice was so central to Etruscan religion that it influenced Roman religious traditions for centuries."
     },
+    "liverStructure": {
+      "heading": "The Liver Structure",
+      "content": "On the visceral (inferior) surface, three prominent anatomical protrusions serve as fixed reference points for interpretation: the processus papillaris, the gall bladder, and the processus pyramidalis. The papillary and pyramidal processes are genuine parts of a real sheep's liver, and their size or shape could vary in sacrificial animals, making them especially meaningful in divinatory reading. Between them lies the gall bladder, shown as a distinct sac-like bulge and treated as a particularly charged feature where strong or unstable forces could be signaled."
+    },
     "cosmologicalStructure": {
       "heading": "Cosmological Structure",
       "content": "The liver is divided into {totalZones} distinct cosmological zones, each representing a fundamental realm of existence. The Sky zone contains the supreme deities, while the Water zone governs atmospheric and aquatic forces. The Earth zone represents terrestrial powers, and the Underworld contains chthonic deities. The Pars Familiaris and Pars Hostilis represent favorable and unfavorable omens respectively, while the Gall Bladder and Central Section contain powerful generative forces. The Back zone anchors the entire system with the Sun and Moon."
@@ -18,17 +22,13 @@
       "heading": "The Etruscan Pantheon",
       "content": "The {totalInscriptions} inscriptions reveal {totalDeities} distinct Etruscan deities, many of whom have parallels in Greek and Roman mythology. Tinia, the supreme god, corresponds to Zeus and Jupiter. Nethuns represents Poseidon and Neptune, while Turan aligns with Aphrodite and Venus. However, many deities remain uniquely Etruscan, such as Thufltha, a divine power associated with fate and judgment often appearing as an aspect of Tinia, and Cilens, an epithet of Tinia possibly related to night or boundaries. Each deity's placement on the liver reflects their role in the cosmic order."
     },
-    "archaeologicalSignificance": {
-      "heading": "Archaeological Significance",
-      "content": "As one of the few surviving Etruscan religious artifacts with extensive inscriptions, the Piacenza Liver provides invaluable insight into a civilization whose written records are largely lost. The artifact demonstrates the sophistication of Etruscan religious thought and their systematic approach to divination. It serves as a bridge between Etruscan, Greek, and Roman religious practices, showing how these cultures influenced each other."
+    "significanceAndInterpretation": {
+      "heading": "Significance and Interpretation",
+      "content": "As one of the few surviving Etruscan religious artifacts with extensive inscriptions, the Piacenza Liver provides invaluable insight into a civilization whose written records are largely lost. The artifact demonstrates the sophistication of Etruscan religious thought and their systematic approach to divination, serving as a bridge between Etruscan, Greek, and Roman religious practices. Modern scholarship draws on Adriano Maggiani's foundational epigraphic analysis (1982) and Antonio Gottarelli's cosmological interpretation, which organize the inscriptions into coherent theological groups. This framework reveals how the Etruscans understood the relationship between divine forces, natural phenomena, and human affairs. The liver model was likely used as a teaching tool for apprentice haruspices."
     },
-    "scholarlyInterpretation": {
-      "heading": "Scholarly Interpretation",
-      "content": "Modern scholarship draws on Adriano Maggiani's foundational epigraphic analysis (1982) and Antonio Gottarelli's cosmological interpretation, which organize the inscriptions into coherent theological groups. This framework reveals how the Etruscans understood the relationship between divine forces, natural phenomena, and human affairs. The liver model was likely used as a teaching tool for apprentice haruspices, providing a standardized reference for interpreting sacrificial livers."
-    },
-    "threeEscrescences": {
-      "heading": "The Three Liver Excrescences",
-      "content": "On the visceral (inferior) surface, three prominent anatomical protrusions serve as fixed reference points for interpretation: the processus papillaris, the gall bladder, and the processus pyramidalis. The papillary and pyramidal processes are genuine parts of a real sheep’s liver, and their size or shape could vary in sacrificial animals, making them especially meaningful in divinatory reading. Between them lies the gall bladder, shown as a distinct sac-like bulge and treated as a particularly charged feature where strong or unstable forces could be signaled."
+    "dualSkySystem": {
+      "heading": "Two Celestial Systems",
+      "content": "Recent studies by Antonio Paolo Pernigotti (2018) have proposed that the Etruscans used two different systems for dividing the sky. The first, linked to the diurnal motion of the sun and based on cardinal axes, was used for observing and interpreting lightning (ars fulguratoria), dividing the sky into sixteen equal parts. The second, linked to the annual motion of the sun and based on solstitial axes, defined the celestial dwellings of the deities. According to this interpretation, the sixteen cells on the liver's outer rim are not oriented according to cardinal points, but rather according to the sunrise and sunset positions at the solstices."
     },
     "technicalDetails": {
       "heading": "Technical Details",
