@@ -349,6 +349,56 @@ export class CameraController {
     return "camera-reset-gsap"
   }
 
+  pullBack(targetDistance: number, duration = 600, onComplete?: () => void) {
+    this.stopAnimation()
+
+    const startPosition = this.camera.position.clone()
+    const target = this.controls.target.clone()
+
+    const direction = new THREE.Vector3()
+      .subVectors(startPosition, target)
+      .normalize()
+
+    const endPosition = target
+      .clone()
+      .add(direction.multiplyScalar(targetDistance))
+
+    this.lastManualPosition.copy(endPosition)
+    this.lastManualTarget.copy(target)
+
+    this.isAnimating = true
+    const tween = gsap.to(
+      { t: 0 },
+      {
+        t: 1,
+        duration: duration / 1000,
+        ease: "power2.out",
+        onUpdate: () => {
+          if (this.currentTween !== tween || !this.isAnimating) return
+          const t = (tween.targets()[0] as { t: number }).t
+
+          const tempCameraPos = new THREE.Vector3().lerpVectors(
+            startPosition,
+            endPosition,
+            t,
+          )
+          this.camera.position.copy(tempCameraPos)
+          this.camera.lookAt(target)
+          this.controls.update()
+        },
+        onComplete: () => {
+          if (this.currentTween !== tween) return
+          this.isAnimating = false
+          this.currentTween = null
+          if (onComplete) onComplete()
+        },
+      },
+    )
+    this.currentTween = tween
+    this.currentAnimationId = "camera-pullback-gsap"
+    return "camera-pullback-gsap"
+  }
+
   // Stop current camera animation immediately
   stopAnimation() {
     if (this.currentTween) {

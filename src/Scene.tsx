@@ -518,16 +518,18 @@ function PiacenzaLiverScene({
     clearInscriptionHash()
     clearAboutHash()
 
-    if (
-      cameraControllerRef.current &&
-      liverModelRef.current &&
-      !isSmallScreen &&
-      !isPortrait
-    ) {
-      cameraControllerRef.current.resetToDefault(
-        liverModelRef.current as LiverModel,
-        800,
-      )
+    if (cameraControllerRef.current && liverModelRef.current) {
+      if (isSmallScreen || isPortrait) {
+        cameraControllerRef.current.pullBack(
+          SceneConfig.inscriptions.cameraDistance * 2.5,
+          500,
+        )
+      } else {
+        cameraControllerRef.current.resetToDefault(
+          liverModelRef.current as LiverModel,
+          800,
+        )
+      }
     }
 
     if (liverModelRef.current) {
