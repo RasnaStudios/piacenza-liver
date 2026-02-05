@@ -82,5 +82,5 @@ if (!rootElement) {
 createRoot(rootElement).render(<App />)
 
 if ("serviceWorker" in navigator) {
-  registerSW({ immediate: true })
+  registerSW({ immediate: false })
 }
