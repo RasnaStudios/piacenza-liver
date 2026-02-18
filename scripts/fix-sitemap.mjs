@@ -18,7 +18,19 @@ if (!fs.existsSync(sitemapPath)) {
 
 const xml = fs.readFileSync(sitemapPath, "utf8")
 
-const updated = xml.replace(/<loc>([^<]+)<\/loc>/g, (match, loc) => {
+const excludePathnames = [/\/google[a-f0-9]+\/?$/]
+const withoutExcluded = xml.replace(
+  /<url>[\s\S]*?<loc>([^<]+)<\/loc>[\s\S]*?<\/url>/g,
+  (block, loc) => {
+    try {
+      const pathname = new URL(loc).pathname
+      if (excludePathnames.some((re) => re.test(pathname))) return ""
+    } catch {}
+    return block
+  },
+)
+
+const updated = withoutExcluded.replace(/<loc>([^<]+)<\/loc>/g, (match, loc) => {
   let url
   try {
     url = new URL(loc)

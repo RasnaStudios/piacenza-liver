@@ -76,6 +76,7 @@ export default defineConfig({
     Sitemap({
       hostname: "https://liver.rasna.dev",
       dynamicRoutes: SITEMAP_ROUTES,
+      exclude: ["/googleedd15ea202c8a3cf"],
       changefreq: "yearly",
       priority: {
         "/": 1.0,
