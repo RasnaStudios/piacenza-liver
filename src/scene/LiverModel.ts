@@ -378,7 +378,14 @@ export class LiverModel {
           const mesh = child as THREE.Mesh
           const geom = mesh.geometry as THREE.BufferGeometry
 
-          geom.computeTangents()
+          if (
+            geom.index &&
+            geom.attributes.position &&
+            geom.attributes.normal &&
+            geom.attributes.uv
+          ) {
+            geom.computeTangents()
+          }
 
           mesh.material = baseMaterial
           mesh.castShadow = true
