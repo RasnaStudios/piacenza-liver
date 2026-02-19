@@ -52,8 +52,7 @@ function PiacenzaLiverScene({
   setTitleVisible: (visible: boolean) => void
 }) {
   const navigate = useNavigate()
-  const { t: tMeta } = useTranslation("meta")
-  const { i18n, t: tCommon } = useTranslation("common")
+  const { i18n } = useTranslation("common")
   // Orientation detection
   const isPortrait = useOrientation()
   const isSmallScreen = useMediaQuery("(max-width: 768px)")
@@ -1094,30 +1093,6 @@ function PiacenzaLiverScene({
 
   return (
     <div className="piacenza-liver-app">
-      <main
-        className="seo-content"
-        aria-hidden="true"
-        style={{
-          position: "fixed",
-          left: "-9999px",
-          top: 0,
-          width: "1px",
-          height: "1px",
-          overflow: "hidden",
-          whiteSpace: "nowrap",
-          opacity: 0,
-          pointerEvents: "none",
-          zIndex: -9999,
-        }}
-      >
-        <h1>{tMeta("htmlTitle")}</h1>
-        <p>{tMeta("description")}</p>
-        <p>
-          <a href={inscriptionsPath}>
-            {tCommon("buttons.exploreInscriptions")}
-          </a>
-        </p>
-      </main>
       <div className="scene-container">
         <div
           ref={containerRef}
