@@ -6,13 +6,7 @@ import { VitePWA } from "vite-plugin-pwa"
 import Sitemap from "vite-plugin-sitemap"
 
 const LIVER_DATA_PATH = path.resolve("src/scene/LiverData.ts")
-const SITEMAP_ROUTES = [
-  "/en",
-  "/it",
-  "/inscriptions",
-  "/en/inscriptions",
-  "/it/inscriptions",
-]
+const SITEMAP_ROUTES = ["/", "/inscriptions"]
 
 const inscriptionPoseWriter = {
   name: "inscription-pose-writer",
@@ -78,14 +72,7 @@ export default defineConfig({
       dynamicRoutes: SITEMAP_ROUTES,
       exclude: ["/googleedd15ea202c8a3cf"],
       changefreq: "yearly",
-      priority: {
-        "/": 1.0,
-        "/en": 0.9,
-        "/it": 0.9,
-        "/inscriptions": 0.9,
-        "/en/inscriptions": 0.8,
-        "/it/inscriptions": 0.8,
-      },
+      priority: { "/": 1.0, "/inscriptions": 0.9 },
       generateRobotsTxt: false,
       readable: true,
     }),

@@ -19,41 +19,41 @@ if (!fs.existsSync(sitemapPath)) {
 const xml = fs.readFileSync(sitemapPath, "utf8")
 
 const excludePathnames = [/\/google[a-f0-9]+\/?$/]
-const withoutExcluded = xml.replace(
-  /<url>[\s\S]*?<loc>([^<]+)<\/loc>[\s\S]*?<\/url>/g,
-  (block, loc) => {
+const seenPathnames = new Set()
+const urlBlocks = xml.match(/<url>[\s\S]*?<\/url>/g) || []
+const processed = urlBlocks
+  .map((block) => {
+    const locMatch = block.match(/<loc>([^<]+)<\/loc>/)
+    if (!locMatch) return null
+    let pathname
     try {
-      const pathname = new URL(loc).pathname
-      if (excludePathnames.some((re) => re.test(pathname))) return ""
-    } catch {}
-    return block
-  },
-)
+      pathname = new URL(locMatch[1]).pathname.replace(/\/+$/, "") || "/"
+    } catch {
+      return block
+    }
+    if (excludePathnames.some((re) => re.test(pathname))) return null
+    if (seenPathnames.has(pathname)) return null
+    seenPathnames.add(pathname)
 
-const updated = withoutExcluded.replace(/<loc>([^<]+)<\/loc>/g, (match, loc) => {
-  let url
-  try {
-    url = new URL(loc)
-  } catch {
-    return match
-  }
+    let url
+    try {
+      url = new URL(locMatch[1])
+    } catch {
+      return block
+    }
+    const normalizedPath = url.pathname
+    const hasExtension = path.extname(normalizedPath) !== ""
+    if (normalizedPath !== "/" && !normalizedPath.endsWith("/") && !hasExtension) {
+      url.pathname = `${normalizedPath}/`
+    }
+    return block.replace(/<loc>[^<]+<\/loc>/, `<loc>${url.toString()}</loc>`)
+  })
+  .filter(Boolean)
 
-  const pathname = url.pathname
-  const hasExtension = path.extname(pathname) !== ""
-  const needsRootSlash = pathname === "/" && !loc.endsWith("/")
-  const needsTrailingSlash =
-    !hasExtension && pathname !== "/" && !pathname.endsWith("/")
-
-  if (!needsRootSlash && !needsTrailingSlash) {
-    return match
-  }
-
-  if (pathname !== "/" && !pathname.endsWith("/")) {
-    url.pathname = `${pathname}/`
-  }
-
-  return `<loc>${url.toString()}</loc>`
-})
+const urlsetMatch = xml.match(/^(<\?xml[^>]*>[\s\S]*?<urlset[^>]*>)([\s\S]*)(<\/urlset>[\s\S]*)$/)
+const updated = urlsetMatch
+  ? `${urlsetMatch[1]}\n${processed.join("\n")}\n${urlsetMatch[3]}`
+  : xml
 
 if (updated !== xml) {
   fs.writeFileSync(sitemapPath, updated, "utf8")
