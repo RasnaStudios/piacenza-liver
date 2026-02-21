@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "postbuild": "node scripts/create-route-entries.mjs && tsx scripts/prerender.ts && tsx scripts/generate-dataset.ts && node scripts/fix-sitemap.mjs",
+    "postbuild": "node scripts/create-route-entries.mjs && tsx scripts/prerender.ts && tsx scripts/generate-dataset.ts && node scripts/fix-sitemap.mjs && node scripts/test-prerender.mjs",
+    "test:prerender": "node scripts/test-prerender.mjs",
     "lint": "biome check",
     "lint:fix": "biome check --write",
     "format": "biome format --write",

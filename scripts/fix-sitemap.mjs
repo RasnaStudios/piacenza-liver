@@ -46,7 +46,20 @@ const processed = urlBlocks
     if (normalizedPath !== "/" && !normalizedPath.endsWith("/") && !hasExtension) {
       url.pathname = `${normalizedPath}/`
     }
-    return block.replace(/<loc>[^<]+<\/loc>/, `<loc>${url.toString()}</loc>`)
+    let cleaned = block.replace(/<loc>[^<]+<\/loc>/, `<loc>${url.toString()}</loc>`)
+    cleaned = cleaned.replace(
+      /<lastmod>\s*([^<]+)\s*<\/lastmod>/,
+      (_, v) => `<lastmod>${v.trim()}</lastmod>`,
+    )
+    cleaned = cleaned.replace(
+      /<changefreq>\s*([^<]+)\s*<\/changefreq>/,
+      (_, v) => `<changefreq>${v.trim()}</changefreq>`,
+    )
+    cleaned = cleaned.replace(
+      /<priority>\s*([^<]+)\s*<\/priority>/,
+      (_, v) => `<priority>${v.trim()}</priority>`,
+    )
+    return cleaned
   })
   .filter(Boolean)
 

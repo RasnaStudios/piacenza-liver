@@ -165,11 +165,12 @@ const snapshotRoute = async (
   url: string,
   selector: string | null,
   outputPath: string,
+  postWaitMs = 2000,
 ) => {
-  await page.goto(url, { waitUntil: "domcontentloaded" })
+  await page.goto(url, { waitUntil: "load" })
   if (selector) {
     try {
-      await page.waitForSelector(selector, { timeout: 20000 })
+      await page.waitForSelector(selector, { timeout: 25000 })
     } catch (error) {
       console.warn(
         `[prerender] Selector "${selector}" not found for ${url}, continuing.`,
@@ -177,7 +178,17 @@ const snapshotRoute = async (
       )
     }
   }
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+  if (selector === "[data-prerender-ready]") {
+    try {
+      await page.waitForFunction(
+        () => document.getElementById("root")?.children?.length > 0,
+        { timeout: 8000 },
+      )
+    } catch {
+      console.warn(`[prerender] #root still empty for ${url} after wait`)
+    }
+  }
+  await new Promise((resolve) => setTimeout(resolve, postWaitMs))
 
   const html = await page.content()
   const doctype = html.trim().toLowerCase().startsWith("<!doctype")
@@ -217,6 +228,7 @@ const run = async () => {
   page.setDefaultTimeout(30000)
 
   await page.evaluateOnNewDocument(() => {
+    ;(window as Window & { __PRERENDERING?: boolean }).__PRERENDERING = true
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register = () => Promise.resolve(null as never)
     }
@@ -226,38 +238,44 @@ const run = async () => {
     await snapshotRoute(
       page,
       `${baseUrl}/`,
-      "#root",
+      "[data-prerender-ready]",
       path.join(distDir, "index.html"),
+      6000,
     )
     await snapshotRoute(
       page,
       `${baseUrl}/en`,
-      "#root",
+      "[data-prerender-ready]",
       path.join(distDir, "en", "index.html"),
+      3000,
     )
     await snapshotRoute(
       page,
       `${baseUrl}/it`,
-      "#root",
+      "[data-prerender-ready]",
       path.join(distDir, "it", "index.html"),
+      3000,
     )
     await snapshotRoute(
       page,
       `${baseUrl}/inscriptions`,
       ".inscription-exploration",
       path.join(distDir, "inscriptions", "index.html"),
+      2000,
     )
     await snapshotRoute(
       page,
       `${baseUrl}/en/inscriptions`,
       ".inscription-exploration",
       path.join(distDir, "en", "inscriptions", "index.html"),
+      2000,
     )
     await snapshotRoute(
       page,
       `${baseUrl}/it/inscriptions`,
       ".inscription-exploration",
       path.join(distDir, "it", "inscriptions", "index.html"),
+      2000,
     )
   } finally {
     await browser.close()
