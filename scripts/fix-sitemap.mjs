@@ -16,7 +16,7 @@ if (!fs.existsSync(sitemapPath)) {
   process.exit(0)
 }
 
-const xml = fs.readFileSync(sitemapPath, "utf8")
+const xml = fs.readFileSync(sitemapPath, "utf8").replace(/\r\n/g, "\n")
 
 const excludePathnames = [/\/google[a-f0-9]+\/?$/]
 const seenPathnames = new Set()
