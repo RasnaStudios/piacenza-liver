@@ -23,8 +23,6 @@ jobs:
   # Build job
   build:
     runs-on: ubuntu-latest
-    env:
-      PUPPETEER_CACHE_DIR: ${{ github.workspace }}/.cache/puppeteer
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,14 +37,6 @@ jobs:
         with:
           node-version: '22'
           cache: 'pnpm'
-
-      - name: Cache Chrome for prerendering
-        uses: actions/cache@v4
-        with:
-          path: .cache/puppeteer
-          key: ${{ runner.os }}-puppeteer-${{ hashFiles('pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-puppeteer-
           
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
