@@ -25,9 +25,9 @@ Examples:
 - `https://piacenzaliver.com/inscriptions#sky` - Explore the Sky region
 - `https://piacenzaliver.com/inscriptions#tinia` - See all inscriptions mentioning Tinia
 
-## 🌐 Access the Website
+## 🌐 Live site
 
-The live website is available at: [piacenzaliver.com](https://piacenzaliver.com)
+The site is served from **[piacenzaliver.com](https://piacenzaliver.com)** (canonical URL for links, SEO, and sharing). It is hosted on **GitHub Pages** from this repository. DNS runs on **Cloudflare** (apex uses GitHub’s documented A/AAAA records; `www` is a CNAME to `rasnastudios.github.io`). The previous hostname **liver.rasna.dev** should redirect to the `.com` domain at the edge (for example a Cloudflare Redirect Rule on the `rasna.dev` zone).
 
 ## 🚀 Run Locally
 
@@ -40,7 +40,7 @@ The live website is available at: [piacenzaliver.com](https://piacenzaliver.com)
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/piacenza-liver.git
+   git clone https://github.com/RasnaStudios/piacenza-liver.git
    cd piacenza-liver
    ```
 
