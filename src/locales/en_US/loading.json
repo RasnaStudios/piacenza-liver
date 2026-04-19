@@ -1,10 +1,13 @@
 {
   "subtitle": "Ancient Etruscan Divination",
   "messages": [
-    "Decoding ancient inscriptions",
-    "Interpreting divine symbols",
-    "Aligning celestial patterns",
-    "Unveiling sacred knowledge",
-    "Channeling ethereal energies"
+    "Loading inscription data and three-dimensional geometry.",
+    "Preparing textures for the bronze surface.",
+    "Initializing the interactive reconstruction of the liver.",
+    "Rendering Etruscan Old Italic script and labels.",
+    "Mapping deities and zones on the anatomical model.",
+    "Loading translations and scholarly annotations.",
+    "Allocating resources for WebGL rendering.",
+    "Finalizing assets. The experience will open shortly."
   ]
 }

@@ -1,10 +1,13 @@
 {
   "subtitle": "Divinazione Etrusca Antica",
   "messages": [
-    "Decodificando antiche iscrizioni",
-    "Interpretando simboli divini",
-    "Allineando pattern celesti",
-    "Svelando conoscenza sacra",
-    "Canalizzando energie eteree"
+    "Caricamento dei dati delle iscrizioni e della geometria 3D.",
+    "Preparazione delle texture della superficie bronzea.",
+    "Inizializzazione della ricostruzione interattiva del fegato.",
+    "Elaborazione della scrittura etrusca in italico antico e delle etichette.",
+    "Mappatura di divinità e zone sul modello anatomico.",
+    "Caricamento di traduzioni e annotazioni scientifiche.",
+    "Allocazione delle risorse per il rendering WebGL.",
+    "Completamento delle risorse. L’esperienza si aprirà a breve."
   ]
 }
