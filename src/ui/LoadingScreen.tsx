@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 interface LoadingScreenProps {
@@ -25,11 +25,21 @@ export function LoadingScreen({
   isLoading,
   showLoadingUI,
 }: LoadingScreenProps) {
-  const { t } = useTranslation("loading")
+  const { t, i18n } = useTranslation("loading")
   const [isDissolving, setIsDissolving] = useState(false)
   const [shouldRender, setShouldRender] = useState(true)
-  const messages = t("messages", { returnObjects: true }) as string[]
-  const [loadingText, setLoadingText] = useState(messages[0] || "")
+  const messages = useMemo(
+    () => t("messages", { returnObjects: true }) as string[],
+    [t, i18n.language],
+  )
+  const loadingText = useMemo(() => {
+    const texts = messages
+    const n = texts.length
+    if (n === 0) return ""
+    if (n === 1) return texts[0]
+    const idx = Math.min(n - 1, Math.floor((progress / 100) * n))
+    return texts[idx]
+  }, [messages, progress])
   const [etruscanParticles, setEtruscanParticles] = useState<
     EtruscanParticle[]
   >([])
@@ -74,18 +84,6 @@ export function LoadingScreen({
     "𐌛",
     "𐌜",
   ]
-
-  useEffect(() => {
-    const texts = messages
-    let currentIndex = 0
-
-    const interval = setInterval(() => {
-      currentIndex = (currentIndex + 1) % texts.length
-      setLoadingText(texts[currentIndex])
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [messages])
 
   useEffect(() => {
     const particles: EtruscanParticle[] = Array.from({ length: 80 }, (_, i) => {
