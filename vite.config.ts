@@ -72,7 +72,12 @@ export default defineConfig({
       workbox: {
         maximumFileSizeToCacheInBytes: 150 * 1024 * 1024,
         globPatterns: [
-          "**/*.{js,css,html,ico,png,svg,json,txt,woff2,jpg,jpeg,obj}",
+          "**/*.{js,css,html,ico,png,svg,json,txt,woff2,jpg,jpeg,obj,xml}",
+        ],
+        navigateFallbackDenylist: [
+          /^\/sitemap\.xml$/,
+          /^\/robots\.txt$/,
+          /^\/llms\.txt$/,
         ],
         cleanupOutdatedCaches: true,
         runtimeCaching: [
