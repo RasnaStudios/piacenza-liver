@@ -21,13 +21,13 @@ You can link directly to specific content using URL hashes:
 - **Deity**: `/inscriptions#tinia` or `/inscriptions#uni` - Navigates to a specific deity section
 
 Examples:
-- `https://liver.rasna.dev/inscriptions#5` - View inscription 5
-- `https://liver.rasna.dev/inscriptions#sky` - Explore the Sky region
-- `https://liver.rasna.dev/inscriptions#tinia` - See all inscriptions mentioning Tinia
+- `https://piacenzaliver.com/inscriptions#5` - View inscription 5
+- `https://piacenzaliver.com/inscriptions#sky` - Explore the Sky region
+- `https://piacenzaliver.com/inscriptions#tinia` - See all inscriptions mentioning Tinia
 
 ## 🌐 Access the Website
 
-The live website is available at: [liver.rasna.dev](https://liver.rasna.dev)
+The live website is available at: [piacenzaliver.com](https://piacenzaliver.com)
 
 ## 🚀 Run Locally
 

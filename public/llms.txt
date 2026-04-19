@@ -2,15 +2,15 @@
 > Interactive WebGL visualization of the Piacenza Liver with annotations and inscriptions.
 
 ## Pages
-- https://liver.rasna.dev/
-- https://liver.rasna.dev/en/
-- https://liver.rasna.dev/it/
-- https://liver.rasna.dev/inscriptions/
-- https://liver.rasna.dev/en/inscriptions/
-- https://liver.rasna.dev/it/inscriptions/
+- https://piacenzaliver.com/
+- https://piacenzaliver.com/en/
+- https://piacenzaliver.com/it/
+- https://piacenzaliver.com/inscriptions/
+- https://piacenzaliver.com/en/inscriptions/
+- https://piacenzaliver.com/it/inscriptions/
 
 ## Data
-- https://liver.rasna.dev/data/inscriptions.yaml
+- https://piacenzaliver.com/data/inscriptions.yaml
 
 ## Source
 - https://github.com/rasnastudios/piacenza-liver

@@ -97,7 +97,7 @@ export function buildLiverDataset(t: TranslateFn): LiverDataset {
       totalZones: Object.keys(liverGroups).length,
       totalDeities: Object.keys(liverGods).length,
       creator: AppConfig.creator.name,
-      source: "https://liver.rasna.dev/",
+      source: "https://piacenzaliver.com/",
     },
     zones,
     inscriptions,

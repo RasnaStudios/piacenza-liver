@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useTranslation } from "react-i18next"
 import { useLocation } from "react-router-dom"
+import { SITE_ORIGIN } from "../config/siteOrigin"
 import {
   buildLocalizedPath,
   type LocalePrefix,
@@ -88,7 +89,7 @@ export function MetaTags() {
     const datasetName = t("structuredData.datasetName")
     const datasetDescription = t("structuredData.datasetDescription")
 
-    const baseUrl = "https://liver.rasna.dev"
+    const baseUrl = SITE_ORIGIN
     const currentPath = normalizePath(location.pathname)
     const canonicalPath = ensureTrailingSlash(currentPath)
     const currentUrl = `${baseUrl}${canonicalPath}${location.search}`
