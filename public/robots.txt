@@ -1,2 +1,4 @@
 User-Agent: *
 Allow: /
+
+Sitemap: https://piacenzaliver.com/sitemap.xml

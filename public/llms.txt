@@ -9,6 +9,9 @@
 - https://piacenzaliver.com/en/inscriptions/
 - https://piacenzaliver.com/it/inscriptions/
 
+## Sitemap
+- https://piacenzaliver.com/sitemap.xml
+
 ## Data
 - https://piacenzaliver.com/data/inscriptions.yaml
 

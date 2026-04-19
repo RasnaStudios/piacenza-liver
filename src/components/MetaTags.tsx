@@ -96,11 +96,16 @@ export function MetaTags() {
     const basePath = stripLocalePrefix(currentPath)
     const xDefaultUrl = `${baseUrl}${ensureTrailingSlash(basePath)}`
 
-    const isIndexable =
-      location.pathname === "/" ||
-      location.pathname === "" ||
-      location.pathname === "/inscriptions" ||
-      location.pathname === "/inscriptions/"
+    const pathForIndexing = normalizePath(location.pathname)
+    const indexablePaths = new Set([
+      "/",
+      "/en",
+      "/it",
+      "/inscriptions",
+      "/en/inscriptions",
+      "/it/inscriptions",
+    ])
+    const isIndexable = indexablePaths.has(pathForIndexing)
     const robotsContent = isIndexable
       ? "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
       : "noindex, follow"
