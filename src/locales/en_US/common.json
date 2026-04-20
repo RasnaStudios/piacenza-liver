@@ -7,6 +7,7 @@
     "viewIn3D": "View in 3D Visualization",
     "downloadDataset": "Download Dataset",
     "contribute": "Contribute",
+    "contacts": "Contacts",
     "exploreLiver": "Explore the liver",
     "continue": "Continue"
   },
@@ -44,13 +45,21 @@
   "footer": {
     "compiledBy": "Information compiled by",
     "incorrectInfo": "Do you see errors in the translations or in the information?",
-    "writeMe": "Contact me",
+    "writeMe": "Contact us",
     "mailtoSubject": "Feedback on Piacenza Liver information",
     "mailtoBody": "I noticed the following incorrect or incomplete information:\n\n"
   },
   "language": {
     "title": "Select Language",
-    "developerText": "Are you a developer?",
-    "contributeOnGitHub": "Contribute on GitHub"
+    "developerText": "Do you want to add a new language?",
+    "contributeOnGitHub": "Contribute a language on GitHub"
+  },
+  "contactsModal": {
+    "creditsTitle": "Project credits",
+    "summary": "Research, development, and site by Lorenzo Andraghetti. 3D reconstruction by Luca Tampieri.",
+    "maintainerRole": "Research and development",
+    "artistRole": "3D reconstruction",
+    "emailCta": "Email Lorenzo",
+    "repositoryCta": "Open GitHub"
   }
 }

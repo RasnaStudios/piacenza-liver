@@ -20,16 +20,12 @@ interface DeityPanelProps {
   selectedInscription: Inscription | null
   onClose: () => void
   onInscriptionSelect?: (inscription: Inscription) => void
-  onAboutClick?: () => void
-  onExploreClick?: () => void
 }
 
 export function DeityPanel({
   selectedInscription,
   onClose,
   onInscriptionSelect,
-  onAboutClick,
-  onExploreClick,
 }: DeityPanelProps) {
   const { t } = useTranslation("common")
   const isPortrait = useOrientation()
@@ -230,10 +226,7 @@ export function DeityPanel({
 
               <GroupSection selectedInscription={selectedInscription} />
 
-              <PanelLegend
-                onAboutClick={onAboutClick}
-                onExploreClick={onExploreClick}
-              />
+              <PanelLegend />
             </Stack>
           </Box>
         </Box>
@@ -320,10 +313,7 @@ export function DeityPanel({
 
           <GroupSection selectedInscription={selectedInscription} />
 
-          <PanelLegend
-            onAboutClick={onAboutClick}
-            onExploreClick={onExploreClick}
-          />
+          <PanelLegend />
         </Stack>
       </Box>
     </Drawer>

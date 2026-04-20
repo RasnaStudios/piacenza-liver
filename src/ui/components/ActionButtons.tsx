@@ -1,6 +1,7 @@
 import { Stack } from "@mantine/core"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { ContactsModal } from "./ContactsModal"
 import { ControlsModal } from "./ControlsModal"
 import { InteractionButton } from "./InteractionButton"
 import { LanguageModal } from "./LanguageModal"
@@ -29,11 +30,13 @@ export function ActionButtons({
   const { t, i18n } = useTranslation("common")
   const [controlsOpened, setControlsOpened] = useState(false)
   const [languageModalOpened, setLanguageModalOpened] = useState(false)
+  const [contactsModalOpened, setContactsModalOpened] = useState(false)
 
   const isEnglish = i18n.language === "en_US"
   const languageButtonText = isEnglish
     ? "Language"
     : `Language / ${t("buttons.language")}`
+  const contactButtonText = t("buttons.contacts")
 
   if (!onAboutClick) {
     return null
@@ -100,6 +103,17 @@ export function ActionButtons({
             {t("buttons.controls")}
           </InteractionButton>
         )}
+        <InteractionButton
+          onClick={() => {
+            onAction?.()
+            setContactsModalOpened(true)
+          }}
+          variant="text"
+          size="md"
+          disableAnimation={disableAnimation}
+        >
+          {contactButtonText}
+        </InteractionButton>
       </Stack>
       <ControlsModal
         opened={controlsOpened}
@@ -108,6 +122,10 @@ export function ActionButtons({
       <LanguageModal
         opened={languageModalOpened}
         onClose={() => setLanguageModalOpened(false)}
+      />
+      <ContactsModal
+        opened={contactsModalOpened}
+        onClose={() => setContactsModalOpened(false)}
       />
     </>
   )

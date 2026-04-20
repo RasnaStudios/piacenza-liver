@@ -7,6 +7,7 @@
     "viewIn3D": "Visualizza in 3D",
     "downloadDataset": "Scarica dataset",
     "contribute": "Contribuisci",
+    "contacts": "Contatti",
     "exploreLiver": "Esplora il fegato",
     "continue": "Continua"
   },
@@ -44,13 +45,21 @@
   "footer": {
     "compiledBy": "Informazioni compilate da",
     "incorrectInfo": "Vedi errori nelle traduzioni o nelle informazioni?",
-    "writeMe": "Scrivimi",
+    "writeMe": "Contattaci",
     "mailtoSubject": "Feedback sulle informazioni del Fegato di Piacenza",
     "mailtoBody": "Ho notato le seguenti informazioni errate o incomplete:\n\n"
   },
   "language": {
     "title": "Seleziona Lingua",
-    "developerText": "Sei uno sviluppatore?",
-    "contributeOnGitHub": "Contribuisci su GitHub"
+    "developerText": "Vuoi aggiungere una nuova lingua?",
+    "contributeOnGitHub": "Contribuisci con una lingua su GitHub"
+  },
+  "contactsModal": {
+    "creditsTitle": "Crediti del progetto",
+    "summary": "Ricerca, sviluppo e sito di Lorenzo Andraghetti. Ricostruzione 3D di Luca Tampieri.",
+    "maintainerRole": "Ricerca e sviluppo",
+    "artistRole": "Ricostruzione 3D",
+    "emailCta": "Scrivi a Lorenzo",
+    "repositoryCta": "Apri GitHub"
   }
 }

@@ -1114,8 +1114,6 @@ function PiacenzaLiverScene({
             selectedInscription={selectedInscription}
             onClose={handlePanelClose}
             onInscriptionSelect={handleInscriptionListClick}
-            onAboutClick={handleReturnToIntro}
-            onExploreClick={() => navigate(inscriptionsPath)}
           />
           <InscriptionList
             onInscriptionSelect={handleInscriptionListClick}

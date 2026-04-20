@@ -45,7 +45,7 @@ function GitHubContribution({ variant }: { variant: "modal" | "footer" }) {
   )
 }
 
-export function FeedbackSection({ variant = "modal" }: FeedbackSectionProps) {
+export function FeedbackSection({ variant = "footer" }: FeedbackSectionProps) {
   const { t } = useTranslation("common")
 
   const mailtoUrl = useMemo(() => {
