@@ -318,6 +318,10 @@ html:hover::-webkit-scrollbar-corner {
   --tertiary-text: rgba(244, 230, 211, 0.7);
   --accent-gold: #d4af37;
   --accent-bronze: #8b6541;
+  --accent-verdigris: #6f8f82;
+  --accent-verdigris-light: #a1b8ab;
+  --accent-verdigris-soft: rgba(111, 143, 130, 0.14);
+  --accent-verdigris-border: rgba(111, 143, 130, 0.3);
   --bronze-light: #fbe7cb;
   --bronze-dark: #2c1810;
   --bronze-text: rgba(196, 168, 118, 0.9);

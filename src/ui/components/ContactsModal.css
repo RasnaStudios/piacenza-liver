@@ -1,162 +1,91 @@
+.contacts-modal-content {
+  max-height: calc(100vh - 56px);
+}
+
 .contacts-modal-shell {
-  padding: 12px 16px 16px;
+  padding: 16px;
 }
 
 .contacts-modal-body {
+  overflow: hidden;
   overscroll-behavior: contain;
 }
 
-.contacts-close-button {
-  width: 48px;
-  height: 48px;
-  padding: 10px;
-  border-width: 1.5px;
-}
-
-.contacts-board {
-  position: relative;
-  overflow: hidden;
-  border: 1px solid rgba(139, 101, 65, 0.24);
-  border-radius: 18px;
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(212, 175, 55, 0.08),
-      transparent 28%
-    ),
-    linear-gradient(
-      180deg,
-      rgba(244, 230, 211, 0.03),
-      rgba(244, 230, 211, 0.01)
-    ), linear-gradient(180deg, rgba(16, 13, 10, 0.94), rgba(10, 8, 6, 0.98));
-  box-shadow: inset 0 1px 0 rgba(251, 231, 203, 0.04);
-}
-
-.contacts-intro {
+.contacts-summary-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 18px;
+  gap: 16px;
   align-items: center;
-  padding: 18px 20px 16px;
-  border-bottom: 1px solid rgba(196, 168, 118, 0.14);
 }
 
 .contacts-intro-copy {
   min-width: 0;
 }
 
-.contacts-section-title {
-  margin-bottom: 8px;
-  color: rgba(251, 231, 203, 0.7);
-  font-family: var(--font-cinzel);
-  font-size: 12px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-}
-
-.contacts-intro-text {
-  max-width: 54ch;
-  color: rgba(244, 230, 211, 0.78);
-  font-size: 14px;
-  line-height: 1.5;
+.contacts-summary-copy {
+  max-width: 50ch;
 }
 
 .contacts-action-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
   justify-content: flex-end;
 }
 
+.contacts-action-group .app-modal-action {
+  padding: 9px 13px;
+  font-size: 12px;
+}
+
 .contacts-people-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
 }
 
-.contact-person-card {
-  padding: 18px 20px 20px;
-}
-
-.contact-person-card + .contact-person-card {
-  border-left: 1px solid rgba(196, 168, 118, 0.14);
-}
-
-.contact-chip-row {
+.contacts-person-card {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.contact-action,
-.contact-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border: 1px solid rgba(196, 168, 118, 0.18);
-  border-radius: 999px;
-  background: rgba(244, 230, 211, 0.03);
-  color: var(--secondary-text);
-  font-size: 13px;
-  font-weight: 500;
-  text-decoration: none;
-  transition:
-    border-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.2s ease,
-    background 0.2s ease;
-}
-
-.contact-action {
-  white-space: nowrap;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .contact-person-role {
-  color: rgba(251, 231, 203, 0.66);
-  font-family: var(--font-cinzel);
-  font-size: 11px;
-  letter-spacing: 1.8px;
-  text-transform: uppercase;
+  margin-bottom: 0;
 }
 
 .contact-person-name {
   margin-top: 6px;
-  color: var(--primary-text);
-  font-family: var(--font-cinzel);
-  font-size: clamp(26px, 2vw, 34px);
-  line-height: 1.02;
+  font-size: clamp(22px, 1.6vw, 26px);
 }
 
-.contact-action:hover,
-.contact-action:focus-visible,
-.contact-chip:hover,
-.contact-chip:focus-visible {
-  border-color: rgba(212, 175, 55, 0.42);
-  background: rgba(212, 175, 55, 0.08);
-  color: var(--bronze-light);
-  transform: translateY(-1px);
+.contact-chip-row {
+  gap: 8px;
+  margin-top: 16px;
 }
 
-.contact-action-strong {
-  border-color: rgba(212, 175, 55, 0.28);
-  background: rgba(212, 175, 55, 0.08);
-  color: var(--bronze-light);
+.contact-chip-row .app-modal-pill {
+  gap: 6px;
+  padding: 8px 11px;
+  font-size: 12px;
+}
+
+.contact-chip-row-inline {
+  flex-wrap: nowrap;
 }
 
 @media (max-width: 980px) {
-  .contacts-intro {
+  .contacts-summary-panel {
     grid-template-columns: 1fr;
   }
 
   .contacts-action-group {
     justify-content: flex-start;
   }
+
+  .contact-chip-row-inline {
+    flex-wrap: wrap;
+  }
 }
 
 @media (max-width: 768px) {
   .contacts-modal-content {
-    margin: 8px;
+    max-height: calc(100dvh - 16px);
   }
 
   .contacts-modal-body {
@@ -166,53 +95,19 @@
   }
 
   .contacts-modal-shell {
-    padding: 12px;
-  }
-
-  .contacts-close-button {
-    width: 44px;
-    height: 44px;
-    padding: 8px;
-  }
-
-  .contacts-board {
-    border-radius: 16px;
-  }
-
-  .contacts-intro {
-    gap: 14px;
-    padding: 14px 14px 12px;
-  }
-
-  .contacts-intro-text {
-    font-size: 13px;
-    line-height: 1.4;
-  }
-
-  .contacts-people-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .contact-person-card {
-    padding: 14px;
-  }
-
-  .contact-person-card + .contact-person-card {
-    border-left: none;
-    border-top: 1px solid rgba(196, 168, 118, 0.14);
+    padding: 16px;
   }
 
   .contact-person-name {
-    font-size: 24px;
+    font-size: 22px;
   }
 
   .contact-chip-row {
     margin-top: 12px;
-    gap: 8px;
   }
 
-  .contact-action,
-  .contact-chip {
+  .contact-chip-row .app-modal-pill,
+  .contacts-action-group .app-modal-action {
     padding: 8px 12px;
     font-size: 12px;
   }

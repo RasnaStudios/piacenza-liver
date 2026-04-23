@@ -287,7 +287,7 @@ export function LoadingScreen({
     transform: "translate(-50%, -50%)",
     textAlign: "center" as const,
     zIndex: 10,
-    maxWidth: "90vw",
+    width: "min(90vw, 640px)",
   }
 
   const subtitleStyles = {
@@ -300,7 +300,7 @@ export function LoadingScreen({
   }
 
   const progressContainerStyles = {
-    marginBottom: 40,
+    margin: "0 auto 40px",
     position: "relative" as const,
     width: "min(400px, 80vw)",
     display: "flex",
@@ -347,10 +347,13 @@ export function LoadingScreen({
     color: "var(--tertiary-text)",
     fontSize: "clamp(0.9rem, 2.5vw, 1.2rem)",
     fontStyle: "italic",
-    marginTop: 24,
+    margin: "24px auto 0",
+    maxWidth: "42ch",
+    minHeight: "3.2em",
     textShadow: "0 1px 2px rgba(0, 0, 0, 0.8)",
     letterSpacing: "1px",
     fontFamily: "Cormorant Garamond, serif",
+    lineHeight: 1.45,
     animation: "fadeInOut 3s ease-in-out infinite",
     transition:
       "opacity 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), filter 1.6s cubic-bezier(0.22, 0.61, 0.36, 1), transform 1.6s cubic-bezier(0.22, 0.61, 0.36, 1)",

@@ -3,7 +3,6 @@ import { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { FaGithub } from "react-icons/fa"
 import { AppConfig } from "../../config/AppConfig"
-import { InteractionButton } from "./InteractionButton"
 
 interface FeedbackSectionProps {
   variant?: "modal" | "footer"
@@ -28,14 +27,15 @@ function GitHubContribution({ variant }: { variant: "modal" | "footer" }) {
         href={AppConfig.repositoryUrl}
         target="_blank"
         rel="noopener noreferrer"
+        className={variant === "modal" ? "app-modal-action" : undefined}
         style={{
-          color: "var(--bronze-text)",
+          color: variant === "footer" ? "var(--bronze-text)" : undefined,
           textDecoration: "none",
-          display: "flex",
-          alignItems: "center",
-          gap: "8px",
-          fontSize: "14px",
-          fontWeight: 500,
+          display: variant === "footer" ? "flex" : undefined,
+          alignItems: variant === "footer" ? "center" : undefined,
+          gap: variant === "footer" ? "8px" : undefined,
+          fontSize: variant === "footer" ? "14px" : undefined,
+          fontWeight: variant === "footer" ? 500 : undefined,
         }}
       >
         <FaGithub size={20} />
@@ -76,19 +76,23 @@ export function FeedbackSection({ variant = "footer" }: FeedbackSectionProps) {
 
   return (
     <Stack gap="md" align="center">
-      <Text size="sm" className="text-tertiary" ta="center">
-        {t("footer.incorrectInfo")}
-      </Text>
-      <InteractionButton
-        onClick={() => {
-          window.location.href = mailtoUrl
-        }}
-        variant="outline"
-        size="md"
+      <Stack gap={4} align="center">
+        <Text size="sm" className="text-tertiary" ta="center">
+          {t("footer.incorrectInfo")}
+        </Text>
+        <Text size="sm" className="text-tertiary" ta="center">
+          {t("language.newLanguagePrompt")}
+        </Text>
+      </Stack>
+      <Anchor
+        href={mailtoUrl}
+        className="app-modal-action app-modal-action-primary"
       >
         {t("footer.writeMe")}
-      </InteractionButton>
-      <GitHubContribution variant="modal" />
+      </Anchor>
+      <Stack gap="xs" align="center">
+        <GitHubContribution variant="modal" />
+      </Stack>
     </Stack>
   )
 }

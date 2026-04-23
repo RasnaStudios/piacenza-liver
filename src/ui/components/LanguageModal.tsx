@@ -1,17 +1,8 @@
-import {
-  Box,
-  Divider,
-  Group,
-  Modal,
-  SimpleGrid,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core"
-import { IconX } from "@tabler/icons-react"
+import { Box, Divider, SimpleGrid, Stack, Text } from "@mantine/core"
 import { useTranslation } from "react-i18next"
 import { useLocation, useNavigate } from "react-router-dom"
 import { buildLocalizedPath, getLocalePrefix } from "../../i18n/localeRouting"
+import { AppModalShell } from "./AppModalShell"
 import { FeedbackSection } from "./FeedbackSection"
 
 interface LanguageModalProps {
@@ -38,43 +29,16 @@ export function LanguageModal({ opened, onClose }: LanguageModalProps) {
   }
 
   return (
-    <Modal
+    <AppModalShell
       opened={opened}
       onClose={onClose}
-      withCloseButton={false}
+      title={t("language.title")}
       size="md"
-      centered
-      zIndex={2000}
-      styles={{
-        content: {
-          backgroundColor: "var(--primary-bg)",
-          border: "1px solid var(--border-primary)",
-          borderRadius: "12px",
-          boxShadow: "var(--shadow-primary)",
-        },
-        body: {
-          backgroundColor: "var(--primary-bg)",
-          padding: "0",
-        },
-      }}
+      closeLabel={t("aria.closeControls")}
     >
-      <Group align="center" justify="space-between" p="lg" pb="md">
-        <Title order={3} className="text-bronze font-display">
-          {t("language.title")}
-        </Title>
-        <Box
-          className="close-button-container"
-          onClick={onClose}
-          aria-label={t("aria.closeControls")}
-          title={t("aria.closeControls")}
-        >
-          <IconX size={24} stroke={1.5} />
-        </Box>
-      </Group>
-      <Divider color="var(--border-secondary)" />
-      <Box p="lg">
+      <Box className="app-modal-card">
         <Stack gap="lg">
-          <SimpleGrid cols={2} spacing="md">
+          <SimpleGrid cols={2} spacing="md" className="app-modal-choice-grid">
             {languages.map((lang) => {
               const isSelected = i18n.language === lang.code
               return (
@@ -83,49 +47,16 @@ export function LanguageModal({ opened, onClose }: LanguageModalProps) {
                   component="button"
                   type="button"
                   onClick={() => handleLanguageChange(lang.code)}
-                  style={{
-                    background: isSelected
-                      ? "rgba(201, 168, 118, 0.15)"
-                      : "rgba(201, 168, 118, 0.05)",
-                    border: `2px solid ${
-                      isSelected
-                        ? "rgba(201, 168, 118, 0.6)"
-                        : "rgba(201, 168, 118, 0.2)"
-                    }`,
-                    borderRadius: "8px",
-                    padding: "16px",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    textAlign: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    gap: "8px",
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isSelected) {
-                      e.currentTarget.style.background =
-                        "rgba(201, 168, 118, 0.1)"
-                      e.currentTarget.style.borderColor =
-                        "rgba(201, 168, 118, 0.4)"
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSelected) {
-                      e.currentTarget.style.background =
-                        "rgba(201, 168, 118, 0.05)"
-                      e.currentTarget.style.borderColor =
-                        "rgba(201, 168, 118, 0.2)"
-                    }
-                  }}
+                  className={`app-modal-choice${
+                    isSelected ? " app-modal-choice-active" : ""
+                  }`}
                 >
-                  <Text style={{ fontSize: "32px", lineHeight: 1 }}>
-                    {lang.flag}
-                  </Text>
+                  <Text className="app-modal-choice-flag">{lang.flag}</Text>
                   <Text
-                    size="md"
+                    className={`app-modal-choice-label${
+                      isSelected ? " text-bronze" : " text-secondary"
+                    }`}
                     fw={isSelected ? 600 : 400}
-                    className={isSelected ? "text-bronze" : "text-secondary"}
                   >
                     {lang.label}
                   </Text>
@@ -134,11 +65,13 @@ export function LanguageModal({ opened, onClose }: LanguageModalProps) {
             })}
           </SimpleGrid>
 
-          <Divider color="var(--border-secondary)" />
+          <Divider className="app-modal-divider" />
 
-          <FeedbackSection variant="modal" />
+          <Box className="app-modal-panel app-modal-panel-center">
+            <FeedbackSection variant="modal" />
+          </Box>
         </Stack>
       </Box>
-    </Modal>
+    </AppModalShell>
   )
 }

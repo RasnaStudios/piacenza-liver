@@ -51,8 +51,9 @@
   },
   "language": {
     "title": "Select Language",
-    "developerText": "Do you want to add a new language?",
-    "contributeOnGitHub": "Contribute a language on GitHub"
+    "newLanguagePrompt": "Do you want to add a new language?",
+    "developerText": "Are you a developer?",
+    "contributeOnGitHub": "You can contribute directly on GitHub!"
   },
   "contactsModal": {
     "creditsTitle": "Project credits",

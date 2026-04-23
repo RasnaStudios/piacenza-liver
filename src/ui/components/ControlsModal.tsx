@@ -1,7 +1,7 @@
-import { Box, Divider, Group, Modal, Stack, Text, Title } from "@mantine/core"
-import { IconX } from "@tabler/icons-react"
+import { Box, Stack, Text } from "@mantine/core"
 import { isMobile } from "react-device-detect"
 import { useTranslation } from "react-i18next"
+import { AppModalShell } from "./AppModalShell"
 
 interface ControlsModalProps {
   opened: boolean
@@ -31,60 +31,25 @@ export function ControlsModal({ opened, onClose }: ControlsModalProps) {
   const controls = getControlsData()
 
   return (
-    <Modal
+    <AppModalShell
       opened={opened}
       onClose={onClose}
-      withCloseButton={false}
+      title={t("title")}
       size="md"
-      centered
-      zIndex={2000}
-      styles={{
-        content: {
-          backgroundColor: "var(--primary-bg)",
-          border: "1px solid var(--border-primary)",
-          borderRadius: "12px",
-          boxShadow: "var(--shadow-primary)",
-          fontFamily: "var(--font-primary)",
-        },
-        body: {
-          backgroundColor: "var(--primary-bg)",
-          padding: "0",
-          fontFamily: "var(--font-primary)",
-        },
-      }}
+      closeLabel={tCommon("aria.closeControls")}
     >
-      <Group align="center" justify="space-between" p="lg" pb="md">
-        <Title order={3} className="text-bronze font-display">
-          {t("title")}
-        </Title>
-        <Box
-          className="close-button-container"
-          onClick={onClose}
-          aria-label={tCommon("aria.closeControls")}
-          title={tCommon("aria.closeControls")}
-        >
-          <IconX size={24} stroke={1.5} />
-        </Box>
-      </Group>
-      <Divider color="var(--border-secondary)" />
-      <Box p="lg">
+      <Box className="app-modal-card">
         <Stack gap="xs">
           {controls.map((control, index) => (
-            <Box key={control.command || index}>
-              <Box className="bg-overlay-secondary border-secondary" p="xs">
-                <Stack gap="xs">
-                  <Text size="lg" className="text-bronze font-display">
-                    {control.command}
-                  </Text>
-                  <Text size="md" className="text-secondary font-primary">
-                    {control.description}
-                  </Text>
-                </Stack>
-              </Box>
+            <Box key={control.command || index} className="app-modal-panel">
+              <Stack gap={6}>
+                <Text className="app-modal-item-title">{control.command}</Text>
+                <Text className="app-modal-copy">{control.description}</Text>
+              </Stack>
             </Box>
           ))}
         </Stack>
       </Box>
-    </Modal>
+    </AppModalShell>
   )
 }
