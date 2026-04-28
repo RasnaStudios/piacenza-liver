@@ -44,7 +44,7 @@
   },
   "footer": {
     "compiledBy": "Information compiled by",
-    "incorrectInfo": "Do you see errors in the translations or in the information?",
+    "incorrectInfo": "Do you see errors in the transcriptions, deity mappings, or information?",
     "writeMe": "Contact us",
     "mailtoSubject": "Feedback on Piacenza Liver information",
     "mailtoBody": "I noticed the following incorrect or incomplete information:\n\n"

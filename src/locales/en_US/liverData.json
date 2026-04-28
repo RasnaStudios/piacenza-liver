@@ -2,11 +2,11 @@
   "groups": {
     "sky": {
       "name": "Sky",
-      "description": "The first three houses are occupied by Tinia, the supreme god linked to the Greek god Zeus, followed by Cilens (an epithet of Tinia, possibly related to night or boundaries), and Thufltha (a divine power associated with fate and judgment, appearing as an aspect of Tinia), and Nethuns, in the form of divinity of atmospheric humidity. In fourth place is Uni, wife of Tinia, protectress of cities and births."
+      "description": "The first four houses are occupied by major celestial figures: Tinia, the supreme god linked to Zeus and Jupiter; Cilens, a deity often associated with Tinia; Thufltha, whose exact function remains debated; Nethuns, the Etruscan counterpart of Neptune/Poseidon; and Uni, a major goddess comparable with Juno/Hera."
     },
     "water": {
       "name": "Water",
-      "description": "The second four houses are occupied by Tecum, a still-mysterious figure: the sanctuary of Tuoro on Lake Trasimeno is dedicated to this diety. Lusal occupies the next space, followed by Nethuns, originally the diety of fresh-water, only later identified with the Greek god Poseidon. Catha, the sun goddess, occupies the last house."
+      "description": "The second four houses include Tecum, a still-mysterious figure connected with dedications around Lake Trasimeno; Lusal, whose reading and identity are disputed; Nethuns, the Etruscan Neptune/Poseidon; and Catha, an astral deity whose solar or lunar character is debated."
     },
     "earth": {
       "name": "Earth",
@@ -22,11 +22,11 @@
     },
     "gall_bladder": {
       "name": "Gall Bladder",
-      "description": "The bile reservoir representing concentrated divine energy, generative forces, and seasonal transitions. Contains powerful fertility and war deities."
+      "description": "The bile reservoir is a charged divinatory area containing Tvnth, Maris, Laran, Letham, and Nethuns. Several identifications in this zone remain debated."
     },
     "central_section": {
       "name": "Central Section",
-      "description": "The central power zone containing heroic protectors and generating forces. Represents the heart of divine power and cosmic balance."
+      "description": "The central zone contains Hercle, Maris, Letham, Metlvmth, and Tluscva. It combines better documented divine names with obscure forms whose status remains uncertain."
     },
     "pars_hostilis": {
       "name": "Pars Hostilis",
@@ -46,36 +46,32 @@
       "greekEquivalent": "Zeus"
     },
     "cilens": {
-      "description": "Epithet of Tinia, possibly related to night or boundaries.",
-      "romanEquivalent": "Nocturnus"
+      "description": "Deity attested on the liver and often associated with Tinia; nocturnal or boundary interpretations remain tentative."
     },
     "thufltha": {
-      "description": "Divine power associated with fate and judgment, often appearing as an aspect of Tinia representing avenging or punitive forces.",
-      "romanEquivalent": "Fortuna"
+      "description": "Female deity attested on the liver and in votive contexts; links with fate, Fortuna, or Tyche are debated rather than secure."
     },
     "nethuns": {
-      "description": "God of fresh water, sea, and atmospheric moisture.",
+      "description": "Water and sea god, securely comparable with Neptune/Poseidon; atmospheric readings belong to specific liver interpretations.",
       "romanEquivalent": "Neptune",
       "greekEquivalent": "Poseidon"
     },
     "uni": {
-      "description": "Wife of Tinia, guardian of marriage, fertility, birth, and cities.",
+      "description": "Major goddess comparable with Juno/Hera, associated with cities, birth, sovereignty, and in some evidence warlike or astral aspects.",
       "romanEquivalent": "Juno",
       "greekEquivalent": "Hera"
     },
     "mae": {
-      "description": "Possibly maternal or generative attribute deity.",
-      "romanEquivalent": "Maius"
+      "description": "Unresolved paired name or epithet in the Uni/Mae inscription; function and equivalent remain uncertain."
     },
     "tecvm": {
-      "description": "God of the lucomenes, or ruling class."
+      "description": "Obscure deity known from the liver and dedications around Lake Trasimeno; function remains debated."
     },
     "lusal": {
-      "description": "Unidentified water deity, possibly related to light or purification."
+      "description": "Disputed reading or deity label; some scholarship relates lvsl/lvsal forms to Usil, while this site keeps Lusal as a navigation label."
     },
     "catha": {
-      "description": "Goddess of the sun in her solar-nymph form.",
-      "greekEquivalent": "Leucothea"
+      "description": "Astral deity, probably female; solar, lunar, underworld, and childbirth associations are debated in current scholarship."
     },
     "fufluns": {
       "description": "God of wine, inebriation, and vegetation cycles.",
@@ -83,70 +79,66 @@
       "greekEquivalent": "Dionysus"
     },
     "selvans": {
-      "description": "God of borders and forest boundaries.",
+      "description": "God of forests, pastures, and liminal lands or boundaries.",
       "romanEquivalent": "Silvanus"
     },
     "tluscva": {
-      "description": "Nymphs tied to water cult and sacred offerings."
+      "description": "Obscure, probably female chthonic divinity or divine collective; interpretation remains disputed."
     },
     "cels": {
-      "description": "Goddess of the earth and chthonic forces.",
-      "romanEquivalent": "Gea"
+      "description": "Cel/Cels, earth goddess connected with chthonic forces.",
+      "romanEquivalent": "Terra Mater",
+      "greekEquivalent": "Gaia"
     },
     "culsans": {
       "description": "Benevolent protector of doors and thresholds.",
       "romanEquivalent": "Janus"
     },
     "alpans": {
-      "description": "Protective spirit associated with Culsans."
+      "description": "Alpan/Alpans, female attendant spirit, perhaps a Lasa, associated with Turan and harmony."
     },
     "vetis": {
-      "description": "Underworld \"Apollo\", chthonic version of the light god.",
-      "romanEquivalent": "Veiovis"
+      "description": "Obscure chthonic deity, sometimes compared with Veiovis; the identification remains conjectural."
     },
     "pul": {
-      "description": "Uncertain deity, possibly related to purification."
+      "description": "Unresolved deity name or inscriptional form; function remains uncertain."
     },
     "lasl": {
-      "description": "Household female spirit, domestic protection. Companion of Turan.",
-      "romanEquivalent": "Lares"
+      "description": "Lasa/Lasl, female divine attendant often linked with Turan; fate or service roles are possible."
     },
     "maris": {
-      "description": "Generative force and generating power of all the gods."
+      "description": "Important but obscure deity, often represented as child or youth in Etruscan evidence; generative interpretations remain debated."
     },
     "laran": {
-      "description": "God of war, representing martial force. Also associated with underworld and boundary maintenance.",
-      "romanEquivalent": "Ares"
+      "description": "God of war, comparable with Mars and Ares.",
+      "romanEquivalent": "Mars",
+      "greekEquivalent": "Ares"
     },
     "tvnth": {
       "description": "Uncertain deity in the gall bladder zone."
     },
     "hercle": {
-      "description": "Hero-protector, divine strength and protection.",
-      "romanEquivalent": "Hercules"
+      "description": "Major Etruscan god equivalent to Herakles/Hercules, with protective and oracular associations.",
+      "romanEquivalent": "Hercules",
+      "greekEquivalent": "Herakles"
     },
     "metlvmth": {
-      "description": "Epithet or attribute associated with Lethams."
-    },
-    "marutl": {
-      "description": "Double epithet associated with Tluscva."
+      "description": "Unresolved inscriptional form, possibly an epithet or attribute rather than a secure independent deity."
     },
     "letham": {
-      "description": "Underworld goddess associated with the dead and chthonic forces. Appears on the Liver of Piacenza and in ritual inscriptions."
+      "description": "Obscure deity attested on the liver; gender and sphere are debated, with chthonic and birth-related interpretations both proposed."
     },
     "velch": {
-      "description": "Infernal form of Sethlans (Vulcan), fire deity.",
-      "romanEquivalent": "Vulcan"
+      "description": "Obscure deity or divine form, possibly related to Volcanus/Vulcan and fire or metalworking traditions."
     },
     "satres": {
-      "description": "God of the underworld and temporal cycles.",
-      "romanEquivalent": "Saturn"
+      "description": "Obscure deity on the liver; any relationship with Saturn remains debated and should be treated as tentative."
     },
     "usil": {
       "description": "The sun god, representing solar power and illumination."
     },
     "tiur": {
-      "description": "The moon god, representing lunar cycles and night illumination."
+      "description": "Tiur/Tivr, moon deity or moon/month term; on the liver it marks the lunar side of the back."
     }
   }
 }

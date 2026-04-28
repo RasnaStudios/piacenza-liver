@@ -2,11 +2,11 @@
   "groups": {
     "sky": {
       "name": "Cielo",
-      "description": "Le prime tre caselle sono occupate da Tinia, il dio supremo legato al dio greco Zeus, seguito da Cilens (un epiteto di Tinia, possibilmente relativo alla notte o ai confini), e Thufltha (un potere divino associato al destino e al giudizio, che appare come un aspetto di Tinia), e Nethuns, nella forma di divinità dell'umidità atmosferica. Al quarto posto c'è Uni, moglie di Tinia, protettrice delle città e delle nascite."
+      "description": "Le prime quattro caselle sono occupate da importanti figure celesti: Tinia, il dio supremo legato a Zeus e Giove; Cilens, una divinità spesso associata a Tinia; Thufltha, la cui funzione esatta resta discussa; Nethuns, corrispondente etrusco di Nettuno/Poseidone; e Uni, grande dea comparabile a Giunone/Era."
     },
     "water": {
       "name": "Acqua",
-      "description": "Le seconde quattro caselle sono occupate da Tecum, una figura ancora misteriosa: il santuario di Tuoro sul Lago Trasimeno è dedicato a questa divinità. Lusal occupa lo spazio successivo, seguito da Nethuns, originariamente la divinità dell'acqua dolce, solo in seguito identificata con il dio greco Poseidone. Catha, la dea del sole, occupa l'ultima casa."
+      "description": "Le seconde quattro caselle includono Tecum, figura ancora misteriosa collegata a dediche nell'area del Lago Trasimeno; Lusal, la cui lettura e identità sono discusse; Nethuns, il Nettuno/Poseidone etrusco; e Catha, divinità astrale il cui carattere solare o lunare resta dibattuto."
     },
     "earth": {
       "name": "Terra",
@@ -22,11 +22,11 @@
     },
     "gall_bladder": {
       "name": "Cistifellea",
-      "description": "Il serbatoio della bile che rappresenta energia divina concentrata, forze generative e transizioni stagionali. Contiene potenti divinità della fertilità e della guerra."
+      "description": "Il serbatoio della bile è un'area divinatoria carica, con Tvnth, Maris, Laran, Letham e Nethuns. Diverse identificazioni in questa zona restano discusse."
     },
     "central_section": {
       "name": "Sezione Centrale",
-      "description": "La zona di potere centrale contenente protettori eroici e forze generatrici. Rappresenta il cuore del potere divino e l'equilibrio cosmico."
+      "description": "La zona centrale contiene Hercle, Maris, Letham, Metlvmth e Tluscva. Combina nomi divini meglio documentati con forme oscure il cui status resta incerto."
     },
     "pars_hostilis": {
       "name": "Pars Hostilis",
@@ -46,36 +46,32 @@
       "greekEquivalent": "Zeus"
     },
     "cilens": {
-      "description": "Epiteto di Tinia, possibilmente relativo alla notte o ai confini.",
-      "romanEquivalent": "Notturno"
+      "description": "Divinità attestata sul fegato e spesso associata a Tinia; le interpretazioni notturne o di confine restano tentative."
     },
     "thufltha": {
-      "description": "Potere divino associato al destino e al giudizio, spesso appare come un aspetto di Tinia che rappresenta forze vendicatrici o punitive.",
-      "romanEquivalent": "Fortuna"
+      "description": "Divinità femminile attestata sul fegato e in contesti votivi; i legami con destino, Fortuna o Tyche sono discussi, non sicuri."
     },
     "nethuns": {
-      "description": "Dio dell'acqua dolce, del mare e dell'umidità atmosferica.",
+      "description": "Dio delle acque e del mare, sicuramente comparabile a Nettuno/Poseidone; le letture atmosferiche appartengono a specifiche interpretazioni del fegato.",
       "romanEquivalent": "Nettuno",
       "greekEquivalent": "Poseidone"
     },
     "uni": {
-      "description": "Moglie di Tinia, guardiana del matrimonio, della fertilità, della nascita e delle città.",
+      "description": "Grande dea comparabile a Giunone/Era, associata a città, nascita, sovranità e, in alcune testimonianze, ad aspetti guerrieri o astrali.",
       "romanEquivalent": "Giunone",
       "greekEquivalent": "Era"
     },
     "mae": {
-      "description": "Possibilmente divinità attributo materno o generativo.",
-      "romanEquivalent": "Maius"
+      "description": "Nome o epiteto associato all'iscrizione Uni/Mae; funzione ed equivalente restano incerti."
     },
     "tecvm": {
-      "description": "Dio dei lucomeni, o classe dirigente."
+      "description": "Divinità oscura nota dal fegato e da dediche nell'area del Lago Trasimeno; la funzione resta discussa."
     },
     "lusal": {
-      "description": "Divinità dell'acqua non identificata, possibilmente relativa alla luce o alla purificazione."
+      "description": "Lettura o etichetta divina discussa; alcune ricerche collegano forme lvsl/lvsal a Usil, mentre questo sito conserva Lusal come etichetta di navigazione."
     },
     "catha": {
-      "description": "Dea del sole nella sua forma di ninfa solare.",
-      "greekEquivalent": "Leucotea"
+      "description": "Divinità astrale, probabilmente femminile; associazioni solari, lunari, ctonie e legate alla nascita sono discusse nella ricerca recente."
     },
     "fufluns": {
       "description": "Dio del vino, dell'ebbrezza e dei cicli della vegetazione.",
@@ -83,70 +79,66 @@
       "greekEquivalent": "Dioniso"
     },
     "selvans": {
-      "description": "Dio dei confini e dei limiti delle foreste.",
+      "description": "Dio di boschi, pascoli e terre o confini liminali.",
       "romanEquivalent": "Silvano"
     },
     "tluscva": {
-      "description": "Ninfe legate al culto dell'acqua e alle offerte sacre."
+      "description": "Oscura divinità, o collettivo divino, probabilmente femminile e ctonio; l'interpretazione resta discussa."
     },
     "cels": {
-      "description": "Dea della terra e delle forze ctonie.",
-      "romanEquivalent": "Gea"
+      "description": "Cel/Cels, dea della terra connessa a forze ctonie.",
+      "romanEquivalent": "Terra Mater",
+      "greekEquivalent": "Gea"
     },
     "culsans": {
       "description": "Protettore benevolo di porte e soglie.",
       "romanEquivalent": "Giano"
     },
     "alpans": {
-      "description": "Spirito protettivo associato a Culsans."
+      "description": "Alpan/Alpans, spirito femminile assistente, forse una Lasa, associato a Turan e all'armonia."
     },
     "vetis": {
-      "description": "\"Apollo\" dell'oltretomba, versione ctonia del dio della luce.",
-      "romanEquivalent": "Veiove"
+      "description": "Divinità ctonia oscura, talvolta confrontata con Veiove; l'identificazione resta congetturale."
     },
     "pul": {
-      "description": "Divinità incerta, possibilmente relativa alla purificazione."
+      "description": "Nome divino o forma iscrizionale irrisolta; la funzione resta incerta."
     },
     "lasl": {
-      "description": "Spirito femminile domestico, protezione domestica. Compagna di Turan.",
-      "romanEquivalent": "Lari"
+      "description": "Lasa/Lasl, assistente divina femminile spesso collegata a Turan; sono possibili ruoli legati al fato o al servizio."
     },
     "maris": {
-      "description": "Forza generativa e potere generatore di tutti gli dei."
+      "description": "Divinità importante ma oscura, spesso rappresentata come bambino o giovane nelle testimonianze etrusche; le interpretazioni generative restano discusse."
     },
     "laran": {
-      "description": "Dio della guerra, che rappresenta la forza marziale. Anche associato all'oltretomba e alla manutenzione dei confini.",
-      "romanEquivalent": "Marte"
+      "description": "Dio della guerra, comparabile a Marte e Ares.",
+      "romanEquivalent": "Marte",
+      "greekEquivalent": "Ares"
     },
     "tvnth": {
       "description": "Divinità incerta nella zona della cistifellea."
     },
     "hercle": {
-      "description": "Eroe-protettore, forza divina e protezione.",
-      "romanEquivalent": "Ercole"
+      "description": "Grande dio etrusco equivalente a Eracle/Ercole, con associazioni protettive e oracolari.",
+      "romanEquivalent": "Ercole",
+      "greekEquivalent": "Eracle"
     },
     "metlvmth": {
-      "description": "Epiteto o attributo associato a Lethams."
-    },
-    "marutl": {
-      "description": "Doppio epiteto associato a Tluscva."
+      "description": "Forma iscrizionale irrisolta, forse epiteto o attributo più che divinità indipendente sicura."
     },
     "letham": {
-      "description": "Dea dell'oltretomba associata ai morti e alle forze ctonie. Appare sul Fegato di Piacenza e nelle iscrizioni rituali."
+      "description": "Divinità oscura attestata sul fegato; genere e sfera sono discussi, con interpretazioni sia ctonie sia legate alla nascita."
     },
     "velch": {
-      "description": "Forma infernale di Sethlans (Vulcano), divinità del fuoco.",
-      "romanEquivalent": "Vulcano"
+      "description": "Divinità o forma divina oscura, forse collegata a Volcanus/Vulcano e alle tradizioni del fuoco o della metallurgia."
     },
     "satres": {
-      "description": "Dio dell'oltretomba e dei cicli temporali.",
-      "romanEquivalent": "Saturno"
+      "description": "Divinità oscura sul fegato; ogni rapporto con Saturno resta discusso e va trattato come tentativo."
     },
     "usil": {
       "description": "Il dio del sole, che rappresenta il potere solare e l'illuminazione."
     },
     "tiur": {
-      "description": "Il dio della luna, che rappresenta i cicli lunari e l'illuminazione notturna."
+      "description": "Tiur/Tivr, divinità lunare o termine per luna/mese; sul fegato marca il lato lunare del retro."
     }
   }
 }

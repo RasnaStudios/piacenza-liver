@@ -1,14 +1,14 @@
 {
   "htmlTitle": "Fegato di Piacenza - Ricostruzione Archeologica Etrusca 3D",
-  "description": "Ricostruzione 3D interattiva del Fegato Etrusco di Piacenza. 42 iscrizioni delle divinità con annotazioni accademiche per archeologia e didattica.",
+  "description": "Ricostruzione 3D interattiva del Fegato Etrusco di Piacenza con tutte le 42 iscrizioni, trascrizioni, associazioni divine e note interpretative.",
   "keywords": "Fegato di Piacenza, Etrusco, archeologia, visualizzazione 3D, epatoscopia, divinazione",
   "ogTitle": "Fegato di Piacenza - Visualizzazione Interattiva 3D",
-  "ogDescription": "Visualizzazione interattiva 3D dell'antico Fegato Etrusco di Piacenza con tutte le 42 iscrizioni autentiche e annotazioni accademiche. Creato da Lorenzo Andraghetti per la ricerca e l'educazione archeologica.",
+  "ogDescription": "Visualizzazione interattiva 3D dell'antico Fegato Etrusco di Piacenza con tutte le 42 iscrizioni autentiche, trascrizioni, associazioni divine e note interpretative. Creato da Lorenzo Andraghetti per la ricerca e l'educazione archeologica.",
   "ogImageAlt": "Visualizzazione 3D del Fegato di Piacenza che mostra iscrizioni etrusche",
   "ogSiteName": "Ricostruzione Fegato di Piacenza",
   "structuredData": {
     "aboutDescription": "Antico fegato in bronzo etrusco usato per l'epatoscopia (divinazione del fegato)",
     "datasetName": "Dataset Iscrizioni Fegato di Piacenza",
-    "datasetDescription": "Dataset completo di tutte le 42 iscrizioni delle divinità etrusche con traduzioni e annotazioni accademiche"
+    "datasetDescription": "Dataset di tutte le 42 iscrizioni delle divinità etrusche con trascrizioni, associazioni divine e note interpretative"
   }
 }

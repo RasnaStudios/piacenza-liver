@@ -20,7 +20,7 @@
     },
     "etruscanPantheon": {
       "heading": "Il Pantheon Etrusco",
-      "content": "Le {totalInscriptions} iscrizioni presenti sul fegato testimoniano l'esistenza di {totalDeities} divinità etrusche distinte. Molte di esse trovano corrispondenze nel mondo greco-romano: Tinia, il dio supremo, è l'equivalente di Zeus e Giove; Nethuns corrisponde a Poseidone e Nettuno; Turan ad Afrodite e Venere. Altre divinità, invece, restano peculiari della tradizione etrusca, come Thufltha, una potenza legata al destino e al giudizio spesso intesa come un aspetto di Tinia, e Cilens, epiteto di Tinia forse connesso alla notte o ai confini. La posizione di ciascuna divinità sul modello riflette il suo ruolo nell'ordine cosmico."
+      "content": "Le {totalInscriptions} iscrizioni corrispondono attualmente a {totalDeities} etichette divine in questo dataset. Alcune identificazioni sono solide: Tinia corrisponde a Zeus e Giove, Nethuns a Poseidone e Nettuno, Fufluns a Dioniso e Bacco, Hercle a Eracle ed Ercole. Altre, tra cui Thufltha, Cilens, Letham, Catha, Lusal e Tluscva, sono trattate qui come discusse o oscure, non come equivalenti stabiliti. Ogni collocazione va letta come mappa interpretativa del fegato, non come traduzione completa di ogni iscrizione."
     },
     "significanceAndInterpretation": {
       "heading": "Significato e Interpretazione",

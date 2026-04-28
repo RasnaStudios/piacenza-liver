@@ -2,14 +2,14 @@
   <img src="public/homepage.png" alt="Piacenza Liver - 3D Interactive Visualization" width="800">
 </div>
 
-An interactive 3D visualization of the ancient Etruscan Piacenza Liver (Fegato di Piacenza), a bronze model used for divination that maps the cosmological structure of Etruscan religious beliefs. This project presents all 42 authentic Etruscan inscriptions with scholarly annotations.
+An interactive 3D visualization of the ancient Etruscan Piacenza Liver (Fegato di Piacenza), a bronze model used for divination that maps the cosmological structure of Etruscan religious beliefs. This project presents all 42 authentic Etruscan inscriptions with transcriptions, deity mappings, and interpretive notes.
 
 ## ✨ Features
 
 - **Interactive 3D Model**: Navigate around the bronze liver model with mouse/touch controls
 - **Authentic Etruscan Script**: All 42 inscriptions displayed in original Etruscan Unicode characters (𐌀-𐌚)
-- **Scholarly Annotations**: Comprehensive deity information, divination meanings, and archaeological notes
-- **Cosmological Grouping**: Organized by the six structural groups (A-G) of the liver's layout
+- **Interpretive Notes**: Deity information, disputed identifications, and archaeological context
+- **Cosmological Grouping**: Organized by the nine zones used in the site's liver layout
 - **Direct Linking**: Share specific inscriptions, regions, or deities with URL hash navigation
 
 ## 🔗 Direct Linking

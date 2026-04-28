@@ -92,7 +92,7 @@ export function buildLiverDataset(t: TranslateFn): LiverDataset {
 
   return {
     metadata: {
-      title: "Piacenza Liver Dataset - Complete Archaeological Data",
+      title: "Piacenza Liver Inscriptions Dataset",
       totalInscriptions: liverInscriptions.length,
       totalZones: Object.keys(liverGroups).length,
       totalDeities: Object.keys(liverGods).length,

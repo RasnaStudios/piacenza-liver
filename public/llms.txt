@@ -1,5 +1,5 @@
 # Piacenza Liver - 3D Etruscan Archaeological Reconstruction
-> Interactive WebGL visualization of the Piacenza Liver with annotations and inscriptions.
+> Interactive WebGL visualization of the Piacenza Liver with inscriptions, transcriptions, deity mappings, and interpretive notes.
 
 ## Pages
 - https://piacenzaliver.com/

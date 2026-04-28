@@ -20,7 +20,7 @@
     },
     "etruscanPantheon": {
       "heading": "The Etruscan Pantheon",
-      "content": "The {totalInscriptions} inscriptions reveal {totalDeities} distinct Etruscan deities, many of whom have parallels in Greek and Roman mythology. Tinia, the supreme god, corresponds to Zeus and Jupiter. Nethuns represents Poseidon and Neptune, while Turan aligns with Aphrodite and Venus. However, many deities remain uniquely Etruscan, such as Thufltha, a divine power associated with fate and judgment often appearing as an aspect of Tinia, and Cilens, an epithet of Tinia possibly related to night or boundaries. Each deity's placement on the liver reflects their role in the cosmic order."
+      "content": "The {totalInscriptions} inscriptions currently map to {totalDeities} deity labels in this dataset. Some identifications are secure: Tinia corresponds to Zeus and Jupiter, Nethuns to Poseidon and Neptune, Fufluns to Dionysus and Bacchus, and Hercle to Herakles and Hercules. Others, including Thufltha, Cilens, Letham, Catha, Lusal, and Tluscva, are treated here as debated or obscure rather than settled equivalents. Each placement is best read as an interpretive map of the liver, not as a complete translation of every inscription."
     },
     "significanceAndInterpretation": {
       "heading": "Significance and Interpretation",

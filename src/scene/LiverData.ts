@@ -181,10 +181,6 @@ export const liverGods = {
     id: "metlvmth",
     name: "Metlvmth",
   },
-  marutl: {
-    id: "marutl",
-    name: "Marutl",
-  },
   letham: {
     id: "letham",
     name: "Letham",
