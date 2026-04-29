@@ -39,6 +39,11 @@
   align-items: start;
 }
 
+.contacts-site-citation-divider {
+  margin: 8px 0 4px;
+  border-color: rgba(201, 168, 118, 0.22);
+}
+
 .contacts-person-card {
   display: flex;
   flex-direction: column;

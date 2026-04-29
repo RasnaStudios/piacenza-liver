@@ -46,6 +46,10 @@
   margin-bottom: 28px;
 }
 
+.exploration-header-actions {
+  justify-content: center;
+}
+
 .download-yaml-button {
   padding: 12px 24px;
   font-size: clamp(13px, 1.1vw, 15px);
@@ -544,5 +548,89 @@
   .view-3d-button-compact {
     font-size: 11px;
     padding: 8px 16px;
+  }
+}
+
+/* =============================================================================
+   Inline parallels (deity-by-deity browse) — matched to DeityCard aesthetic
+   =========================================================================== */
+
+.deity-parallels-inline {
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+.deity-parallel-inline {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(201, 168, 118, 0.06);
+  border: 1px solid rgba(201, 168, 118, 0.22);
+}
+
+.deity-parallel-inline--superseded {
+  background: rgba(140, 140, 140, 0.05);
+  border: 1px dashed rgba(201, 168, 118, 0.28);
+}
+
+.deity-parallel-inline--superseded .deity-parallel-value {
+  text-decoration: line-through;
+  text-decoration-color: rgba(201, 168, 118, 0.45);
+  text-decoration-thickness: 1px;
+  opacity: 0.78;
+}
+
+.deity-parallel-inline .deity-parallel-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: rgba(201, 168, 118, 0.7);
+}
+
+.deity-parallel-inline .deity-parallel-value {
+  font-size: 17px;
+  font-weight: 600;
+  color: #c9a876;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.deity-parallel-inline .parallel-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  cursor: help;
+}
+
+.deity-parallel-inline .parallel-status--secure {
+  background: rgba(122, 192, 142, 0.16);
+  color: rgba(190, 230, 200, 0.95);
+  border: 1px solid rgba(122, 192, 142, 0.45);
+}
+
+.deity-parallel-inline .parallel-status--proposed {
+  background: rgba(228, 170, 96, 0.14);
+  color: rgba(245, 215, 170, 0.95);
+  border: 1px solid rgba(228, 170, 96, 0.5);
+}
+
+.deity-parallel-inline .parallel-status--superseded {
+  background: rgba(170, 170, 170, 0.08);
+  color: rgba(220, 220, 220, 0.78);
+  border: 1px solid rgba(170, 170, 170, 0.4);
+}
+
+@media (max-width: 640px) {
+  .deity-parallel-inline {
+    padding: 5px 10px;
+  }
+  .deity-parallel-inline .deity-parallel-value {
+    font-size: 15px;
   }
 }

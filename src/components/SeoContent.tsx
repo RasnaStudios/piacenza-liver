@@ -1,5 +1,12 @@
 import { useTranslation } from "react-i18next"
-import { liverGods, liverGroups, liverInscriptions } from "../scene/LiverData"
+import { getDeitySources } from "../data/Scholarship"
+import {
+  liverGods,
+  liverGroups,
+  liverInscriptions,
+  type ParallelLocaleTranslator,
+  resolveDeityParallels,
+} from "../scene/LiverData"
 
 const srOnly: React.CSSProperties = {
   position: "absolute",
@@ -60,19 +67,26 @@ export function SeoContent() {
       <dl>
         {Object.entries(liverGods).map(([id, god]) => {
           const description = tLiverData(`deities.${id}.description`)
-          const roman = tLiverData(`deities.${id}.romanEquivalent`, {
-            defaultValue: "",
-          })
-          const greek = tLiverData(`deities.${id}.greekEquivalent`, {
-            defaultValue: "",
-          })
+          const parallels = resolveDeityParallels(
+            tLiverData as ParallelLocaleTranslator,
+            id,
+          )
+          const parallelText = parallels
+            .map(
+              (p) =>
+                ` ${p.tradition === "roman" ? "Roman" : "Greek"} parallel: ${p.name} (${p.status}).`,
+            )
+            .join("")
+          const sources = getDeitySources(id)
+          const sourcesText =
+            sources.length > 0 ? ` Sources: ${sources.join(", ")}.` : ""
           return (
             <div key={id}>
               <dt>{god.name}</dt>
               <dd>
                 {description}
-                {roman ? ` Roman equivalent: ${roman}.` : ""}
-                {greek ? ` Greek equivalent: ${greek}.` : ""}
+                {parallelText}
+                {sourcesText}
               </dd>
             </div>
           )

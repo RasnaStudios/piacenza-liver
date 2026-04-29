@@ -8,7 +8,7 @@ An interactive 3D visualization of the ancient Etruscan Piacenza Liver (Fegato d
 
 - **Interactive 3D Model**: Navigate around the bronze liver model with mouse/touch controls
 - **Authentic Etruscan Script**: All 42 inscriptions displayed in original Etruscan Unicode characters (𐌀-𐌚)
-- **Interpretive Notes**: Deity information, disputed identifications, and archaeological context
+- **Interpretive Notes**: Deity information, debated identifications, and archaeological context
 - **Cosmological Grouping**: Organized by the nine zones used in the site's liver layout
 - **Direct Linking**: Share specific inscriptions, regions, or deities with URL hash navigation
 

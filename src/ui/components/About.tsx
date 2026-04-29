@@ -71,6 +71,7 @@ export function About({
                 </div>
               )
             })}
+
             <InteractionButton
               onClick={onStartInteraction}
               variant="text"

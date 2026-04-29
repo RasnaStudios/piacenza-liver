@@ -1,0 +1,67 @@
+.website-citation {
+  width: 100%;
+  margin-top: 8px;
+  text-align: left;
+}
+
+.website-citation-heading {
+  font-size: clamp(13px, 1.35vw, 15px);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 8px;
+}
+
+.website-citation-intro {
+  font-size: clamp(13px, 1.35vw, 14px);
+  line-height: 1.55;
+  color: rgba(245, 231, 204, 0.85);
+  margin: 0 0 10px;
+}
+
+.website-citation-sigla {
+  font-size: clamp(13px, 1.35vw, 14px);
+  line-height: 1.55;
+  color: rgba(245, 231, 204, 0.78);
+  margin: 14px 0 0;
+}
+
+.website-citation--compact .website-citation-heading {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.website-citation--compact .website-citation-intro {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.website-citation--compact .cite-block {
+  font-size: 13px;
+  padding: 12px 14px;
+}
+
+.website-citation--compact .website-citation-sigla {
+  font-size: 12px;
+  margin-top: 10px;
+}
+
+.cite-block {
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(201, 168, 118, 0.28);
+  border-radius: 6px;
+  background: rgba(201, 168, 118, 0.05);
+  color: rgba(245, 231, 204, 0.92);
+  font-family: var(--font-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (max-width: 768px) {
+  .cite-block {
+    font-size: 13px;
+  }
+}

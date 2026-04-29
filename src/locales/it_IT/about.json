@@ -4,11 +4,11 @@
   "sections": {
     "historicalDiscovery": {
       "heading": "Scoperta Storica",
-      "content": "Il Fegato di Piacenza venne alla luce nel 1877 nei pressi di Gossolengo, poco fuori Piacenza. Questo straordinario reperto in bronzo, databile tra la fine del II e l'inizio del I secolo a.C., è uno dei documenti più importanti giunti fino a noi sulla religione etrusca. Si tratta di una vera e propria mappa cosmologica, sulla quale sono incisi con cura i nomi delle divinità e i loro ambiti di influenza."
+      "content": "Il Fegato di Piacenza venne alla luce nel 1877 nei pressi di Gossolengo, poco fuori Piacenza. Questo straordinario reperto in bronzo, databile tra la fine del II e l'inizio del I secolo a.C., è uno dei documenti più importanti giunti fino a noi sulla religione etrusca. Il modello sembra conservare una mappa cosmologica a uso didattico, con nomi divini e regioni sacre incisi sulla superficie. È citato nei corpora epigrafici etruschi come ET Pa 4.2 (Rix, Etruskische Texte) e TLE 719 (Pallottino)."
     },
     "hepatoscopy": {
       "heading": "Epatoscopia",
-      "content": "L'epatoscopia, detta anche aruspicina, era l'arte divinatoria etrusca per eccellenza: consisteva nell'esame del fegato degli animali sacrificati. I sacerdoti, chiamati aruspici, ne osservavano forma, colore, consistenza e ogni segno particolare. Ogni porzione dell'organo era associata a una divinità o a un ambito cosmico specifico, e da queste corrispondenze gli aruspici traevano presagi sulla volontà degli dèi. Questa pratica era così radicata nella cultura etrusca da influenzare profondamente anche la religione romana nei secoli successivi."
+      "content": "L'epatoscopia, detta anche aruspicina, era l'arte divinatoria etrusca per eccellenza: consisteva nell'esame del fegato degli animali sacrificati. I sacerdoti, chiamati aruspici, ne osservavano forma, colore, consistenza e ogni segno particolare. Le diverse porzioni dell'organo potevano essere interpretate attraverso associazioni con divinità o regioni cosmiche, offrendo un quadro per ragionare sui presagi e sulla volontà divina. Questa pratica era così radicata nella cultura etrusca da influenzare profondamente anche la religione romana nei secoli successivi."
     },
     "liverStructure": {
       "heading": "La Struttura del Fegato",
@@ -16,11 +16,15 @@
     },
     "cosmologicalStructure": {
       "heading": "Struttura Cosmologica",
-      "content": "Il fegato è suddiviso in {totalZones} zone cosmologiche, ciascuna legata a un ambito fondamentale dell'esistenza. Al Cielo appartengono le divinità supreme; all'Acqua le forze atmosferiche e marine; alla Terra i poteri del mondo terrestre; all'Oltretomba le divinità ctonie, legate al mondo sotterraneo. La Pars Familiaris e la Pars Hostilis indicano rispettivamente presagi favorevoli e sfavorevoli, mentre la Cistifellea e la Sezione Centrale ospitano potenti forze generative. La zona Posteriore, infine, àncora l'intero sistema cosmico attraverso il Sole e la Luna."
+      "content": "Questa visualizzazione suddivide il fegato in {totalZones} zone cosmologiche usate per la navigazione e l'interpretazione. Cielo e Acqua raccolgono poteri celesti, atmosferici e acquatici; Terra e Oltretomba raccolgono nomi terrestri e ctonii; Pars Familiaris e Pars Hostilis indicano orientamenti favorevoli e sfavorevoli nella tradizione interpretativa. Cistifellea, Sezione Centrale e Retro conservano ulteriori punti di riferimento anatomici e celesti."
     },
     "etruscanPantheon": {
       "heading": "Il Pantheon Etrusco",
-      "content": "Le {totalInscriptions} iscrizioni corrispondono attualmente a {totalDeities} etichette divine in questo dataset. Alcune identificazioni sono solide: Tinia corrisponde a Zeus e Giove, Nethuns a Poseidone e Nettuno, Fufluns a Dioniso e Bacco, Hercle a Eracle ed Ercole. Altre, tra cui Thufltha, Cilens, Letham, Catha, Lusal e Tluscva, sono trattate qui come discusse o oscure, non come equivalenti stabiliti. Ogni collocazione va letta come mappa interpretativa del fegato, non come traduzione completa di ogni iscrizione."
+      "content": "Le {totalInscriptions} iscrizioni corrispondono attualmente a {totalDeities} etichette divine in questo dataset. Alcune identificazioni sono solide: Tinia è confrontato con Zeus e Giove, Nethuns con Poseidone e Nettuno, Fufluns con Dioniso e Bacco, Hercle con Eracle ed Ercole. Altre, tra cui Thufltha, Cilens, Letham, Catha, Lusal e Tluscva, sono trattate qui come discusse o oscure. Ogni collocazione va letta come mappa interpretativa del fegato, non come traduzione completa di ogni iscrizione."
+    },
+    "editorialMethod": {
+      "heading": "Metodo Editoriale",
+      "content": "Questo progetto è una visualizzazione interpretativa, non un'edizione epigrafica completa. Vengono tracciate tre dimensioni indipendenti dell'evidenza. La Lettura indica se i segni etruschi sono chiaramente incisi e letti o se la lettura o segmentazione delle parole è discussa. L'Identificazione indica quanto sia sicura l'identificazione moderna della divinità etrusca, su una scala a quattro livelli (sicura, probabile, discussa, irrisolta). Ogni parallelo greco o romano porta il proprio status (sicuro, proposto o superato), così che vecchie equivalenze come Satres / Saturno restino conservate come storia degli studi invece di essere eliminate in silenzio. Le fonti per ciascuna divinità sono indicate in forma autore-data e linkate alle opere citate dove disponibili in accesso aperto. Il fondamento moderno poggia su Maggiani 1982 (Studi Etruschi L), van der Meer 1987 (l'unica monografia) e Colonna 1991 (Studi Etruschi LIX) per la teonimia; su Stevens 2009, Pernigotti 2018 e Gottarelli 2018 per la cosmologia; su Krauskopf 2013 e Maras 2017 per la sintesi. Le traslitterazioni seguono Rix, Etruskische Texte (1991), con correzioni da Maggiani 1982 dove segnalate."
     },
     "significanceAndInterpretation": {
       "heading": "Significato e Interpretazione",
@@ -35,5 +39,14 @@
       "content": "Il modello in bronzo misura circa 12,6 cm in lunghezza e 7,6 cm in larghezza, riproducendo fedelmente le proporzioni di un vero fegato ovino. Le iscrizioni sono in alfabeto etrusco, derivato da quello greco ma adattato alla lingua locale. Ogni iscrizione corrisponde a una specifica regione anatomica, creando una mappa precisa che gli aruspici dovevano memorizzare per esercitare la loro arte."
     }
   },
-  "buttonText": "Esplora il fegato"
+  "buttonText": "Esplora il fegato",
+  "references": {
+    "intro": "Citazioni complete delle opere richiamate nelle voci di ogni divinità. Quando esiste una copia online aperta, il titolo è linkato."
+  },
+  "howToCite": {
+    "heading": "Come citare questo sito",
+    "intro": "Cita questo sito come:",
+    "format": "Andraghetti, L. ({year}). Il Fegato di Piacenza: una visualizzazione scientifica interattiva. https://piacenzaliver.com/",
+    "sigla": "Il reperto stesso è catalogato come ET Pa 4.2 negli Etruskische Texte di Rix (1991) e come TLE 719 nei Testimonia Linguae Etruscae di Pallottino. Usa queste sigle per citare il bronzo originale, non questo sito."
+  }
 }

@@ -2,23 +2,23 @@
   "groups": {
     "sky": {
       "name": "Cielo",
-      "description": "Le prime quattro caselle sono occupate da importanti figure celesti: Tinia, il dio supremo legato a Zeus e Giove; Cilens, una divinità spesso associata a Tinia; Thufltha, la cui funzione esatta resta discussa; Nethuns, corrispondente etrusco di Nettuno/Poseidone; e Uni, grande dea comparabile a Giunone/Era."
+      "description": "Le prime quattro caselle raccolgono importanti figure celesti: Tinia, dio supremo confrontabile con Zeus e Giove; Cilens, spesso associato a Tinia; Thufltha, la cui funzione resta discussa; Nethuns, confrontato in modo sicuro con Nettuno e Poseidone; e Uni, grande dea confrontabile con Giunone ed Era."
     },
     "water": {
       "name": "Acqua",
-      "description": "Le seconde quattro caselle includono Tecum, figura ancora misteriosa collegata a dediche nell'area del Lago Trasimeno; Lusal, la cui lettura e identità sono discusse; Nethuns, il Nettuno/Poseidone etrusco; e Catha, divinità astrale il cui carattere solare o lunare resta dibattuto."
+      "description": "Le quattro caselle successive includono Tecum, figura oscura collegata a dediche nell'area del Lago Trasimeno; Lusal, la cui lettura e identità sono discusse; Nethuns, confrontato in modo sicuro con Nettuno e Poseidone; e Catha, divinità astrale dal carattere solare o lunare ancora dibattuto."
     },
     "earth": {
       "name": "Terra",
-      "description": "Il regno terrestre della vegetazione, dei confini e degli spiriti della terra. Governa i cicli agricoli, i confini delle foreste e le forze divine terrestri."
+      "description": "Un raggruppamento terrestre collegato a vegetazione, confini e poteri divini legati alla terra. I significati agricoli e di confine sono interpretativi, non traduzioni fisse."
     },
     "underworld": {
       "name": "Oltretomba",
-      "description": "Il regno ctonio delle dee della terra, degli spiriti protettori e delle divinità dell'oltretomba. Controlla gli auspici di morte, la protezione e i passaggi liminali."
+      "description": "Un raggruppamento ctonio di nomi legati alla terra, alla protezione e all'oltretomba. Può riguardare morte, protezione e passaggi liminali, ma la certezza varia da nome a nome."
     },
     "pars_familiaris": {
       "name": "Pars Familiaris",
-      "description": "Il regno familiare/favorevole contenente spiriti domestici e divinità benevole. Rappresenta auspici favorevoli e protezione divina domestica."
+      "description": "Il lato familiare o favorevole del modello, con nomi spesso letti come domestici, assistenti o benevoli. Il valore augurale appartiene al quadro interpretativo."
     },
     "gall_bladder": {
       "name": "Cistifellea",
@@ -30,115 +30,207 @@
     },
     "pars_hostilis": {
       "name": "Pars Hostilis",
-      "description": "Il regno ostile/sfavorevole contenente guardiani dei confini e divinità infernali. Rappresenta auspici difficili e confini protettivi."
+      "description": "Il lato ostile o sfavorevole del modello, con nomi di confine, ctonii e difficili da identificare. La sua forza sfavorevole è una categoria interpretativa."
     },
     "back": {
       "name": "Posteriore",
-      "description": "Gli ancoraggi cosmici fondamentali che rappresentano il Sole e la Luna. Questi segnano i cicli celesti fondamentali alla base di tutta la divinazione."
+      "description": "Il retro contiene le etichette del Sole e della Luna, comunemente lette come ancoraggi celesti della struttura cosmologica del modello."
     }
   },
   "deities": {
-    "equivalentGods": "Divinità Equivalenti",
-    "alsoAppearsIn": "Appare anche in",
+    "ui": {
+      "alsoAppearsIn": "Appare anche in",
+      "classicalParallels": "Paralleli greco-romani",
+      "editorialNote": "Nota editoriale",
+      "identificationKey": "Identificazione",
+      "readingKey": "Lettura",
+      "sources": "Fonti"
+    },
+    "identification": {
+      "secure": {
+        "label": "Identificazione sicura",
+        "shortLabel": "Sicura",
+        "tooltip": "L'identificazione della divinità etrusca è solidamente documentata."
+      },
+      "probable": {
+        "label": "Identificazione probabile",
+        "shortLabel": "Probabile",
+        "tooltip": "L'identificazione è plausibile ma non definitiva."
+      },
+      "debated": {
+        "label": "Identificazione discussa",
+        "shortLabel": "Discussa",
+        "tooltip": "Gli studiosi sono divisi sull'identificazione di questo nome."
+      },
+      "unresolved": {
+        "label": "Irrisolta",
+        "shortLabel": "Irrisolta",
+        "tooltip": "Non viene attualmente fornita alcuna identificazione sicura."
+      }
+    },
+    "reading": {
+      "clear": {
+        "label": "Lettura chiara",
+        "shortLabel": "Chiara",
+        "tooltip": "I segni etruschi sono chiaramente incisi e letti."
+      },
+      "debated": {
+        "label": "Lettura discussa",
+        "shortLabel": "Lettura discussa",
+        "tooltip": "La forma è visibile, ma lettura o segmentazione delle parole sono discusse."
+      }
+    },
+    "parallel": {
+      "secure": {
+        "label": "Sicuro",
+        "tooltip": "Il confronto greco o romano è ben documentato dalla ricerca recente."
+      },
+      "proposed": {
+        "label": "Proposto",
+        "tooltip": "Il confronto è una proposta tra altre, non un consenso."
+      },
+      "superseded": {
+        "label": "Superato",
+        "tooltip": "Equivalenza più antica conservata come storia degli studi; non sostenuta dalla ricerca recente."
+      }
+    },
     "tinia": {
-      "description": "Dio supremo del cielo e padre degli dei nel pantheon etrusco.",
-      "romanEquivalent": "Giove",
-      "greekEquivalent": "Zeus"
+      "description": "Dio supremo del cielo e padre del pantheon etrusco. Occupa cinque caselle del fegato, fra cui la forma locativa tinsθ ‘nella (casa) di Tinia’ alla casella 22, dove Nethuns compare come ospite di Tinia. Centrale nella dottrina delle tre manubie e nella divisione del cielo in sedici regioni.",
+      "parallelNames": {
+        "roman": "Giove",
+        "greek": "Zeus"
+      }
     },
     "cilens": {
-      "description": "Divinità attestata sul fegato e spesso associata a Tinia; le interpretazioni notturne o di confine restano tentative."
+      "description": "Divinità presente in tre caselle (1, 16, 36); accoppiata a Tinia nella casella 1 e forse alla forma locativa Cilensl, ‘nella (casa) di Cilens’, alla casella 16. Pallottino 1956 propose per primo l'identificazione con il Nocturnus di Marziano Capella; Colonna 2012 legge Cilens come divinità catactonia."
     },
     "thufltha": {
-      "description": "Divinità femminile attestata sul fegato e in contesti votivi; i legami con destino, Fortuna o Tyche sono discussi, non sicuri."
+      "description": "Divinità femminile alle caselle 2, 20, 21. Una dedica vulcente su statuetta di Bacco (Buranelli 1989) la accosta all'infero Suri, complicando le antiche equazioni con Fortuna / Tyche. Il locativo tinsθ θvf alla casella 20 colloca Thufltha ‘nella casa di Tinia’.",
+      "parallelNames": {
+        "roman": "Fortuna",
+        "greek": "Tyche"
+      }
     },
     "nethuns": {
-      "description": "Dio delle acque e del mare, sicuramente comparabile a Nettuno/Poseidone; le letture atmosferiche appartengono a specifiche interpretazioni del fegato.",
-      "romanEquivalent": "Nettuno",
-      "greekEquivalent": "Poseidone"
+      "description": "Dio delle acque e del mare in quattro caselle (3, 7, 22, 28). Colonna 1991 distingue un Nethuns ‘celeste’ alle caselle 3 e 22, ospite di Tinia e forse signore della pioggia e dell'umidità atmosferica, dal Nethuns ctonio / acquatico delle caselle 7 e 28 (consacrate, secondo Plinio, alla vesica fellea).",
+      "parallelNames": {
+        "roman": "Nettuno",
+        "greek": "Poseidone"
+      }
     },
     "uni": {
-      "description": "Grande dea comparabile a Giunone/Era, associata a città, nascita, sovranità e, in alcune testimonianze, ad aspetti guerrieri o astrali.",
-      "romanEquivalent": "Giunone",
-      "greekEquivalent": "Era"
+      "description": "Grande dea di stato di città, nascita e sovranità; alcune testimonianze indicano anche aspetti guerrieri o astrali, fra cui i confronti con Astarte a Pyrgi.",
+      "parallelNames": {
+        "roman": "Giunone",
+        "greek": "Era"
+      }
     },
     "mae": {
-      "description": "Nome o epiteto associato all'iscrizione Uni/Mae; funzione ed equivalente restano incerti."
+      "description": "Nome o epiteto associato all'iscrizione Uni / Mae alla casella 4, ancora irrisolto. La funzione resta incerta; le antiche equazioni con il Maius romano non sono sostenute dalla ricerca recente."
     },
     "tecvm": {
-      "description": "Divinità oscura nota dal fegato e da dediche nell'area del Lago Trasimeno; la funzione resta discussa."
+      "description": "Divinità oscura nota quasi esclusivamente dal fegato e da dediche nell'area del Lago Trasimeno. Colonna 1976-77 collegò il culto a Cel e ai santuari del Trasimeno; la funzione sul fegato resta discussa."
     },
     "lusal": {
-      "description": "Lettura o etichetta divina discussa; alcune ricerche collegano forme lvsl/lvsal a Usil, mentre questo sito conserva Lusal come etichetta di navigazione."
+      "description": "Forma genitiva lvsl / lvsal alle caselle 6 e 34. Due letture: una divinità Lusa (Maggiani 1982) o, secondo Colonna 1991, lv(r)s(l) — cioè ‘di Lurs’, il dio profetico Lur il cui culto è stato ricostruito da de Grummond 2014 a partire da specchi, dediche e Liber Linteus.",
+      "editorialNote": "La lettura stessa è discussa. La casella 6 (lvsal) è considerata abbastanza sicura; la casella 34 (lvsl velχ) è contestata — vel(...) potrebbe anche indicare una divinità eponima di Vulci (Torelli 1986)."
     },
     "catha": {
-      "description": "Divinità astrale, probabilmente femminile; associazioni solari, lunari, ctonie e legate alla nascita sono discusse nella ricerca recente."
+      "description": "Divinità astrale, probabilmente femminile (caselle 8, 23). Colonna 1991 ricollega il Cathe Sans dello specchio di Orbetello a un Catha solare maschile e sostiene la lettura solare; de Grummond 2008 ha proposto una Catha lunare a Pyrgi; Moore 2018 riapre esplicitamente la questione. Le associazioni solari, lunari, ctonie e legate alla nascita restano tutte sul tavolo.",
+      "editorialNote": "Il vecchio consenso solare si è frammentato; la ricerca recente tratta il carattere astrale di Catha come attivamente discusso."
     },
     "fufluns": {
       "description": "Dio del vino, dell'ebbrezza e dei cicli della vegetazione.",
-      "romanEquivalent": "Bacco",
-      "greekEquivalent": "Dioniso"
+      "parallelNames": {
+        "roman": "Bacco",
+        "greek": "Dioniso"
+      }
     },
     "selvans": {
-      "description": "Dio di boschi, pascoli e terre o confini liminali.",
-      "romanEquivalent": "Silvano"
+      "description": "Dio di boschi, pascoli e terre o confini liminali; venerato come tutor finium. Secondo Colonna 1991, l'iscrizione della casella 17 letta pul da Maggiani potrebbe invece essere tul, abbreviazione dell'epiteto tul(aras) — a sostegno del ruolo di Selvans come guardiano dei confini.",
+      "parallelNames": {
+        "roman": "Silvano"
+      }
     },
     "tluscva": {
-      "description": "Oscura divinità, o collettivo divino, probabilmente femminile e ctonio; l'interpretazione resta discussa."
+      "description": "Forma oscura alle caselle 12, 33, 40. Maggiani 2011 tratta Tluschva come divinità o collettivo divino ctonio, probabilmente femminile; Colonna 1991 propose in alternativa di vedervi un epiteto di Maris (l'unico vero hapax del fegato). Stopponi 2012 collega Tluschva al Fanum Voltumnae di Orvieto."
     },
     "cels": {
-      "description": "Cel/Cels, dea della terra connessa a forze ctonie.",
-      "romanEquivalent": "Terra Mater",
-      "greekEquivalent": "Gea"
+      "description": "Cel / Cels, dea della terra connessa a forze ctonie. Colonna 1976-77 è lo studio canonico, che collega Cel ai santuari del Trasimeno; il fegato stesso è stato letto come modello del corpo di Cel.",
+      "parallelNames": {
+        "roman": "Terra Mater",
+        "greek": "Gea"
+      }
     },
     "culsans": {
-      "description": "Protettore benevolo di porte e soglie.",
-      "romanEquivalent": "Giano"
+      "description": "Dio bifronte di porte e soglie. Colonna 1991 analizza la grafia settentrionale Culsans come composto culś sans, ‘Cul genitore’; l'abbreviazione cvl alla casella 14 può stare per Cul (altare di Bagnoregio) o per Culsans.",
+      "parallelNames": {
+        "roman": "Giano"
+      }
     },
     "alpans": {
-      "description": "Alpan/Alpans, spirito femminile assistente, forse una Lasa, associato a Turan e all'armonia."
+      "description": "Alpan / Alpans accoppiato a Cul / Culsans alla casella 14. Colonna 1991 sostiene che alpan sia originariamente un appellativo significante ‘la buona / la ben disposta’, semanticamente equivalente al manus latino — usato per divinità ctonie in registro eufemistico. Quindi alp funziona qui come epiteto di Cul, paragonabile al fatto che Giano fosse chiamato bonus e manus."
     },
     "vetis": {
-      "description": "Divinità ctonia oscura, talvolta confrontata con Veiove; l'identificazione resta congetturale."
+      "description": "Divinità catactonia oscura alla casella 15. Colonna 2012 colloca Vetis con Cilens fra le divinità catactonie del settore ostile del fegato; il confronto con il Veiove romano resta tentativo.",
+      "parallelNames": {
+        "roman": "Veiove"
+      }
     },
     "pul": {
-      "description": "Nome divino o forma iscrizionale irrisolta; la funzione resta incerta."
+      "description": "Casella 17. Maggiani 1982 legge pul, interpretato come ‘cielo’ in opposizione a metlum della casella 38. Colonna 1991 mette in dubbio la lettura, sostenendo che la prima lettera potrebbe essere una t invece che una p, e propone tul(aras), epiteto di Selvans (tutor finium).",
+      "editorialNote": "La lettura stessa è contestata fra il pul di Maggiani e il tul di Colonna."
     },
     "lasl": {
-      "description": "Lasa/Lasl, assistente divina femminile spesso collegata a Turan; sono possibili ruoli legati al fato o al servizio."
+      "description": "Lasa / Lasl alla casella 19. Assistente divina femminile spesso collegata a Turan; ruoli legati al fato e al servizio sono attestati nell'iconografia degli specchi. I Lares romani non sono un confronto soddisfacente."
     },
     "maris": {
-      "description": "Divinità importante ma oscura, spesso rappresentata come bambino o giovane nelle testimonianze etrusche; le interpretazioni generative restano discusse."
+      "description": "Divinità importante ma oscura alle caselle 26, 30, 39 (le caselle 30+39 comunicano intorno al processus papillaris). Spesso rappresentata come bambino o giovane nelle testimonianze etrusche. Alla casella 26 la lettura marisl laθ — un tempo intesa come epiteto sconosciuto — è stata corretta da Maggiani in sede di discussione in marisl lar, a sostegno dell'analogia con il Lar familiaris romano (Colonna 1991).",
+      "editorialNote": "Maris non è Marte; l'antica equazione con il dio della guerra romano è respinta dalla ricerca attuale (Simon 2006, Krauskopf 2013)."
     },
     "laran": {
-      "description": "Dio della guerra, comparabile a Marte e Ares.",
-      "romanEquivalent": "Marte",
-      "greekEquivalent": "Ares"
+      "description": "Dio etrusco della guerra.",
+      "parallelNames": {
+        "roman": "Marte",
+        "greek": "Ares"
+      }
     },
     "tvnth": {
-      "description": "Divinità incerta nella zona della cistifellea."
+      "description": "Divinità incerta alla casella 25, nella zona della cistifellea. Nessuna identificazione sicura è emersa nella ricerca recente."
     },
     "hercle": {
-      "description": "Grande dio etrusco equivalente a Eracle/Ercole, con associazioni protettive e oracolari.",
-      "romanEquivalent": "Ercole",
-      "greekEquivalent": "Eracle"
+      "description": "Grande dio etrusco, equivalente di Eracle ed Ercole, con associazioni protettive e oracolari. In Etruria considerato dio fin dall'inizio, non semplice eroe.",
+      "parallelNames": {
+        "roman": "Ercole",
+        "greek": "Eracle"
+      }
     },
     "metlvmth": {
-      "description": "Forma iscrizionale irrisolta, forse epiteto o attributo più che divinità indipendente sicura."
+      "description": "Casella 38. Colonna 1991 legge metlumθ come locativo significante ‘nella città / urbs’ — qualifica del Lethams contiguo della casella 37 come ‘Lethams nella città’, parallelo ai sintagmi divini in genitivo del Liber Linteus.",
+      "editorialNote": "Secondo Colonna 1991 le caselle 37 e 38 formano un'unica iscrizione leθam(sl) metlumθ — non due nomi divini distinti."
     },
     "letham": {
-      "description": "Divinità oscura attestata sul fegato; genere e sfera sono discussi, con interpretazioni sia ctonie sia legate alla nascita."
+      "description": "Lethams (forma corretta secondo la Tegola di Capua, gen. ledamsul; Colonna 1991 corregge il precedente Letham). Cinque caselle (11, 18, 27, 32, 37) lo rendono la divinità più ‘ubiqua’ del fegato — forse di tipo genius, presente sia sul lobo destro che sul sinistro. Genere e sfera restano discussi.",
+      "editorialNote": "Maggiani 1982 scrisse ‘Letham’; Colonna 1991 ha mostrato che la forma corretta è ‘Lethams’, sulla base della Tegola di Capua."
     },
     "velch": {
-      "description": "Divinità o forma divina oscura, forse collegata a Volcanus/Vulcano e alle tradizioni del fuoco o della metallurgia."
+      "description": "vel(...) alla casella 34, accoppiato a Lvsl. Colonna 1991 cita Torelli 1986 ipotizzando che Vel(...) possa nominare un dio eponimo di Vulci più che una divinità di tipo Vulcano legata al fuoco e alla metallurgia. La lettura come dio del fuoco resta tentativa.",
+      "parallelNames": {
+        "roman": "Vulcano"
+      }
     },
     "satres": {
-      "description": "Divinità oscura sul fegato; ogni rapporto con Saturno resta discusso e va trattato come tentativo."
+      "description": "Divinità oscura alla casella 35. Funzione e identificazione restano discusse; la forma satres / satre è attestata anche nel Liber Linteus di Zagabria.",
+      "editorialNote": "L'antica equivalenza con Saturno è qui conservata come storia degli studi; non è più trattata come sicura (Maggiani 1982, Krauskopf 2013).",
+      "parallelNames": {
+        "roman": "Saturno"
+      }
     },
     "usil": {
-      "description": "Il dio del sole, che rappresenta il potere solare e l'illuminazione."
+      "description": "Il dio del sole etrusco, identificato in modo sicuro. Sul retro del fegato (casella 42) usils marca il polo solare della struttura cosmologica."
     },
     "tiur": {
-      "description": "Tiur/Tivr, divinità lunare o termine per luna/mese; sul fegato marca il lato lunare del retro."
+      "description": "Tiur / Tivr, divinità lunare o termine per luna / mese. La casella 41 marca il polo lunare del retro, opposto a Usil. Sannibale 2018 ha pubblicato un crescente bronzeo (CII 2610 bis) con una nuova dedica a Tiur, confermando lo statuto divino del termine."
     }
   }
 }

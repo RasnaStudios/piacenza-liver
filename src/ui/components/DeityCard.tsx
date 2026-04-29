@@ -1,10 +1,16 @@
-import { Group, Paper, Text, Title } from "@mantine/core"
+import { Group, Paper, Text, Title, Tooltip } from "@mantine/core"
 import { useTranslation } from "react-i18next"
+import { getDeitySources, getSourceUrl } from "../../data/Scholarship"
 import {
   getGodInscriptionData,
   getGodVariationInInscription,
+  type IdentificationStatus,
   type LiverGod,
+  type ParallelLocaleTranslator,
+  type ReadingStatus,
+  resolveDeityParallels,
 } from "../../scene/LiverData"
+import "./DeityCard.css"
 import { InscriptionChip } from "./InscriptionChip"
 
 interface DeityCardProps {
@@ -12,6 +18,13 @@ interface DeityCardProps {
   onInscriptionClick?: (inscriptionId: number) => void
   selectedInscriptionId?: number
 }
+
+const tooltipClassNames = {
+  tooltip: "deity-tooltip",
+  arrow: "deity-tooltip-arrow",
+}
+
+const tooltipEvents = { hover: true, focus: true, touch: true }
 
 export function DeityCard({
   god,
@@ -23,21 +36,29 @@ export function DeityCard({
   const godData = getGodInscriptionData(god.id)
   const { godInscriptions } = godData
 
-  const localizedDescription = tLiverData(`deities.${god.id}.description`)
+  const description = tLiverData(`deities.${god.id}.description`, {
+    defaultValue: "",
+  })
+  const editorialNote = tLiverData(`deities.${god.id}.editorialNote`, {
+    defaultValue: "",
+  })
 
-  const localizedRomanEquivalent = tLiverData(
-    `deities.${god.id}.romanEquivalent`,
-    {
-      defaultValue: "",
-    },
+  const parallels = resolveDeityParallels(
+    tLiverData as ParallelLocaleTranslator,
+    god.id,
   )
 
-  const localizedGreekEquivalent = tLiverData(
-    `deities.${god.id}.greekEquivalent`,
-    {
-      defaultValue: "",
-    },
-  )
+  const sources = getDeitySources(god.id)
+
+  const idStatus: IdentificationStatus = god.identificationStatus
+  const readingStatus: ReadingStatus = god.readingStatus
+
+  const idLabel = tLiverData(`deities.identification.${idStatus}.shortLabel`)
+  const idTooltip = tLiverData(`deities.identification.${idStatus}.tooltip`)
+
+  const showReadingPill = readingStatus !== "clear"
+  const readingLabel = tLiverData(`deities.reading.${readingStatus}.shortLabel`)
+  const readingTooltip = tLiverData(`deities.reading.${readingStatus}.tooltip`)
 
   // Get the god's form from the selected inscription (if any) or first available inscription
   const godForm = selectedInscriptionId
@@ -59,103 +80,159 @@ export function DeityCard({
     <Paper
       p={{ base: "sm", sm: "md" }}
       radius="md"
-      className="bg-overlay border-accent text-secondary shadow-secondary font-primary"
+      className="bg-overlay border-accent text-secondary shadow-secondary font-primary deity-card"
       style={{
         borderLeft: "4px solid var(--accent-bronze)",
         backdropFilter: "blur(10px)",
         fontFamily: "var(--font-primary)",
       }}
     >
-      <Group
-        justify="space-between"
-        align="center"
-        mb="sm"
-        pb="xs"
-        className="border-accent"
-        style={{ borderBottom: "1px solid var(--border-accent)" }}
-      >
-        <Group gap="xs" align="baseline">
-          <Title order={1} className="text-bronze" size="xl" fw={400}>
-            {god.name}
-          </Title>
-          {godForm && (
-            <Text>
-              <Text component="span" size="lg" mr="xs">
-                {t("connectors.as")}
+      <div className="deity-card-header">
+        <div className="deity-card-title-group">
+          <Group gap="xs" align="baseline" wrap="wrap">
+            <Title
+              order={1}
+              className="text-bronze deity-name"
+              size="xl"
+              fw={400}
+            >
+              {god.name}
+            </Title>
+            {godForm && (
+              <Text>
+                <Text component="span" size="lg" mr="xs">
+                  {t("connectors.as")}
+                </Text>
+                <Text
+                  component="span"
+                  fw={700}
+                  style={{
+                    color: groupColor,
+                    textShadow: `0 0 8px ${groupColor}40, 0 1px 2px rgba(0, 0, 0, 0.8)`,
+                  }}
+                >
+                  {godForm.toUpperCase()}
+                </Text>
               </Text>
-              <Text
-                component="span"
-                fw={700}
-                style={{
-                  color: groupColor,
-                  textShadow: `0 0 8px ${groupColor}40, 0 1px 2px rgba(0, 0, 0, 0.8)`,
-                }}
+            )}
+          </Group>
+        </div>
+        <div className="deity-status-row">
+          <Tooltip
+            label={idTooltip}
+            multiline
+            w={260}
+            withArrow
+            classNames={tooltipClassNames}
+            events={tooltipEvents}
+          >
+            <span className={`status-pill status-id status-id--${idStatus}`}>
+              <span className="status-pill-key">
+                {tLiverData("deities.ui.identificationKey", {
+                  defaultValue: "Identification",
+                })}
+              </span>
+              <span className="status-pill-value">{idLabel}</span>
+            </span>
+          </Tooltip>
+          {showReadingPill && (
+            <Tooltip
+              label={readingTooltip}
+              multiline
+              w={260}
+              withArrow
+              classNames={tooltipClassNames}
+              events={tooltipEvents}
+            >
+              <span
+                className={`status-pill status-reading status-reading--${readingStatus}`}
               >
-                {godForm.toUpperCase()}
-              </Text>
-            </Text>
+                <span className="status-pill-key">
+                  {tLiverData("deities.ui.readingKey", {
+                    defaultValue: "Reading",
+                  })}
+                </span>
+                <span className="status-pill-value">{readingLabel}</span>
+              </span>
+            </Tooltip>
           )}
-        </Group>
-      </Group>
-      {localizedDescription && (
-        <Text size="xl" fw={400}>
-          {localizedDescription}
-        </Text>
+        </div>
+      </div>
+
+      {description && <Text className="deity-description">{description}</Text>}
+
+      {editorialNote && (
+        <div className="deity-editorial">
+          <span className="deity-editorial-tag">
+            {tLiverData("deities.ui.editorialNote")}
+          </span>
+          <span className="deity-editorial-body">{editorialNote}</span>
+        </div>
       )}
-      {(localizedRomanEquivalent || localizedGreekEquivalent) && (
-        <div>
+
+      {parallels.length > 0 && (
+        <div className="deity-section">
           <Title
-            className="text-bronze"
+            className="text-bronze deity-section-heading"
             order={2}
-            size="md"
+            size="sm"
             fw={600}
             tt="uppercase"
-            mt="xl"
-            mb="sm"
           >
-            {tLiverData("deities.equivalentGods")}
+            {tLiverData("deities.ui.classicalParallels")}
           </Title>
-          <div className="deity-equivalents">
-            {localizedRomanEquivalent && (
-              <span>
-                <span className="deity-equiv-label">
-                  {t("connectors.roman")}{" "}
-                </span>
-                <span className="deity-equiv-value">
-                  {localizedRomanEquivalent}
-                </span>
-              </span>
-            )}
-            {localizedRomanEquivalent && localizedGreekEquivalent && (
-              <span className="deity-equiv-separator"> • </span>
-            )}
-            {localizedGreekEquivalent && (
-              <span>
-                <span className="deity-equiv-label">
-                  {t("connectors.greek")}{" "}
-                </span>
-                <span className="deity-equiv-value">
-                  {localizedGreekEquivalent}
-                </span>
-              </span>
-            )}
+          <div className="deity-parallel-list">
+            {parallels.map((p) => {
+              const tradLabel =
+                p.tradition === "roman"
+                  ? t("connectors.roman")
+                  : t("connectors.greek")
+              const statusLabel = tLiverData(
+                `deities.parallel.${p.status}.label`,
+              )
+              const statusTooltip = tLiverData(
+                `deities.parallel.${p.status}.tooltip`,
+              )
+              return (
+                <div
+                  key={`${p.tradition}-${p.name}`}
+                  className={`deity-parallel-row deity-parallel-row--${p.status}`}
+                >
+                  <span className="deity-parallel-tradition">{tradLabel}</span>
+                  <span className="deity-parallel-name">{p.name}</span>
+                  <span className="deity-parallel-status-slot">
+                    <Tooltip
+                      label={statusTooltip}
+                      multiline
+                      w={260}
+                      withArrow
+                      classNames={tooltipClassNames}
+                      events={tooltipEvents}
+                    >
+                      <span
+                        className={`parallel-status parallel-status--${p.status}`}
+                      >
+                        {statusLabel}
+                      </span>
+                    </Tooltip>
+                  </span>
+                </div>
+              )
+            })}
           </div>
         </div>
       )}
 
-      {/* Also appears in inscriptions */}
       {filteredInscriptions.length > 0 && (
-        <div>
+        <div className="deity-section">
           <Title
-            className="text-bronze"
+            className="text-bronze deity-section-heading"
             order={2}
-            size="md"
+            size="sm"
             fw={600}
             tt="uppercase"
-            mt="xl"
-            mb="sm"
           >
-            {tLiverData("deities.alsoAppearsIn")}
+            {tLiverData("deities.ui.alsoAppearsIn")}
           </Title>
           <Group gap="xs" style={{ display: "flex", flexWrap: "wrap" }}>
             {filteredInscriptions.map((inscription) => (
@@ -172,6 +249,40 @@ export function DeityCard({
               />
             ))}
           </Group>
+        </div>
+      )}
+
+      {sources.length > 0 && (
+        <div className="deity-sources">
+          <span className="deity-sources-label">
+            {tLiverData("deities.ui.sources")}
+          </span>
+          <span className="deity-sources-list">
+            {sources.map((src, i) => {
+              const url = getSourceUrl(src)
+              const item = url ? (
+                <a
+                  className="deity-source-link"
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={url}
+                >
+                  {src}
+                </a>
+              ) : (
+                <span className="deity-source-text">{src}</span>
+              )
+              return (
+                <span key={src} className="deity-source-item">
+                  {item}
+                  {i < sources.length - 1 ? (
+                    <span className="deity-sources-sep">·</span>
+                  ) : null}
+                </span>
+              )
+            })}
+          </span>
         </div>
       )}
     </Paper>

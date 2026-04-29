@@ -1,4 +1,4 @@
-import { Box, Group, Paper, Stack, Text } from "@mantine/core"
+import { Box, Group, Paper, Stack, Text, Tooltip } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 import { IconArrowLeft } from "@tabler/icons-react"
 import { Fragment, useEffect, useMemo, useState } from "react"
@@ -16,8 +16,11 @@ import {
   liverGods,
   liverGroups,
   liverInscriptions,
+  type ParallelLocaleTranslator,
+  resolveDeityParallels,
 } from "../../scene/LiverData"
 import { ActionMenu } from "./ActionMenu"
+import { BibliographyModal } from "./BibliographyModal"
 import { DeityCard } from "./DeityCard"
 import { Footer } from "./Footer"
 import { InteractionButton } from "./InteractionButton"
@@ -27,6 +30,13 @@ import "./InscriptionExploration.css"
 function getGodId(godEntry: { id: string; form: string } | string): string {
   return typeof godEntry === "string" ? godEntry : godEntry.id
 }
+
+const tooltipClassNames = {
+  tooltip: "deity-tooltip",
+  arrow: "deity-tooltip-arrow",
+}
+
+const tooltipEvents = { hover: true, focus: true, touch: true }
 
 interface InscriptionCardProps {
   inscription: Inscription
@@ -213,6 +223,7 @@ export function InscriptionExploration() {
   const [selectedInscriptionId, setSelectedInscriptionId] = useState<
     number | null
   >(null)
+  const [bibliographyOpened, setBibliographyOpened] = useState(false)
 
   useEffect(() => {
     const html = document.documentElement
@@ -481,13 +492,27 @@ export function InscriptionExploration() {
       <div className="exploration-header">
         <h2 className="exploration-title">{t("title")}</h2>
         <p className="exploration-subtitle">{t("subtitle")}</p>
-        <InteractionButton
-          onClick={handleDownloadYAML}
-          size="md"
-          variant="outline"
+        <Group
+          justify="center"
+          gap="md"
+          wrap="wrap"
+          className="exploration-header-actions"
         >
-          {tCommon("buttons.downloadDataset")}
-        </InteractionButton>
+          <InteractionButton
+            onClick={handleDownloadYAML}
+            size="md"
+            variant="outline"
+          >
+            {tCommon("buttons.downloadDataset")}
+          </InteractionButton>
+          <InteractionButton
+            onClick={() => setBibliographyOpened(true)}
+            size="md"
+            variant="outline"
+          >
+            {tCommon("buttons.bibliography")}
+          </InteractionButton>
+        </Group>
       </div>
 
       <div className="exploration-content">
@@ -610,35 +635,59 @@ export function InscriptionExploration() {
                   </Text>
                 </div>
                 {(() => {
-                  const roman = tLiverData(`deities.${godId}.romanEquivalent`, {
-                    defaultValue: "",
-                  })
-                  const greek = tLiverData(`deities.${godId}.greekEquivalent`, {
-                    defaultValue: "",
-                  })
-                  return roman || greek ? (
-                    <div className="deity-equivalents">
-                      {roman && (
-                        <span>
-                          <span className="deity-equiv-label">
-                            {tCommon("connectors.roman")}{" "}
+                  const parallels = resolveDeityParallels(
+                    tLiverData as ParallelLocaleTranslator,
+                    godId,
+                  )
+                  if (parallels.length === 0) return null
+                  return (
+                    <Group
+                      className="deity-parallels-inline"
+                      gap="sm"
+                      align="center"
+                      wrap="wrap"
+                    >
+                      {parallels.map((p) => {
+                        const tradLabel =
+                          p.tradition === "roman"
+                            ? tCommon("connectors.roman")
+                            : tCommon("connectors.greek")
+                        const statusLabel = tLiverData(
+                          `deities.parallel.${p.status}.label`,
+                        )
+                        const statusTooltip = tLiverData(
+                          `deities.parallel.${p.status}.tooltip`,
+                        )
+                        return (
+                          <span
+                            key={`${p.tradition}-${p.name}`}
+                            className={`deity-parallel-inline deity-parallel-inline--${p.status}`}
+                          >
+                            <span className="deity-parallel-label">
+                              {tradLabel}
+                            </span>
+                            <span className="deity-parallel-value">
+                              {p.name}
+                            </span>
+                            <Tooltip
+                              label={statusTooltip}
+                              multiline
+                              w={260}
+                              withArrow
+                              classNames={tooltipClassNames}
+                              events={tooltipEvents}
+                            >
+                              <span
+                                className={`parallel-status parallel-status--${p.status}`}
+                              >
+                                {statusLabel}
+                              </span>
+                            </Tooltip>
                           </span>
-                          <span className="deity-equiv-value">{roman}</span>
-                        </span>
-                      )}
-                      {roman && greek && (
-                        <span className="deity-equiv-separator"> • </span>
-                      )}
-                      {greek && (
-                        <span>
-                          <span className="deity-equiv-label">
-                            {tCommon("connectors.greek")}{" "}
-                          </span>
-                          <span className="deity-equiv-value">{greek}</span>
-                        </span>
-                      )}
-                    </div>
-                  ) : null
+                        )
+                      })}
+                    </Group>
+                  )
                 })()}
                 {tLiverData(`deities.${god.id}.description`) && (
                   <Text
@@ -685,6 +734,10 @@ export function InscriptionExploration() {
           )
         })}
       </div>
+      <BibliographyModal
+        opened={bibliographyOpened}
+        onClose={() => setBibliographyOpened(false)}
+      />
       <Footer />
     </Box>
   )

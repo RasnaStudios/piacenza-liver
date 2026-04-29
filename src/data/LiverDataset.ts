@@ -1,14 +1,25 @@
 import { AppConfig } from "../config/AppConfig"
 import {
   getInscriptionGroup,
+  type IdentificationStatus,
   liverGods,
   liverGroups,
   liverInscriptions,
+  type ParallelLocaleTranslator,
+  type ParallelStatus,
+  type ParallelTradition,
+  type ReadingStatus,
+  resolveDeityParallels,
 } from "../scene/LiverData"
+import {
+  getDeitySources,
+  scholarshipEntries,
+  sourceIdFromShortRef,
+} from "./Scholarship"
 
 export type TranslateFn = (
   key: string,
-  options?: { defaultValue?: string },
+  options?: { defaultValue?: string; returnObjects?: boolean },
 ) => string
 
 export interface DatasetZone {
@@ -26,12 +37,34 @@ export interface DatasetInscription {
   description?: string
 }
 
+export interface DatasetParallel {
+  tradition: ParallelTradition
+  name: string
+  status: ParallelStatus
+  note?: string
+}
+
+/** One row in the top-level `sources` map keyed by stable source id (see `sourceIdFromShortRef`). */
+export interface DatasetSourceRecord {
+  citeAs: string
+  authors: string
+  year: number | string
+  title: string
+  venue?: string
+  pages?: string
+  url?: string
+}
+
 export interface DatasetDeity {
   id: string
   name: string
-  romanEquivalent: string
-  greekEquivalent?: string
+  readingStatus: ReadingStatus
+  identificationStatus: IdentificationStatus
   description?: string
+  editorialNote?: string
+  parallels?: DatasetParallel[]
+  /** Source ids; join with `sources`. */
+  sources?: string[]
 }
 
 export interface LiverDataset {
@@ -42,7 +75,9 @@ export interface LiverDataset {
     totalDeities: number
     creator: string
     source: string
+    corpusReferences: { ET: string; TLE: string }
   }
+  sources: Record<string, DatasetSourceRecord>
   zones: DatasetZone[]
   inscriptions: DatasetInscription[]
   deities: DatasetDeity[]
@@ -72,23 +107,42 @@ export function buildLiverDataset(t: TranslateFn): LiverDataset {
     const d: DatasetDeity = {
       id,
       name: deity.name,
-      romanEquivalent:
-        t(`deities.${id}.romanEquivalent`, {
-          defaultValue: "",
-        }) || "N/A",
+      readingStatus: deity.readingStatus,
+      identificationStatus: deity.identificationStatus,
     }
-    const greek = t(`deities.${id}.greekEquivalent`, {
-      defaultValue: "",
-    })
-    if (greek) {
-      d.greekEquivalent = greek
+
+    const description = t(`deities.${id}.description`, { defaultValue: "" })
+    if (description) d.description = description
+
+    const editorialNote = t(`deities.${id}.editorialNote`, { defaultValue: "" })
+    if (editorialNote) d.editorialNote = editorialNote
+
+    const parallels = resolveDeityParallels(t as ParallelLocaleTranslator, id)
+    if (parallels.length > 0) {
+      d.parallels = parallels
     }
-    const description = t(`deities.${id}.description`)
-    if (description) {
-      d.description = description
+
+    const refIds = getDeitySources(id).map(sourceIdFromShortRef)
+    if (refIds.length > 0) {
+      d.sources = refIds
     }
+
     return d
   })
+
+  const sources: Record<string, DatasetSourceRecord> = {}
+  for (const entry of scholarshipEntries) {
+    const id = sourceIdFromShortRef(entry.shortRef)
+    sources[id] = {
+      citeAs: entry.shortRef,
+      authors: entry.authors,
+      year: entry.year,
+      title: entry.title,
+      ...(entry.venue !== undefined ? { venue: entry.venue } : {}),
+      ...(entry.pages !== undefined ? { pages: entry.pages } : {}),
+      ...(entry.url !== undefined ? { url: entry.url } : {}),
+    }
+  }
 
   return {
     metadata: {
@@ -98,7 +152,9 @@ export function buildLiverDataset(t: TranslateFn): LiverDataset {
       totalDeities: Object.keys(liverGods).length,
       creator: AppConfig.creator.name,
       source: "https://piacenzaliver.com/",
+      corpusReferences: { ET: "Pa 4.2", TLE: "719" },
     },
+    sources,
     zones,
     inscriptions,
     deities,

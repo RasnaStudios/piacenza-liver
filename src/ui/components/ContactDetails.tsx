@@ -1,9 +1,10 @@
-import { Anchor, Box, Text } from "@mantine/core"
+import { Anchor, Box, Divider, Text } from "@mantine/core"
 import { useTranslation } from "react-i18next"
 import { FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa"
 import { FiMail } from "react-icons/fi"
 import { SiArtstation } from "react-icons/si"
 import { AppConfig } from "../../config/AppConfig"
+import { WebsiteCitation } from "./WebsiteCitation"
 
 interface ContactDetailsProps {
   mailtoUrl: string
@@ -112,6 +113,10 @@ export function ContactDetails({ mailtoUrl }: ContactDetailsProps) {
           </Box>
         </Box>
       </Box>
+
+      <Divider className="contacts-site-citation-divider" />
+
+      <WebsiteCitation variant="compact" />
     </Box>
   )
 }

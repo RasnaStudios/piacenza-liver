@@ -1,0 +1,101 @@
+.bibliography-modal-content.app-modal-content {
+  max-height: min(92dvh, calc(100dvh - 24px));
+  width: min(860px, 100%);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.bibliography-modal-body.app-modal-body {
+  max-height: calc(100dvh - 140px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.bibliography-modal-shell {
+  padding: 16px;
+}
+
+.bibliography-modal-stack {
+  text-align: left;
+}
+
+.bibliography-modal-intro {
+  margin: 0 0 8px;
+  font-size: clamp(13px, 1.35vw, 15px);
+  line-height: 1.55;
+  color: rgba(245, 231, 204, 0.88);
+}
+
+.bibliography-modal-divider {
+  border-color: rgba(201, 168, 118, 0.22);
+}
+
+.bib-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bib-entry {
+  font-family: var(--font-primary);
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgba(245, 231, 204, 0.85);
+  padding-left: 1.2em;
+  text-indent: -1.2em;
+  overflow-wrap: anywhere;
+}
+
+.bib-author {
+  color: rgba(245, 231, 204, 0.95);
+  font-weight: 600;
+}
+
+.bib-year {
+  color: rgba(245, 231, 204, 0.7);
+}
+
+.bib-venue {
+  color: rgba(245, 231, 204, 0.78);
+  font-style: italic;
+}
+
+.bib-pages {
+  color: rgba(245, 231, 204, 0.7);
+}
+
+.bib-title-link {
+  color: #c9a876;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(201, 168, 118, 0.35);
+  transition: all 140ms ease;
+}
+
+.bib-title-link:hover {
+  color: #e8c995;
+  border-bottom-color: rgba(201, 168, 118, 0.85);
+  text-shadow: 0 0 8px rgba(201, 168, 118, 0.35);
+}
+
+.bib-title-text {
+  color: rgba(245, 231, 204, 0.9);
+}
+
+@media (max-width: 768px) {
+  .bib-entry {
+    font-size: 14px;
+  }
+
+  .bibliography-modal-content.app-modal-content {
+    max-height: calc(100dvh - 16px);
+  }
+
+  .bibliography-modal-body.app-modal-body {
+    max-height: calc(100dvh - 112px);
+  }
+}

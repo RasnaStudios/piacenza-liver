@@ -4,12 +4,33 @@ import * as THREE from "three"
 // TYPE DEFINITIONS
 // ================================================================================================
 
+export interface DeityParallelSlot {
+  tradition: ParallelTradition
+  status: ParallelStatus
+}
+
 export interface LiverGod {
   id: string
   name: string
+  readingStatus: ReadingStatus
+  identificationStatus: IdentificationStatus
   etruscanScript?: string
   transcription?: string
+  sources: string[]
+  parallelSlots?: DeityParallelSlot[]
 }
+
+export type ReadingStatus = "clear" | "debated"
+
+export type IdentificationStatus =
+  | "secure"
+  | "probable"
+  | "debated"
+  | "unresolved"
+
+export type ParallelStatus = "secure" | "proposed" | "superseded"
+
+export type ParallelTradition = "roman" | "greek"
 
 export interface LiverGroup {
   id: string
@@ -85,122 +106,309 @@ export const liverGroups = {
   },
 }
 
-// INDIVIDUAL GODS: Deity information (descriptions and equivalents are in locale files)
-export const liverGods = {
+// INDIVIDUAL GODS: Deity information (descriptions and parallels are in locale files)
+export const liverGods: Record<string, LiverGod> = {
   tinia: {
     id: "tinia",
     name: "Tinia",
+    readingStatus: "clear",
+    identificationStatus: "secure",
+    sources: [
+      "Maggiani 1982",
+      "Colonna 1991",
+      "Capdeville 1992",
+      "Stevens 2009",
+      "Pernigotti 2018",
+      "Gottarelli 2018",
+    ],
+    parallelSlots: [
+      { tradition: "roman", status: "secure" },
+      { tradition: "greek", status: "secure" },
+    ],
   },
   cilens: {
     id: "cilens",
     name: "Cilens",
+    readingStatus: "clear",
+    identificationStatus: "debated",
+    sources: [
+      "Pallottino 1956",
+      "Maggiani 1982",
+      "Colonna 1991",
+      "Colonna 2012",
+      "Pernigotti 2018",
+      "Gottarelli 2018",
+    ],
   },
   thufltha: {
     id: "thufltha",
     name: "Thufltha",
+    readingStatus: "clear",
+    identificationStatus: "debated",
+    sources: ["Maggiani 1982", "Colonna 1991", "Amann 2019"],
+    parallelSlots: [
+      { tradition: "roman", status: "proposed" },
+      { tradition: "greek", status: "proposed" },
+    ],
   },
   nethuns: {
     id: "nethuns",
     name: "Nethuns",
+    readingStatus: "clear",
+    identificationStatus: "secure",
+    sources: [
+      "Maggiani 1982",
+      "Colonna 1991",
+      "van der Meer 1987",
+      "Krauskopf 2013",
+    ],
+    parallelSlots: [
+      { tradition: "roman", status: "secure" },
+      { tradition: "greek", status: "secure" },
+    ],
   },
   uni: {
     id: "uni",
     name: "Uni",
+    readingStatus: "clear",
+    identificationStatus: "secure",
+    sources: ["Maggiani 1982", "Krauskopf 2013", "Maras 2017"],
+    parallelSlots: [
+      { tradition: "roman", status: "secure" },
+      { tradition: "greek", status: "secure" },
+    ],
   },
   mae: {
     id: "mae",
     name: "Mae",
+    readingStatus: "clear",
+    identificationStatus: "unresolved",
+    sources: ["Maggiani 1982", "Colonna 1991"],
   },
   tecvm: {
     id: "tecvm",
     name: "Tecum",
+    readingStatus: "clear",
+    identificationStatus: "unresolved",
+    sources: ["Maggiani 1982", "Colonna 1976-77", "Colonna 1991"],
   },
   lusal: {
     id: "lusal",
     name: "Lusal",
+    readingStatus: "debated",
+    identificationStatus: "debated",
+    sources: ["Maggiani 1982", "Colonna 1991", "de Grummond 2014"],
   },
   catha: {
     id: "catha",
     name: "Catha",
+    readingStatus: "clear",
+    identificationStatus: "debated",
+    sources: [
+      "Maggiani 1982",
+      "Colonna 1991",
+      "de Grummond 2008",
+      "Moore 2018",
+      "Krauskopf 2013",
+    ],
   },
   fufluns: {
     id: "fufluns",
     name: "Fufluns",
+    readingStatus: "clear",
+    identificationStatus: "secure",
+    sources: ["Maggiani 1982", "Krauskopf 2013"],
+    parallelSlots: [
+      { tradition: "roman", status: "secure" },
+      { tradition: "greek", status: "secure" },
+    ],
   },
   selvans: {
     id: "selvans",
     name: "Selvans",
+    readingStatus: "clear",
+    identificationStatus: "secure",
+    sources: ["Maggiani 1982", "Colonna 1991", "van der Meer 1987"],
+    parallelSlots: [{ tradition: "roman", status: "secure" }],
   },
   tluscva: {
     id: "tluscva",
     name: "Tluscva",
+    readingStatus: "clear",
+    identificationStatus: "debated",
+    sources: ["Colonna 1991", "Maggiani 2011", "Colonna 2012", "Stopponi 2012"],
   },
   cels: {
     id: "cels",
     name: "Cels",
+    readingStatus: "clear",
+    identificationStatus: "secure",
+    sources: ["Colonna 1976-77", "Maggiani 1982", "Krauskopf 2013"],
+    parallelSlots: [
+      { tradition: "roman", status: "proposed" },
+      { tradition: "greek", status: "proposed" },
+    ],
   },
   culsans: {
     id: "culsans",
     name: "Culsans",
+    readingStatus: "clear",
+    identificationStatus: "secure",
+    sources: ["Maggiani 1982", "Colonna 1991", "Krauskopf 2013"],
+    parallelSlots: [{ tradition: "roman", status: "secure" }],
   },
   alpans: {
     id: "alpans",
     name: "Alpans",
+    readingStatus: "clear",
+    identificationStatus: "probable",
+    sources: ["Maggiani 1982", "Colonna 1991", "Krauskopf 2013"],
   },
   vetis: {
     id: "vetis",
     name: "Vetis",
+    readingStatus: "clear",
+    identificationStatus: "unresolved",
+    sources: ["Maggiani 1982", "Colonna 2012", "Pernigotti 2018"],
+    parallelSlots: [{ tradition: "roman", status: "proposed" }],
   },
   pul: {
     id: "pul",
     name: "Pul",
+    readingStatus: "clear",
+    identificationStatus: "unresolved",
+    sources: ["Maggiani 1982", "Colonna 1991", "van der Meer 1987"],
   },
   lasl: {
     id: "lasl",
     name: "Lasl",
+    readingStatus: "clear",
+    identificationStatus: "probable",
+    sources: ["Maggiani 1982", "Colonna 1991", "Krauskopf 2013"],
   },
   maris: {
     id: "maris",
     name: "Maris",
+    readingStatus: "clear",
+    identificationStatus: "debated",
     transcription: "mar",
+    sources: ["Maggiani 1982", "Colonna 1991", "van der Meer 1987"],
   },
   laran: {
     id: "laran",
     name: "Laran",
+    readingStatus: "clear",
+    identificationStatus: "secure",
     transcription: "lar",
+    sources: ["Maggiani 1982", "Krauskopf 2013"],
+    parallelSlots: [
+      { tradition: "roman", status: "secure" },
+      { tradition: "greek", status: "secure" },
+    ],
   },
   tvnth: {
     id: "tvnth",
     name: "Tvnth",
+    readingStatus: "clear",
+    identificationStatus: "unresolved",
+    sources: ["Maggiani 1982", "van der Meer 1987"],
   },
   hercle: {
     id: "hercle",
     name: "Hercle",
+    readingStatus: "clear",
+    identificationStatus: "secure",
+    sources: ["Maggiani 1982", "Krauskopf 2013"],
+    parallelSlots: [
+      { tradition: "roman", status: "secure" },
+      { tradition: "greek", status: "secure" },
+    ],
   },
   metlvmth: {
     id: "metlvmth",
     name: "Metlvmth",
+    readingStatus: "clear",
+    identificationStatus: "unresolved",
+    sources: ["Maggiani 1982", "Colonna 1991", "van der Meer 1987"],
   },
   letham: {
     id: "letham",
     name: "Letham",
+    readingStatus: "clear",
+    identificationStatus: "debated",
+    sources: [
+      "Maggiani 1982",
+      "Colonna 1991",
+      "van der Meer 1987",
+      "Gottarelli 2018",
+    ],
   },
   velch: {
     id: "velch",
     name: "Velch",
+    readingStatus: "clear",
+    identificationStatus: "debated",
+    sources: ["Maggiani 1982", "Colonna 1991"],
+    parallelSlots: [{ tradition: "roman", status: "proposed" }],
   },
   satres: {
     id: "satres",
     name: "Satres",
+    readingStatus: "clear",
+    identificationStatus: "debated",
+    sources: ["Maggiani 1982", "Colonna 1991", "Krauskopf 2013"],
+    parallelSlots: [{ tradition: "roman", status: "superseded" }],
   },
   usil: {
     id: "usil",
     name: "Usil",
+    readingStatus: "clear",
+    identificationStatus: "secure",
+    sources: ["Maggiani 1982", "Krauskopf 2013", "Maras 2017"],
   },
   tiur: {
     id: "tiur",
     name: "Tiur",
+    readingStatus: "clear",
+    identificationStatus: "probable",
+    sources: ["Maggiani 1982", "Sannibale 2018", "Krauskopf 2013"],
   },
+}
+
+export interface ResolvedDeityParallel {
+  tradition: ParallelTradition
+  name: string
+  status: ParallelStatus
+}
+
+export type ParallelLocaleTranslator = (
+  key: string,
+  options?: { returnObjects?: boolean; defaultValue?: unknown },
+) => unknown
+
+export function resolveDeityParallels(
+  t: ParallelLocaleTranslator,
+  deityId: string,
+): ResolvedDeityParallel[] {
+  const slots = liverGods[deityId]?.parallelSlots
+  if (!slots?.length) return []
+
+  const raw = t(`deities.${deityId}.parallelNames`, {
+    returnObjects: true,
+    defaultValue: {},
+  })
+  const names =
+    raw && typeof raw === "object" && !Array.isArray(raw)
+      ? (raw as Record<string, string>)
+      : {}
+
+  return slots
+    .map((slot) => ({
+      tradition: slot.tradition,
+      status: slot.status,
+      name: names[slot.tradition] ?? "",
+    }))
+    .filter((row) => row.name.length > 0)
 }
 
 // INSCRIPTIONS: All 42 liver sections with their gods and descriptions

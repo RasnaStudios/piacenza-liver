@@ -4,11 +4,11 @@
   "sections": {
     "historicalDiscovery": {
       "heading": "Historical Discovery",
-      "content": "The Piacenza Liver was discovered in 1877 near Gossolengo, just outside Piacenza, Italy. This remarkable bronze artifact dates to the late 2nd to early 1st century BCE, making it one of the most significant surviving documents of Etruscan religious practice. The liver model represents a complete cosmological map, meticulously inscribed with the names of deities and their divine domains."
+      "content": "The Piacenza Liver was discovered in 1877 near Gossolengo, just outside Piacenza, Italy. This remarkable bronze artifact dates to the late 2nd to early 1st century BCE, making it one of the most significant surviving documents of Etruscan religious practice. The liver model appears to preserve a cosmological teaching map, inscribed with deity names and divine regions. It is cited in Etruscan epigraphic corpora as ET Pa 4.2 (Rix, Etruskische Texte) and TLE 719 (Pallottino)."
     },
     "hepatoscopy": {
       "heading": "Hepatoscopy",
-      "content": "Hepatoscopy, or haruspicy, was the ancient Etruscan practice of divination through the examination of animal livers. Priests known as haruspices would sacrifice animals and carefully study the liver's shape, color, texture, and any unusual markings. Each section of the liver corresponded to a specific deity or cosmic realm, allowing priests to interpret omens and divine will. This practice was so central to Etruscan religion that it influenced Roman religious traditions for centuries."
+      "content": "Hepatoscopy, or haruspicy, was the ancient Etruscan practice of divination through the examination of animal livers. Priests known as haruspices would sacrifice animals and carefully study the liver's shape, color, texture, and any unusual markings. Sections of the liver could be interpreted through associations with deities or cosmic regions, allowing priests to reason about omens and divine will. This practice was so central to Etruscan religion that it influenced Roman religious traditions for centuries."
     },
     "liverStructure": {
       "heading": "The Liver Structure",
@@ -16,11 +16,15 @@
     },
     "cosmologicalStructure": {
       "heading": "Cosmological Structure",
-      "content": "The liver is divided into {totalZones} distinct cosmological zones, each representing a fundamental realm of existence. The Sky zone contains the supreme deities, while the Water zone governs atmospheric and aquatic forces. The Earth zone represents terrestrial powers, and the Underworld contains chthonic deities. The Pars Familiaris and Pars Hostilis represent favorable and unfavorable omens respectively, while the Gall Bladder and Central Section contain powerful generative forces. The Back zone anchors the entire system with the Sun and Moon."
+      "content": "This visualization divides the liver into {totalZones} cosmological zones used for navigation and interpretation. The Sky and Water zones gather celestial, atmospheric, and aquatic powers; the Earth and Underworld zones gather terrestrial and chthonic names; Pars Familiaris and Pars Hostilis mark favorable and unfavorable orientations in the interpretive tradition. The Gall Bladder, Central Section, and Back preserve additional anatomical and celestial reference points."
     },
     "etruscanPantheon": {
       "heading": "The Etruscan Pantheon",
-      "content": "The {totalInscriptions} inscriptions currently map to {totalDeities} deity labels in this dataset. Some identifications are secure: Tinia corresponds to Zeus and Jupiter, Nethuns to Poseidon and Neptune, Fufluns to Dionysus and Bacchus, and Hercle to Herakles and Hercules. Others, including Thufltha, Cilens, Letham, Catha, Lusal, and Tluscva, are treated here as debated or obscure rather than settled equivalents. Each placement is best read as an interpretive map of the liver, not as a complete translation of every inscription."
+      "content": "The {totalInscriptions} inscriptions currently map to {totalDeities} deity labels in this dataset. Some identifications are secure: Tinia is compared with Zeus and Jupiter, Nethuns with Poseidon and Neptune, Fufluns with Dionysus and Bacchus, and Hercle with Herakles and Hercules. Others, including Thufltha, Cilens, Letham, Catha, Lusal, and Tluscva, are treated here as debated or obscure. Each placement is best read as an interpretive map of the liver, not as a complete translation of every inscription."
+    },
+    "editorialMethod": {
+      "heading": "Editorial Method",
+      "content": "This project is an interpretive visualization, not a full epigraphic edition. Three independent dimensions of evidence are tracked. Reading marks whether the Etruscan glyphs are clearly inscribed and read, or whether the reading or word-division is debated. Identification marks how secure the modern Etruscan deity identification is, on a four-tier scale (secure, probable, debated, unresolved). Each Greek or Roman parallel carries its own status (secure, proposed, or superseded), so that older equivalences such as Satres / Saturn are preserved as scholarship history rather than silently dropped. Per-deity sources are listed in author-date short form and link to the cited works where openly available. The modern foundation is built on Maggiani 1982 (Studi Etruschi L), van der Meer 1987 (the only book-length analysis), and Colonna 1991 (Studi Etruschi LIX) for theonymy; on Stevens 2009, Pernigotti 2018, and Gottarelli 2018 for cosmology; and on Krauskopf 2013 and Maras 2017 for synthetic context. Transliterations follow Rix, Etruskische Texte (1991), with corrections from Maggiani 1982 where noted."
     },
     "significanceAndInterpretation": {
       "heading": "Significance and Interpretation",
@@ -35,5 +39,14 @@
       "content": "The bronze model measures approximately 12.6 cm in length and 7.6 cm in width, accurately representing the proportions of an actual sheep liver. The inscriptions are written in the Etruscan alphabet, which was derived from the Greek alphabet but adapted for the Etruscan language. Each inscription marks a specific anatomical region, creating a precise map that would have been memorized by practicing haruspices."
     }
   },
-  "buttonText": "Explore the liver"
+  "buttonText": "Explore the liver",
+  "references": {
+    "intro": "Full citations for the works referenced throughout the per-deity entries. Where an open online copy exists, the title links to it."
+  },
+  "howToCite": {
+    "heading": "How to cite this site",
+    "intro": "Cite this site as:",
+    "format": "Andraghetti, L. ({year}). The Piacenza Liver: an interactive scholarly visualization. https://piacenzaliver.com/",
+    "sigla": "The artifact itself is catalogued as ET Pa 4.2 in Rix's Etruskische Texte (1991) and as TLE 719 in Pallottino's Testimonia Linguae Etruscae. Use those sigla when referring to the bronze model rather than to this website."
+  }
 }
