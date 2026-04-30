@@ -183,7 +183,7 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Mae",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: ["Maggiani 1982", "Colonna 1991"],
+    sources: ["Maggiani 1982", "Colonna 1991", "Maras 2017"],
   },
   tecvm: {
     id: "tecvm",
@@ -197,7 +197,12 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Lusal",
     readingStatus: "debated",
     identificationStatus: "debated",
-    sources: ["Maggiani 1982", "Colonna 1991", "de Grummond 2014"],
+    sources: [
+      "Maggiani 1982",
+      "Colonna 1991",
+      "van der Meer 2009",
+      "de Grummond 2014",
+    ],
   },
   catha: {
     id: "catha",
@@ -208,8 +213,9 @@ export const liverGods: Record<string, LiverGod> = {
       "Maggiani 1982",
       "Colonna 1991",
       "de Grummond 2008",
-      "Moore 2018",
       "Krauskopf 2013",
+      "Maras 2017",
+      "Moore 2018",
     ],
   },
   fufluns: {
@@ -236,7 +242,13 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Tluscva",
     readingStatus: "clear",
     identificationStatus: "debated",
-    sources: ["Colonna 1991", "Maggiani 2011", "Colonna 2012", "Stopponi 2012"],
+    sources: [
+      "Colonna 1991",
+      "Maggiani 2011",
+      "Colonna 2012",
+      "Stopponi 2012",
+      "Maras 2017",
+    ],
   },
   cels: {
     id: "cels",
@@ -269,7 +281,7 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Vetis",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: ["Maggiani 1982", "Colonna 2012", "Pernigotti 2018"],
+    sources: ["Maggiani 1982", "Colonna 2012", "Maras 2017", "Pernigotti 2018"],
     parallelSlots: [{ tradition: "roman", status: "proposed" }],
   },
   pul: {
@@ -292,7 +304,12 @@ export const liverGods: Record<string, LiverGod> = {
     readingStatus: "clear",
     identificationStatus: "debated",
     transcription: "mar",
-    sources: ["Maggiani 1982", "Colonna 1991", "van der Meer 1987"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+      "Maras 2017",
+    ],
   },
   laran: {
     id: "laran",
@@ -311,7 +328,7 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Tvnth",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: ["Maggiani 1982", "van der Meer 1987"],
+    sources: ["Maggiani 1982", "van der Meer 1987", "Maras 2017"],
   },
   hercle: {
     id: "hercle",

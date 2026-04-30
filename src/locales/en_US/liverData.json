@@ -126,18 +126,18 @@
       }
     },
     "mae": {
-      "description": "Obscure paired name in the Uni / Mae inscription at cell 4. Function and identification remain unresolved; older equations with Roman Maius are not supported in recent scholarship."
+      "description": "Obscure paired name in the Uni / Mae inscription at cell 4. Maras 2017 lists Mae among the deities attested only on the Liver of Piacenza; function and identification remain unresolved, and older equations with Roman Maius are not supported in recent scholarship."
     },
     "tecvm": {
       "description": "Obscure deity known almost exclusively from the liver and from dedications in the area around Lake Trasimeno. Colonna 1976-77 connected the cult with Cel and the Trasimeno sanctuaries; function on the liver remains debated."
     },
     "lusal": {
-      "description": "Genitive form lvsl / lvsal at cells 6 and 34. Two readings: a deity Lusa (Maggiani 1982) or, per Colonna 1991, lv(r)s(l) — i.e. ‘of Lurs’, the prophetic god Lur whose cult de Grummond 2014 has reconstructed from mirrors, dedications, and the Liber Linteus.",
-      "editorialNote": "The reading itself is debated. cell 6 (lvsal) is taken as fairly secure; cell 34 (lvsl velχ) is contested — vel(...) may also point to an eponymous god of Vulci (Torelli 1986)."
+      "description": "Genitive form lvsl / lvsal at cells 6 and 34. Two readings: a deity Lusa (Maggiani 1982) or, per Colonna 1991, lv(r)s(l) — ‘of Lurs’, the prophetic god Lur. The Liber Linteus attestations are studied by van der Meer 2009; de Grummond 2014 reconstructs the cult from mirrors, dedications, and the linen book.",
+      "editorialNote": "The reading itself is debated. Cell 6 (lvsal) is taken as fairly secure; cell 34 (lvsl velχ) is contested — vel(...) may also point to an eponymous god of Vulci (Torelli 1986)."
     },
     "catha": {
-      "description": "Astral deity, probably female (cells 8, 23). Colonna 1991 links the Cathe Sans of the Orbetello mirror to a male solar Catha and supports the older solar reading; de Grummond 2008 argued for a lunar Catha at Pyrgi; Moore 2018 explicitly revisits the question. Solar, lunar, underworld, and childbirth associations all remain on the table.",
-      "editorialNote": "The older single-solar consensus has fragmented; modern scholarship treats Catha's astral character as actively debated."
+      "description": "Astral deity, probably female (cells 8, 23). Maras 2017 still reads Catha as ‘a later counterpart of Cavatha, with marked solar features’, and Colonna 1991 links the Cathe Sans of the Orbetello mirror to a male solar Catha; against this, de Grummond 2008 argued for a lunar Catha at Pyrgi and Moore 2018 explicitly revisits the question. Solar, lunar, underworld, and childbirth associations all remain on the table.",
+      "editorialNote": "The older single-solar consensus has been complicated by lunar and chthonic readings, but Maras 2017 and Colonna 1991 still defend the solar interpretation."
     },
     "fufluns": {
       "description": "God of wine, inebriation, and vegetation cycles.",
@@ -153,7 +153,7 @@
       }
     },
     "tluscva": {
-      "description": "Obscure form at cells 12, 33, 40. Maggiani 2011 treats Tluschva as chthonic divinity / divine collective, probably female; Colonna 1991 alternatively proposed it as an epithet of Maris (the only true hapax of the liver). Stopponi 2012 connects Tluschva with the Fanum Voltumnae at Orvieto."
+      "description": "Obscure form at cells 12, 33, 40. Maggiani 2011 treats Tluschva as chthonic divinity / divine collective, probably female; Maras 2017 reads them as ‘a group of goddesses, perhaps corresponding to Nymphs or Charites’ attested also at Caere (Sant'Antonio); Colonna 1991 alternatively proposed Tluscu as an epithet of Maris (the only true hapax of the liver). Stopponi 2012 connects the cult with the Fanum Voltumnae at Orvieto."
     },
     "cels": {
       "description": "Cel / Cels, earth goddess connected with chthonic forces. Colonna 1976-77 is the canonical study, linking Cel with the Trasimeno sanctuaries; the liver itself has been read as a model of Cel's body.",
@@ -172,7 +172,7 @@
       "description": "Alpan / Alpans paired with Cul / Culsans at cell 14. Colonna 1991 argues that alpan is originally an appellative meaning ‘the good / well-disposed’, semantically equivalent to Latin manus — used for chthonic divinities in eufemistic register. So alp here functions as an epithet of Cul, comparable to Janus being called bonus and manus."
     },
     "vetis": {
-      "description": "Obscure catactonic deity at cell 15. Colonna 2012 places Vetis with Cilens among the catactonic divinities of the liver's hostile sector; the comparison with Roman Veiovis remains tentative.",
+      "description": "Catactonic deity at cell 15. Maras 2017 reads Vetis as the Etruscan substitution for Apollo on the Liver, derived from Latin Vedius (a variant of Veiovis); Colonna 2012 places Vetis with Cilens among the catactonic divinities of the hostile sector.",
       "parallelNames": {
         "roman": "Veiovis"
       }
@@ -185,8 +185,8 @@
       "description": "Lasa / Lasl at cell 19. Female divine attendant often linked with Turan; fate and service roles are attested in mirror iconography. The Roman Lares are not a satisfactory match."
     },
     "maris": {
-      "description": "Important but obscure deity at cells 26, 30, 39 (cells 30+39 communicate around the processus papillaris). Often represented as a child or youth in Etruscan evidence. At cell 26 the reading marisl laθ — once read as an unknown epithet — was revised by Maggiani in discussion to marisl lar, supporting an analogy with the Roman Lar familiaris (Colonna 1991).",
-      "editorialNote": "Maris is not Mars; the older equation with the Roman war-god is rejected by current scholarship (Simon 2006, Krauskopf 2013)."
+      "description": "Important but obscure deity at cells 26, 30, 39 (cells 30+39 communicate around the processus papillaris). Often represented as a child or youth in Etruscan evidence; Maras 2017 records Mariś at Clusium as ‘a divine child bearing the name of the Latin-Italic Mars’. At cell 26 the reading marisl laθ — once read as an unknown epithet — was revised by Maggiani in discussion to marisl lar, supporting an analogy with the Roman Lar familiaris (Colonna 1991).",
+      "editorialNote": "Maris shares an etymology with Latin-Italic Mars but is functionally distinct from the Roman war-god; the older identification of Maris with Mars in cult and role is no longer accepted (Simon 2006; Krauskopf 2013; Maras 2017)."
     },
     "laran": {
       "description": "Etruscan god of war.",
@@ -196,7 +196,7 @@
       }
     },
     "tvnth": {
-      "description": "Uncertain deity at cell 25, in the gall bladder zone. No firm identification has emerged in recent scholarship."
+      "description": "Uncertain deity at cell 25, in the gall bladder zone. Maras 2017 lists Tvnth among the deities attested only on the Liver; no firm identification has emerged in recent scholarship."
     },
     "hercle": {
       "description": "Major Etruscan god, equivalent of Herakles and Hercules, with protective and oracular associations. In Etruria treated as a god from the beginning, not as a hero.",

@@ -150,6 +150,16 @@ export const scholarshipEntries: BibEntry[] = [
     url: "https://iris.unive.it/handle/10278/28866",
   },
   {
+    shortRef: "van der Meer 2009",
+    authors: "van der Meer, L. B.",
+    year: 2009,
+    title: "On the enigmatic deity Lur in the Liber linteus Zagrabiensis (LL)",
+    venue:
+      "Votives, Places and Rituals in Etruscan Religion: Studies in Honor of Jean MacIntosh Turfa, ed. M. Becker & M. Gleba (Leiden–Boston: Brill)",
+    pages: "217–228",
+    url: "https://brill.com/display/book/edcoll/9789047426783/Bej.9789004168732.i-279_018.xml",
+  },
+  {
     shortRef: "van der Meer 2011",
     authors: "van der Meer, L. B.",
     year: 2011,

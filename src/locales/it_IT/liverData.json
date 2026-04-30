@@ -126,18 +126,18 @@
       }
     },
     "mae": {
-      "description": "Nome o epiteto associato all'iscrizione Uni / Mae alla casella 4, ancora irrisolto. La funzione resta incerta; le antiche equazioni con il Maius romano non sono sostenute dalla ricerca recente."
+      "description": "Nome o epiteto associato all'iscrizione Uni / Mae alla casella 4, ancora irrisolto. Maras 2017 elenca Mae fra le divinità attestate solo sul Fegato; la funzione resta incerta e le antiche equazioni con il Maius romano non sono sostenute dalla ricerca recente."
     },
     "tecvm": {
       "description": "Divinità oscura nota quasi esclusivamente dal fegato e da dediche nell'area del Lago Trasimeno. Colonna 1976-77 collegò il culto a Cel e ai santuari del Trasimeno; la funzione sul fegato resta discussa."
     },
     "lusal": {
-      "description": "Forma genitiva lvsl / lvsal alle caselle 6 e 34. Due letture: una divinità Lusa (Maggiani 1982) o, secondo Colonna 1991, lv(r)s(l) — cioè ‘di Lurs’, il dio profetico Lur il cui culto è stato ricostruito da de Grummond 2014 a partire da specchi, dediche e Liber Linteus.",
+      "description": "Forma genitiva lvsl / lvsal alle caselle 6 e 34. Due letture: una divinità Lusa (Maggiani 1982) o, secondo Colonna 1991, lv(r)s(l) — «di Lurs», il dio profetico Lur. Le attestazioni nel Liber Linteus sono studiate da van der Meer 2009; de Grummond 2014 ricostruisce il culto a partire da specchi, dediche e dal libro lineo.",
       "editorialNote": "La lettura stessa è discussa. La casella 6 (lvsal) è considerata abbastanza sicura; la casella 34 (lvsl velχ) è contestata — vel(...) potrebbe anche indicare una divinità eponima di Vulci (Torelli 1986)."
     },
     "catha": {
-      "description": "Divinità astrale, probabilmente femminile (caselle 8, 23). Colonna 1991 ricollega il Cathe Sans dello specchio di Orbetello a un Catha solare maschile e sostiene la lettura solare; de Grummond 2008 ha proposto una Catha lunare a Pyrgi; Moore 2018 riapre esplicitamente la questione. Le associazioni solari, lunari, ctonie e legate alla nascita restano tutte sul tavolo.",
-      "editorialNote": "Il vecchio consenso solare si è frammentato; la ricerca recente tratta il carattere astrale di Catha come attivamente discusso."
+      "description": "Divinità astrale, probabilmente femminile (caselle 8, 23). Maras 2017 legge ancora Catha come «controparte tarda di Cavatha, con marcati tratti solari», e Colonna 1991 ricollega il Cathe Sans dello specchio di Orbetello a un Catha solare maschile; per contro, de Grummond 2008 ha proposto una Catha lunare a Pyrgi e Moore 2018 riapre esplicitamente la questione. Le associazioni solari, lunari, ctonie e legate alla nascita restano tutte sul tavolo.",
+      "editorialNote": "Il vecchio consenso solare è stato complicato dalle letture lunari e ctonie, ma Maras 2017 e Colonna 1991 difendono ancora l'interpretazione solare."
     },
     "fufluns": {
       "description": "Dio del vino, dell'ebbrezza e dei cicli della vegetazione.",
@@ -153,7 +153,7 @@
       }
     },
     "tluscva": {
-      "description": "Forma oscura alle caselle 12, 33, 40. Maggiani 2011 tratta Tluschva come divinità o collettivo divino ctonio, probabilmente femminile; Colonna 1991 propose in alternativa di vedervi un epiteto di Maris (l'unico vero hapax del fegato). Stopponi 2012 collega Tluschva al Fanum Voltumnae di Orvieto."
+      "description": "Forma oscura alle caselle 12, 33, 40. Maggiani 2011 tratta Tluschva come divinità o collettivo divino ctonio, probabilmente femminile; Maras 2017 le legge come «un gruppo di dee, forse corrispondente a Ninfe o Cariti» attestate anche a Caere (Sant'Antonio); Colonna 1991 propose in alternativa di vedere in Tluscu un epiteto di Maris (l'unico vero hapax del fegato). Stopponi 2012 collega il culto al Fanum Voltumnae di Orvieto."
     },
     "cels": {
       "description": "Cel / Cels, dea della terra connessa a forze ctonie. Colonna 1976-77 è lo studio canonico, che collega Cel ai santuari del Trasimeno; il fegato stesso è stato letto come modello del corpo di Cel.",
@@ -172,7 +172,7 @@
       "description": "Alpan / Alpans accoppiato a Cul / Culsans alla casella 14. Colonna 1991 sostiene che alpan sia originariamente un appellativo significante ‘la buona / la ben disposta’, semanticamente equivalente al manus latino — usato per divinità ctonie in registro eufemistico. Quindi alp funziona qui come epiteto di Cul, paragonabile al fatto che Giano fosse chiamato bonus e manus."
     },
     "vetis": {
-      "description": "Divinità catactonia oscura alla casella 15. Colonna 2012 colloca Vetis con Cilens fra le divinità catactonie del settore ostile del fegato; il confronto con il Veiove romano resta tentativo.",
+      "description": "Divinità catactonia alla casella 15. Maras 2017 legge Vetis come la sostituzione etrusca di Apollo sul Fegato, derivata dal latino Vedius (variante di Veiove); Colonna 2012 colloca Vetis con Cilens fra le divinità catactonie del settore ostile.",
       "parallelNames": {
         "roman": "Veiove"
       }
@@ -185,8 +185,8 @@
       "description": "Lasa / Lasl alla casella 19. Assistente divina femminile spesso collegata a Turan; ruoli legati al fato e al servizio sono attestati nell'iconografia degli specchi. I Lares romani non sono un confronto soddisfacente."
     },
     "maris": {
-      "description": "Divinità importante ma oscura alle caselle 26, 30, 39 (le caselle 30+39 comunicano intorno al processus papillaris). Spesso rappresentata come bambino o giovane nelle testimonianze etrusche. Alla casella 26 la lettura marisl laθ — un tempo intesa come epiteto sconosciuto — è stata corretta da Maggiani in sede di discussione in marisl lar, a sostegno dell'analogia con il Lar familiaris romano (Colonna 1991).",
-      "editorialNote": "Maris non è Marte; l'antica equazione con il dio della guerra romano è respinta dalla ricerca attuale (Simon 2006, Krauskopf 2013)."
+      "description": "Divinità importante ma oscura alle caselle 26, 30, 39 (le caselle 30+39 comunicano intorno al processus papillaris). Spesso rappresentata come bambino o giovane nelle testimonianze etrusche; Maras 2017 documenta Mariś a Chiusi come «divinità bambina che porta il nome del Marte latino-italico». Alla casella 26 la lettura marisl laθ — un tempo intesa come epiteto sconosciuto — è stata corretta da Maggiani in sede di discussione in marisl lar, a sostegno dell'analogia con il Lar familiaris romano (Colonna 1991).",
+      "editorialNote": "Maris condivide l'etimologia con il Marte latino-italico ma è funzionalmente distinto dal dio della guerra romano; l'antica identificazione di Maris con Marte nel culto e nel ruolo non è più accettata (Simon 2006; Krauskopf 2013; Maras 2017)."
     },
     "laran": {
       "description": "Dio etrusco della guerra.",
@@ -196,7 +196,7 @@
       }
     },
     "tvnth": {
-      "description": "Divinità incerta alla casella 25, nella zona della cistifellea. Nessuna identificazione sicura è emersa nella ricerca recente."
+      "description": "Divinità incerta alla casella 25, nella zona della cistifellea. Maras 2017 elenca Tvnth fra le divinità attestate solo sul Fegato; nessuna identificazione sicura è emersa nella ricerca recente."
     },
     "hercle": {
       "description": "Grande dio etrusco, equivalente di Eracle ed Ercole, con associazioni protettive e oracolari. In Etruria considerato dio fin dall'inizio, non semplice eroe.",
