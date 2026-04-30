@@ -65,69 +65,13 @@ The site is served from **[piacenzaliver.com](https://piacenzaliver.com)** (cano
 4. **Open your browser:**
    Navigate to `http://localhost:5173` (or the URL shown in your terminal)
 
-### Additional Commands
+### Commands
 
-- **Build for production:**
-  ```bash
-  pnpm build
-  ```
+- `pnpm build` — production build  
+- `pnpm preview` — serve the production build locally  
+- `pnpm lint` — lint and format check  
 
-- **Preview production build:**
-  ```bash
-  pnpm preview
-  ```
-
-- **Lint code:**
-  ```bash
-  pnpm lint
-  ```
-
-## 🗺️ Segmentation Map Generation
-
-To regenerate the segmentation map and atlas from CVAT annotations:
-
-```bash
-python3 scripts/create_segmentation_map.py
-```
-
-This will generate both:
-- `src/assets/segmentation.png` - 4K segmentation map for UV picking
-- `src/assets/segmentation_atlas.png` - 256px tile atlas for highlights
-- `src/assets/segmentation_atlas.json` - Atlas metadata with tile positions
-
-**Default settings (optimized):**
-- Input: `src/assets/annotations.xml`
-- Segmentation: 4096×4096 pixels
-- Atlas: 256px tiles, 8 columns, anti-aliased borders
-- Output: Both segmentation map and atlas generated automatically
-
-**Custom options:**
-```bash
-python3 scripts/create_segmentation_map.py --size 2048 --tile 512 --no-atlas
-```
-
-### Recompute inscription centers
-
-If the liver OBJ or segmentation map changes, update the inscription surface centers (camera targets) and camera positions with:
-
-```bash
-node scripts/recompute-inscription-centers.mjs
-```
-
-By default it samples every 4th pixel of `src/assets/segmentation.png` for speed; lower `SAMPLE_STEP` inside the script for finer accuracy. Camera targets are rederived from the segmentation; camera positions are placed along the surface normal using the uniform distance configured in `SceneConfig.inscriptions.cameraDistance`. It overwrites both `cameraTarget` and `cameraPosition` entries in `src/scene/LiverData.ts`.
-
-## 🛠️ Built With
-
-- **React** - UI framework
-- **Three.js** - 3D graphics and WebGL
-- **Vite** - Build tool and development server
-- **Etruscan Unicode** - Authentic historical script rendering
-
-## 📚 Scholarly Sources
-
-This visualization is based on research from:
-- "Cosmogonica" and "padanu" by Gottarelli
-- Maggiani-Gottarelli cosmological interpretation
+For segmentation assets, dataset generation, or recomputing inscription cameras, see **`scripts/`** (each script documents its own usage).
 
 ## 📱 Browser Compatibility
 
