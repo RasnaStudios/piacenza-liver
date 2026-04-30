@@ -20,7 +20,7 @@ export interface LiverGod {
   parallelSlots?: DeityParallelSlot[]
 }
 
-export type ReadingStatus = "clear" | "debated"
+export type ReadingStatus = "clear" | "debated" | "unclear"
 
 export type IdentificationStatus =
   | "secure"
@@ -42,10 +42,11 @@ export interface Inscription {
   id: number
   etruscanText: string
   transcription: string
-  gods: Array<{ id: string; form: string }>
+  gods: Array<{ id: string; form: string; readingStatus?: ReadingStatus }>
   cameraPosition: THREE.Vector3
   cameraTarget: THREE.Vector3
   description?: string
+  readingStatus?: ReadingStatus
 }
 
 // ================================================================================================
@@ -115,6 +116,7 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "secure",
     sources: [
       "Maggiani 1982",
+      "van der Meer 1987",
       "Colonna 1991",
       "Capdeville 1992",
       "Stevens 2009",
@@ -134,6 +136,7 @@ export const liverGods: Record<string, LiverGod> = {
     sources: [
       "Pallottino 1956",
       "Maggiani 1982",
+      "van der Meer 1987",
       "Colonna 1991",
       "Colonna 2012",
       "Pernigotti 2018",
@@ -145,7 +148,13 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Thufltha",
     readingStatus: "clear",
     identificationStatus: "debated",
-    sources: ["Maggiani 1982", "Colonna 1991", "Amann 2019"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Buranelli 1989",
+      "Colonna 1991",
+      "Amann 2019",
+    ],
     parallelSlots: [
       { tradition: "roman", status: "proposed" },
       { tradition: "greek", status: "proposed" },
@@ -172,7 +181,13 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Uni",
     readingStatus: "clear",
     identificationStatus: "secure",
-    sources: ["Maggiani 1982", "Krauskopf 2013", "Maras 2017"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+      "Krauskopf 2013",
+      "Maras 2017",
+    ],
     parallelSlots: [
       { tradition: "roman", status: "secure" },
       { tradition: "greek", status: "secure" },
@@ -183,14 +198,24 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Mae",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: ["Maggiani 1982", "Colonna 1991", "Maras 2017"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+      "Maras 2017",
+    ],
   },
   tecvm: {
     id: "tecvm",
     name: "Tecum",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: ["Maggiani 1982", "Colonna 1976-77", "Colonna 1991"],
+    sources: [
+      "Colonna 1976-77",
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+    ],
   },
   lusal: {
     id: "lusal",
@@ -200,6 +225,7 @@ export const liverGods: Record<string, LiverGod> = {
     sources: [
       "Maggiani 1982",
       "Colonna 1991",
+      "Torelli 1986",
       "van der Meer 2009",
       "de Grummond 2014",
     ],
@@ -223,7 +249,12 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Fufluns",
     readingStatus: "clear",
     identificationStatus: "secure",
-    sources: ["Maggiani 1982", "Krauskopf 2013"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+      "Krauskopf 2013",
+    ],
     parallelSlots: [
       { tradition: "roman", status: "secure" },
       { tradition: "greek", status: "secure" },
@@ -243,6 +274,8 @@ export const liverGods: Record<string, LiverGod> = {
     readingStatus: "clear",
     identificationStatus: "debated",
     sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
       "Colonna 1991",
       "Maggiani 2011",
       "Colonna 2012",
@@ -281,7 +314,14 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Vetis",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: ["Maggiani 1982", "Colonna 2012", "Maras 2017", "Pernigotti 2018"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+      "Colonna 2012",
+      "Maras 2017",
+      "Pernigotti 2018",
+    ],
     parallelSlots: [{ tradition: "roman", status: "proposed" }],
   },
   pul: {
@@ -297,6 +337,7 @@ export const liverGods: Record<string, LiverGod> = {
     readingStatus: "clear",
     identificationStatus: "probable",
     sources: ["Maggiani 1982", "Colonna 1991", "Krauskopf 2013"],
+    parallelSlots: [{ tradition: "roman", status: "superseded" }],
   },
   maris: {
     id: "maris",
@@ -308,16 +349,23 @@ export const liverGods: Record<string, LiverGod> = {
       "Maggiani 1982",
       "van der Meer 1987",
       "Colonna 1991",
+      "Simon 2006",
+      "Krauskopf 2013",
       "Maras 2017",
     ],
   },
   laran: {
     id: "laran",
     name: "Laran",
-    readingStatus: "clear",
+    readingStatus: "debated",
     identificationStatus: "secure",
     transcription: "lar",
-    sources: ["Maggiani 1982", "Krauskopf 2013"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+      "Krauskopf 2013",
+    ],
     parallelSlots: [
       { tradition: "roman", status: "secure" },
       { tradition: "greek", status: "secure" },
@@ -335,7 +383,12 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Hercle",
     readingStatus: "clear",
     identificationStatus: "secure",
-    sources: ["Maggiani 1982", "Krauskopf 2013"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+      "Krauskopf 2013",
+    ],
     parallelSlots: [
       { tradition: "roman", status: "secure" },
       { tradition: "greek", status: "secure" },
@@ -350,7 +403,7 @@ export const liverGods: Record<string, LiverGod> = {
   },
   letham: {
     id: "letham",
-    name: "Letham",
+    name: "Lethams",
     readingStatus: "clear",
     identificationStatus: "debated",
     sources: [
@@ -365,7 +418,7 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Velch",
     readingStatus: "clear",
     identificationStatus: "debated",
-    sources: ["Maggiani 1982", "Colonna 1991"],
+    sources: ["Maggiani 1982", "Colonna 1991", "Torelli 1986"],
     parallelSlots: [{ tradition: "roman", status: "proposed" }],
   },
   satres: {
@@ -373,7 +426,12 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Satres",
     readingStatus: "clear",
     identificationStatus: "debated",
-    sources: ["Maggiani 1982", "Colonna 1991", "Krauskopf 2013"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+      "Krauskopf 2013",
+    ],
     parallelSlots: [{ tradition: "roman", status: "superseded" }],
   },
   usil: {
@@ -381,7 +439,12 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Usil",
     readingStatus: "clear",
     identificationStatus: "secure",
-    sources: ["Maggiani 1982", "Krauskopf 2013", "Maras 2017"],
+    sources: [
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Krauskopf 2013",
+      "Maras 2017",
+    ],
   },
   tiur: {
     id: "tiur",
@@ -429,7 +492,7 @@ export function resolveDeityParallels(
 }
 
 // INSCRIPTIONS: All 42 liver sections with their gods and descriptions
-export const liverInscriptions = [
+export const liverInscriptions: Inscription[] = [
   {
     id: 1,
     etruscanText: "𐌕𐌉𐌍 / 𐌂𐌉𐌋 / 𐌄𐌍",
@@ -486,7 +549,7 @@ export const liverInscriptions = [
     id: 6,
     etruscanText: "𐌋𐌅𐌔𐌀𐌋",
     transcription: "lvsal",
-    gods: [{ id: "lusal", form: "𐌋𐌅𐌔𐌀𐌋" }],
+    gods: [{ id: "lusal", form: "𐌋𐌅𐌔𐌀𐌋", readingStatus: "debated" }],
     cameraPosition: new THREE.Vector3(-1.287, 1.493, -1.101),
     cameraTarget: new THREE.Vector3(-1.178, -0.003, -1.096),
   },
@@ -542,7 +605,7 @@ export const liverInscriptions = [
     id: 13,
     etruscanText: "𐌂𐌄𐌋𐌔",
     transcription: "cels",
-    gods: [{ id: "cels", form: "𐌂𐌄𐌋𐌔" }],
+    gods: [{ id: "cels", form: "𐌂𐌄𐌋𐌔", readingStatus: "unclear" }],
     cameraPosition: new THREE.Vector3(1.693, 1.491, 0.383),
     cameraTarget: new THREE.Vector3(1.787, -0.002, 0.276),
   },
@@ -580,6 +643,7 @@ export const liverInscriptions = [
     gods: [{ id: "pul", form: "𐌐𐌖𐌋" }],
     cameraPosition: new THREE.Vector3(-1.148, 1.483, -1.119),
     cameraTarget: new THREE.Vector3(-1.078, 0.0, -0.907),
+    readingStatus: "debated",
   },
   {
     id: 18,
@@ -647,7 +711,7 @@ export const liverInscriptions = [
     id: 25,
     etruscanText: "𐌕𐌅𐌖𐌏",
     transcription: "tvnθ",
-    gods: [{ id: "tvnth", form: "𐌕𐌅𐌖𐌏" }],
+    gods: [{ id: "tvnth", form: "𐌕𐌅𐌖𐌏", readingStatus: "unclear" }],
     cameraPosition: new THREE.Vector3(-0.783, 1.886, -1.291),
     cameraTarget: new THREE.Vector3(-0.691, 0.398, -1.126),
   },
@@ -657,7 +721,7 @@ export const liverInscriptions = [
     transcription: "marisl/laθ",
     gods: [
       { id: "maris", form: "𐌡𐌀𐌓𐌉𐌔𐌋" },
-      { id: "laran", form: "𐌋𐌀𐌏" },
+      { id: "laran", form: "𐌋𐌀𐌏", readingStatus: "debated" },
     ],
     cameraPosition: new THREE.Vector3(-0.601, 2.019, -0.737),
     cameraTarget: new THREE.Vector3(-0.597, 0.519, -0.701),
@@ -783,7 +847,7 @@ export const liverInscriptions = [
     transcription: "tivr",
     gods: [{ id: "tiur", form: "𐌕𐌉𐌅𐌓" }],
     description: "The Moon as cosmic foundation",
-    cameraPosition: new THREE.Vector3(0.584, -2.242, -1.14),
+    cameraPosition: new THREE.Vector3(0.56, -1.917, -1.091),
     cameraTarget: new THREE.Vector3(0.476, -0.763, -0.917),
   },
   {
@@ -792,7 +856,7 @@ export const liverInscriptions = [
     transcription: "usils",
     gods: [{ id: "usil", form: "𐌖𐌔𐌉𐌋𐌔" }],
     description: "The Sun as cosmic foundation",
-    cameraPosition: new THREE.Vector3(0.156, -2.061, -1.113),
+    cameraPosition: new THREE.Vector3(0.149, -1.734, -1.067),
     cameraTarget: new THREE.Vector3(0.125, -0.576, -0.903),
   },
 ]
@@ -802,7 +866,9 @@ export const liverInscriptions = [
 // ================================================================================================
 
 // Type definition for god entries in inscriptions
-export type GodEntry = string | { id: string; form: string }
+export type GodEntry =
+  | string
+  | { id: string; form: string; readingStatus?: ReadingStatus }
 
 // Helper function to extract god ID from god entry
 function getGodId(godEntry: GodEntry): string {
@@ -812,6 +878,10 @@ function getGodId(godEntry: GodEntry): string {
 // Helper function to extract form from god entry
 function getGodForm(godEntry: GodEntry): string | null {
   return typeof godEntry === "string" ? null : godEntry.form
+}
+
+function getGodReadingStatus(godEntry: GodEntry): ReadingStatus | undefined {
+  return typeof godEntry === "string" ? undefined : godEntry.readingStatus
 }
 
 // Get group for an inscription by checking which group's positions array contains the inscription ID
@@ -889,6 +959,25 @@ export function getGodVariationInInscription(
   }
 
   return null
+}
+
+export function getGodReadingStatusInInscription(
+  godId: string,
+  inscriptionId: number,
+): ReadingStatus | undefined {
+  const inscription = liverInscriptions.find(
+    (insc) => insc.id === inscriptionId,
+  )
+
+  if (!inscription) return undefined
+
+  const godEntry = inscription.gods.find((god) => getGodId(god) === godId)
+  if (!godEntry) return undefined
+
+  return (
+    getGodReadingStatus(godEntry) ||
+    (inscription.gods.length === 1 ? inscription.readingStatus : undefined)
+  )
 }
 
 // Get inscription data with group information for a god
