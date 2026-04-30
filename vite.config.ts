@@ -67,7 +67,7 @@ export default defineConfig({
     inscriptionPoseWriter,
     VitePWA({
       registerType: "autoUpdate",
-      injectRegister: false,
+      injectRegister: "auto",
       manifest: false,
       workbox: {
         maximumFileSizeToCacheInBytes: 150 * 1024 * 1024,
@@ -80,6 +80,8 @@ export default defineConfig({
           /^\/llms\.txt$/,
         ],
         cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.endsWith(".obj"),
