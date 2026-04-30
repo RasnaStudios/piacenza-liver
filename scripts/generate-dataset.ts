@@ -30,6 +30,9 @@ const liverData = await loadLiverData()
 
 const tLiverData: TranslateFn = (key, options) => {
   const value = getNestedValue(liverData, key)
+  if (options?.returnObjects && value && typeof value === "object") {
+    return value as Record<string, string>
+  }
   if (typeof value === "string") {
     return value
   }

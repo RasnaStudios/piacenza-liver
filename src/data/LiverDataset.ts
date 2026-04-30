@@ -17,10 +17,12 @@ import {
   sourceIdFromShortRef,
 } from "./Scholarship"
 
+export type TranslationValue = string | Record<string, string>
+
 export type TranslateFn = (
   key: string,
-  options?: { defaultValue?: string; returnObjects?: boolean },
-) => string
+  options?: { defaultValue?: TranslationValue; returnObjects?: boolean },
+) => TranslationValue
 
 export interface DatasetZone {
   id: string
@@ -42,10 +44,8 @@ export interface DatasetParallel {
   tradition: ParallelTradition
   name: string
   status: ParallelStatus
-  note?: string
 }
 
-/** One row in the top-level `sources` map keyed by stable source id (see `sourceIdFromShortRef`). */
 export interface DatasetSourceRecord {
   citeAs: string
   authors: string
@@ -63,7 +63,6 @@ export interface DatasetDeity {
   identificationStatus: IdentificationStatus
   description?: string
   parallels?: DatasetParallel[]
-  /** Source ids; join with `sources`. */
   sources?: string[]
 }
 
@@ -74,20 +73,25 @@ export interface LiverDataset {
     totalZones: number
     totalDeities: number
     creator: string
-    source: string
+    website: string
     corpusReferences: { ET: string; TLE: string }
   }
-  sources: Record<string, DatasetSourceRecord>
   zones: DatasetZone[]
   inscriptions: DatasetInscription[]
   deities: DatasetDeity[]
+  sources: Record<string, DatasetSourceRecord>
+}
+
+function tString(t: TranslateFn, key: string, defaultValue = ""): string {
+  const value = t(key, { defaultValue })
+  return typeof value === "string" ? value : defaultValue
 }
 
 export function buildLiverDataset(t: TranslateFn): LiverDataset {
   const zones = Object.entries(liverGroups).map(([zoneId, group]) => ({
     id: zoneId,
-    name: t(`groups.${group.id}.name`),
-    description: t(`groups.${group.id}.description`),
+    name: tString(t, `groups.${group.id}.name`),
+    description: tString(t, `groups.${group.id}.description`),
   }))
 
   const inscriptions = liverInscriptions.map((ins) => {
@@ -100,35 +104,25 @@ export function buildLiverDataset(t: TranslateFn): LiverDataset {
       gods: ins.gods.map((g) => (typeof g === "string" ? g : g.id)),
     }
     if (ins.description) entry.description = ins.description
-    const readingNote = t(`inscriptions.${ins.id}.readingNote`, {
-      defaultValue: "",
-    })
+    const readingNote = tString(t, `inscriptions.${ins.id}.readingNote`)
     if (readingNote) entry.readingNote = readingNote
     return entry
   })
 
   const deities = Object.entries(liverGods).map(([id, deity]) => {
-    const d: DatasetDeity = {
+    const description = tString(t, `deities.${id}.description`)
+    const parallels = resolveDeityParallels(t as ParallelLocaleTranslator, id)
+    const refIds = getDeitySources(id).map(sourceIdFromShortRef)
+
+    return {
       id,
       name: deity.name,
       readingStatus: deity.readingStatus,
       identificationStatus: deity.identificationStatus,
+      ...(description ? { description } : {}),
+      ...(parallels.length > 0 ? { parallels } : {}),
+      ...(refIds.length > 0 ? { sources: refIds } : {}),
     }
-
-    const description = t(`deities.${id}.description`, { defaultValue: "" })
-    if (description) d.description = description
-
-    const parallels = resolveDeityParallels(t as ParallelLocaleTranslator, id)
-    if (parallels.length > 0) {
-      d.parallels = parallels
-    }
-
-    const refIds = getDeitySources(id).map(sourceIdFromShortRef)
-    if (refIds.length > 0) {
-      d.sources = refIds
-    }
-
-    return d
   })
 
   const sources: Record<string, DatasetSourceRecord> = {}
@@ -152,12 +146,12 @@ export function buildLiverDataset(t: TranslateFn): LiverDataset {
       totalZones: Object.keys(liverGroups).length,
       totalDeities: Object.keys(liverGods).length,
       creator: AppConfig.creator.name,
-      source: "https://piacenzaliver.com/",
+      website: "https://piacenzaliver.com/",
       corpusReferences: { ET: "Pa 4.2", TLE: "719" },
     },
-    sources,
     zones,
     inscriptions,
     deities,
+    sources,
   }
 }

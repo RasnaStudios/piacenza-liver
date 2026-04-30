@@ -4,7 +4,7 @@
   "sections": {
     "historicalDiscovery": {
       "heading": "Scoperta Storica",
-      "content": "Il Fegato di Piacenza venne alla luce nel 1877 nei pressi di Gossolengo, poco fuori Piacenza. Questo straordinario reperto in bronzo, databile tra la fine del II e l'inizio del I secolo a.C., è uno dei documenti più importanti giunti fino a noi sulla religione etrusca. Il modello sembra conservare una mappa cosmologica a uso didattico, con nomi divini e regioni sacre incisi sulla superficie. È citato nei corpora epigrafici etruschi come ET Pa 4.2 (Rix, Etruskische Texte) e TLE 719 (Pallottino)."
+      "content": "Il Fegato di Piacenza venne alla luce nel 1877 nei pressi di Gossolengo, poco fuori Piacenza. Questo straordinario reperto in bronzo, databile tra la fine del II e l'inizio del I secolo a.C., è uno dei documenti più importanti giunti fino a noi sulla religione etrusca. Il modello sembra conservare una mappa cosmologica a uso didattico, con nomi divini e regioni sacre incisi sulla superficie. È citato nei corpora epigrafici etruschi come ET Pa 4.2 (Rix, Etruskische Texte) e TLE 719 nella numerazione canonica dei Testimonia Linguae Etruscae."
     },
     "hepatoscopy": {
       "heading": "Epatoscopia",
@@ -24,7 +24,7 @@
     },
     "editorialMethod": {
       "heading": "Metodo Editoriale",
-      "content": "Questo progetto è una visualizzazione interpretativa, non un'edizione epigrafica completa. Vengono tracciate tre dimensioni indipendenti dell'evidenza. La Lettura distingue un'iscrizione chiaramente leggibile, una scarsa leggibilità dovuta soprattutto a corrosione o usura sul bronzo (\"poco leggibile\") e forme ben incise ma contestate come segmentazione o tratti tra i filologi (\"discussa\"). L'Identificazione indica quanto sia sicura l'identificazione moderna della divinità etrusca, su una scala a quattro livelli (sicura, probabile, discussa, irrisolta). Ogni parallelo greco o romano porta il proprio status (sicuro, proposto o superato), così che vecchie equivalenze come Satres / Saturno restino conservate come storia degli studi invece di essere eliminate in silenzio. Le fonti per ciascuna divinità sono indicate in forma autore-data e linkate alle opere citate dove disponibili in accesso aperto. Il fondamento moderno poggia su Maggiani 1982 (Studi Etruschi L), van der Meer 1987 (l'unica monografia) e Colonna 1991 (Studi Etruschi LIX) per la teonimia; su Stevens 2009, Pernigotti 2018 e Gottarelli 2018 per la cosmologia; su Krauskopf 2013 e Maras 2017 per la sintesi. Le traslitterazioni seguono Rix, Etruskische Texte (1991), con correzioni da Maggiani 1982 dove segnalate."
+      "content": "Questo progetto è una visualizzazione interpretativa, non un'edizione epigrafica completa. Vengono tracciate tre dimensioni indipendenti dell'evidenza. La Lettura distingue un'iscrizione chiaramente leggibile, una scarsa leggibilità dovuta soprattutto a corrosione o usura sul bronzo (\"poco leggibile\") e forme ben incise ma contestate come segmentazione o tratti tra i filologi (\"discussa\"). L'Identificazione indica quanto sia sicura l'identificazione moderna della divinità etrusca, su una scala a quattro livelli (sicura, probabile, discussa, irrisolta). Ogni parallelo greco o romano porta il proprio status (sicuro, proposto o superato), così che vecchie equivalenze come Satres / Saturno restino conservate come storia degli studi invece di essere eliminate in silenzio. Le fonti per ciascuna divinità sono indicate in forma autore-data e linkate alle opere citate dove disponibili in accesso aperto. Per la lettura degli dei figurati sul modello il riferimento centrale è Colonna 1991 (Studi Etruschi LIX), accanto a Maggiani 1982 (Studi Etruschi L) e van der Meer 1987 (l'unica monografia sintetica dedicata al bronzo); per la cosmologia si richiamano Stevens 2009, Pernigotti 2018 e Gottarelli 2018; per la sintesi Krauskopf 2013 e Maras 2017. Le traslitterazioni seguono Rix, Etruskische Texte (1991), con correzioni da Maggiani 1982 dove segnalate."
     },
     "significanceAndInterpretation": {
       "heading": "Significato e Interpretazione",
@@ -47,6 +47,6 @@
     "heading": "Come citare questo sito",
     "intro": "Cita questo sito come:",
     "format": "Andraghetti, L. ({year}). Il Fegato di Piacenza: una visualizzazione scientifica interattiva. https://piacenzaliver.com/",
-    "sigla": "Il reperto stesso è catalogato come ET Pa 4.2 negli Etruskische Texte di Rix (1991) e come TLE 719 nei Testimonia Linguae Etruscae di Pallottino. Usa queste sigle per citare il bronzo originale, non questo sito."
+    "sigla": "Il reperto stesso è catalogato come ET Pa 4.2 negli Etruskische Texte di Rix (1991) e come TLE 719 nell'uso siglario dei Testimonia Linguae Etruscae. Usa queste sigle per citare il bronzo originale, non questo sito."
   }
 }

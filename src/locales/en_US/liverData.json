@@ -116,17 +116,17 @@
       }
     },
     "tinia": {
-      "description": "Supreme sky god and father of the Etruscan pantheon. Holds five cells on the liver, including the tinsθ locative ‘in (the house) of Tinia’, where Nethuns appears as guest of Tinia. Central to the doctrine of the three lightning bolts (manubiae) and the sixteen-part heaven.",
+      "description": "Supreme sky god and father of the Etruscan pantheon. Maggiani 1982 and Colonna 1991 catalogue five inscribed regions tied to Tin, including the tinsθ locative (‘in [the house] of Tinia’), where Colonna reads celestial Nethuns hosted beside Tinia. Stevens 2009 reconstructs how the sixteen-part Etruscan heaven maps onto that rim and links Tin passages to Graeco-Roman threefold lightning (Festus/Seneca, manubiae); Capdeville 1992, Pernigotti 2018, and Gottarelli 2018 develop related cosmic grids.",
       "parallelNames": {
         "roman": "Jupiter",
         "greek": "Zeus"
       }
     },
     "cilens": {
-      "description": "Deity attested in multiple zones on the liver, paired with Tinia in one inscription and possibly with the locative Cilensl, ‘in (the house) of Cilens’, in another. Pallottino 1956 first proposed equation with Marziano Capella's Nocturnus; Colonna 2012 reads Cilens as a catactonic (sub-earthly) divinity."
+      "description": "Colonna 2012 reads Cilens as a catactonic (sub-earthly) divinity among the sanctuaries grouped in contemporary scholarship around community cults of the Umbrian/Etruscan border zone. Colonna 1991 anchors the nomenclature of the gods on this model; Maggiani 1982 publishes the inscribed forms as read on the bronze. On the Liver, Cilens is attested across several zones—paired with Tinia in one inscription and possibly appearing with the locative Cilensl, ‘in (the house) of Cilens’, in another. Older encyclopedic literature sometimes linked this name speculatively to Marziano Capella's Nocturnus, but discussion now follows Colonna and related work."
     },
     "thufltha": {
-      "description": "Female deity present at cells 2, 20, 21. A Vulci dedication on a bronze statuette (Buranelli 1989) pairs her with infero Suri, complicating older Fortuna / Tyche equations. The tinsθ θvf locative places Thufltha ‘in the house of Tinia’.",
+      "description": "Female deity present at cells 2, 20, 21. A Vulci dedication on a bronze statuette associates her with infernal Suri, complicating older Fortuna / Tyche equations. The tinsθ θvf locative places Thufltha ‘in the house of Tinia’.",
       "parallelNames": {
         "roman": "Fortuna",
         "greek": "Tyche"
@@ -153,7 +153,7 @@
       "description": "Obscure deity known almost exclusively from the liver and from dedications in the area around Lake Trasimeno. Colonna 1976-77 connected the cult with Cel and the Trasimeno sanctuaries; function on the liver remains debated."
     },
     "lusal": {
-      "description": "Genitive form lvsl / lvsal at cells 6 and 34. Two readings: a deity Lusa (Maggiani 1982) or, per Colonna 1991, lv(r)s(l), ‘of Lurs’, the prophetic god Lur. The Liber Linteus attestations are studied by van der Meer 2009; de Grummond 2014 reconstructs the cult from mirrors, dedications, and the linen book. The lvsal form is generally read more readily than lvsl beside velχ, yet the bronze is worn and interpreters still divide over Lusa versus ‘of Lurs’. The velχ collocation raises further questions, and vel(...) may also point to an eponymous deity of Vulci (Torelli 1986)."
+      "description": "Genitive form lvsl / lvsal at cells 6 and 34. Two readings: a deity Lusa (Maggiani 1982) or, per Colonna 1991, lv(r)s(l), ‘of Lurs’, the prophetic god Lur. The Liber Linteus attestations are studied by van der Meer 2009; de Grummond 2014 reconstructs the cult from mirrors, dedications, and the linen book. The lvsal form is generally read more readily than lvsl beside velχ, yet the bronze is worn and interpreters still divide over Lusa versus ‘of Lurs’. The velχ collocation raises further questions; vel(...) has also been read as referring to an eponymous deity of Vulci, though that hypothesis remains debated."
     },
     "catha": {
       "description": "Astral deity, probably female (cells 8, 23). Maras 2017 still reads Catha as ‘a later counterpart of Cavatha, with marked solar features’, and Colonna 1991 links the Cathe Sans of the Orbetello mirror to a male solar Catha; de Grummond 2008 argued for a lunar Catha at Pyrgi and Moore 2018 revisits the question openly, so solar, lunar, underworld, and childbirth associations all remain in play, but Maras 2017 and Colonna 1991 still underline a strongly solar line against purely lunar or chthonic alternatives."
@@ -232,7 +232,7 @@
       "description": "Lethams (correct form per the Capua tile gen. ledamsul; Colonna 1991 corrects Maggiani’s earlier ‘Letham’). The name recurs widely on the model, often enough to rank as the most ‘ubiquitous’ deity on the liver, possibly genius-like, across both right and left lobes. Gender and sphere remain debated."
     },
     "velch": {
-      "description": "vel(...) paired with Lvsl. Colonna 1991 cites Torelli 1986 in suggesting Vel(...) may name an eponymous god of Vulci rather than a fire / metalworking deity comparable to Vulcan. The fire-god reading remains tentative.",
+      "description": "vel(...) paired with Lvsl. Some readings take Vel(...) as an eponymous deity of Vulci rather than a fire / metalworking figure comparable to Vulcan; others stress a Vulcan-type parallel. Neither line is settled, and the Roman Vulcan parallel is marked here as proposed rather than secure.",
       "parallelNames": {
         "roman": "Vulcan"
       }

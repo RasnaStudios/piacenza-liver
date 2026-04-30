@@ -134,7 +134,6 @@ export const liverGods: Record<string, LiverGod> = {
     readingStatus: "clear",
     identificationStatus: "debated",
     sources: [
-      "Pallottino 1956",
       "Maggiani 1982",
       "van der Meer 1987",
       "Colonna 1991",
@@ -151,7 +150,6 @@ export const liverGods: Record<string, LiverGod> = {
     sources: [
       "Maggiani 1982",
       "van der Meer 1987",
-      "Buranelli 1989",
       "Colonna 1991",
       "Amann 2019",
     ],
@@ -225,7 +223,6 @@ export const liverGods: Record<string, LiverGod> = {
     sources: [
       "Maggiani 1982",
       "Colonna 1991",
-      "Torelli 1986",
       "van der Meer 2009",
       "de Grummond 2014",
     ],
@@ -418,7 +415,7 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Velch",
     readingStatus: "clear",
     identificationStatus: "debated",
-    sources: ["Maggiani 1982", "Colonna 1991", "Torelli 1986"],
+    sources: ["Maggiani 1982", "Colonna 1991"],
     parallelSlots: [{ tradition: "roman", status: "proposed" }],
   },
   satres: {

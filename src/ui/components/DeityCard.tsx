@@ -50,8 +50,6 @@ export function DeityCard({
 
   const idStatus: IdentificationStatus = god.identificationStatus
 
-  // Per-cell reading override: inscription-level statuses (debated philology vs
-  // unclear on the bronze) take precedence while that cell is selected.
   const selectedReadingStatus = selectedInscriptionId
     ? getGodReadingStatusInInscription(god.id, selectedInscriptionId)
     : undefined
@@ -72,18 +70,15 @@ export function DeityCard({
   const readingTooltip =
     cellReadingNote || tLiverData(`deities.reading.${readingStatus}.tooltip`)
 
-  // Get the god's form from the selected inscription (if any) or first available inscription
   const godForm = selectedInscriptionId
     ? getGodVariationInInscription(god.id, selectedInscriptionId)
     : godData.nameVariations[0]
 
-  // Get the group color from the selected inscription or first available inscription
   const groupColor = selectedInscriptionId
     ? godInscriptions.find((insc) => insc.id === selectedInscriptionId)
         ?.groupColor || "#8B6541"
     : godInscriptions[0]?.groupColor || "#8B6541"
 
-  // Filter out the currently selected inscription
   const filteredInscriptions = godInscriptions.filter(
     (inscription) => inscription.id !== selectedInscriptionId,
   )

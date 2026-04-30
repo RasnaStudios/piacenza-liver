@@ -116,17 +116,17 @@
       }
     },
     "tinia": {
-      "description": "Dio supremo del cielo e padre del pantheon etrusco. Occupa cinque caselle del fegato, fra cui il locativo tinsθ ‘nella (casa) di Tinia’, dove Nethuns compare come ospite di Tinia. Centrale nella dottrina delle tre manubie e nella divisione del cielo in sedici regioni.",
+      "description": "Dio supremo del cielo e padre del pantheon etrusco. Su modello, Maggiani 1982 e Colonna 1991 individuano cinque regioni dedicate a Tin fra cui il locativo tinsθ («nella [casa] di Tinia»), ove Colonna interpreta il Nethuns celeste ospitato presso Tinia. Stevens 2009 ricostruisce la mappa celeste a sedici settori sulla cornice e collega le sequenze di Tin alla triplice fulminazione dei testi latini (Festus/Seneca, manubiae); Capdeville 1992, Pernigotti 2018 e Gottarelli 2018 sviluppano schemi cosmologici affini.",
       "parallelNames": {
         "roman": "Giove",
         "greek": "Zeus"
       }
     },
     "cilens": {
-      "description": "Divinità presente in più zone del modello del fegato, accoppiata a Tinia in un'iscrizione e forse alla forma locativa Cilensl, ‘nella (casa) di Cilens’, in un'altra. Pallottino 1956 propose per primo l'identificazione con il Nocturnus di Marziano Capella; Colonna 2012 legge Cilens come divinità catactonia."
+      "description": "Colonna 2012 colloca Cilens fra le divinità catactonie legate nei santuari ‘comunitari’ discussi nell'ambito centroumbro-etrusco. Colonna 1991 aggancia la teonomastica degli dei figurati sul modello; Maggiani 1982 pubblica la lettura delle forme sul bronzo. Sul Fegato Cilens compare in più zone, accoppiata a Tinia in un'iscrizione e forse alla forma locativa Cilensl, ‘nella (casa) di Cilens’, in un'altra. Una vecchia ricostruzione collegava il nome in modo ipotetico al Nocturnus di Marziano Capella, ma il dibattito attuale segue soprattutto Colonna e la linea degli studi connessi."
     },
     "thufltha": {
-      "description": "Divinità femminile alle caselle 2, 20, 21. Una dedica vulcente su statuetta bronzea (Buranelli 1989) la accosta all'infero Suri, complicando le antiche equazioni con Fortuna / Tyche. Il locativo tinsθ θvf colloca Thufltha ‘nella casa di Tinia’.",
+      "description": "Divinità femminile alle caselle 2, 20, 21. Una dedica vulcente su statuetta bronzea la accosta all'infero Suri, complicando le antiche equazioni con Fortuna / Tyche. Il locativo tinsθ θvf colloca Thufltha ‘nella casa di Tinia’.",
       "parallelNames": {
         "roman": "Fortuna",
         "greek": "Tyche"
@@ -153,7 +153,7 @@
       "description": "Divinità oscura nota quasi esclusivamente dal fegato e da dediche nell'area del Lago Trasimeno. Colonna 1976-77 collegò il culto a Cel e ai santuari del Trasimeno; la funzione sul fegato resta discussa."
     },
     "lusal": {
-      "description": "Forma genitiva lvsl / lvsal alle caselle 6 e 34. Due letture: una divinità Lusa (Maggiani 1982) o, secondo Colonna 1991, lv(r)s(l), «di Lurs», il dio profetico Lur. Le attestazioni nel Liber Linteus sono studiate da van der Meer 2009; de Grummond 2014 ricostruisce il culto a partire da specchi, dediche e dal libro lineo. La forma lvsal è di regola più leggibile di lvsl accanto a velχ, ma il bronzo è consumato e la resa fra Lusa e «di Lurs» resta dibattuta. Il nesso con velχ aggiunge incertezze: vel(...) potrebbe anche indicare una divinità eponima di Vulci (Torelli 1986)."
+      "description": "Forma genitiva lvsl / lvsal alle caselle 6 e 34. Due letture: una divinità Lusa (Maggiani 1982) o, secondo Colonna 1991, lv(r)s(l), «di Lurs», il dio profetico Lur. Le attestazioni nel Liber Linteus sono studiate da van der Meer 2009; de Grummond 2014 ricostruisce il culto a partire da specchi, dediche e dal libro lineo. La forma lvsal è di regola più leggibile di lvsl accanto a velχ, ma il bronzo è consumato e la resa fra Lusa e «di Lurs» resta dibattuta. Il nesso con velχ aggiunge incertezze: vel(...) è stato anche letto come nome eponimo di Vulci, ma anche questa ipotesi resta discussa."
     },
     "catha": {
       "description": "Divinità astrale, probabilmente femminile (caselle 8, 23). Maras 2017 legge ancora Catha come «controparte tarda di Cavatha, con marcati tratti solari», e Colonna 1991 ricollega il Cathe Sans dello specchio di Orbetello a un Catha solare maschile; de Grummond 2008 ha proposto una Catha lunare a Pyrgi e Moore 2018 riapre esplicitamente la questione. Le associazioni solari, lunari, ctonie e legate alla nascita restano tutte sul tavolo, tuttavia Maras 2017 e Colonna 1991 continuano a sottolineare un orientamento vigorosamente solare rispetto a letture unicamente lunari o ctonie."
@@ -232,7 +232,7 @@
       "description": "Lethams (forma corretta sulla base della Tegola di Capua, gen. ledamsul; Colonna 1991 corrige il ‘Letham’ di Maggiani 1982). Il nome ricorre così spesso sul modello da renderla la divinità più ‘ubiqua’ del fegato, forse di tipo genius, su entrambi i lobi. Genere e sfera restano discussi."
     },
     "velch": {
-      "description": "vel(...) accoppiato a Lvsl. Colonna 1991 cita Torelli 1986 ipotizzando che Vel(...) possa nominare un dio eponimo di Vulci più che una divinità di tipo Vulcano legata al fuoco e alla metallurgia. La lettura come dio del fuoco resta tentativa.",
+      "description": "vel(...) accoppiato a Lvsl. Alcune letture interpretano Vel(...) come divinità eponima di Vulci più che come figura paragonabile a Vulcano sul piano del fuoco e della metallurgia; altre insistono sul parallelo vulcanico. Nessuna delle due linee è consolidata e il confronto romano con Vulcano è segnato qui come ipotesi più che come equivalenza sicura.",
       "parallelNames": {
         "roman": "Vulcano"
       }
