@@ -28,25 +28,26 @@ export const SceneConfig = {
   lighting: {
     lightColor: 0xffe3e2, // Warm light
     ambientColor: 0x9c7a5e, // Warm ambient light for blending
-    intensityMultiplier: 2.0, // Global intensity multiplier
-    keyLightIntensity: 100, // Main spotlight intensity
+    intensityMultiplier: 2.0,
+    ambientIntensityMul: 1.92,
+    keyLightIntensity: 70,
     shadowMapSize: 4096, // Shadow map resolution
     shadowBias: -0.0001, // Shadow bias to prevent acne
     shadowNormalBias: 0.02, // Additional shadow bias
     shadowRadius: 8, // Shadow softness radius
-    cameraFillIntensity: 3.5, // Soft camera-attached fill (at max distance)
-    cameraFillIntensityClose: 1.0, // Intensity when close to object
+    cameraFillIntensity: 5.2,
+    cameraFillIntensityClose: 1.62,
     cameraFillDistanceMin: 2, // Camera distance where intensity is at minimum
     cameraFillDistanceMax: 8, // Camera distance where intensity is at maximum
-    cameraFillDistance: 6,
-    cameraFillAngle: Math.PI / 4,
-    cameraFillPenumbra: 0.9,
+    cameraFillDistance: 8,
+    cameraFillAngle: Math.PI / 2.95,
+    cameraFillPenumbra: 1,
     cameraFillTargetDistance: 3,
   },
 
   // Material configuration
   material: {
-    metalness: 1.0,
+    metalness: 0.82,
     roughness: 1.0,
     aoMapIntensity: 1.0,
     flatShading: false,

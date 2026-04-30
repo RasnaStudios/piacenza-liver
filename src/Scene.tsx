@@ -1334,8 +1334,6 @@ function setupLighting(scene: THREE.Scene) {
   scene.add(keyLight)
   scene.add(keyLight.target)
 
-  // Fill/back lights removed per request.
-
   // Extremely subtle dust particles
   const particleCount = 40
   const particleGeometry = new THREE.BufferGeometry()
@@ -1381,7 +1379,7 @@ function setupLighting(scene: THREE.Scene) {
   // Minimal ambient light for dramatic museum effect
   const ambientLight = new THREE.AmbientLight(
     config.ambientColor,
-    1.5 * config.intensityMultiplier,
+    config.ambientIntensityMul * config.intensityMultiplier,
   )
   scene.add(ambientLight)
 
