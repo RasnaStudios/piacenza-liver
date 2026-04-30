@@ -40,6 +40,16 @@ export const scholarshipEntries: BibEntry[] = [
     url: "https://www.studietruschi.org/wp-content/uploads/2021/06/SE50_04.pdf",
   },
   {
+    shortRef: "Torelli 1986",
+    authors: "Torelli, M.",
+    year: 1986,
+    title: "La religione",
+    venue:
+      "Rasenna. Storia e civiltà degli Etruschi, ed. G. Pugliese Carratelli (Milano: Libri Scheiwiller)",
+    pages: "159–237",
+    url: "https://www.treccani.it/enciclopedia/scienza-greco-romana-religione-societa-e-scienza_%28Storia-della-Scienza%29/",
+  },
+  {
     shortRef: "van der Meer 1987",
     authors: "van der Meer, L. B.",
     year: 1987,
@@ -47,6 +57,16 @@ export const scholarshipEntries: BibEntry[] = [
     venue:
       "Dutch Monographs on Ancient History and Archaeology 2 (Amsterdam: J. C. Gieben; repr. Leiden: Brill, 2022)",
     url: "https://brill.com/display/title/13520",
+  },
+  {
+    shortRef: "Buranelli 1989",
+    authors: "Buranelli, F. (ed.)",
+    year: 1989,
+    title: "La raccolta Giacinto Guglielmi",
+    venue:
+      "Catalogo della mostra, Palazzi Apostolici Vaticani, Stanze di S. Pio V (Roma: Quasar)",
+    pages: "72–77, no. 196",
+    url: "https://openlibrary.org/books/OL1797581M/La_Raccolta_Giacinto_Guglielmi",
   },
   {
     shortRef: "Colonna 1991",
