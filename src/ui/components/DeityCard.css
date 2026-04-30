@@ -94,7 +94,7 @@
   border: 1px solid rgba(180, 180, 180, 0.4);
 }
 
-/* Reading pill — only shown when debated, so it's an alert */
+/* Reading pill — shown when reading is debated or illegible/damaged */
 .status-reading--clear {
   display: none;
 }
@@ -105,6 +105,12 @@
   border: 1px solid rgba(228, 138, 96, 0.5);
 }
 
+.status-reading--unclear {
+  background: rgba(180, 190, 220, 0.1);
+  color: rgba(210, 216, 235, 0.92);
+  border: 1px solid rgba(160, 175, 210, 0.45);
+}
+
 /* ---------- Description ---------- */
 
 .deity-description {
@@ -112,35 +118,6 @@
   font-size: 18px;
   line-height: 1.55;
   font-weight: 400;
-}
-
-/* ---------- Editorial note (italic, set off but not loud) ---------- */
-
-.deity-editorial {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 10px 14px;
-  border-left: 2px solid rgba(201, 168, 118, 0.45);
-  background: rgba(201, 168, 118, 0.05);
-  border-radius: 0 6px 6px 0;
-}
-
-.deity-editorial-tag {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: rgba(201, 168, 118, 0.85);
-  line-height: 1.35;
-}
-
-.deity-editorial-body {
-  font-style: italic;
-  color: rgba(245, 231, 204, 0.82);
-  font-size: 15px;
-  line-height: 1.5;
 }
 
 /* ---------- Section heading (used by Parallels and Also Appears In) ---------- */
@@ -364,10 +341,6 @@
 
   .deity-parallel-row {
     padding: 7px 10px;
-  }
-
-  .deity-editorial-body {
-    font-size: 14px;
   }
 
   .status-pill {

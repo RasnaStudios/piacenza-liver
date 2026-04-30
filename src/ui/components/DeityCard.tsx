@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import { getDeitySources, getSourceUrl } from "../../data/Scholarship"
 import {
   getGodInscriptionData,
+  getGodReadingStatusInInscription,
   getGodVariationInInscription,
   type IdentificationStatus,
   type LiverGod,
@@ -39,9 +40,6 @@ export function DeityCard({
   const description = tLiverData(`deities.${god.id}.description`, {
     defaultValue: "",
   })
-  const editorialNote = tLiverData(`deities.${god.id}.editorialNote`, {
-    defaultValue: "",
-  })
 
   const parallels = resolveDeityParallels(
     tLiverData as ParallelLocaleTranslator,
@@ -51,14 +49,28 @@ export function DeityCard({
   const sources = getDeitySources(god.id)
 
   const idStatus: IdentificationStatus = god.identificationStatus
-  const readingStatus: ReadingStatus = god.readingStatus
+
+  // Per-cell reading override: inscription-level statuses (debated philology vs
+  // unclear on the bronze) take precedence while that cell is selected.
+  const selectedReadingStatus = selectedInscriptionId
+    ? getGodReadingStatusInInscription(god.id, selectedInscriptionId)
+    : undefined
+  const readingStatus: ReadingStatus =
+    selectedReadingStatus ?? god.readingStatus
+  const cellReadingNote =
+    selectedInscriptionId && selectedReadingStatus
+      ? tLiverData(`inscriptions.${selectedInscriptionId}.readingNote`, {
+          defaultValue: "",
+        })
+      : ""
 
   const idLabel = tLiverData(`deities.identification.${idStatus}.shortLabel`)
   const idTooltip = tLiverData(`deities.identification.${idStatus}.tooltip`)
 
   const showReadingPill = readingStatus !== "clear"
   const readingLabel = tLiverData(`deities.reading.${readingStatus}.shortLabel`)
-  const readingTooltip = tLiverData(`deities.reading.${readingStatus}.tooltip`)
+  const readingTooltip =
+    cellReadingNote || tLiverData(`deities.reading.${readingStatus}.tooltip`)
 
   // Get the god's form from the selected inscription (if any) or first available inscription
   const godForm = selectedInscriptionId
@@ -160,15 +172,6 @@ export function DeityCard({
       </div>
 
       {description && <Text className="deity-description">{description}</Text>}
-
-      {editorialNote && (
-        <div className="deity-editorial">
-          <span className="deity-editorial-tag">
-            {tLiverData("deities.ui.editorialNote")}
-          </span>
-          <span className="deity-editorial-body">{editorialNote}</span>
-        </div>
-      )}
 
       {parallels.length > 0 && (
         <div className="deity-section">
