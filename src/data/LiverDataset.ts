@@ -35,6 +35,7 @@ export interface DatasetInscription {
   transcription: string
   gods: string[]
   description?: string
+  readingNote?: string
 }
 
 export interface DatasetParallel {
@@ -61,7 +62,6 @@ export interface DatasetDeity {
   readingStatus: ReadingStatus
   identificationStatus: IdentificationStatus
   description?: string
-  editorialNote?: string
   parallels?: DatasetParallel[]
   /** Source ids; join with `sources`. */
   sources?: string[]
@@ -100,6 +100,10 @@ export function buildLiverDataset(t: TranslateFn): LiverDataset {
       gods: ins.gods.map((g) => (typeof g === "string" ? g : g.id)),
     }
     if (ins.description) entry.description = ins.description
+    const readingNote = t(`inscriptions.${ins.id}.readingNote`, {
+      defaultValue: "",
+    })
+    if (readingNote) entry.readingNote = readingNote
     return entry
   })
 
@@ -113,9 +117,6 @@ export function buildLiverDataset(t: TranslateFn): LiverDataset {
 
     const description = t(`deities.${id}.description`, { defaultValue: "" })
     if (description) d.description = description
-
-    const editorialNote = t(`deities.${id}.editorialNote`, { defaultValue: "" })
-    if (editorialNote) d.editorialNote = editorialNote
 
     const parallels = resolveDeityParallels(t as ParallelLocaleTranslator, id)
     if (parallels.length > 0) {
