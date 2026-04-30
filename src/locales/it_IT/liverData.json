@@ -22,11 +22,11 @@
     },
     "gall_bladder": {
       "name": "Cistifellea",
-      "description": "Il serbatoio della bile è un'area divinatoria carica, con Tvnth, Maris, Laran, Letham e Nethuns. Diverse identificazioni in questa zona restano discusse."
+      "description": "Il serbatoio della bile è un'area divinatoria carica, con Tvnth, Maris, Laran, Lethams e Nethuns. Diverse identificazioni in questa zona restano discusse."
     },
     "central_section": {
       "name": "Sezione Centrale",
-      "description": "La zona centrale contiene Hercle, Maris, Letham, Metlvmth e Tluscva. Combina nomi divini meglio documentati con forme oscure il cui status resta incerto."
+      "description": "La zona centrale contiene Hercle, Maris, Lethams, Metlvmth e Tluscva. Combina nomi divini meglio documentati con forme oscure il cui status resta incerto."
     },
     "pars_hostilis": {
       "name": "Pars Hostilis",
@@ -37,11 +37,27 @@
       "description": "Il retro contiene le etichette del Sole e della Luna, comunemente lette come ancoraggi celesti della struttura cosmologica del modello."
     }
   },
+  "inscriptions": {
+    "6": {
+      "readingNote": "I tratti di lvsal sono consumati sul bronzo e non sempre facili da seguire. La critica continua a dividersi sulla resa migliore, fra una divinità Lusa e un genitivo del dio profetico Lur (lv(r)s(l), Colonna 1991)."
+    },
+    "13": {
+      "readingNote": "Le lettere sono consumate e danneggiate sul bronzo e l'iscrizione è ardua da leggere; nondimeno gli studi leggono quasi all'unanimità la forma come Cels."
+    },
+    "17": {
+      "readingNote": "Maggiani 1982 legge `pul`; Colonna 1991 sostiene che la prima lettera sia una `t` e non una `p`, e legge `tul(aras)`, epiteto di Selvans. La lettera incisa è paleograficamente contestata."
+    },
+    "26": {
+      "readingNote": "La forma incisa dopo `marisl /` è `laθ` (l-a-theta) sul bronzo, esattamente come pubblicata da Maggiani nel 1982. In sede di discussione Maggiani stesso ha ritirato quella lettura sostituendola con `lar` (genitivo di Lar / Laran), seguito da van der Meer 1987 e Colonna 1991 (n. 42). La lettura `lar` è contestuale più che paleografica, nella tarda scrittura etrusca settentrionale theta e rho possono confondersi visivamente."
+    },
+    "25": {
+      "readingNote": "L'iscrizione nella zona della cistifellea è ardua da interpretare per corrosione e consumo sulla superficie del bronzo, con conseguente incertezza di lettura; gli editori citano comunque la forma letta tvnθ (es. Maggiani 1982)."
+    }
+  },
   "deities": {
     "ui": {
       "alsoAppearsIn": "Appare anche in",
       "classicalParallels": "Paralleli greco-romani",
-      "editorialNote": "Nota editoriale",
       "identificationKey": "Identificazione",
       "readingKey": "Lettura",
       "sources": "Fonti"
@@ -76,8 +92,13 @@
       },
       "debated": {
         "label": "Lettura discussa",
-        "shortLabel": "Lettura discussa",
-        "tooltip": "La forma è visibile, ma lettura o segmentazione delle parole sono discusse."
+        "shortLabel": "Discussa",
+        "tooltip": "Come leggere o segmentare l'iscrizione resta dibattuto tra gli interpreti."
+      },
+      "unclear": {
+        "label": "Lettura poco leggibile",
+        "shortLabel": "Poco leggibile",
+        "tooltip": "L'iscrizione è difficile da leggere per danni, usura o corrosione sul bronzo, più che per dibattiti filologici sulla sequenza delle lettere."
       }
     },
     "parallel": {
@@ -95,24 +116,24 @@
       }
     },
     "tinia": {
-      "description": "Dio supremo del cielo e padre del pantheon etrusco. Occupa cinque caselle del fegato, fra cui la forma locativa tinsθ ‘nella (casa) di Tinia’ alla casella 22, dove Nethuns compare come ospite di Tinia. Centrale nella dottrina delle tre manubie e nella divisione del cielo in sedici regioni.",
+      "description": "Dio supremo del cielo e padre del pantheon etrusco. Occupa cinque caselle del fegato, fra cui il locativo tinsθ ‘nella (casa) di Tinia’, dove Nethuns compare come ospite di Tinia. Centrale nella dottrina delle tre manubie e nella divisione del cielo in sedici regioni.",
       "parallelNames": {
         "roman": "Giove",
         "greek": "Zeus"
       }
     },
     "cilens": {
-      "description": "Divinità presente in tre caselle (1, 16, 36); accoppiata a Tinia nella casella 1 e forse alla forma locativa Cilensl, ‘nella (casa) di Cilens’, alla casella 16. Pallottino 1956 propose per primo l'identificazione con il Nocturnus di Marziano Capella; Colonna 2012 legge Cilens come divinità catactonia."
+      "description": "Divinità presente in più zone del modello del fegato, accoppiata a Tinia in un'iscrizione e forse alla forma locativa Cilensl, ‘nella (casa) di Cilens’, in un'altra. Pallottino 1956 propose per primo l'identificazione con il Nocturnus di Marziano Capella; Colonna 2012 legge Cilens come divinità catactonia."
     },
     "thufltha": {
-      "description": "Divinità femminile alle caselle 2, 20, 21. Una dedica vulcente su statuetta di Bacco (Buranelli 1989) la accosta all'infero Suri, complicando le antiche equazioni con Fortuna / Tyche. Il locativo tinsθ θvf alla casella 20 colloca Thufltha ‘nella casa di Tinia’.",
+      "description": "Divinità femminile alle caselle 2, 20, 21. Una dedica vulcente su statuetta bronzea (Buranelli 1989) la accosta all'infero Suri, complicando le antiche equazioni con Fortuna / Tyche. Il locativo tinsθ θvf colloca Thufltha ‘nella casa di Tinia’.",
       "parallelNames": {
         "roman": "Fortuna",
         "greek": "Tyche"
       }
     },
     "nethuns": {
-      "description": "Dio delle acque e del mare in quattro caselle (3, 7, 22, 28). Colonna 1991 distingue un Nethuns ‘celeste’ alle caselle 3 e 22, ospite di Tinia e forse signore della pioggia e dell'umidità atmosferica, dal Nethuns ctonio / acquatico delle caselle 7 e 28 (consacrate, secondo Plinio, alla vesica fellea).",
+      "description": "Dio delle acque e del mare attestato in più zone del Fegato di Piacenza. Colonna 1991 distingue un Nethuns ‘celeste’, ospite di Tinia e forse signore della pioggia e dell'umidità atmosferica, dal Nethuns ctonio / acquatico legato alla vesica fellea (secondo Plinio).",
       "parallelNames": {
         "roman": "Nettuno",
         "greek": "Poseidone"
@@ -126,18 +147,16 @@
       }
     },
     "mae": {
-      "description": "Nome o epiteto associato all'iscrizione Uni / Mae alla casella 4, ancora irrisolto. Maras 2017 elenca Mae fra le divinità attestate solo sul Fegato; la funzione resta incerta e le antiche equazioni con il Maius romano non sono sostenute dalla ricerca recente."
+      "description": "Nome o epiteto associato all'iscrizione Uni / Mae, ancora irrisolto. Maras 2017 elenca Mae fra le divinità attestate solo sul Fegato; la funzione resta incerta e le antiche equazioni con il Maius romano non sono sostenute dalla ricerca recente."
     },
     "tecvm": {
       "description": "Divinità oscura nota quasi esclusivamente dal fegato e da dediche nell'area del Lago Trasimeno. Colonna 1976-77 collegò il culto a Cel e ai santuari del Trasimeno; la funzione sul fegato resta discussa."
     },
     "lusal": {
-      "description": "Forma genitiva lvsl / lvsal alle caselle 6 e 34. Due letture: una divinità Lusa (Maggiani 1982) o, secondo Colonna 1991, lv(r)s(l) — «di Lurs», il dio profetico Lur. Le attestazioni nel Liber Linteus sono studiate da van der Meer 2009; de Grummond 2014 ricostruisce il culto a partire da specchi, dediche e dal libro lineo.",
-      "editorialNote": "La lettura stessa è discussa. La casella 6 (lvsal) è considerata abbastanza sicura; la casella 34 (lvsl velχ) è contestata — vel(...) potrebbe anche indicare una divinità eponima di Vulci (Torelli 1986)."
+      "description": "Forma genitiva lvsl / lvsal alle caselle 6 e 34. Due letture: una divinità Lusa (Maggiani 1982) o, secondo Colonna 1991, lv(r)s(l), «di Lurs», il dio profetico Lur. Le attestazioni nel Liber Linteus sono studiate da van der Meer 2009; de Grummond 2014 ricostruisce il culto a partire da specchi, dediche e dal libro lineo. La forma lvsal è di regola più leggibile di lvsl accanto a velχ, ma il bronzo è consumato e la resa fra Lusa e «di Lurs» resta dibattuta. Il nesso con velχ aggiunge incertezze: vel(...) potrebbe anche indicare una divinità eponima di Vulci (Torelli 1986)."
     },
     "catha": {
-      "description": "Divinità astrale, probabilmente femminile (caselle 8, 23). Maras 2017 legge ancora Catha come «controparte tarda di Cavatha, con marcati tratti solari», e Colonna 1991 ricollega il Cathe Sans dello specchio di Orbetello a un Catha solare maschile; per contro, de Grummond 2008 ha proposto una Catha lunare a Pyrgi e Moore 2018 riapre esplicitamente la questione. Le associazioni solari, lunari, ctonie e legate alla nascita restano tutte sul tavolo.",
-      "editorialNote": "Il vecchio consenso solare è stato complicato dalle letture lunari e ctonie, ma Maras 2017 e Colonna 1991 difendono ancora l'interpretazione solare."
+      "description": "Divinità astrale, probabilmente femminile (caselle 8, 23). Maras 2017 legge ancora Catha come «controparte tarda di Cavatha, con marcati tratti solari», e Colonna 1991 ricollega il Cathe Sans dello specchio di Orbetello a un Catha solare maschile; de Grummond 2008 ha proposto una Catha lunare a Pyrgi e Moore 2018 riapre esplicitamente la questione. Le associazioni solari, lunari, ctonie e legate alla nascita restano tutte sul tavolo, tuttavia Maras 2017 e Colonna 1991 continuano a sottolineare un orientamento vigorosamente solare rispetto a letture unicamente lunari o ctonie."
     },
     "fufluns": {
       "description": "Dio del vino, dell'ebbrezza e dei cicli della vegetazione.",
@@ -147,13 +166,13 @@
       }
     },
     "selvans": {
-      "description": "Dio di boschi, pascoli e terre o confini liminali; venerato come tutor finium. Secondo Colonna 1991, l'iscrizione della casella 17 letta pul da Maggiani potrebbe invece essere tul, abbreviazione dell'epiteto tul(aras) — a sostegno del ruolo di Selvans come guardiano dei confini.",
+      "description": "Dio di boschi, pascoli e terre o confini liminali; venerato come tutor finium. Secondo Colonna 1991, l'iscrizione che Maggiani legge come pul potrebbe invece essere tul, abbreviazione dell'epiteto tul(aras), a sostegno del ruolo di Selvans come guardiano dei confini.",
       "parallelNames": {
         "roman": "Silvano"
       }
     },
     "tluscva": {
-      "description": "Forma oscura alle caselle 12, 33, 40. Maggiani 2011 tratta Tluschva come divinità o collettivo divino ctonio, probabilmente femminile; Maras 2017 le legge come «un gruppo di dee, forse corrispondente a Ninfe o Cariti» attestate anche a Caere (Sant'Antonio); Colonna 1991 propose in alternativa di vedere in Tluscu un epiteto di Maris (l'unico vero hapax del fegato). Stopponi 2012 collega il culto al Fanum Voltumnae di Orvieto."
+      "description": "Forma oscura sul Fegato di Piacenza. Maggiani 2011 tratta Tluschva come divinità o collettivo divino ctonio, probabilmente femminile; Maras 2017 le legge come «un gruppo di dee, forse corrispondente a Ninfe o Cariti» attestate anche a Caere (Sant'Antonio); Colonna 1991 propose in alternativa di vedere in Tluscu un epiteto di Maris (l'unico vero hapax del fegato). Stopponi 2012 collega il culto al Fanum Voltumnae di Orvieto."
     },
     "cels": {
       "description": "Cel / Cels, dea della terra connessa a forze ctonie. Colonna 1976-77 è lo studio canonico, che collega Cel ai santuari del Trasimeno; il fegato stesso è stato letto come modello del corpo di Cel.",
@@ -163,40 +182,41 @@
       }
     },
     "culsans": {
-      "description": "Dio bifronte di porte e soglie. Colonna 1991 analizza la grafia settentrionale Culsans come composto culś sans, ‘Cul genitore’; l'abbreviazione cvl alla casella 14 può stare per Cul (altare di Bagnoregio) o per Culsans.",
+      "description": "Dio bifronte di porte e soglie. Colonna 1991 analizza la grafia settentrionale Culsans come composto culś sans, ‘Cul genitore’; l'abbreviazione cvl può stare per Cul (altare di Bagnoregio) o per Culsans.",
       "parallelNames": {
         "roman": "Giano"
       }
     },
     "alpans": {
-      "description": "Alpan / Alpans accoppiato a Cul / Culsans alla casella 14. Colonna 1991 sostiene che alpan sia originariamente un appellativo significante ‘la buona / la ben disposta’, semanticamente equivalente al manus latino — usato per divinità ctonie in registro eufemistico. Quindi alp funziona qui come epiteto di Cul, paragonabile al fatto che Giano fosse chiamato bonus e manus."
+      "description": "Alpan / Alpans accoppiato a Cul / Culsans. Colonna 1991 sostiene che alpan sia originariamente un appellativo significante ‘la buona / la ben disposta’, semanticamente equivalente al manus latino, usato per divinità ctonie in registro eufemistico. Quindi alp funziona qui come epiteto di Cul, paragonabile al fatto che Giano fosse chiamato bonus e manus."
     },
     "vetis": {
-      "description": "Divinità catactonia alla casella 15. Maras 2017 legge Vetis come la sostituzione etrusca di Apollo sul Fegato, derivata dal latino Vedius (variante di Veiove); Colonna 2012 colloca Vetis con Cilens fra le divinità catactonie del settore ostile.",
+      "description": "Divinità catactonia. Maras 2017 legge Vetis come la sostituzione etrusca di Apollo sul Fegato, derivata dal latino Vedius (variante di Veiove); Colonna 2012 colloca Vetis con Cilens fra le divinità catactonie del settore ostile.",
       "parallelNames": {
         "roman": "Veiove"
       }
     },
     "pul": {
-      "description": "Casella 17. Maggiani 1982 legge pul, interpretato come ‘cielo’ in opposizione a metlum della casella 38. Colonna 1991 mette in dubbio la lettura, sostenendo che la prima lettera potrebbe essere una t invece che una p, e propone tul(aras), epiteto di Selvans (tutor finium).",
-      "editorialNote": "La lettura stessa è contestata fra il pul di Maggiani e il tul di Colonna."
+      "description": "Maggiani 1982 legge pul, interpretato come ‘cielo’ in opposizione alla sequenza locativa metlum. Colonna 1991 mette in dubbio la lettura, sostenendo che la prima lettera potrebbe essere una t invece che una p, e propone tul(aras), epiteto di Selvans (tutor finium)."
     },
     "lasl": {
-      "description": "Lasa / Lasl alla casella 19. Assistente divina femminile spesso collegata a Turan; ruoli legati al fato e al servizio sono attestati nell'iconografia degli specchi. I Lares romani non sono un confronto soddisfacente."
+      "description": "Lasa / Lasl: assistente divina femminile spesso collegata a Turan; ruoli legati al fato e al servizio sono attestati nell'iconografia degli specchi (Krauskopf 2013). I manuali più antichi citavano i Lares romani; il confronto è oggi in genere ritenuto fuorviante, pur essendo mantenuto come storia degli studi (parallelo segnato come superato, Krauskopf 2013).",
+      "parallelNames": {
+        "roman": "Lares"
+      }
     },
     "maris": {
-      "description": "Divinità importante ma oscura alle caselle 26, 30, 39 (le caselle 30+39 comunicano intorno al processus papillaris). Spesso rappresentata come bambino o giovane nelle testimonianze etrusche; Maras 2017 documenta Mariś a Chiusi come «divinità bambina che porta il nome del Marte latino-italico». Alla casella 26 la lettura marisl laθ — un tempo intesa come epiteto sconosciuto — è stata corretta da Maggiani in sede di discussione in marisl lar, a sostegno dell'analogia con il Lar familiaris romano (Colonna 1991).",
-      "editorialNote": "Maris condivide l'etimologia con il Marte latino-italico ma è funzionalmente distinto dal dio della guerra romano; l'antica identificazione di Maris con Marte nel culto e nel ruolo non è più accettata (Simon 2006; Krauskopf 2013; Maras 2017)."
+      "description": "Divinità importante ma oscura attestata come marisl alla casella 26 e come mar alle caselle 30 e 39 (le caselle 30+39 comunicano intorno al processus papillaris). Spesso rappresentata come bambino o giovane nelle testimonianze etrusche; Maras 2017 documenta Mariś a Chiusi come «divinità bambina che porta il nome del Marte latino-italico». Benché il nome sia imparentato col Marte latino-italico, Maris è funzionalmente e cultualmente diverso dalla divinità guerriera romana, e l'antica assimilazione punto su punto non è più accolta (Simon 2006; Krauskopf 2013; Maras 2017)."
     },
     "laran": {
-      "description": "Dio etrusco della guerra.",
+      "description": "Dio etrusco della guerra, confrontato in modo sicuro con Marte e Ares. Nel Fegato di Piacenza compare come secondo elemento discusso dopo marisl: la forma sul bronzo è pubblicata come laθ, ma Maggiani, van der Meer e Colonna la interpretano in base al contesto come lar, collegata a Lar / Laran.",
       "parallelNames": {
         "roman": "Marte",
         "greek": "Ares"
       }
     },
     "tvnth": {
-      "description": "Divinità incerta alla casella 25, nella zona della cistifellea. Maras 2017 elenca Tvnth fra le divinità attestate solo sul Fegato; nessuna identificazione sicura è emersa nella ricerca recente."
+      "description": "Divinità incerta nella zona della cistifellea. Maras 2017 elenca Tvnth fra le divinità attestate solo sul Fegato; nessuna identificazione sicura è emersa dalla ricerca recente."
     },
     "hercle": {
       "description": "Grande dio etrusco, equivalente di Eracle ed Ercole, con associazioni protettive e oracolari. In Etruria considerato dio fin dall'inizio, non semplice eroe.",
@@ -206,31 +226,28 @@
       }
     },
     "metlvmth": {
-      "description": "Casella 38. Colonna 1991 legge metlumθ come locativo significante ‘nella città / urbs’ — qualifica del Lethams contiguo della casella 37 come ‘Lethams nella città’, parallelo ai sintagmi divini in genitivo del Liber Linteus.",
-      "editorialNote": "Secondo Colonna 1991 le caselle 37 e 38 formano un'unica iscrizione leθam(sl) metlumθ — non due nomi divini distinti."
+      "description": "Colonna 1991 legge metlumθ come locativo significante ‘nella città / urbs’, qualificando l'iscrizione adiacente dei Lethams come ‘Lethams nella città’, in parallelo ai sintagmi divini in genitivo del Liber Linteus. Legge inoltre le due sequenze contigue come un'unica iscrizione continua leθam(sl) metlumθ, non due nomi divini indipendenti."
     },
     "letham": {
-      "description": "Lethams (forma corretta secondo la Tegola di Capua, gen. ledamsul; Colonna 1991 corregge il precedente Letham). Cinque caselle (11, 18, 27, 32, 37) lo rendono la divinità più ‘ubiqua’ del fegato — forse di tipo genius, presente sia sul lobo destro che sul sinistro. Genere e sfera restano discussi.",
-      "editorialNote": "Maggiani 1982 scrisse ‘Letham’; Colonna 1991 ha mostrato che la forma corretta è ‘Lethams’, sulla base della Tegola di Capua."
+      "description": "Lethams (forma corretta sulla base della Tegola di Capua, gen. ledamsul; Colonna 1991 corrige il ‘Letham’ di Maggiani 1982). Il nome ricorre così spesso sul modello da renderla la divinità più ‘ubiqua’ del fegato, forse di tipo genius, su entrambi i lobi. Genere e sfera restano discussi."
     },
     "velch": {
-      "description": "vel(...) alla casella 34, accoppiato a Lvsl. Colonna 1991 cita Torelli 1986 ipotizzando che Vel(...) possa nominare un dio eponimo di Vulci più che una divinità di tipo Vulcano legata al fuoco e alla metallurgia. La lettura come dio del fuoco resta tentativa.",
+      "description": "vel(...) accoppiato a Lvsl. Colonna 1991 cita Torelli 1986 ipotizzando che Vel(...) possa nominare un dio eponimo di Vulci più che una divinità di tipo Vulcano legata al fuoco e alla metallurgia. La lettura come dio del fuoco resta tentativa.",
       "parallelNames": {
         "roman": "Vulcano"
       }
     },
     "satres": {
-      "description": "Divinità oscura alla casella 35. Funzione e identificazione restano discusse; la forma satres / satre è attestata anche nel Liber Linteus di Zagabria.",
-      "editorialNote": "L'antica equivalenza con Saturno è qui conservata come storia degli studi; non è più trattata come sicura (Maggiani 1982, Krauskopf 2013).",
+      "description": "Divinità oscura: funzione e identificazione restano discusse; la forma satres / satre è attestata anche nel Liber Linteus di Zagabria. Il confronto romano con Saturno sopravvive nei vecchi manuali ed è registrato qui solo come storia degli studi, non come consenso (Maggiani 1982, Krauskopf 2013).",
       "parallelNames": {
         "roman": "Saturno"
       }
     },
     "usil": {
-      "description": "Il dio del sole etrusco, identificato in modo sicuro. Sul retro del fegato (casella 42) usils marca il polo solare della struttura cosmologica."
+      "description": "Il dio del sole etrusco, identificato in modo sicuro. Sul retro del fegato, usils marca il polo solare della struttura cosmologica."
     },
     "tiur": {
-      "description": "Tiur / Tivr, divinità lunare o termine per luna / mese. La casella 41 marca il polo lunare del retro, opposto a Usil. Sannibale 2018 ha pubblicato un crescente bronzeo (CII 2610 bis) con una nuova dedica a Tiur, confermando lo statuto divino del termine."
+      "description": "Tiur / Tivr, divinità lunare o termine per luna / mese. Marca il polo lunare del retro, opposto a Usil. Sannibale 2018 ha pubblicato un crescente bronzeo (CII 2610 bis) con una nuova dedica a Tiur, confermando lo statuto divino del termine."
     }
   }
 }
