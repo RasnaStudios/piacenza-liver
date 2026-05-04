@@ -698,14 +698,28 @@ function PiacenzaLiverScene({
       antialias: true,
       alpha: true,
       powerPreference: "high-performance",
+      stencil: false,
+      depth: true,
     })
     renderer.setSize(container.clientWidth, container.clientHeight)
     renderer.setClearColor(0x000000, 0)
     renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    // PCFSoftShadowMap is the heaviest option (multi-tap PCF). PCFShadowMap
+    // produces nearly identical results with the soft radius we already use,
+    // and is dramatically cheaper on integrated GPUs.
+    renderer.shadowMap.type = THREE.PCFShadowMap
+    // Cap DPR more aggressively — DPR 2 quadruples fragment cost on 4K screens
+    // for no perceptible benefit on this scene (mostly dark background +
+    // textured liver). Hard cap at 1.5 is the sweet spot for older machines.
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
     container.appendChild(renderer.domElement)
     rendererRef.current = renderer
+    // Expose just the renderer for the offline profiler (scripts/profiler.html).
+    // We deliberately do NOT expose the THREE namespace itself — that would
+    // defeat the bundler's tree-shaking and re-add ~200KB of unused modules.
+    ;(
+      window as unknown as { __threeRenderer?: THREE.WebGLRenderer }
+    ).__threeRenderer = renderer
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = true
     controls.dampingFactor = 0.05
@@ -799,13 +813,47 @@ function PiacenzaLiverScene({
     }
     window.addEventListener("resize", handleResize)
 
+    // Track camera/controls movement so we can skip frames when idle.
+    // We render on demand: if nothing moved AND particles aren't visible
+    // (very small with low opacity at >5 units), drop down to a low-fps tick.
+    const prevCamPos = camera.position.clone()
+    const prevCamQuat = camera.quaternion.clone()
+    const prevTarget = controls.target.clone()
+    let staticFrames = 0
+    // Particle update is independent of camera movement, but the user can
+    // barely see them anyway. Keep animating but at a real ~30 fps using
+    // accumulated dt instead of Math.random()-based stochastic skipping
+    // (random skipping wastes cycles half the time and gives jittery motion).
+    let particleAccumulator = 0
+    let lastFrameTime = performance.now()
+
     const animate = () => {
       animationIdRef.current = requestAnimationFrame(animate)
+      const now = performance.now()
+      const dt = now - lastFrameTime
+      lastFrameTime = now
+
       controls.update()
 
-      // Animate particles in main loop (throttled to 30fps)
-      if (Math.random() < 0.5 && particleRefs.current.particles) {
-        // ~30fps throttling
+      // Detect movement (controls.update mutates camera when damping is active)
+      const moved =
+        prevCamPos.distanceToSquared(camera.position) > 1e-8 ||
+        prevTarget.distanceToSquared(controls.target) > 1e-8 ||
+        prevCamQuat.angleTo(camera.quaternion) > 1e-5
+      if (moved) {
+        prevCamPos.copy(camera.position)
+        prevCamQuat.copy(camera.quaternion)
+        prevTarget.copy(controls.target)
+        staticFrames = 0
+      } else {
+        staticFrames++
+      }
+
+      // Particles: real fixed-rate update at ~30fps via dt accumulator.
+      particleAccumulator += dt
+      let particlesUpdated = false
+      if (particleAccumulator >= 33 && particleRefs.current.particles) {
+        particleAccumulator = 0
         const {
           particlePositions,
           particleVelocities,
@@ -835,12 +883,14 @@ function PiacenzaLiverScene({
             }
           }
           particles.geometry.attributes.position.needsUpdate = true
+          particlesUpdated = true
         }
       }
 
       const cameraFillLight = cameraFillLightRef.current
       const cameraFillTarget = cameraFillTargetRef.current
-      if (cameraFillLight && cameraFillTarget) {
+      // Camera fill light only needs updating when the camera moved.
+      if (moved && cameraFillLight && cameraFillTarget) {
         cameraFillLight.position.copy(camera.position)
         camera.getWorldDirection(cameraFillDirection)
         cameraFillTarget.position
@@ -872,7 +922,14 @@ function PiacenzaLiverScene({
           t * (cameraFillIntensity - cameraFillIntensityClose)
       }
 
-      renderer.render(scene, camera)
+      // On-demand rendering: skip the render call when nothing visible has
+      // changed. We still draw at least every other frame for the first 30
+      // idle frames (covers any animation tails — gsap etc), then we render
+      // only on real change or particle update.
+      const needsRender = moved || particlesUpdated || staticFrames < 30
+      if (needsRender) {
+        renderer.render(scene, camera)
+      }
     }
     animate()
 
@@ -1383,8 +1440,12 @@ function setupLighting(scene: THREE.Scene) {
   )
   scene.add(ambientLight)
 
-  // Large museum floor plane - dark but receives shadows
-  const floorGeometry = new THREE.PlaneGeometry(5000, 5000)
+  // Museum floor plane. The original was 5000×5000 — but the shadow camera
+  // only covers ~30 units of radius, the spot light range is 15 units, and
+  // the scene fog (0x000000 0.03) makes anything past ~50 units fade to black.
+  // 100×100 is more than enough and is visually identical, while saving the
+  // GPU from rasterizing a giant clipped polygon.
+  const floorGeometry = new THREE.PlaneGeometry(100, 100)
   const floorMaterial = new THREE.MeshLambertMaterial({
     color: 0x222222,
     transparent: false,
@@ -1393,6 +1454,9 @@ function setupLighting(scene: THREE.Scene) {
   floor.rotation.x = -Math.PI / 2
   floor.position.set(0, -3.0, 0)
   floor.receiveShadow = true
+  // Floor is static — let the renderer skip its matrix update each frame.
+  floor.matrixAutoUpdate = false
+  floor.updateMatrix()
   scene.add(floor)
 }
 

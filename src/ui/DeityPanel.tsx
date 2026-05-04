@@ -119,7 +119,7 @@ export function DeityPanel({
     return (
       <Paper
         ref={panelRef}
-        className="bg-primary text-primary"
+        className="bg-primary text-primary deity-panel-content"
         style={{
           position: "fixed",
           bottom: 0,
@@ -244,6 +244,7 @@ export function DeityPanel({
       withOverlay={false}
       withCloseButton={false}
       className="panel-border"
+      classNames={{ content: "deity-panel-content" }}
       styles={{
         content: {
           position: "fixed",

@@ -31,7 +31,10 @@ export const SceneConfig = {
     intensityMultiplier: 2.0,
     ambientIntensityMul: 1.92,
     keyLightIntensity: 70,
-    shadowMapSize: 4096, // Shadow map resolution
+    // Shadow map resolution. 4096² = 64MB GPU memory + slow soft-shadow taps.
+    // 2048² is visually indistinguishable here because the scene is dim and
+    // the shadow is heavily blurred by `shadowRadius`. Saves ~48MB GPU.
+    shadowMapSize: 2048,
     shadowBias: -0.0001, // Shadow bias to prevent acne
     shadowNormalBias: 0.02, // Additional shadow bias
     shadowRadius: 8, // Shadow softness radius

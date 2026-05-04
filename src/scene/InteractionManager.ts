@@ -41,6 +41,10 @@ export class InteractionManager {
   private mouseMovedDuringClick = false
   private lastRaycastPosition: { x: number; y: number } | null = null
   private raycastThrottleTimeout: number | null = null
+  // Reusable allocations — avoid creating a Raycaster + Vector2 per mousemove,
+  // which on weak machines was causing visible GC pauses during fast moves.
+  private reusableRaycaster = new THREE.Raycaster()
+  private reusableMouse = new THREE.Vector2()
 
   // Model rotation state
   private isRotatingModel = false
@@ -164,6 +168,21 @@ export class InteractionManager {
     }
   }
 
+  // Reusable scratch — rotateModelAroundCenter ran every drag-mousemove and
+  // allocated a Box3, two Vector3s, a Matrix4, two more Vector3s, two
+  // Quaternions and a Quaternion clone every call. That's hundreds of GC
+  // allocations per second during rotation. Reuse them.
+  private _rotBox = new THREE.Box3()
+  private _rotCenter = new THREE.Vector3()
+  private _rotWorldPos = new THREE.Vector3()
+  private _rotOffset = new THREE.Vector3()
+  private _rotCamMat = new THREE.Matrix4()
+  private _rotRight = new THREE.Vector3()
+  private _rotUp = new THREE.Vector3()
+  private _rotQY = new THREE.Quaternion()
+  private _rotQX = new THREE.Quaternion()
+  private _rotCombined = new THREE.Quaternion()
+
   private rotateModelAroundCenter(
     deltaX: number,
     deltaY: number,
@@ -175,54 +194,28 @@ export class InteractionManager {
     liverObject.updateMatrixWorld(false)
     this.camera.updateMatrixWorld(false)
 
-    // Calculate liver center dynamically from current world bounding box
-    // This ensures it's always correct after rotation
-    const worldBoundingBox = new THREE.Box3()
-    worldBoundingBox.setFromObject(liverObject)
-    const liverCenter = new THREE.Vector3()
-    worldBoundingBox.getCenter(liverCenter)
+    this._rotBox.makeEmpty().setFromObject(liverObject)
+    this._rotBox.getCenter(this._rotCenter)
 
-    const worldPos = new THREE.Vector3()
-    liverObject.getWorldPosition(worldPos)
-    const offset = worldPos.clone().sub(liverCenter)
+    liverObject.getWorldPosition(this._rotWorldPos)
+    this._rotOffset.copy(this._rotWorldPos).sub(this._rotCenter)
 
-    // Get camera's transformation matrix to transform axes into camera space
-    const cameraMatrix = new THREE.Matrix4()
-    cameraMatrix.extractRotation(this.camera.matrixWorld)
+    this._rotCamMat.extractRotation(this.camera.matrixWorld)
+    this._rotRight.set(1, 0, 0).applyMatrix4(this._rotCamMat).normalize()
+    this._rotUp.set(0, 1, 0).applyMatrix4(this._rotCamMat).normalize()
 
-    // Start with global axes
-    const globalRight = new THREE.Vector3(1, 0, 0)
-    const globalUp = new THREE.Vector3(0, 1, 0)
+    liverObject.position.sub(this._rotOffset)
 
-    // Transform global axes into camera's reference system
-    const cameraRight = globalRight.applyMatrix4(cameraMatrix).normalize()
-    const cameraUp = globalUp.applyMatrix4(cameraMatrix).normalize()
+    this._rotQY.setFromAxisAngle(this._rotUp, deltaX * rotationSpeed)
+    this._rotQX.setFromAxisAngle(this._rotRight, deltaY * rotationSpeed)
 
-    // Translate to pivot (center)
-    liverObject.position.sub(offset)
+    liverObject.quaternion.premultiply(this._rotQY)
+    liverObject.quaternion.premultiply(this._rotQX)
 
-    // Create rotation quaternions in camera's reference system
-    // Horizontal drag: rotate around camera's up axis (vertical on screen)
-    // Vertical drag: rotate around camera's right axis (horizontal on screen)
-    const qY = new THREE.Quaternion().setFromAxisAngle(
-      cameraUp,
-      deltaX * rotationSpeed,
-    )
-    const qX = new THREE.Quaternion().setFromAxisAngle(
-      cameraRight,
-      deltaY * rotationSpeed,
-    )
+    this._rotCombined.copy(this._rotQX).multiply(this._rotQY)
+    this._rotOffset.applyQuaternion(this._rotCombined)
 
-    // Apply rotations (order: Y first, then X)
-    liverObject.quaternion.premultiply(qY)
-    liverObject.quaternion.premultiply(qX)
-
-    // Rotate the offset vector by the combined rotation
-    const combinedRotation = qX.clone().multiply(qY)
-    offset.applyQuaternion(combinedRotation)
-
-    // Translate back
-    liverObject.position.add(offset)
+    liverObject.position.add(this._rotOffset)
     liverObject.updateMatrixWorld(true)
     this.callbacks.onModelRotate()
   }
@@ -840,14 +833,11 @@ export class InteractionManager {
     if (!liverMesh) return null
 
     const rect = this.renderer.domElement.getBoundingClientRect()
-    const mouse = new THREE.Vector2()
-    mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1
-    mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1
+    this.reusableMouse.x = ((clientX - rect.left) / rect.width) * 2 - 1
+    this.reusableMouse.y = -((clientY - rect.top) / rect.height) * 2 + 1
 
-    const raycaster = new THREE.Raycaster()
-    raycaster.setFromCamera(mouse, this.camera)
-
-    const intersects = raycaster.intersectObject(liverMesh, false)
+    this.reusableRaycaster.setFromCamera(this.reusableMouse, this.camera)
+    const intersects = this.reusableRaycaster.intersectObject(liverMesh, false)
     return intersects.length > 0 ? intersects[0] : null
   }
 
