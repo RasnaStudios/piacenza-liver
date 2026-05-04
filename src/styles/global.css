@@ -41,6 +41,33 @@
   color: #e6d4b8;
 }
 
+/*
+ * Text selection policy:
+ * - Default: nothing selectable in the chrome (left inscription list, top
+ *   title, action buttons, tooltip, hover labels, footer, etc.) — these are
+ *   navigation aids, never something the user wants to copy, and accidental
+ *   selection during 3D interaction looks broken.
+ * - Inside the deity panel (.deity-panel-content): re-enable text selection
+ *   so users can still copy deity names, descriptions, citations, etc.
+ */
+body,
+.piacenza-liver-app {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.deity-panel-content,
+.deity-panel-content * {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
 body,
 html {
   margin: 0;
