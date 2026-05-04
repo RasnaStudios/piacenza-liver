@@ -7,6 +7,18 @@
   padding-bottom: 200px;
 }
 
+.inscription-exploration .deity-parallel-inline,
+.inscription-exploration .deity-parallel-inline *,
+.inscription-exploration .inscription-chip,
+.inscription-exploration .inscription-chip *,
+.inscription-exploration .status-pill,
+.inscription-exploration .status-pill * {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .back-button-container {
   position: fixed;
   top: 24px;

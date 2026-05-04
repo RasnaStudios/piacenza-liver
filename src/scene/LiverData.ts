@@ -116,12 +116,11 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "secure",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
+      "Pallottino 1984",
       "Colonna 1991",
       "Capdeville 1992",
       "Stevens 2009",
-      "Pernigotti 2018",
-      "Gottarelli 2018",
+      "Torelli 2011",
     ],
     parallelSlots: [
       { tradition: "roman", status: "secure" },
@@ -135,11 +134,10 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "debated",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
+      "Pallottino 1984",
       "Colonna 1991",
+      "Jannot 1998",
       "Colonna 2012",
-      "Pernigotti 2018",
-      "Gottarelli 2018",
     ],
   },
   thufltha: {
@@ -149,8 +147,9 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "debated",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
+      "Pallottino 1984",
       "Colonna 1991",
+      "de Grummond 2006",
       "Amann 2019",
     ],
     parallelSlots: [
@@ -166,7 +165,8 @@ export const liverGods: Record<string, LiverGod> = {
     sources: [
       "Maggiani 1982",
       "Colonna 1991",
-      "van der Meer 1987",
+      "de Grummond 2006",
+      "Torelli 2011",
       "Krauskopf 2013",
     ],
     parallelSlots: [
@@ -181,8 +181,8 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "secure",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
       "Colonna 1991",
+      "de Grummond - Simon 2006",
       "Krauskopf 2013",
       "Maras 2017",
     ],
@@ -196,12 +196,7 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Mae",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: [
-      "Maggiani 1982",
-      "van der Meer 1987",
-      "Colonna 1991",
-      "Maras 2017",
-    ],
+    sources: ["Maggiani 1982", "Colonna 1991", "Maras 2017"],
   },
   tecvm: {
     id: "tecvm",
@@ -209,9 +204,9 @@ export const liverGods: Record<string, LiverGod> = {
     readingStatus: "clear",
     identificationStatus: "unresolved",
     sources: [
+      "Thulin 1906",
       "Colonna 1976-77",
       "Maggiani 1982",
-      "van der Meer 1987",
       "Colonna 1991",
     ],
   },
@@ -235,8 +230,8 @@ export const liverGods: Record<string, LiverGod> = {
     sources: [
       "Maggiani 1982",
       "Colonna 1991",
+      "de Grummond - Simon 2006",
       "de Grummond 2008",
-      "Krauskopf 2013",
       "Maras 2017",
       "Moore 2018",
     ],
@@ -248,9 +243,10 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "secure",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
       "Colonna 1991",
+      "de Grummond 2006",
       "Krauskopf 2013",
+      "Camporeale 2015",
     ],
     parallelSlots: [
       { tradition: "roman", status: "secure" },
@@ -262,7 +258,12 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Selvans",
     readingStatus: "clear",
     identificationStatus: "secure",
-    sources: ["Maggiani 1982", "Colonna 1991", "van der Meer 1987"],
+    sources: [
+      "Maggiani 1982",
+      "Colonna 1991",
+      "Jannot 1998",
+      "de Grummond 2006",
+    ],
     parallelSlots: [{ tradition: "roman", status: "secure" }],
   },
   tluscva: {
@@ -272,10 +273,8 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "debated",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
       "Colonna 1991",
       "Maggiani 2011",
-      "Colonna 2012",
       "Stopponi 2012",
       "Maras 2017",
     ],
@@ -285,7 +284,12 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Cels",
     readingStatus: "clear",
     identificationStatus: "secure",
-    sources: ["Colonna 1976-77", "Maggiani 1982", "Krauskopf 2013"],
+    sources: [
+      "Colonna 1976-77",
+      "Maggiani 1982",
+      "Cristofani 2000",
+      "de Grummond 2006",
+    ],
     parallelSlots: [
       { tradition: "roman", status: "proposed" },
       { tradition: "greek", status: "proposed" },
@@ -296,7 +300,13 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Culsans",
     readingStatus: "clear",
     identificationStatus: "secure",
-    sources: ["Maggiani 1982", "Colonna 1991", "Krauskopf 2013"],
+    sources: [
+      "Maggiani 1982",
+      "Colonna 1991",
+      "de Grummond - Simon 2006",
+      "de Grummond 2006",
+      "Krauskopf 2013",
+    ],
     parallelSlots: [{ tradition: "roman", status: "secure" }],
   },
   alpans: {
@@ -304,21 +314,19 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Alpans",
     readingStatus: "clear",
     identificationStatus: "probable",
-    sources: ["Maggiani 1982", "Colonna 1991", "Krauskopf 2013"],
+    sources: [
+      "Maggiani 1982",
+      "Colonna 1991",
+      "de Grummond 2006",
+      "Krauskopf 2013",
+    ],
   },
   vetis: {
     id: "vetis",
     name: "Vetis",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: [
-      "Maggiani 1982",
-      "van der Meer 1987",
-      "Colonna 1991",
-      "Colonna 2012",
-      "Maras 2017",
-      "Pernigotti 2018",
-    ],
+    sources: ["Maggiani 1982", "Colonna 1991", "Colonna 2012", "Maras 2017"],
     parallelSlots: [{ tradition: "roman", status: "proposed" }],
   },
   pul: {
@@ -326,7 +334,7 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Pul",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: ["Maggiani 1982", "Colonna 1991", "van der Meer 1987"],
+    sources: ["Maggiani 1982", "van der Meer 1987", "Colonna 1991"],
   },
   lasl: {
     id: "lasl",
@@ -344,8 +352,8 @@ export const liverGods: Record<string, LiverGod> = {
     transcription: "mar",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
       "Colonna 1991",
+      "de Grummond 2006",
       "Simon 2006",
       "Krauskopf 2013",
       "Maras 2017",
@@ -359,8 +367,9 @@ export const liverGods: Record<string, LiverGod> = {
     transcription: "lar",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
       "Colonna 1991",
+      "de Grummond 2006",
+      "Torelli 2011",
       "Krauskopf 2013",
     ],
     parallelSlots: [
@@ -382,8 +391,10 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "secure",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
       "Colonna 1991",
+      "Jannot 1998",
+      "de Grummond 2006",
+      "Torelli 2011",
       "Krauskopf 2013",
     ],
     parallelSlots: [
@@ -396,7 +407,7 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Metlvmth",
     readingStatus: "clear",
     identificationStatus: "unresolved",
-    sources: ["Maggiani 1982", "Colonna 1991", "van der Meer 1987"],
+    sources: ["Maggiani 1982", "van der Meer 1987", "Colonna 1991"],
   },
   letham: {
     id: "letham",
@@ -405,8 +416,8 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "debated",
     sources: [
       "Maggiani 1982",
-      "Colonna 1991",
       "van der Meer 1987",
+      "Colonna 1991",
       "Gottarelli 2018",
     ],
   },
@@ -415,7 +426,13 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Velch",
     readingStatus: "clear",
     identificationStatus: "debated",
-    sources: ["Maggiani 1982", "Colonna 1991"],
+    sources: [
+      "Thulin 1906",
+      "Maggiani 1982",
+      "Colonna 1991",
+      "Cristofani 2000",
+      "de Grummond 2006",
+    ],
     parallelSlots: [{ tradition: "roman", status: "proposed" }],
   },
   satres: {
@@ -438,9 +455,14 @@ export const liverGods: Record<string, LiverGod> = {
     identificationStatus: "secure",
     sources: [
       "Maggiani 1982",
-      "van der Meer 1987",
+      "Pallottino 1984",
+      "de Grummond 2006",
       "Krauskopf 2013",
       "Maras 2017",
+    ],
+    parallelSlots: [
+      { tradition: "roman", status: "secure" },
+      { tradition: "greek", status: "secure" },
     ],
   },
   tiur: {
@@ -448,7 +470,17 @@ export const liverGods: Record<string, LiverGod> = {
     name: "Tiur",
     readingStatus: "clear",
     identificationStatus: "probable",
-    sources: ["Maggiani 1982", "Sannibale 2018", "Krauskopf 2013"],
+    sources: [
+      "Maggiani 1982",
+      "Pallottino 1984",
+      "de Grummond - Simon 2006",
+      "Krauskopf 2013",
+      "Sannibale 2018",
+    ],
+    parallelSlots: [
+      { tradition: "roman", status: "proposed" },
+      { tradition: "greek", status: "proposed" },
+    ],
   },
 }
 

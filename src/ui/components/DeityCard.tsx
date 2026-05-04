@@ -79,9 +79,9 @@ export function DeityCard({
         ?.groupColor || "#8B6541"
     : godInscriptions[0]?.groupColor || "#8B6541"
 
-  const filteredInscriptions = godInscriptions.filter(
-    (inscription) => inscription.id !== selectedInscriptionId,
-  )
+  const selectedOccurrenceLabel = tLiverData("deities.ui.selectedOccurrence", {
+    defaultValue: "Selected occurrence",
+  })
 
   return (
     <Paper
@@ -221,7 +221,7 @@ export function DeityCard({
         </div>
       )}
 
-      {filteredInscriptions.length > 0 && (
+      {godInscriptions.length > 0 && (
         <div className="deity-section">
           <Title
             className="text-bronze deity-section-heading"
@@ -233,19 +233,24 @@ export function DeityCard({
             {tLiverData("deities.ui.alsoAppearsIn")}
           </Title>
           <Group gap="xs" style={{ display: "flex", flexWrap: "wrap" }}>
-            {filteredInscriptions.map((inscription) => (
-              <InscriptionChip
-                key={inscription.id}
-                inscriptionId={inscription.id}
-                groupColor={inscription.groupColor}
-                associatedGodIds={inscription.otherGods}
-                godVariation={getGodVariationInInscription(
-                  god.id,
-                  inscription.id,
-                )}
-                onClick={() => onInscriptionClick?.(inscription.id)}
-              />
-            ))}
+            {godInscriptions.map((inscription) => {
+              const isSelected = inscription.id === selectedInscriptionId
+              return (
+                <InscriptionChip
+                  key={inscription.id}
+                  inscriptionId={inscription.id}
+                  groupColor={inscription.groupColor}
+                  associatedGodIds={inscription.otherGods}
+                  godVariation={getGodVariationInInscription(
+                    god.id,
+                    inscription.id,
+                  )}
+                  isSelected={isSelected}
+                  selectedLabel={String(selectedOccurrenceLabel)}
+                  onClick={() => onInscriptionClick?.(inscription.id)}
+                />
+              )
+            })}
           </Group>
         </div>
       )}

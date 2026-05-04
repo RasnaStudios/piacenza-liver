@@ -198,6 +198,68 @@ export const scholarshipEntries: BibEntry[] = [
     pages: "39–64",
     url: "https://www.degruyterbrill.com/document/doi/10.1515/etst-2019-0003/html",
   },
+  {
+    shortRef: "Pallottino 1984",
+    authors: "Pallottino, M.",
+    year: 1984,
+    title: "Etruscologia",
+    venue: "Milano: Hoepli (7th ed.)",
+  },
+  {
+    shortRef: "Jannot 1998",
+    authors: "Jannot, J.-R.",
+    year: 1998,
+    title:
+      "Devins, dieux et démons. Regards sur la religion de l'Étrurie antique",
+    venue: "Paris: Picard",
+  },
+  {
+    shortRef: "Cristofani 2000",
+    authors: "Cristofani, M. (ed.)",
+    year: 2000,
+    title: "Etruschi. Una nuova immagine",
+    venue: "Firenze: Giunti (rev. ed.)",
+  },
+  {
+    shortRef: "de Grummond 2006",
+    authors: "de Grummond, N. T.",
+    year: 2006,
+    title: "Etruscan Myth, Sacred History, and Legend",
+    venue: "Philadelphia: University of Pennsylvania Museum",
+    url: "https://archive.org/details/etruscanmythsacr0000degr",
+  },
+  {
+    shortRef: "de Grummond - Simon 2006",
+    authors: "de Grummond, N. T. and Simon, E. (eds.)",
+    year: 2006,
+    title: "The Religion of the Etruscans",
+    venue: "Austin: University of Texas Press",
+    url: "https://archive.org/details/religion-of-etruscans",
+  },
+  {
+    shortRef: "Torelli 2011",
+    authors: "Torelli, M.",
+    year: 2011,
+    title:
+      "La forza della tradizione. Etruria e Roma: continuità e discontinuità agli albori della storia",
+    venue: "Milano: Longanesi",
+  },
+  {
+    shortRef: "Camporeale 2015",
+    authors: "Camporeale, G.",
+    year: 2015,
+    title: "Gli Etruschi. Storia e civiltà",
+    venue: "Torino: UTET (4th ed.)",
+  },
+  {
+    shortRef: "Thulin 1906",
+    authors: "Thulin, C. O.",
+    year: 1906,
+    title: "Die Götter des Martianus Capella und der Bronzeleber von Piacenza",
+    venue:
+      "Religionsgeschichtliche Versuche und Vorarbeiten 3.1, Giessen: Töpelmann",
+    url: "https://archive.org/details/diegtterdesma00thuluoft",
+  },
 ]
 
 const ENTRY_BY_REF: Record<string, BibEntry> = Object.fromEntries(
@@ -226,11 +288,11 @@ export const bibliographyEntries: BibEntry[] = [...scholarshipEntries].sort(
 )
 
 export function getDeitySources(deityId: string): string[] {
-  const refs = liverGods[deityId]?.sources ?? []
+  const refs = [...new Set(liverGods[deityId]?.sources ?? [])]
   return [...refs].sort((a, b) => {
     const ay = bibYearNum(ENTRY_BY_REF[a]?.year)
     const by = bibYearNum(ENTRY_BY_REF[b]?.year)
-    if (ay !== by) return by - ay
+    if (ay !== by) return ay - by
     return a.localeCompare(b)
   })
 }

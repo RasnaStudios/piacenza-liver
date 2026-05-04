@@ -49,6 +49,10 @@
  *   selection during 3D interaction looks broken.
  * - Inside the deity panel (.deity-panel-content): re-enable text selection
  *   so users can still copy deity names, descriptions, citations, etc.
+ * - The standalone inscriptions route (.inscription-exploration): fully
+ *   selectable like a normal document page.
+ * - Bibliography modal (.bibliography-modal-content): portaled outside the
+ *   route root; same selectable rule so references can be copied.
  */
 body,
 .piacenza-liver-app {
@@ -60,7 +64,11 @@ body,
 }
 
 .deity-panel-content,
-.deity-panel-content * {
+.deity-panel-content *,
+.inscription-exploration,
+.inscription-exploration *,
+.bibliography-modal-content,
+.bibliography-modal-content * {
   -webkit-user-select: text;
   -moz-user-select: text;
   -ms-user-select: text;

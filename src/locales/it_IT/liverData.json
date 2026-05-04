@@ -56,10 +56,11 @@
   },
   "deities": {
     "ui": {
-      "alsoAppearsIn": "Appare anche in",
+      "alsoAppearsIn": "Compare in",
       "classicalParallels": "Paralleli greco-romani",
       "identificationKey": "Identificazione",
       "readingKey": "Lettura",
+      "selectedOccurrence": "Occorrenza selezionata",
       "sources": "Fonti"
     },
     "identification": {
@@ -116,24 +117,24 @@
       }
     },
     "tinia": {
-      "description": "Dio supremo del cielo e padre del pantheon etrusco. Su modello, Maggiani 1982 e Colonna 1991 individuano cinque regioni dedicate a Tin fra cui il locativo tinsθ («nella [casa] di Tinia»), ove Colonna interpreta il Nethuns celeste ospitato presso Tinia. Stevens 2009 ricostruisce la mappa celeste a sedici settori sulla cornice e collega le sequenze di Tin alla triplice fulminazione dei testi latini (Festus/Seneca, manubiae); Capdeville 1992, Pernigotti 2018 e Gottarelli 2018 sviluppano schemi cosmologici affini.",
+      "description": "Dio supremo del cielo nel pantheon etrusco, detto anche Tin o Tina. Il suo nome è connesso a tin, ‘giorno’, e la sua sfera comprende ordine cosmico, giustizia, giuramenti, confini sacri, tempo atmosferico e fulmini. È il primo membro della triade Tinia–Uni–Menrva. Le ripetute associazioni con altri nomi divini e il locativo tinsθ, di solito inteso come ‘nella casa di Tinia’, lo presentano come potenza ordinatrice del sistema divinatorio. I paralleli con Giove e Zeus sono sicuri ma non identici: Tinia è più vicino a Giove come sovrano folgoratore e garante della legge che allo Zeus genealogico ed erotico del mito greco. Un lato ctonio è visibile anche in Tinia Calusna e nel materiale Vetis / Veiove.",
       "parallelNames": {
         "roman": "Giove",
         "greek": "Zeus"
       }
     },
     "cilens": {
-      "description": "Colonna 2012 colloca Cilens fra le divinità catactonie legate nei santuari ‘comunitari’ discussi nell'ambito centroumbro-etrusco. Colonna 1991 aggancia la teonomastica degli dei figurati sul modello; Maggiani 1982 pubblica la lettura delle forme sul bronzo. Sul Fegato Cilens compare in più zone, accoppiata a Tinia in un'iscrizione e forse alla forma locativa Cilensl, ‘nella (casa) di Cilens’, in un'altra. Una vecchia ricostruzione collegava il nome in modo ipotetico al Nocturnus di Marziano Capella, ma il dibattito attuale segue soprattutto Colonna e la linea degli studi connessi."
+      "description": "Una delle divinità più enigmatiche ma evidentemente importanti. Cilens viene di solito trattata come potenza liminale o ctonia, posta tra l'ordine celeste e il settore ostile più oscuro. Una forma locativa ricorrente del nome viene spesso intesa come riferimento al luogo o dominio di Cilens, coerente con una divinità associata a confini cosmici e regioni oscure. Le associazioni rimandano a notte, fato, custodia dei confini o potere infero più che a un ruolo mitico definito in modo sicuro. Un rilievo in terracotta da Bolsena potrebbe raffigurarla come figura femminile acefala accanto a Mera / Menrva, ma identità e genere restano ipotetici."
     },
     "thufltha": {
-      "description": "Divinità femminile alle caselle 2, 20, 21. Una dedica vulcente su statuetta bronzea la accosta all'infero Suri, complicando le antiche equazioni con Fortuna / Tyche. Il locativo tinsθ θvf colloca Thufltha ‘nella casa di Tinia’.",
+      "description": "Probabile divinità femminile, con un profilo che comprende associazioni con Tinia e una forma autonoma in settori favorevoli. Statuette votive femminili e motivi ornitologici sostengono una dea con funzioni mantiche o augurali. Una dedica vulcente su statuetta bronzea la accosta all'infero Suri, mentre la formula aiseras thuflthicla, ‘gli dei di Thufltha’, suggerisce una cerchia di potenze minori sotto la sua protezione. I confronti con Fortuna / Tyche restano plausibili ma non definitivi; una linea forte la interpreta come dea del fato, vicina a una Moira.",
       "parallelNames": {
         "roman": "Fortuna",
         "greek": "Tyche"
       }
     },
     "nethuns": {
-      "description": "Dio delle acque e del mare attestato in più zone del Fegato di Piacenza. Colonna 1991 distingue un Nethuns ‘celeste’, ospite di Tinia e forse signore della pioggia e dell'umidità atmosferica, dal Nethuns ctonio / acquatico legato alla vesica fellea (secondo Plinio).",
+      "description": "Signore etrusco delle acque, identificato in modo sicuro con Nettuno romano e Poseidone greco. La sua sfera più antica sembra riguardare acque dolci, sorgenti, fiumi e laghi, prima dell'assorbimento di un'iconografia marina di tipo poseidonico. Una lettura distingue un Nethuns celeste, nella casa di Tinia e legato forse a pioggia o umidità atmosferica, da un Nethuns ctonio / acquatico nella zona della bile. La tradizione antica collega Nettuno / Nethuns ai Penati, ma questa testimonianza testuale resta difficile da collegare alle prove cultuali conservate.",
       "parallelNames": {
         "roman": "Nettuno",
         "greek": "Poseidone"
@@ -147,16 +148,16 @@
       }
     },
     "mae": {
-      "description": "Nome o epiteto associato all'iscrizione Uni / Mae, ancora irrisolto. Maras 2017 elenca Mae fra le divinità attestate solo sul Fegato; la funzione resta incerta e le antiche equazioni con il Maius romano non sono sostenute dalla ricerca recente."
+      "description": "Nome oscuro associato a Uni e ancora irrisolto. È normalmente trattato come divino per il contesto rituale, ma sesso, funzione e identità restano ignoti. I manuali più antichi proposero un legame con Maia latina, consorte di Vulcano ed eponima di maggio, ma questa resta una proposta storica più che un'identificazione attuale."
     },
     "tecvm": {
-      "description": "Divinità oscura nota quasi esclusivamente dal fegato e da dediche nell'area del Lago Trasimeno. Colonna 1976-77 collegò il culto a Cel e ai santuari del Trasimeno; la funzione sul fegato resta discussa."
+      "description": "Divinità oscura collegata a dediche nell'area del Lago Trasimeno. Una linea connette Tecum o Tece ai santuari del Trasimeno, a Cel e a un culto locale benigno legato all'Arringatore da Sanguineto. Un'altra linea più antica legge Tecum come epiteto di Menrva, poiché il nome è vicino a Uni e Uni e Menrva sono associate in altri contesti rituali. Le due ipotesi restano distinte."
     },
     "lusal": {
-      "description": "Forma genitiva lvsl / lvsal alle caselle 6 e 34. Due letture: una divinità Lusa (Maggiani 1982) o, secondo Colonna 1991, lv(r)s(l), «di Lurs», il dio profetico Lur. Le attestazioni nel Liber Linteus sono studiate da van der Meer 2009; de Grummond 2014 ricostruisce il culto a partire da specchi, dediche e dal libro lineo. La forma lvsal è di regola più leggibile di lvsl accanto a velχ, ma il bronzo è consumato e la resa fra Lusa e «di Lurs» resta dibattuta. Il nesso con velχ aggiunge incertezze: vel(...) è stato anche letto come nome eponimo di Vulci, ma anche questa ipotesi resta discussa."
+      "description": "Forma genitiva discussa, letta come Lusa / Lusal oppure come lv(r)s(l), ‘di Lurs’, il dio profetico Lur. Il Liber Linteus e il materiale degli specchi rendono Lur una possibilità seria, ma il bronzo è consumato e la linea Lusl / Lusa è stata confrontata anche con paralleli antichi oscuri come la Lynsa silvestris di Marziano Capella. Il nome deve quindi restare segnato come discusso."
     },
     "catha": {
-      "description": "Divinità astrale, probabilmente femminile (caselle 8, 23). Maras 2017 legge ancora Catha come «controparte tarda di Cavatha, con marcati tratti solari», e Colonna 1991 ricollega il Cathe Sans dello specchio di Orbetello a un Catha solare maschile; de Grummond 2008 ha proposto una Catha lunare a Pyrgi e Moore 2018 riapre esplicitamente la questione. Le associazioni solari, lunari, ctonie e legate alla nascita restano tutte sul tavolo, tuttavia Maras 2017 e Colonna 1991 continuano a sottolineare un orientamento vigorosamente solare rispetto a letture unicamente lunari o ctonie."
+      "description": "Divinità astrale, probabilmente femminile. Le associazioni solari, lunari, ctonie e legate alla nascita restano tutte sul tavolo, quindi una sola etichetta sarebbe rischiosa. Una linea forte legge Catha come dea solare femminile, la cui potenza attraversa sia il cielo diurno sia il viaggio notturno nell'oltretomba; un'altra sostiene una Catha lunare a Pyrgi. L'associazione con Suri spiega perché i Greci potessero ricondurla a Persefone / Kore."
     },
     "fufluns": {
       "description": "Dio del vino, dell'ebbrezza e dei cicli della vegetazione.",
@@ -166,32 +167,32 @@
       }
     },
     "selvans": {
-      "description": "Dio di boschi, pascoli e terre o confini liminali; venerato come tutor finium. Secondo Colonna 1991, l'iscrizione che Maggiani legge come pul potrebbe invece essere tul, abbreviazione dell'epiteto tul(aras), a sostegno del ruolo di Selvans come guardiano dei confini.",
+      "description": "Dio etrusco di boschi, pascoli e soprattutto confini. Il nome è affine al latino silva e a Silvano, ma la figura etrusca è più civica e protettrice di soglie rispetto al Silvano romano più selvatico. La discussa lettura pul / tul è importante perché tul(aras), ‘del confine’, sosterrebbe il ruolo di Selvans come tutor finium. Epiteti votivi come Tularia, ‘del confine’, e Sanchuneta, ‘di Sancus’, rafforzano questa funzione. Il bronzetto di Cortona, trovato presso una porta urbana con Culsans e dedicato dalla stessa Velia Cvinti, presenta Selvans come protettore di soglie e limiti cittadini.",
       "parallelNames": {
         "roman": "Silvano"
       }
     },
     "tluscva": {
-      "description": "Forma oscura sul Fegato di Piacenza. Maggiani 2011 tratta Tluschva come divinità o collettivo divino ctonio, probabilmente femminile; Maras 2017 le legge come «un gruppo di dee, forse corrispondente a Ninfe o Cariti» attestate anche a Caere (Sant'Antonio); Colonna 1991 propose in alternativa di vedere in Tluscu un epiteto di Maris (l'unico vero hapax del fegato). Stopponi 2012 collega il culto al Fanum Voltumnae di Orvieto."
+      "description": "Oscura divinità ctonia o collettivo divino. Una linea legge Tluschva come gruppo di dee, forse comparabile a Ninfe o Cariti; un'altra tratta Tluscu come epiteto di Maris. È stato proposto anche un collegamento con il Fanum Voltumnae di Orvieto. Un vecchio confronto con Consus resta solo storia degli studi: il nome è divino per contesto rituale, ma sesso, funzione e identità restano ignoti."
     },
     "cels": {
-      "description": "Cel / Cels, dea della terra connessa a forze ctonie. Colonna 1976-77 è lo studio canonico, che collega Cel ai santuari del Trasimeno; il fegato stesso è stato letto come modello del corpo di Cel.",
+      "description": "Cel / Cels, dea etrusca della terra. Il nome significa ‘terra’ ed è spesso accompagnato da ati, ‘madre’. È collegata ai santuari del Trasimeno e a un culto aniconico sulla riva occidentale del lago; il fegato stesso è stato letto come modello del corpo di Cel. La collocazione nel settore ostile si accorda con una potenza ctonia temibile. Cel ha un doppio carattere: è la madre che dà vita e la terra infera che la riprende.",
       "parallelNames": {
         "roman": "Terra Mater",
         "greek": "Gea"
       }
     },
     "culsans": {
-      "description": "Dio bifronte di porte e soglie. Colonna 1991 analizza la grafia settentrionale Culsans come composto culś sans, ‘Cul genitore’; l'abbreviazione cvl può stare per Cul (altare di Bagnoregio) o per Culsans.",
+      "description": "Dio bifronte di porte, soglie e passaggi, comparabile con Giano ma non riducibile a lui. Il nome appartiene alla stessa radice legata alle porte e a Culsu, la custode femminile della porta infera; la forma settentrionale Culsans è stata spiegata come ‘Cul genitore’. Il rapporto con Alpan / Alpans rafforza l'idea di una potenza di soglia con tratti sia civici sia ctoni. Il bronzetto di Cortona dedicato da Velia Cvinti lo presenta come un giovane dio bifronte delle soglie civiche, e il gesto della mano potrebbe riferirsi al computo del tempo, facendo di Culsans una divinità del passaggio nello spazio e nel tempo.",
       "parallelNames": {
         "roman": "Giano"
       }
     },
     "alpans": {
-      "description": "Alpan / Alpans accoppiato a Cul / Culsans. Colonna 1991 sostiene che alpan sia originariamente un appellativo significante ‘la buona / la ben disposta’, semanticamente equivalente al manus latino, usato per divinità ctonie in registro eufemistico. Quindi alp funziona qui come epiteto di Cul, paragonabile al fatto che Giano fosse chiamato bonus e manus."
+      "description": "Alpan / Alpans è strettamente connessa a Cul / Culsans. Una lettura importante interpreta alpan come appellativo, ‘la buona / la ben disposta’, semanticamente equivalente al manus latino e usato come titolo eufemistico per divinità ctonie. In questa prospettiva alp funziona come epiteto di Cul / Culsans, paragonabile al fatto che Giano fosse chiamato bonus e manus."
     },
     "vetis": {
-      "description": "Divinità catactonia. Maras 2017 legge Vetis come la sostituzione etrusca di Apollo sul Fegato, derivata dal latino Vedius (variante di Veiove); Colonna 2012 colloca Vetis con Cilens fra le divinità catactonie del settore ostile.",
+      "description": "Divinità ctonia del settore ostile. Vetis è stato letto sia come sostituto etrusco di Apollo sia come parte della linea Vetis / Veives / Veiovis, collegando la divinità ostile al Veiove romano. Il nome appartiene allo stesso registro infero di Tinia Calusna, ma il parallelo proposto con Veiove non elimina l'incertezza sulla funzione precisa del dio etrusco.",
       "parallelNames": {
         "roman": "Veiove"
       }
@@ -206,17 +207,17 @@
       }
     },
     "maris": {
-      "description": "Divinità importante ma oscura attestata come marisl alla casella 26 e come mar alle caselle 30 e 39 (le caselle 30+39 comunicano intorno al processus papillaris). Spesso rappresentata come bambino o giovane nelle testimonianze etrusche; Maras 2017 documenta Mariś a Chiusi come «divinità bambina che porta il nome del Marte latino-italico». Benché il nome sia imparentato col Marte latino-italico, Maris è funzionalmente e cultualmente diverso dalla divinità guerriera romana, e l'antica assimilazione punto su punto non è più accolta (Simon 2006; Krauskopf 2013; Maras 2017)."
+      "description": "Divinità etrusca importante ma oscura, la cui antica equazione con Marte non è più accolta. Anche se il nome può condividere radici italiche con Mars / Mamers, Maris non è soprattutto un dio guerriero. Il suo profilo è giovane o infantile, polimorfo e fortemente vitale: una figura divina legata a potenza generativa, nascita, rinascita e forse piccoli geni protettori. L'eventuale aspetto armato appartiene a questo quadro più ampio, non a una semplice identità militare. Una descrizione più prudente lo avvicina a uno spirito vitale o generativo, più vicino al Genio latino che a Marte."
     },
     "laran": {
-      "description": "Dio etrusco della guerra, confrontato in modo sicuro con Marte e Ares. Nel Fegato di Piacenza compare come secondo elemento discusso dopo marisl: la forma sul bronzo è pubblicata come laθ, ma Maggiani, van der Meer e Colonna la interpretano in base al contesto come lar, collegata a Lar / Laran.",
+      "description": "Dio etrusco della guerra, confrontato in modo sicuro con Marte e Ares e distinto da Maris. L'iconografia degli specchi presenta Laran come giovane guerriero vigoroso e imberbe, con lancia, scudo, corazza, schinieri ed elmo crestato, in scene di tipo areico come l'amore con Afrodite e la battaglia tra dei e giganti. Le prove cultuali sono sorprendentemente scarse rispetto al Marte romano, ma è Laran, non Maris, a sostenere le funzioni militari nel sistema etrusco.",
       "parallelNames": {
         "roman": "Marte",
         "greek": "Ares"
       }
     },
     "tvnth": {
-      "description": "Divinità incerta nella zona della cistifellea. Maras 2017 elenca Tvnth fra le divinità attestate solo sul Fegato; nessuna identificazione sicura è emersa dalla ricerca recente."
+      "description": "Divinità incerta. Nessuna identificazione sicura è emersa dalla ricerca recente, e lo statuto divino poggia soprattutto sulla struttura rituale."
     },
     "hercle": {
       "description": "Grande dio etrusco, equivalente di Eracle ed Ercole, con associazioni protettive e oracolari. In Etruria considerato dio fin dall'inizio, non semplice eroe.",
@@ -229,7 +230,7 @@
       "description": "Colonna 1991 legge metlumθ come locativo significante ‘nella città / urbs’, qualificando l'iscrizione adiacente dei Lethams come ‘Lethams nella città’, in parallelo ai sintagmi divini in genitivo del Liber Linteus. Legge inoltre le due sequenze contigue come un'unica iscrizione continua leθam(sl) metlumθ, non due nomi divini indipendenti."
     },
     "letham": {
-      "description": "Lethams (forma corretta sulla base della Tegola di Capua, gen. ledamsul; Colonna 1991 corrige il ‘Letham’ di Maggiani 1982). Il nome ricorre così spesso sul modello da renderla la divinità più ‘ubiqua’ del fegato, forse di tipo genius, su entrambi i lobi. Genere e sfera restano discussi."
+      "description": "Lethams è la forma corretta sostenuta dal genitivo ledamsul della Tegola di Capua, in luogo del precedente ‘Letham’. La divinità potrebbe essere di tipo genius, ma le varianti e proposte più antiche includono Letham, Leta, Lethms, Lethn, Lethns e una possibile interpretazione di guerra e morte. Lo statuto divino è più chiaro del sesso o della funzione, quindi l'identificazione deve restare discussa."
     },
     "velch": {
       "description": "vel(...) accoppiato a Lvsl. Alcune letture interpretano Vel(...) come divinità eponima di Vulci più che come figura paragonabile a Vulcano sul piano del fuoco e della metallurgia; altre insistono sul parallelo vulcanico. Nessuna delle due linee è consolidata e il confronto romano con Vulcano è segnato qui come ipotesi più che come equivalenza sicura.",
@@ -244,10 +245,18 @@
       }
     },
     "usil": {
-      "description": "Il dio del sole etrusco, identificato in modo sicuro. Sul retro del fegato, usils marca il polo solare della struttura cosmologica."
+      "description": "Il dio del sole etrusco, identificato in modo sicuro. Usil segna il polo solare opposto al polo lunare di Tiur / Tiv. Il nome appartiene al vocabolario etrusco del sole ed è stato collegato a termini solari indoeuropei. Lo specchio di Tuscania mostra Usil / Util come giovane dio radiante con alone e arco, affiancato da Thesan e Nethuns con tridente. La scena può rappresentare la luce generata da Thesan e Usil e poi declinante verso il mare occidentale, regno di Nethuns. Le prove cultuali sono scarse, ma l'identificazione solare è sicura.",
+      "parallelNames": {
+        "roman": "Sol",
+        "greek": "Helios"
+      }
     },
     "tiur": {
-      "description": "Tiur / Tivr, divinità lunare o termine per luna / mese. Marca il polo lunare del retro, opposto a Usil. Sannibale 2018 ha pubblicato un crescente bronzeo (CII 2610 bis) con una nuova dedica a Tiur, confermando lo statuto divino del termine."
+      "description": "Tiur / Tivr / Tiv, divinità lunare o termine per luna / mese. Tiur segna il polo lunare opposto a Usil; un crescente bronzeo con dedica a Tiur conferma lo statuto divino del termine. Le parole affini tiu, tiv, tivr e tivrs appartengono al campo semantico di luna e mese. Poco altro è sicuro: non esistono rappresentazioni artistiche certe, nemmeno il sesso della divinità può essere fissato, e ogni ricostruzione di una luna maschile basata su una Catha solare femminile resta speculativa.",
+      "parallelNames": {
+        "roman": "Luna",
+        "greek": "Selene"
+      }
     }
   }
 }

@@ -9,6 +9,8 @@ interface InscriptionChipProps {
   associatedGodIds: string[]
   onClick: () => void
   godVariation?: string | null
+  isSelected?: boolean
+  selectedLabel?: string
 }
 
 export function InscriptionChip({
@@ -17,37 +19,59 @@ export function InscriptionChip({
   associatedGodIds,
   onClick,
   godVariation,
+  isSelected = false,
+  selectedLabel = "Selected occurrence",
 }: InscriptionChipProps) {
   const { t } = useTranslation("common")
   const associatedGods = associatedGodIds
     .map((id) => (liverGods as Record<string, LiverGod>)[id])
     .filter(Boolean)
+  const idleBackground = isSelected
+    ? `linear-gradient(135deg, ${groupColor}44 0%, ${groupColor}24 100%)`
+    : `linear-gradient(135deg, ${groupColor}20 0%, ${groupColor}10 100%)`
+  const idleBorder = isSelected
+    ? `2px solid ${groupColor}`
+    : `1px solid ${groupColor}40`
+  const idleShadow = isSelected
+    ? `0 0 0 1px ${groupColor}55, 0 6px 22px ${groupColor}32`
+    : "0 2px 8px rgba(0, 0, 0, 0.1)"
+  const idleTransform = isSelected ? "translateY(-3px)" : ""
 
   return (
     <Button
       onClick={onClick}
       variant="light"
       radius="xl"
-      className="font-primary text-secondary fancy-button"
+      className={`font-primary text-secondary fancy-button inscription-chip${
+        isSelected ? " inscription-chip--selected" : ""
+      }`}
       h="auto"
       py={5}
       pl={6}
+      aria-current={isSelected ? "true" : undefined}
+      aria-label={`${isSelected ? `${selectedLabel}: ` : ""}${t("actions.goToInscription")} ${inscriptionId}${associatedGods.length > 0 ? `, ${t("connectors.with")} ${associatedGods.map((g) => g.name).join(", ")}` : ""}`}
       style={{
-        background: `linear-gradient(135deg, ${groupColor}20 0%, ${groupColor}10 100%)`,
-        border: `1px solid ${groupColor}40`,
+        background: idleBackground,
+        border: idleBorder,
+        boxShadow: idleShadow,
         minHeight: "30px",
+        transform: idleTransform || undefined,
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.background = `linear-gradient(135deg, ${groupColor}40 0%, ${groupColor}25 100%)`
-        e.currentTarget.style.border = `1px solid ${groupColor}60`
+        e.currentTarget.style.border = isSelected
+          ? `2px solid ${groupColor}`
+          : `1px solid ${groupColor}60`
         e.currentTarget.style.boxShadow = `0 4px 16px ${groupColor}30, 0 2px 8px rgba(0, 0, 0, 0.2)`
+        if (isSelected) e.currentTarget.style.transform = "translateY(-4px)"
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.background = `linear-gradient(135deg, ${groupColor}20 0%, ${groupColor}10 100%)`
-        e.currentTarget.style.border = `1px solid ${groupColor}40`
-        e.currentTarget.style.boxShadow = "0 2px 8px rgba(0, 0, 0, 0.1)"
+        e.currentTarget.style.background = idleBackground
+        e.currentTarget.style.border = idleBorder
+        e.currentTarget.style.boxShadow = idleShadow
+        e.currentTarget.style.transform = idleTransform || ""
       }}
-      title={`${t("actions.goToInscription")} ${inscriptionId}${associatedGods.length > 0 ? ` (${t("connectors.with")} ${associatedGods.map((g) => g.name).join(", ")})` : ""}`}
+      title={`${isSelected ? `${selectedLabel}: ` : ""}${t("actions.goToInscription")} ${inscriptionId}${associatedGods.length > 0 ? ` (${t("connectors.with")} ${associatedGods.map((g) => g.name).join(", ")})` : ""}`}
     >
       <Group gap="xs" wrap="nowrap">
         <NumberBadge value={inscriptionId} color={groupColor} />

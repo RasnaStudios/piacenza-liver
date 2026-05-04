@@ -56,10 +56,11 @@
   },
   "deities": {
     "ui": {
-      "alsoAppearsIn": "Also Appears In",
+      "alsoAppearsIn": "Appears In",
       "classicalParallels": "Greek/Roman Parallels",
       "identificationKey": "Identification",
       "readingKey": "Reading",
+      "selectedOccurrence": "Selected occurrence",
       "sources": "Sources"
     },
     "identification": {
@@ -116,138 +117,146 @@
       }
     },
     "tinia": {
-      "description": "Supreme sky god and father of the Etruscan pantheon. Maggiani 1982 and Colonna 1991 catalogue five inscribed regions tied to Tin, including the tinsθ locative (‘in [the house] of Tinia’), where Colonna reads celestial Nethuns hosted beside Tinia. Stevens 2009 reconstructs how the sixteen-part Etruscan heaven maps onto that rim and links Tin passages to Graeco-Roman threefold lightning (Festus/Seneca, manubiae); Capdeville 1992, Pernigotti 2018, and Gottarelli 2018 develop related cosmic grids.",
+      "description": "Supreme sky god of the Etruscan pantheon, also written Tin or Tina. His name is connected with Etruscan tin, ‘day’, and his sphere includes cosmic order, justice, oaths, sacred boundaries, weather and lightning. He is the first member of the Tinia–Uni–Menrva triad. The repeated pairing with other divine names and the tinsθ locative, usually understood as ‘in the house of Tinia’, present him as an organizing power within the divinatory system. The Jupiter and Zeus parallels are secure but not identical: Tinia is closer to Jupiter as sovereign, law-giving thunderer than to the erotic, genealogical Zeus of Greek myth. A chthonic side is also visible in Tinia Calusna and in the Vetis / Veiovis material.",
       "parallelNames": {
         "roman": "Jupiter",
         "greek": "Zeus"
       }
     },
     "cilens": {
-      "description": "Colonna 2012 reads Cilens as a catactonic (sub-earthly) divinity among the sanctuaries grouped in contemporary scholarship around community cults of the Umbrian/Etruscan border zone. Colonna 1991 anchors the nomenclature of the gods on this model; Maggiani 1982 publishes the inscribed forms as read on the bronze. On the Liver, Cilens is attested across several zones—paired with Tinia in one inscription and possibly appearing with the locative Cilensl, ‘in (the house) of Cilens’, in another. Older encyclopedic literature sometimes linked this name speculatively to Marziano Capella's Nocturnus, but discussion now follows Colonna and related work."
+      "description": "One of the most enigmatic but evidently important deities. Cilens is usually treated as a liminal or chthonic power, positioned between celestial order and the darker hostile sector. A repeated locative form of the name is often understood as referring to the place or domain of Cilens, which suits a deity associated with cosmic boundaries and darker regions. Its associations point toward night, fate, boundary guardianship, or underworld power rather than a securely defined mythic role. A terracotta relief from Bolsena may show Cilens as a headless female figure paired with Mera / Menrva, but the deity's identity and gender remain hypothetical."
     },
     "thufltha": {
-      "description": "Female deity present at cells 2, 20, 21. A Vulci dedication on a bronze statuette associates her with infernal Suri, complicating older Fortuna / Tyche equations. The tinsθ θvf locative places Thufltha ‘in the house of Tinia’.",
+      "description": "Probable female deity whose profile includes both pairings with Tinia and an independent form in favourable sectors. Female votive statuettes and bird motifs support a goddess with mantic or auspicy functions. A Vulci bronze links her with infernal Suri, and the phrase aiseras thuflthicla, ‘the gods of Thufltha’, suggests a circle of lesser powers under her protection. Older Fortuna / Tyche comparisons are plausible but not settled; one strong interpretation presents her as a fate goddess, close to a Moira, whose authority can bind even the gods.",
       "parallelNames": {
         "roman": "Fortuna",
         "greek": "Tyche"
       }
     },
     "nethuns": {
-      "description": "Water and sea god appearing across several Liver of Piacenza zones. Colonna 1991 distinguishes a ‘celestial’ Nethuns, hosted in Tinia's house and possibly governing rain and atmospheric moisture, from the chthonic / aqueous Nethuns of the bile zone (vesica fellea, per Pliny).",
+      "description": "Etruscan lord of the waters, securely identified with Roman Neptune and Greek Poseidon. His older sphere seems to be fresh water, springs, rivers and lakes, before he absorbed Poseidon-like sea-god iconography. One interpretation distinguishes a celestial Nethuns in Tinia's house, linked with rain or atmospheric moisture, from the chthonic / aqueous Nethuns of the bile zone. Ancient testimony links Neptune / Nethuns with the Penates, but that textual tradition is difficult to connect with the surviving cult evidence.",
       "parallelNames": {
         "roman": "Neptune",
         "greek": "Poseidon"
       }
     },
     "uni": {
-      "description": "Major state goddess of cities, birth, and sovereignty; some evidence also points to warlike and astral aspects, including comparisons with Astarte at Pyrgi.",
+      "description": "Etruscan counterpart of Juno and Hera, second member of the Tinia–Uni–Menrva triad and a great mother-and-queen rather than a simple Hera clone. Her spheres include female generative power, marriage, fertility, childbirth, city and sanctuary protection, and politico-religious sovereignty. Like Juno Lucina she protects births; like Juno Sospita she can be armed. At Pyrgi she was identified with Astarte by Carthaginian dedicators, revealing a fertility-and-war aspect. Etruscan myth gives her distinctive roles, especially in scenes where she nurses adult Hercle so he gains immortality and in traditions around Menrva's birth from Tinia.",
       "parallelNames": {
         "roman": "Juno",
         "greek": "Hera"
       }
     },
     "mae": {
-      "description": "Obscure paired name in the Uni / Mae inscription. Maras 2017 lists Mae among the deities attested only on the Liver of Piacenza; function and identification remain unresolved, and older equations with Roman Maius are not supported in recent scholarship."
+      "description": "Obscure name paired with Uni and otherwise unresolved. It is normally treated as divine because of its ritual context, but its sex, function and identity remain unknown. Older handbooks proposed a link with Latin Maia, consort of Vulcan and eponym of May, but that remains a historical proposal rather than a current identification."
     },
     "tecvm": {
-      "description": "Obscure deity known almost exclusively from the liver and from dedications in the area around Lake Trasimeno. Colonna 1976-77 connected the cult with Cel and the Trasimeno sanctuaries; function on the liver remains debated."
+      "description": "Obscure deity connected with dedications around Lake Trasimeno. One line connects Tecum or Tece with the Trasimeno sanctuaries, Cel, and a benign local cult linked with the bronze Arringatore from Sanguineto. Another older line reads Tecum as an epithet of Menrva, because the name stands near Uni and Uni and Menrva are paired in other ritual contexts. These remain separate hypotheses."
     },
     "lusal": {
-      "description": "Genitive form lvsl / lvsal at cells 6 and 34. Two readings: a deity Lusa (Maggiani 1982) or, per Colonna 1991, lv(r)s(l), ‘of Lurs’, the prophetic god Lur. The Liber Linteus attestations are studied by van der Meer 2009; de Grummond 2014 reconstructs the cult from mirrors, dedications, and the linen book. The lvsal form is generally read more readily than lvsl beside velχ, yet the bronze is worn and interpreters still divide over Lusa versus ‘of Lurs’. The velχ collocation raises further questions; vel(...) has also been read as referring to an eponymous deity of Vulci, though that hypothesis remains debated."
+      "description": "Debated genitive form, read either as Lusa / Lusal or as lv(r)s(l), ‘of Lurs’, referring to the prophetic god Lur. The Liber Linteus and mirror evidence make Lur a serious possibility, but the bronze is worn and the shorter Lusl / Lusa line has also been compared with obscure ancient parallels such as the Lynsa silvestris of Martianus Capella. The name should therefore stay marked as debated."
     },
     "catha": {
-      "description": "Astral deity, probably female (cells 8, 23). Maras 2017 still reads Catha as ‘a later counterpart of Cavatha, with marked solar features’, and Colonna 1991 links the Cathe Sans of the Orbetello mirror to a male solar Catha; de Grummond 2008 argued for a lunar Catha at Pyrgi and Moore 2018 revisits the question openly, so solar, lunar, underworld, and childbirth associations all remain in play, but Maras 2017 and Colonna 1991 still underline a strongly solar line against purely lunar or chthonic alternatives."
+      "description": "Astral deity, probably female. The evidence supports solar, lunar, underworld and childbirth associations, so a single label is risky. One strong line reads her as a female solar deity whose power extends through both the daytime sky and the underworld night journey; another argues for a lunar Catha at Pyrgi. Her association with Suri explains why Greeks could map her onto Persephone / Kore."
     },
     "fufluns": {
-      "description": "God of wine, inebriation, and vegetation cycles.",
+      "description": "Etruscan counterpart of Dionysus / Bacchus, also called Pacha or Pachies. His older layer seems to be a god of luxuriant vegetation, later absorbing wine, intoxication, ecstatic possession and mystery-cult features. Etruscan myth shows him born from Tinia's thigh, reunited with Semla, bound to Areatha / Ariatha, and connected with infernal vegetation cycles through ivy and seasonal return. Mirror scenes with Vesuna and Hercle may show mantic wine rites. His name is also linked with Fufluna / Populonia and perhaps with later folk memories of a vine-and-wine spirit.",
       "parallelNames": {
         "roman": "Bacchus",
         "greek": "Dionysus"
       }
     },
     "selvans": {
-      "description": "God of forests, pastures, and liminal lands or boundaries; venerated as tutor finium. Per Colonna 1991, the inscription Maggiani read as pul may instead be tul, an abbreviation of the epithet tul(aras), supporting Selvans's role as guardian of boundaries.",
+      "description": "Etruscan god of forests, pastures and, above all, boundaries. The name is cognate with Latin silva and Roman Silvanus, but the Etruscan figure is more civic and threshold-protecting than the wilder Roman Silvanus. The debated pul / tul reading matters because tul(aras), ‘of the boundary’, would support Selvans as tutor finium. Votive epithets such as Tularia, ‘of the boundary’, and Sanchuneta, ‘of Sancus’, reinforce this role. The Cortona statuette, found near an urban gate with Culsans and dedicated by the same Velia Cvinti, presents Selvans as a protector of thresholds and city limits.",
       "parallelNames": {
         "roman": "Silvanus"
       }
     },
     "tluscva": {
-      "description": "Obscure form on the Liver of Piacenza. Maggiani 2011 treats Tluschva as chthonic divinity / divine collective, probably female; Maras 2017 reads them as ‘a group of goddesses, perhaps corresponding to Nymphs or Charites’ attested also at Caere (Sant'Antonio); Colonna 1991 alternatively proposed Tluscu as an epithet of Maris (the only true hapax of the liver). Stopponi 2012 connects the cult with the Fanum Voltumnae at Orvieto."
+      "description": "Obscure chthonic divinity or divine collective. One current line reads Tluschva as a group of goddesses, perhaps comparable to Nymphs or Charites; another treats Tluscu as an epithet of Maris. A connection with the Fanum Voltumnae at Orvieto has also been proposed. An older comparison with Roman Consus survives only as scholarship history: the name is divine by ritual context, but its sex, function and identity remain unknown."
     },
     "cels": {
-      "description": "Cel / Cels, earth goddess connected with chthonic forces. Colonna 1976-77 is the canonical study, linking Cel with the Trasimeno sanctuaries; the liver itself has been read as a model of Cel's body.",
+      "description": "Cel / Cels, the Etruscan earth goddess. Her name means ‘earth’ and is often accompanied by ati, ‘mother’. She is linked with the Trasimeno sanctuaries and an aniconic cult on the western shore of the lake; the artifact itself has even been read as a model of Cel's body. Her hostile-sector placement suits a fearsome chthonic power. Cel has a double character: she is the mother who gives life and the underworld earth who takes it back. This ambivalence also appears in the Populonia mirror where Laran attacks Celsclan, ‘son of Cel’, a giant figure armed with a rock; Celera probably dedicated a month, Celi (September), to her.",
       "parallelNames": {
         "roman": "Terra Mater",
         "greek": "Gaia"
       }
     },
     "culsans": {
-      "description": "Double-faced god of doors and thresholds. Colonna 1991 analyses the northern orthography Culsans as a compound culś sans, ‘Cul the genitor’; the abbreviation cvl may stand for either Cul (Bagnoregio altar) or Culsans.",
+      "description": "Double-faced god of doors, thresholds and passages, securely comparable with Roman Janus but not reducible to him. His name belongs to the same root as words for doors and to Culsu, the female guardian of the underworld gate; the northern form Culsans has been explained as ‘Cul the genitor’. The Alpan / Alpans pairing strengthens the idea of a threshold power with both civic and chthonic traits. The Cortona bronze dedicated by Velia Cvinti presents him as a youthful two-faced god of civic thresholds, and the raised hand may relate to counting time, making Culsans a deity of passage in both space and time.",
       "parallelNames": {
         "roman": "Janus"
       }
     },
     "alpans": {
-      "description": "Alpan / Alpans paired with Cul / Culsans. Colonna 1991 argues that alpan is originally an appellative meaning ‘the good / well-disposed’, semantically equivalent to Latin manus, used for chthonic divinities in eufemistic register. So alp here functions as an epithet of Cul, comparable to Janus being called bonus and manus."
+      "description": "Alpan / Alpans is closely connected with Cul / Culsans. A key interpretation takes alpan as an appellative meaning ‘the good / well-disposed’, semantically equivalent to Latin manus and used as a euphemistic title for chthonic divinities. On that reading, alp functions here as an epithet of Cul / Culsans, comparable to Janus being called bonus and manus. Alpan / Alpnu also appears in the orbit of Turan's attendants, where winged service figures can shade into fate and erotic functions. The Cortona Culsans inscription includes culsansi alpan turce, but the identity is still probable rather than fully secure."
     },
     "vetis": {
-      "description": "Catactonic deity. Maras 2017 reads Vetis as the Etruscan substitution for Apollo on the Liver, derived from Latin Vedius (a variant of Veiovis); Colonna 2012 places Vetis with Cilens among the catactonic divinities of the hostile sector.",
+      "description": "Chthonic deity of the hostile sector. Vetis has been read either as an Etruscan Apollo substitute or as part of the Vetis / Veives / Veiovis line, linking the hostile-zone deity with Roman Veiovis / Vediovis. The name belongs to the same infernal register as Tinia Calusna, but the proposed Veiovis parallel does not remove the uncertainty around the Etruscan god's precise function.",
       "parallelNames": {
         "roman": "Veiovis"
       }
     },
     "pul": {
-      "description": "Maggiani 1982 reads pul, interpreted as ‘sky’ in opposition to the adjacent metlum locative. Colonna 1991 questions the reading, arguing that the first letter could be t rather than p, and proposes tul(aras) as an epithet of Selvans (tutor finium)."
+      "description": "Debated form whose interpretation affects the boundary-god reading. One reading is pul, interpreted as ‘sky’ in opposition to the adjacent metlum locative. Another questions the first letter and proposes tul(aras), an epithet of Selvans meaning ‘of the boundary’. This would connect the form to Selvans as tutor finium rather than to an independent sky term."
     },
     "lasl": {
-      "description": "Lasa / Lasl: female divine attendant often linked with Turan; fate and service roles are attested in mirror iconography (Krauskopf 2013). Older handbooks cited Roman Lares; current work generally treats that equivalence as misleading while still listing it as superseded scholarship history in the parallel table (Krauskopf 2013).",
+      "description": "Lasa / Lasl: female divine attendant often linked with Turan. Fate, service and erotic-attendant roles are attested in mirror iconography, while older handbooks cited Roman Lares; current work generally treats that equivalence as misleading, preserving it only as scholarship history. One Maris scene shows a young spear-bearing Maris conversing with Tinia and a female figure labelled Lasa, which adds context but does not change the dedicated Lasa identification.",
       "parallelNames": {
         "roman": "Lares"
       }
     },
     "maris": {
-      "description": "Important but obscure deity attested as marisl in cell 26 and as mar in cells 30 and 39 (cells 30+39 communicate around the processus papillaris). Often represented as a child or youth in Etruscan evidence; Maras 2017 records Mariś at Clusium as ‘a divine child bearing the name of the Latin-Italic Mars’. Though the name shares roots with Latin Italic Mars, Maris is cultically and functionally unlike the Roman war-god, and the older one-to-one equation is no longer upheld (Simon 2006; Krauskopf 2013; Maras 2017)."
+      "description": "Important but obscure Etruscan deity whose old equation with Roman Mars is no longer accepted. Although the name may share Italic roots with Mars / Mamers, Maris is not primarily a war god. His profile is youthful or childlike, polymorphic, and strongly vital: a divine figure connected with generative power, birth, rebirth, and perhaps small protective genii. Any spear-bearing aspect belongs to this broader profile rather than to a simple military identity. A better working description is a vital or generative spirit, closer in function to Latin Genius than to Mars."
     },
     "laran": {
-      "description": "Etruscan god of war, securely paralleled with Mars and Ares. On the Liver of Piacenza he appears as the disputed second element after marisl: the bronze form is printed laθ, but Maggiani, van der Meer, and Colonna interpret it contextually as lar, linked with Lar / Laran.",
+      "description": "Etruscan god of war, securely paralleled with Mars and Ares and distinct from Maris. Mirror iconography presents Laran as a young, vigorous, beardless warrior with lance, shield, armour, greaves and crested helmet, appearing in Ares-type scenes such as the affair with Aphrodite and the battle of gods and giants. His cult evidence is unexpectedly thin compared with Roman Mars, but he, not Maris, carries the military functions in the Etruscan system.",
       "parallelNames": {
         "roman": "Mars",
         "greek": "Ares"
       }
     },
     "tvnth": {
-      "description": "Uncertain deity of the gall bladder zone. Maras 2017 lists Tvnth among the deities attested only on the Liver; no firm identification has emerged in recent scholarship."
+      "description": "Uncertain deity. No firm identification has emerged in recent scholarship, and its divine status rests mainly on ritual structure."
     },
     "hercle": {
-      "description": "Major Etruscan god, equivalent of Herakles and Hercules, with protective and oracular associations. In Etruria treated as a god from the beginning, not as a hero.",
+      "description": "Major Etruscan god, equivalent of Herakles and Hercules, but in Etruria treated as a god from the beginning rather than merely as a hero. Hercle keeps the familiar lion-skin, club, bow and civilising-monster-slayer profile while developing distinct Etruscan myths: he drinks Uni's milk and becomes her adopted son; he appears in Pyrgi material connected with Ino / Leucothea and Melicertes; and he is often accompanied by Vile / Vilae, an Etruscan Iolaus figure. His cult is also strongly linked with running water, springs, lakes and water collection, including the Lago degli Idoli near the Arno source and a local myth in which Hercules creates the Ciminian lake.",
       "parallelNames": {
         "roman": "Hercules",
         "greek": "Herakles"
       }
     },
     "metlvmth": {
-      "description": "Colonna 1991 reads metlumθ as a locative meaning ‘in the city / urbs’, qualifying the adjoining Lethams inscription as the ‘Lethams in the city’, parallel to the divine genitive sintagms of the Liber Linteus. He also reads the two contiguous sequences as one continuous inscription leθam(sl) metlumθ, not two unrelated divine names."
+      "description": "Locative form usually read as metlumθ, ‘in the city / urbs’. Rather than a separate deity, it likely qualifies the adjoining Lethams inscription as ‘Lethams in the city’, parallel to divine genitive formulas in the Liber Linteus. On this reading the two contiguous sequences form one continuous inscription, leθam(sl) metlumθ, not two unrelated divine names."
     },
     "letham": {
-      "description": "Lethams (correct form per the Capua tile gen. ledamsul; Colonna 1991 corrects Maggiani’s earlier ‘Letham’). The name recurs widely on the model, often enough to rank as the most ‘ubiquitous’ deity on the liver, possibly genius-like, across both right and left lobes. Gender and sphere remain debated."
+      "description": "Lethams is the corrected form supported by the Capua tile genitive ledamsul, replacing the earlier ‘Letham’. The deity is possibly genius-like, but older variants and proposals include Letham, Leta, Lethms, Lethn, Lethns, and a possible war-and-death interpretation. The divine status is clearer than the sex or function, so the current status should remain debated."
     },
     "velch": {
-      "description": "vel(...) paired with Lvsl. Some readings take Vel(...) as an eponymous deity of Vulci rather than a fire / metalworking figure comparable to Vulcan; others stress a Vulcan-type parallel. Neither line is settled, and the Roman Vulcan parallel is marked here as proposed rather than secure.",
+      "description": "The form Vel(...) is paired with Lvsl. Some readings take Vel(...) as an eponymous deity of Vulci rather than a fire / metalworking figure comparable to Vulcan; others stress a Vulcan-type parallel. An older restoration expanded the form as Velchans; Velchans may have helped produce Latin Vulcanus, and its similarity to Minoan Welkhanos has encouraged a chthonic-vegetation line. Because Velch is in the infernal quadrant, one interpretation sees a telluric-fire or chthonic deity and treats Velchans only hypothetically as an epithet of Sethlans, the smith god ruling underground fire. The objection to identifying Sethlans and Velchans as the same god remains important, so the Vulcan parallel stays proposed, not secure.",
       "parallelNames": {
         "roman": "Vulcan"
       }
     },
     "satres": {
-      "description": "Obscure deity: function and identification remain debated; the form satres / satre is also attested in the Liber Linteus from Zagreb. A Roman parallel with Saturn survives in older literature and is flagged here only as superseded scholarship history rather than consensus (Maggiani 1982, Krauskopf 2013).",
+      "description": "Obscure deity whose function and identification remain debated; the form satres / satre is also attested in the Liber Linteus from Zagreb. The Roman Saturn comparison survives as older scholarship history rather than current consensus. Satres is placed in a hostile or nefast quadrant and has been assimilated to Saturn on positional and etymological grounds, but without further evidence this could be a false friend. The Saturn parallel is therefore shown as superseded, not endorsed.",
       "parallelNames": {
         "roman": "Saturn"
       }
     },
     "usil": {
-      "description": "The Etruscan sun-god, securely identified. On the back of the liver, usils marks the solar pole of the cosmological structure."
+      "description": "The Etruscan sun god, securely identified. Usil marks the solar pole opposite the lunar Tiur / Tiv. The name belongs to Etruscan ‘sun’ vocabulary and has been connected with broader Indo-European solar terms. The Tuscania mirror shows Usil / Util as a young radiant god with halo and bow, flanked by Thesan and trident-bearing Nethuns. That scene may represent daylight generated from Thesan and Usil and then declining into the western sea, the realm of Nethuns. Cult evidence is thin, but the solar identification is secure.",
+      "parallelNames": {
+        "roman": "Sol",
+        "greek": "Helios"
+      }
     },
     "tiur": {
-      "description": "Tiur / Tivr, moon deity or moon / month term. Marks the lunar pole of the back, opposite Usil. Sannibale 2018 published a bronze crescent (CII 2610 bis) with a fresh dedication to Tiur, confirming the divine status of the term."
+      "description": "Tiur / Tivr / Tiv, moon deity or moon / month term. Tiur marks the lunar pole opposite Usil; a bronze crescent with a dedication to Tiur confirms the divine status of the term. The related words tiu, tiv, tivr and tivrs belong to the semantic field of moon and month. Little else is certain: there are no secure artistic representations, not even the deity's sex can be fixed, and any male-lunar reconstruction based on a female solar Catha remains speculative.",
+      "parallelNames": {
+        "roman": "Luna",
+        "greek": "Selene"
+      }
     }
   }
 }
