@@ -89,75 +89,98 @@ html {
   scroll-behavior: smooth;
   background: #000000;
   background-color: #000000;
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-  transition: scrollbar-color 0.15s ease-in-out;
+  color-scheme: dark;
 }
 
 body::-webkit-scrollbar,
 html::-webkit-scrollbar {
   width: 6px;
   height: 6px;
+  background-color: transparent;
+  -webkit-appearance: none;
 }
 
+/* Hide / show driven by background-color, not opacity:
+ * Safari ignores opacity on ::-webkit-scrollbar pseudo-elements. See the
+ * .scrollbar block below for the same reasoning.
+ */
 body::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track-piece,
+html::-webkit-scrollbar-track-piece,
 html::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background-color: transparent;
   border-radius: 3px;
   -webkit-border-radius: 3px;
-  opacity: 0;
-  transition: opacity 0.15s ease-in-out;
+  -webkit-appearance: none;
+  transition: background-color 0.15s ease-in-out;
 }
 
 body::-webkit-scrollbar-thumb,
 html::-webkit-scrollbar-thumb {
-  background: rgba(196, 168, 118, 0.4);
+  background-color: transparent;
   border-radius: 3px;
   -webkit-border-radius: 3px;
   border: none;
-  opacity: 0;
-  transition:
-    opacity 0.15s ease-in-out,
-    background 0.15s ease-in-out;
+  -webkit-appearance: none;
+  transition: background-color 0.15s ease-in-out;
 }
 
 body::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-button,
+body::-webkit-resizer,
+html::-webkit-scrollbar-button,
+html::-webkit-resizer,
 html::-webkit-scrollbar-corner {
-  background: rgba(0, 0, 0, 0.2);
-  opacity: 0;
-  transition: opacity 0.15s ease-in-out;
-}
-
-body:hover,
-html:hover {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2);
+  background-color: transparent;
+  -webkit-appearance: none;
+  transition: background-color 0.15s ease-in-out;
 }
 
 body:hover::-webkit-scrollbar,
 html:hover::-webkit-scrollbar {
   width: 6px;
   height: 6px;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 body:hover::-webkit-scrollbar-track,
+body:hover::-webkit-scrollbar-track-piece,
+html:hover::-webkit-scrollbar-track-piece,
 html:hover::-webkit-scrollbar-track {
-  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 body:hover::-webkit-scrollbar-thumb,
 html:hover::-webkit-scrollbar-thumb {
-  opacity: 1;
+  background-color: rgba(196, 168, 118, 0.4);
 }
 
 body:hover::-webkit-scrollbar-thumb:hover,
 html:hover::-webkit-scrollbar-thumb:hover {
-  background: rgba(196, 168, 118, 0.6);
+  background-color: rgba(196, 168, 118, 0.6);
 }
 
 body:hover::-webkit-scrollbar-corner,
+body:hover::-webkit-scrollbar-button,
+body:hover::-webkit-resizer,
+html:hover::-webkit-scrollbar-button,
+html:hover::-webkit-resizer,
 html:hover::-webkit-scrollbar-corner {
-  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  body,
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.15s ease-in-out;
+  }
+
+  body:hover,
+  html:hover {
+    scrollbar-color: rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2);
+  }
 }
 
 #root {
@@ -609,67 +632,86 @@ html:hover::-webkit-scrollbar-corner {
   }
 }
 
-/* Scrollbar Styles */
+/* Scrollbar Styles
+ *
+ * Safari ignores opacity / transition on ::-webkit-scrollbar pseudo-elements,
+ * so hide / show is driven by background-color (which Safari does respect).
+ * Chrome and Brave honor the same rules identically; only the fade animation
+ * differs between engines, and the end states are the same in all three.
+ */
 .scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: transparent transparent;
-  transition: scrollbar-color 0.15s ease-in-out;
+  color-scheme: dark;
+  scrollbar-gutter: auto;
 }
 
 .scrollbar::-webkit-scrollbar {
   width: 6px;
   height: 6px;
+  background-color: transparent;
+  -webkit-appearance: none;
 }
 
-.scrollbar::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+.scrollbar::-webkit-scrollbar-track,
+.scrollbar::-webkit-scrollbar-track-piece {
+  background-color: transparent;
   border-radius: 3px;
   -webkit-border-radius: 3px;
-  opacity: 0;
-  transition: opacity 0.15s ease-in-out;
+  -webkit-appearance: none;
+  transition: background-color 0.15s ease-in-out;
 }
 
 .scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(196, 168, 118, 0.4);
+  background-color: transparent;
   border-radius: 3px;
   -webkit-border-radius: 3px;
   border: none;
-  opacity: 0;
-  transition:
-    opacity 0.15s ease-in-out,
-    background 0.15s ease-in-out;
+  -webkit-appearance: none;
+  transition: background-color 0.15s ease-in-out;
 }
 
-.scrollbar::-webkit-scrollbar-corner {
-  background: rgba(0, 0, 0, 0.2);
-  opacity: 0;
-  transition: opacity 0.15s ease-in-out;
-}
-
-.scrollbar:hover {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2);
+.scrollbar::-webkit-scrollbar-corner,
+.scrollbar::-webkit-scrollbar-button,
+.scrollbar::-webkit-resizer {
+  background-color: transparent;
+  -webkit-appearance: none;
+  transition: background-color 0.15s ease-in-out;
 }
 
 .scrollbar:hover::-webkit-scrollbar {
   width: 6px;
   height: 6px;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
-.scrollbar:hover::-webkit-scrollbar-track {
-  opacity: 1;
+.scrollbar:hover::-webkit-scrollbar-track,
+.scrollbar:hover::-webkit-scrollbar-track-piece {
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb {
-  opacity: 1;
+  background-color: rgba(196, 168, 118, 0.4);
 }
 
 .scrollbar:hover::-webkit-scrollbar-thumb:hover {
-  background: rgba(196, 168, 118, 0.6);
+  background-color: rgba(196, 168, 118, 0.6);
 }
 
-.scrollbar:hover::-webkit-scrollbar-corner {
-  opacity: 1;
+.scrollbar:hover::-webkit-scrollbar-corner,
+.scrollbar:hover::-webkit-scrollbar-button,
+.scrollbar:hover::-webkit-resizer {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  .scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: scrollbar-color 0.15s ease-in-out;
+  }
+
+  .scrollbar:hover {
+    scrollbar-color: rgba(196, 168, 118, 0.4) rgba(0, 0, 0, 0.2);
+  }
 }
 
 /* Shared Description Text Style */
