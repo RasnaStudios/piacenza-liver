@@ -332,9 +332,15 @@ export const liverGods: Record<string, LiverGod> = {
   pul: {
     id: "pul",
     name: "Pul",
-    readingStatus: "clear",
-    identificationStatus: "unresolved",
-    sources: ["Maggiani 1982", "van der Meer 1987", "Colonna 1991"],
+    readingStatus: "debated",
+    identificationStatus: "debated",
+    sources: [
+      "Pfiffig 1975",
+      "Maggiani 1982",
+      "van der Meer 1987",
+      "Colonna 1991",
+      "Pittau 1990",
+    ],
   },
   lasl: {
     id: "lasl",

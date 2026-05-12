@@ -38,6 +38,9 @@
     }
   },
   "inscriptions": {
+    "3": {
+      "readingNote": "Gli editori moderni (Maggiani 1982, Colonna 1991) leggono il θ finale di `tinsθ` come desinenza locativa di Tinia, ‘nella casa di Tinia’, sicché la casella nomina solo due divinità: Tinia e Nethuns. Pfiffig 1975 e Pittau 1990 sciolgono invece lo stesso θ come `θ(vflθas)`, abbreviazione di Thufltha, e leggono nella casella tre divinità: Tinia, Thufltha e Nethuns."
+    },
     "6": {
       "readingNote": "I tratti di lvsal sono consumati sul bronzo e non sempre facili da seguire. La critica continua a dividersi sulla resa migliore, fra una divinità Lusa e un genitivo del dio profetico Lur (lv(r)s(l), Colonna 1991)."
     },
@@ -45,13 +48,16 @@
       "readingNote": "Le lettere sono consumate e danneggiate sul bronzo e l'iscrizione è ardua da leggere; nondimeno gli studi leggono quasi all'unanimità la forma come Cels."
     },
     "17": {
-      "readingNote": "Maggiani 1982 legge `pul`; Colonna 1991 sostiene che la prima lettera sia una `t` e non una `p`, e legge `tul(aras)`, epiteto di Selvans. La lettera incisa è paleograficamente contestata."
+      "readingNote": "Maggiani 1982 legge `pul`; Colonna 1991 sostiene che la prima lettera sia una `t` e non una `p`, e legge `tul(aras)`, epiteto di Selvans. La lettera incisa è paleograficamente contestata. Una linea più antica della critica (Körte, Pfiffig 1975, Pittau 1990) legge invece la casella come `tur(ns)`, genitivo di Turan, controparte etrusca di Venere / Afrodite; questa lettura risolverebbe in parte l'altrimenti sorprendente assenza di una dea così importante dal fegato, ma non è sostenuta dagli editori recenti."
     },
     "26": {
       "readingNote": "La forma incisa dopo `marisl /` è `laθ` (l-a-theta) sul bronzo, esattamente come pubblicata da Maggiani nel 1982. In sede di discussione Maggiani stesso ha ritirato quella lettura sostituendola con `lar` (genitivo di Lar / Laran), seguito da van der Meer 1987 e Colonna 1991 (n. 42). La lettura `lar` è contestuale più che paleografica, nella tarda scrittura etrusca settentrionale theta e rho possono confondersi visivamente."
     },
     "25": {
       "readingNote": "L'iscrizione nella zona della cistifellea è ardua da interpretare per corrosione e consumo sulla superficie del bronzo, con conseguente incertezza di lettura; gli editori citano comunque la forma letta tvnθ (es. Maggiani 1982)."
+    },
+    "22": {
+      "readingNote": "Gli editori moderni (Maggiani 1982, Colonna 1991) leggono il θ tra `tins` e `neθ` come desinenza locativa di Tinia, sicché la casella nomina solo Tinia e Nethuns. Pfiffig 1975 e Pittau 1990 sciolgono invece lo stesso θ come `θ(vflθas)` e leggono nella casella tre divinità (Tinia, Thufltha e Nethuns), in parallelo alla loro lettura della casella 3."
     }
   },
   "deities": {
@@ -154,7 +160,7 @@
       "description": "Divinità oscura collegata a dediche nell'area del Lago Trasimeno. Una linea connette Tecum o Tece ai santuari del Trasimeno, a Cel e a un culto locale benigno legato all'Arringatore da Sanguineto. Un'altra linea più antica legge Tecum come epiteto di Menrva, poiché il nome è vicino a Uni e Uni e Menrva sono associate in altri contesti rituali. Le due ipotesi restano distinte."
     },
     "lusal": {
-      "description": "Forma genitiva discussa, letta come Lusa / Lusal oppure come lv(r)s(l), ‘di Lurs’, il dio profetico Lur. Il Liber Linteus e il materiale degli specchi rendono Lur una possibilità seria, ma il bronzo è consumato e la linea Lusl / Lusa è stata confrontata anche con paralleli antichi oscuri come la Lynsa silvestris di Marziano Capella. Il nome deve quindi restare segnato come discusso."
+      "description": "Forma genitiva discussa, letta come Lusa / Lusal oppure come lv(r)s(l), ‘di Lurs’, il dio profetico Lur. Il Liber Linteus e il materiale degli specchi rendono Lur una possibilità seria, ma il bronzo è consumato e la linea Lusl / Lusa è stata confrontata anche con paralleli antichi oscuri come la Lynsa silvestris di Marziano Capella. Il nome deve quindi restare segnato come discusso. Pittau 1990 propone due ulteriori alternative tratte da epiteti greci: Lysios, ‘il Solutore, il Liberatore’, epiteto di Dioniso, oppure, più suggestivamente, Loxias, ‘l'Ambiguo’, epiteto di Apollo. Se la lettura Loxias fosse corretta spiegherebbe anche l'altrimenti curiosa assenza di Apulu / Apollo dal fegato, dato che gli Etruschi conoscevano sicuramente questo dio. Nessuna delle due identificazioni è stata accolta dagli editori recenti, ma vale la pena registrarle come parte della storia interpretativa."
     },
     "catha": {
       "description": "Divinità astrale, probabilmente femminile. Le associazioni solari, lunari, ctonie e legate alla nascita restano tutte sul tavolo, quindi una sola etichetta sarebbe rischiosa. Una linea forte legge Catha come dea solare femminile, la cui potenza attraversa sia il cielo diurno sia il viaggio notturno nell'oltretomba; un'altra sostiene una Catha lunare a Pyrgi. L'associazione con Suri spiega perché i Greci potessero ricondurla a Persefone / Kore."
@@ -198,7 +204,7 @@
       }
     },
     "pul": {
-      "description": "Maggiani 1982 legge pul, interpretato come ‘cielo’ in opposizione alla sequenza locativa metlum. Colonna 1991 mette in dubbio la lettura, sostenendo che la prima lettera potrebbe essere una t invece che una p, e propone tul(aras), epiteto di Selvans (tutor finium)."
+      "description": "Forma discussa la cui interpretazione condiziona la lettura del dio dei confini. Maggiani 1982 legge pul, interpretato come ‘cielo’ in opposizione alla sequenza locativa metlum in cella 38. Colonna 1991 mette in dubbio la lettura, sostenendo che la prima lettera potrebbe essere una t invece che una p, e propone tul(aras), epiteto di Selvans (tutor finium). Una linea più antica della critica (Körte, Pfiffig 1975, Pittau 1990) legge invece la casella come tur(ns), genitivo di Turan, controparte etrusca di Venere e Afrodite, anche per colmare l'altrimenti sorprendente assenza di una dea così importante dal fegato; gli editori recenti non sostengono questa lettura, ma resta il motivo principale per cui la casella viene talvolta associata a Turan."
     },
     "lasl": {
       "description": "Lasa / Lasl: assistente divina femminile spesso collegata a Turan; ruoli legati al fato e al servizio sono attestati nell'iconografia degli specchi (Krauskopf 2013). I manuali più antichi citavano i Lares romani; il confronto è oggi in genere ritenuto fuorviante, pur essendo mantenuto come storia degli studi (parallelo segnato come superato, Krauskopf 2013).",
@@ -217,7 +223,7 @@
       }
     },
     "tvnth": {
-      "description": "Divinità incerta. Nessuna identificazione sicura è emersa dalla ricerca recente, e lo statuto divino poggia soprattutto sulla struttura rituale."
+      "description": "Divinità incerta. Nessuna identificazione sicura è emersa dalla ricerca recente, e lo statuto divino poggia soprattutto sulla struttura rituale. Una linea interpretativa più antica (Pfiffig 1975, Pittau 1990) scioglie l'abbreviazione come tvnθ(les), genitivo di Tindaro, padre dei Dioscuri, e legge le sequenze adiacenti leθa(msl) (caselle 27, 32, 37) come Leda, madre dei Dioscuri; l'accoppiamento mitologico greco è suggestivo ma non sostenuto dalla critica etruscologica attuale, che mantiene Tvnth irrisolto e legge leθa(msl) come Lethams."
     },
     "hercle": {
       "description": "Grande dio etrusco, equivalente di Eracle ed Ercole, con associazioni protettive e oracolari. In Etruria considerato dio fin dall'inizio, non semplice eroe.",

@@ -38,6 +38,9 @@
     }
   },
   "inscriptions": {
+    "3": {
+      "readingNote": "Modern editors (Maggiani 1982, Colonna 1991) read the θ at the end of `tinsθ` as the locative ending of Tinia, ‘in the house of Tinia’, so the cell names only two deities: Tinia and Nethuns. Pfiffig 1975 and Pittau 1990 instead expand the same θ as `θ(vflθas)`, the abbreviation for Thufltha, and read three deities in the cell: Tinia, Thufltha and Nethuns."
+    },
     "6": {
       "readingNote": "The traces of lvsal are worn on the bronze and not always easy to follow. Scholarship disagrees whether the underlying form is best taken as a deity Lusa or as a genitive of the prophetic god Lur (lv(r)s(l), Colonna 1991)."
     },
@@ -45,13 +48,16 @@
       "readingNote": "The letters are worn and damaged on the bronze, making the inscription hard to read; despite poor legibility, scholarship almost unanimously reads the form as Cels."
     },
     "17": {
-      "readingNote": "Maggiani 1982 reads `pul`; Colonna 1991 argues the first letter is a `t` rather than a `p` and reads `tul(aras)`, an epithet of Selvans. The engraved letter itself is paleographically contested."
+      "readingNote": "Maggiani 1982 reads `pul`; Colonna 1991 argues the first letter is a `t` rather than a `p` and reads `tul(aras)`, an epithet of Selvans. The engraved letter itself is paleographically contested. An older line of scholarship (Körte, Pfiffig 1975, Pittau 1990) instead reads the cell as `tur(ns)`, the genitive of Turan, the Etruscan counterpart of Venus / Aphrodite; this reading partly addresses the otherwise striking absence of so major a goddess from the liver, but is not endorsed by recent editors."
     },
     "26": {
       "readingNote": "The engraved form after `marisl /` reads `laθ` (l-a-theta) on the bronze, exactly as Maggiani published it in 1982. In discussion Maggiani himself withdrew that reading and replaced it with `lar` (genitive of Lar / Laran), followed by van der Meer 1987 and Colonna 1991 (n. 42). The lar reading is contextual rather than paleographic, in late northern Etruscan script theta and rho can be visually confused."
     },
     "25": {
       "readingNote": "The inscription in the gall-bladder zone is hard to discern because of corrosion and wear on the bronze surface, which complicates the reading; editors still cite the form read as tvnθ (e.g. Maggiani 1982)."
+    },
+    "22": {
+      "readingNote": "Modern editors (Maggiani 1982, Colonna 1991) read the θ between `tins` and `neθ` as the locative ending of Tinia, so the cell names only Tinia and Nethuns. Pfiffig 1975 and Pittau 1990 instead expand the same θ as `θ(vflθas)` and read the cell as three deities (Tinia, Thufltha and Nethuns), paralleling their reading of cell 3."
     }
   },
   "deities": {
@@ -154,7 +160,7 @@
       "description": "Obscure deity connected with dedications around Lake Trasimeno. One line connects Tecum or Tece with the Trasimeno sanctuaries, Cel, and a benign local cult linked with the bronze Arringatore from Sanguineto. Another older line reads Tecum as an epithet of Menrva, because the name stands near Uni and Uni and Menrva are paired in other ritual contexts. These remain separate hypotheses."
     },
     "lusal": {
-      "description": "Debated genitive form, read either as Lusa / Lusal or as lv(r)s(l), ‘of Lurs’, referring to the prophetic god Lur. The Liber Linteus and mirror evidence make Lur a serious possibility, but the bronze is worn and the shorter Lusl / Lusa line has also been compared with obscure ancient parallels such as the Lynsa silvestris of Martianus Capella. The name should therefore stay marked as debated."
+      "description": "Debated genitive form, read either as Lusa / Lusal or as lv(r)s(l), ‘of Lurs’, referring to the prophetic god Lur. The Liber Linteus and mirror evidence make Lur a serious possibility, but the bronze is worn and the shorter Lusl / Lusa line has also been compared with obscure ancient parallels such as the Lynsa silvestris of Martianus Capella. The name should therefore stay marked as debated. Pittau 1990 proposes two further alternatives drawn from Greek epithets: Lysios, ‘the Releaser, the Liberator’, an epithet of Dionysus, or, more strikingly, Loxias, ‘the Ambiguous’, an epithet of Apollo. If the Loxias reading were correct it would also explain the otherwise puzzling absence of Apulu / Apollo from the liver, since the Etruscans certainly knew this god. Neither identification has been adopted by recent editors, but they are worth recording as part of the interpretive history."
     },
     "catha": {
       "description": "Astral deity, probably female. The evidence supports solar, lunar, underworld and childbirth associations, so a single label is risky. One strong line reads her as a female solar deity whose power extends through both the daytime sky and the underworld night journey; another argues for a lunar Catha at Pyrgi. Her association with Suri explains why Greeks could map her onto Persephone / Kore."
@@ -198,7 +204,7 @@
       }
     },
     "pul": {
-      "description": "Debated form whose interpretation affects the boundary-god reading. One reading is pul, interpreted as ‘sky’ in opposition to the adjacent metlum locative. Another questions the first letter and proposes tul(aras), an epithet of Selvans meaning ‘of the boundary’. This would connect the form to Selvans as tutor finium rather than to an independent sky term."
+      "description": "Debated form whose interpretation affects the boundary-god reading. Maggiani 1982 reads pul, interpreted as ‘sky’ in opposition to metlum locative in cell 38. Colonna 1991 questions the first letter and proposes tul(aras), an epithet of Selvans meaning ‘of the boundary’, which would connect the form to Selvans as tutor finium rather than to an independent sky term. An older line of scholarship (Körte, Pfiffig 1975, Pittau 1990) reads the cell instead as tur(ns), the genitive of Turan, the Etruscan counterpart of Venus and Aphrodite, partly to address the otherwise striking absence of so major a goddess from the liver; recent editors do not endorse this reading, but it remains the main reason the cell is sometimes cited in connection with Turan."
     },
     "lasl": {
       "description": "Lasa / Lasl: female divine attendant often linked with Turan. Fate, service and erotic-attendant roles are attested in mirror iconography, while older handbooks cited Roman Lares; current work generally treats that equivalence as misleading, preserving it only as scholarship history. One Maris scene shows a young spear-bearing Maris conversing with Tinia and a female figure labelled Lasa, which adds context but does not change the dedicated Lasa identification.",
@@ -217,7 +223,7 @@
       }
     },
     "tvnth": {
-      "description": "Uncertain deity. No firm identification has emerged in recent scholarship, and its divine status rests mainly on ritual structure."
+      "description": "Uncertain deity. No firm identification has emerged in recent scholarship, and its divine status rests mainly on ritual structure. An older interpretive line (Pfiffig 1975, Pittau 1990) expands the abbreviation as tvnθ(les), the genitive of Tyndareus, father of the Dioscuri, and reads the adjacent leθa(msl) sequences (cells 27, 32, 37) as Leda, the mother of the Dioscuri; this Greek-myth pairing is suggestive but not supported by current Etruscan scholarship, which keeps Tvnth unresolved and reads leθa(msl) as Lethams."
     },
     "hercle": {
       "description": "Major Etruscan god, equivalent of Herakles and Hercules, but in Etruria treated as a god from the beginning rather than merely as a hero. Hercle keeps the familiar lion-skin, club, bow and civilising-monster-slayer profile while developing distinct Etruscan myths: he drinks Uni's milk and becomes her adopted son; he appears in Pyrgi material connected with Ino / Leucothea and Melicertes; and he is often accompanied by Vile / Vilae, an Etruscan Iolaus figure. His cult is also strongly linked with running water, springs, lakes and water collection, including the Lago degli Idoli near the Arno source and a local myth in which Hercules creates the Ciminian lake.",

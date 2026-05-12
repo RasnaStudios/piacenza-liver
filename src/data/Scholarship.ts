@@ -260,6 +260,22 @@ export const scholarshipEntries: BibEntry[] = [
       "Religionsgeschichtliche Versuche und Vorarbeiten 3.1, Giessen: Töpelmann",
     url: "https://archive.org/details/diegtterdesma00thuluoft",
   },
+  {
+    shortRef: "Pfiffig 1975",
+    authors: "Pfiffig, A. J.",
+    year: 1975,
+    title: "Religio Etrusca",
+    venue: "Graz: Akademische Druck- und Verlagsanstalt",
+    pages: "121–127 and passim",
+  },
+  {
+    shortRef: "Pittau 1990",
+    authors: "Pittau, M.",
+    year: 1990,
+    title: "Testi Etruschi tradotti e commentati - con vocabolario",
+    venue: "Roma: Bulzoni Editore (sigla TETC, num. 719)",
+    url: "http://www.pittau.it/Etrusco/Fegato_Piacenza/fegato_piacenza.html",
+  },
 ]
 
 const ENTRY_BY_REF: Record<string, BibEntry> = Object.fromEntries(
