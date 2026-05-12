@@ -48,7 +48,7 @@
       "readingNote": "The letters are worn and damaged on the bronze, making the inscription hard to read; despite poor legibility, scholarship almost unanimously reads the form as Cels."
     },
     "17": {
-      "readingNote": "Maggiani 1982 reads `pul`; Colonna 1991 argues the first letter is a `t` rather than a `p` and reads `tul(aras)`, an epithet of Selvans. The engraved letter itself is paleographically contested. An older line of scholarship (Körte, Pfiffig 1975, Pittau 1990) instead reads the cell as `tur(ns)`, the genitive of Turan, the Etruscan counterpart of Venus / Aphrodite; this reading partly addresses the otherwise striking absence of so major a goddess from the liver, but is not endorsed by recent editors."
+      "readingNote": "The cell is read here as `tur(ns)`, the genitive of Turan, following an older line of scholarship (Körte, Pfiffig 1975, Pittau 1990) that also addresses the otherwise striking absence of so major a goddess from the liver. The reading is contested: Maggiani 1982 reads `pul`, taken as ‘sky’ in opposition to the metlum locative in cell 38; Colonna 1991 argues the first letter is a `t` rather than a `p` and proposes `tul(aras)`, an epithet of Selvans (tutor finium). The engraved letter itself is paleographically debated. Editor's note: visual inspection of the high-resolution photographs of the bronze suggests that the surviving strokes are paleographically closer to TUR than to PUL. This is a photographic observation and does not substitute for direct autopsy of the artefact."
     },
     "26": {
       "readingNote": "The engraved form after `marisl /` reads `laθ` (l-a-theta) on the bronze, exactly as Maggiani published it in 1982. In discussion Maggiani himself withdrew that reading and replaced it with `lar` (genitive of Lar / Laran), followed by van der Meer 1987 and Colonna 1991 (n. 42). The lar reading is contextual rather than paleographic, in late northern Etruscan script theta and rho can be visually confused."
@@ -203,8 +203,12 @@
         "roman": "Veiovis"
       }
     },
-    "pul": {
-      "description": "Debated form whose interpretation affects the boundary-god reading. Maggiani 1982 reads pul, interpreted as ‘sky’ in opposition to metlum locative in cell 38. Colonna 1991 questions the first letter and proposes tul(aras), an epithet of Selvans meaning ‘of the boundary’, which would connect the form to Selvans as tutor finium rather than to an independent sky term. An older line of scholarship (Körte, Pfiffig 1975, Pittau 1990) reads the cell instead as tur(ns), the genitive of Turan, the Etruscan counterpart of Venus and Aphrodite, partly to address the otherwise striking absence of so major a goddess from the liver; recent editors do not endorse this reading, but it remains the main reason the cell is sometimes cited in connection with Turan."
+    "turan": {
+      "description": "Etruscan goddess of love, desire and feminine charm, securely identified in the wider Etruscan corpus as the counterpart of Greek Aphrodite and Roman Venus. Mirror iconography presents her as a young winged goddess attended by Lasas and often paired with Atunis (Adonis). Her sphere covers seduction, fertility, marriage and the protective grace of beauty; she presides over scenes of courtship and divine pairings, and her cult is especially well attested at Gravisca, the port sanctuary of Tarquinia.",
+      "parallelNames": {
+        "roman": "Venus",
+        "greek": "Aphrodite"
+      }
     },
     "lasl": {
       "description": "Lasa / Lasl: female divine attendant often linked with Turan. Fate, service and erotic-attendant roles are attested in mirror iconography, while older handbooks cited Roman Lares; current work generally treats that equivalence as misleading, preserving it only as scholarship history. One Maris scene shows a young spear-bearing Maris conversing with Tinia and a female figure labelled Lasa, which adds context but does not change the dedicated Lasa identification.",

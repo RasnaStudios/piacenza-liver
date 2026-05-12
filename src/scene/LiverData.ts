@@ -329,17 +329,21 @@ export const liverGods: Record<string, LiverGod> = {
     sources: ["Maggiani 1982", "Colonna 1991", "Colonna 2012", "Maras 2017"],
     parallelSlots: [{ tradition: "roman", status: "proposed" }],
   },
-  pul: {
-    id: "pul",
-    name: "Pul",
+  turan: {
+    id: "turan",
+    name: "Turan",
     readingStatus: "debated",
-    identificationStatus: "debated",
+    identificationStatus: "secure",
     sources: [
       "Pfiffig 1975",
       "Maggiani 1982",
       "van der Meer 1987",
       "Colonna 1991",
       "Pittau 1990",
+    ],
+    parallelSlots: [
+      { tradition: "roman", status: "secure" },
+      { tradition: "greek", status: "secure" },
     ],
   },
   lasl: {
@@ -673,9 +677,9 @@ export const liverInscriptions: Inscription[] = [
   },
   {
     id: 17,
-    etruscanText: "𐌐𐌖𐌋",
-    transcription: "pul",
-    gods: [{ id: "pul", form: "𐌐𐌖𐌋" }],
+    etruscanText: "𐌕𐌖𐌓",
+    transcription: "tur",
+    gods: [{ id: "turan", form: "𐌕𐌖𐌓" }],
     cameraPosition: new THREE.Vector3(-1.148, 1.483, -1.119),
     cameraTarget: new THREE.Vector3(-1.078, 0.0, -0.907),
     readingStatus: "debated",

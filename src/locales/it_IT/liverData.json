@@ -48,7 +48,7 @@
       "readingNote": "Le lettere sono consumate e danneggiate sul bronzo e l'iscrizione è ardua da leggere; nondimeno gli studi leggono quasi all'unanimità la forma come Cels."
     },
     "17": {
-      "readingNote": "Maggiani 1982 legge `pul`; Colonna 1991 sostiene che la prima lettera sia una `t` e non una `p`, e legge `tul(aras)`, epiteto di Selvans. La lettera incisa è paleograficamente contestata. Una linea più antica della critica (Körte, Pfiffig 1975, Pittau 1990) legge invece la casella come `tur(ns)`, genitivo di Turan, controparte etrusca di Venere / Afrodite; questa lettura risolverebbe in parte l'altrimenti sorprendente assenza di una dea così importante dal fegato, ma non è sostenuta dagli editori recenti."
+      "readingNote": "La casella è qui letta come `tur(ns)`, genitivo di Turan, sulla scia di una linea più antica della critica (Körte, Pfiffig 1975, Pittau 1990) che risolverebbe anche l'altrimenti sorprendente assenza di una dea così importante dal fegato. La lettura è contestata: Maggiani 1982 legge `pul`, inteso come ‘cielo’ in opposizione alla sequenza locativa metlum nella cella 38; Colonna 1991 sostiene che la prima lettera sia una `t` e non una `p`, e propone `tul(aras)`, epiteto di Selvans (tutor finium). La lettera incisa è paleograficamente discussa. NDR: l'esame visivo delle fotografie ad alta risoluzione del bronzo suggerisce che i tratti superstiti siano paleograficamente più vicini a TUR che a PUL. Si tratta di un'osservazione condotta sulle fotografie e non sostituisce l'autopsia diretta del reperto."
     },
     "26": {
       "readingNote": "La forma incisa dopo `marisl /` è `laθ` (l-a-theta) sul bronzo, esattamente come pubblicata da Maggiani nel 1982. In sede di discussione Maggiani stesso ha ritirato quella lettura sostituendola con `lar` (genitivo di Lar / Laran), seguito da van der Meer 1987 e Colonna 1991 (n. 42). La lettura `lar` è contestuale più che paleografica, nella tarda scrittura etrusca settentrionale theta e rho possono confondersi visivamente."
@@ -203,8 +203,12 @@
         "roman": "Veiove"
       }
     },
-    "pul": {
-      "description": "Forma discussa la cui interpretazione condiziona la lettura del dio dei confini. Maggiani 1982 legge pul, interpretato come ‘cielo’ in opposizione alla sequenza locativa metlum in cella 38. Colonna 1991 mette in dubbio la lettura, sostenendo che la prima lettera potrebbe essere una t invece che una p, e propone tul(aras), epiteto di Selvans (tutor finium). Una linea più antica della critica (Körte, Pfiffig 1975, Pittau 1990) legge invece la casella come tur(ns), genitivo di Turan, controparte etrusca di Venere e Afrodite, anche per colmare l'altrimenti sorprendente assenza di una dea così importante dal fegato; gli editori recenti non sostengono questa lettura, ma resta il motivo principale per cui la casella viene talvolta associata a Turan."
+    "turan": {
+      "description": "Dea etrusca dell'amore, del desiderio e del fascino femminile, identificata con sicurezza nel corpus etrusco come controparte dell'Afrodite greca e della Venere romana. L'iconografia degli specchi la presenta come giovane dea alata, attorniata dalle Lase e spesso accoppiata ad Atunis (Adone). La sua sfera comprende seduzione, fertilità, matrimonio e la grazia protettrice della bellezza; presiede a scene di corteggiamento e ad accoppiamenti divini, e il suo culto è particolarmente ben attestato a Gravisca, porto santuariale di Tarquinia.",
+      "parallelNames": {
+        "roman": "Venere",
+        "greek": "Afrodite"
+      }
     },
     "lasl": {
       "description": "Lasa / Lasl: assistente divina femminile spesso collegata a Turan; ruoli legati al fato e al servizio sono attestati nell'iconografia degli specchi (Krauskopf 2013). I manuali più antichi citavano i Lares romani; il confronto è oggi in genere ritenuto fuorviante, pur essendo mantenuto come storia degli studi (parallelo segnato come superato, Krauskopf 2013).",
