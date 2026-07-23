@@ -30,7 +30,10 @@ import { About } from "./ui/components/About"
 import { ActionButtons } from "./ui/components/ActionButtons"
 import { ActionMenu } from "./ui/components/ActionMenu"
 import { BraveDisclaimer } from "./ui/components/BraveDisclaimer"
-import { HoverTooltip } from "./ui/components/HoverTooltip"
+import {
+  HoverTooltip,
+  type HoverTooltipHandle,
+} from "./ui/components/HoverTooltip"
 import { ResetInstruction } from "./ui/components/ResetInstruction"
 // UI Components
 import { DeityPanel } from "./ui/DeityPanel"
@@ -73,11 +76,6 @@ function PiacenzaLiverScene({
   const [isInteracting, setIsInteracting] = useState(false)
   const [isSceneReady, setIsSceneReady] = useState(false)
   const [isIntroTransitioning, setIsIntroTransitioning] = useState(false)
-  const [immediateMousePosition, setImmediateMousePosition] = useState({
-    x: 0,
-    y: 0,
-    isOverCanvas: true,
-  })
   const [isMouseOverPanel, setIsMouseOverPanel] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [viewportKey, setViewportKey] = useState(0)
@@ -104,6 +102,7 @@ function PiacenzaLiverScene({
   const cameraControllerRef = useRef<CameraController | null>(null)
   const liverModelRef = useRef<LiverModel | null>(null)
   const interactionManagerRef = useRef<InteractionManager | null>(null)
+  const hoverTooltipRef = useRef<HoverTooltipHandle | null>(null)
 
   // Animation frame ref
   const animationIdRef = useRef<number | null>(null)
@@ -552,20 +551,11 @@ function PiacenzaLiverScene({
     setHasViewChanged(true)
   }, [hasInteracted, setHasInteracted, interactionMode])
 
-  // Mouse move handler with throttling to match raycast timing
-  const mouseMoveTimeoutRef = useRef<number | null>(null)
+  // Keep tooltip position on the DOM — avoid re-rendering the scene tree
+  // on every mousemove.
   const handleMouseMove = useCallback(
     (position: { x: number; y: number }, isOverCanvas: boolean) => {
-      // Clear existing timeout
-      if (mouseMoveTimeoutRef.current) {
-        clearTimeout(mouseMoveTimeoutRef.current)
-      }
-
-      // Throttle updates
-      mouseMoveTimeoutRef.current = window.setTimeout(() => {
-        setImmediateMousePosition({ ...position, isOverCanvas })
-        mouseMoveTimeoutRef.current = null
-      }, SceneConfig.performance.raycastThrottleMs)
+      hoverTooltipRef.current?.setPointer(position.x, position.y, isOverCanvas)
     },
     [],
   )
@@ -948,12 +938,6 @@ function PiacenzaLiverScene({
         introTimeoutRef.current = null
       }
 
-      // Clear mouse move timeout
-      if (mouseMoveTimeoutRef.current) {
-        clearTimeout(mouseMoveTimeoutRef.current)
-        mouseMoveTimeoutRef.current = null
-      }
-
       cameraController?.dispose()
       liverModelRef.current?.dispose()
       interactionManagerRef.current?.dispose()
@@ -1181,8 +1165,8 @@ function PiacenzaLiverScene({
         </section>
 
         <HoverTooltip
+          ref={hoverTooltipRef}
           hoveredSection={hoveredSection}
-          mousePosition={immediateMousePosition}
           isPanelOpen={isInscriptionMode}
           isModifierKeyPressed={isModifierKeyPressed}
           isMouseOverPanel={isMouseOverPanel}
