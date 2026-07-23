@@ -721,8 +721,7 @@ function PiacenzaLiverScene({
       window as unknown as { __threeRenderer?: THREE.WebGLRenderer }
     ).__threeRenderer = renderer
     const controls = new OrbitControls(camera, renderer.domElement)
-    controls.enableDamping = true
-    controls.dampingFactor = 0.05
+    controls.enableDamping = false
     controls.maxPolarAngle = Math.PI
     controls.minDistance = 1.5
     controls.maxDistance = 10
