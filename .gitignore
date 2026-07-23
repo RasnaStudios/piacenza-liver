@@ -43,3 +43,4 @@ venv/
 .pnpm-store
 node_modules
 .cache/
+*.tsbuildinfo
