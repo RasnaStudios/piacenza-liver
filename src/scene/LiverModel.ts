@@ -41,9 +41,10 @@ export class LiverModel {
     return { ...this.atlasTweak }
   }
 
-  // Offscreen canvas for CPU-side sampling of the segmentation mask
-  private maskCanvas: HTMLCanvasElement | null = null
-  private maskCtx: CanvasRenderingContext2D | null = null
+  // CPU-side segmentation mask for inscription picking. Drawn once into a
+  // canvas at load, then copied into a compact red-channel buffer so hover
+  // raycasts never call getImageData per sample.
+  private maskIds: Uint8Array | null = null
   private maskWidth = 0
   private maskHeight = 0
 
@@ -314,30 +315,34 @@ export class LiverModel {
         this.labelToTile[n] = { row: labelsObj[k].row, col: labelsObj[k].col }
       })
 
-      // Prepare offscreen canvas for mask sampling. We can downsample the
-      // 4096² mask to 1024² with no measurable accuracy loss for the inscription
-      // picker — the labelled regions are large patches, not pixel features.
-      // 16× less memory for the canvas and 16× faster getImageData calls.
+      // Prepare a compact CPU mask buffer. We downsample the 4096² mask to
+      // 1024² with no measurable accuracy loss for the inscription picker —
+      // the labelled regions are large patches, not pixel features.
       if (maskImage.width && maskImage.height) {
         const downscale = 4
         this.maskWidth = Math.max(1, Math.floor(maskImage.width / downscale))
         this.maskHeight = Math.max(1, Math.floor(maskImage.height / downscale))
-        this.maskCanvas = document.createElement("canvas")
-        this.maskCanvas.width = this.maskWidth
-        this.maskCanvas.height = this.maskHeight
-        this.maskCtx = this.maskCanvas.getContext("2d", {
+        const maskCanvas = document.createElement("canvas")
+        maskCanvas.width = this.maskWidth
+        maskCanvas.height = this.maskHeight
+        const maskCtx = maskCanvas.getContext("2d", {
           willReadFrequently: true,
         })
-        if (this.maskCtx) {
+        if (maskCtx) {
           // Use nearest-neighbor when downsampling so label IDs are not blended.
-          this.maskCtx.imageSmoothingEnabled = false
-          this.maskCtx.drawImage(
-            maskImage,
+          maskCtx.imageSmoothingEnabled = false
+          maskCtx.drawImage(maskImage, 0, 0, this.maskWidth, this.maskHeight)
+          const rgba = maskCtx.getImageData(
             0,
             0,
             this.maskWidth,
             this.maskHeight,
-          )
+          ).data
+          const ids = new Uint8Array(this.maskWidth * this.maskHeight)
+          for (let i = 0, j = 0; i < rgba.length; i += 4, j++) {
+            ids[j] = rgba[i]
+          }
+          this.maskIds = ids
         }
       }
 
@@ -513,8 +518,9 @@ export class LiverModel {
   }
 
   getMaskTexture() {
-    // Return the segmentation mask texture used for UV-based inscription picking
-    return this.maskCanvas ? { image: this.maskCanvas } : null
+    // Truthy presence check for hover raycasting; the buffer itself is used
+    // by getInscriptionAtUV.
+    return this.maskIds
   }
 
   setHoveredInscription(inscriptionId: number) {
@@ -639,13 +645,7 @@ export class LiverModel {
   }
 
   getInscriptionAtUV(_u: number, _v: number): number {
-    if (
-      !this.maskCtx ||
-      !this.maskCanvas ||
-      this.maskWidth === 0 ||
-      this.maskHeight === 0
-    )
-      return 0
+    if (!this.maskIds || this.maskWidth === 0 || this.maskHeight === 0) return 0
     // Clamp uv to [0,1]
     const u = Math.min(1, Math.max(0, _u))
     const v = Math.min(1, Math.max(0, _v))
@@ -658,9 +658,7 @@ export class LiverModel {
       this.maskHeight - 1,
       Math.max(0, Math.floor((1 - v) * this.maskHeight)),
     )
-    const data = this.maskCtx.getImageData(x, y, 1, 1).data
-    const id = data[0] // red channel encodes id 0..255
-    return id
+    return this.maskIds[y * this.maskWidth + x]
   }
 
   getModelMatrix(): THREE.Matrix4 {
@@ -718,8 +716,9 @@ export class LiverModel {
     })
     this.textureCloneCache.clear()
 
-    this.maskCanvas = null
-    this.maskCtx = null
+    this.maskIds = null
+    this.maskWidth = 0
+    this.maskHeight = 0
   }
 
   // Pulse animation - only runs once on initial load
