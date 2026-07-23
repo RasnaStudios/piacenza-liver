@@ -7,6 +7,7 @@ export const useOrientation = () => {
   )
 
   useEffect(() => {
+    const timeoutIds: number[] = []
     const updateOrientation = () => {
       const newIsPortrait = window.innerHeight > window.innerWidth
       setIsPortrait(newIsPortrait)
@@ -14,9 +15,9 @@ export const useOrientation = () => {
 
     const handleOrientationChange = () => {
       // Multiple timeouts to catch different timing scenarios
-      setTimeout(updateOrientation, 0)
-      setTimeout(updateOrientation, 100)
-      setTimeout(updateOrientation, 300)
+      timeoutIds.push(window.setTimeout(updateOrientation, 0))
+      timeoutIds.push(window.setTimeout(updateOrientation, 100))
+      timeoutIds.push(window.setTimeout(updateOrientation, 300))
     }
 
     window.addEventListener("resize", updateOrientation)
@@ -30,6 +31,9 @@ export const useOrientation = () => {
       window.removeEventListener("resize", updateOrientation)
       window.removeEventListener("orientationchange", handleOrientationChange)
       observer.disconnect()
+      timeoutIds.forEach((id) => {
+        clearTimeout(id)
+      })
     }
   }, [])
 

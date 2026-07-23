@@ -1,6 +1,5 @@
 import { gsap } from "gsap"
 import * as THREE from "three"
-import type { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader.js"
 import objUrl from "../assets/liver-model/Fegato.obj"
 import baseColorUrl from "../assets/liver-model/Fegato_baseColor.jpg"
@@ -18,6 +17,8 @@ export class LiverModel {
   private mesh: THREE.Mesh | null = null
   private object: THREE.Object3D | null = null
   private onProgress?: (progress: number) => void
+  private onError?: (error: unknown) => void
+  private onRenderRequired?: () => void
   private loadingManager: THREE.LoadingManager
   private lastProgress: number = 0
   private liverCenter: THREE.Vector3 = new THREE.Vector3(0, 0, 0)
@@ -88,9 +89,14 @@ export class LiverModel {
   // 4 GPU textures (base, normal, ORM, atlas) + 1 raw mask image + 1 OBJ + 1 font = 7
   private totalAssets = 7
 
-  constructor(scene: THREE.Scene, onProgress?: (progress: number) => void) {
+  constructor(
+    scene: THREE.Scene,
+    onProgress?: (progress: number) => void,
+    onError?: (error: unknown) => void,
+  ) {
     this.scene = scene
     this.onProgress = onProgress
+    this.onError = onError
     this.loadingManager = new THREE.LoadingManager()
 
     if (!this.checkWebGLSupport()) {
@@ -98,7 +104,7 @@ export class LiverModel {
       throw new Error("WebGL not supported")
     }
 
-    this.loadLiverModel()
+    void this.loadLiverModel().catch((error) => this.onError?.(error))
   }
 
   private checkWebGLSupport(): boolean {
@@ -180,14 +186,6 @@ export class LiverModel {
   // Getter for the calculated liver center
   getLiverCenter(): THREE.Vector3 {
     return this.liverCenter.clone()
-  }
-
-  // Method to reset camera target to liver center
-  resetCameraToCenter(controls?: OrbitControls) {
-    if (this.liverCenter && controls) {
-      controls.target.copy(this.liverCenter)
-      console.log("Camera target reset to liver center:", this.liverCenter)
-    }
   }
 
   private markAssetLoaded() {
@@ -471,16 +469,18 @@ export class LiverModel {
       object.visible = true
       this.calculateLiverCenter()
 
-      ;(
-        window as typeof window & {
-          liverAtlas?: {
-            set: (t: Partial<AtlasTweak>) => void
-            get: () => AtlasTweak
+      if (import.meta.env.DEV) {
+        ;(
+          window as typeof window & {
+            liverAtlas?: {
+              set: (t: Partial<AtlasTweak>) => void
+              get: () => AtlasTweak
+            }
           }
+        ).liverAtlas = {
+          set: (t: Partial<AtlasTweak>) => this.setAtlasTweak(t),
+          get: () => this.getAtlasTweak(),
         }
-      ).liverAtlas = {
-        set: (t: Partial<AtlasTweak>) => this.setAtlasTweak(t),
-        get: () => this.getAtlasTweak(),
       }
 
       // Complete load
@@ -518,13 +518,17 @@ export class LiverModel {
   }
 
   setHoveredInscription(inscriptionId: number) {
+    if (this.currentHoveredId === inscriptionId) return
     this.currentHoveredId = inscriptionId
     this.updateHoveredHighlight()
+    this.onRenderRequired?.()
   }
 
   setSelectedInscription(inscriptionId: number) {
+    if (this.currentSelectedId === inscriptionId) return
     this.currentSelectedId = inscriptionId
     this.updateSelectedHighlight()
+    this.onRenderRequired?.()
   }
 
   getSelectedInscriptionId(): number {
@@ -667,6 +671,10 @@ export class LiverModel {
     this.onModelReady = callback
   }
 
+  setOnRenderRequired(callback: () => void) {
+    this.onRenderRequired = callback
+  }
+
   dispose() {
     // Use Three.js traverse to dispose of all meshes and materials
     const disposeObject = (obj: THREE.Object3D | null) => {
@@ -726,6 +734,10 @@ export class LiverModel {
     let index = 0
     const maxConcurrentMeshes = 5 // Limit concurrent meshes
 
+    const requestPulseRender = () => {
+      this.onRenderRequired?.()
+    }
+
     const addNext = () => {
       if (index >= inscriptions.length) {
         return
@@ -765,6 +777,7 @@ export class LiverModel {
 
       ;(this.mesh?.parent || this.scene).add(mesh)
       overlays.push(mesh)
+      requestPulseRender()
 
       // Fade out this inscription after TRAIL_DURATION
       setTimeout(() => {
@@ -772,9 +785,11 @@ export class LiverModel {
           opacity: 0,
           duration: config.individualFadeDuration,
           ease: "power2.in",
+          onUpdate: requestPulseRender,
           onComplete: () => {
             ;(mesh.parent || this.scene).remove(mesh)
             material.dispose()
+            requestPulseRender()
           },
         })
       }, config.trailDuration)

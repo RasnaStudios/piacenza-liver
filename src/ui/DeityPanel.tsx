@@ -1,7 +1,7 @@
 import { Box, Drawer, Paper, Stack, Title } from "@mantine/core"
 import { useMediaQuery } from "@mantine/hooks"
 import { useDrag } from "@use-gesture/react"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useOrientation } from "../hooks/useOrientation"
 import {
@@ -95,14 +95,15 @@ export function DeityPanel({
     return panelHeight
   }
 
-  // Reset to lower third when new inscription is selected
-  if (
-    selectedInscription &&
-    selectedInscription.id !== prevInscriptionId.current
-  ) {
-    setPanelHeight(33)
-    prevInscriptionId.current = selectedInscription.id
-  }
+  useEffect(() => {
+    if (
+      selectedInscription &&
+      selectedInscription.id !== prevInscriptionId.current
+    ) {
+      setPanelHeight(33)
+      prevInscriptionId.current = selectedInscription.id
+    }
+  }, [selectedInscription])
 
   if (!selectedInscription) return null
 

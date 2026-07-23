@@ -19,12 +19,8 @@ const getFinalCameraPosition = () => {
 export class CameraController {
   private camera: THREE.Camera
   private controls: OrbitControls
-  private lastManualPosition: THREE.Vector3
-  private lastManualTarget: THREE.Vector3
   private isAnimating: boolean
-  private currentAnimationId: string | null
   private originalControlsEnabled: boolean
-  private originalEnableDamping: boolean
   private controlsTemporarilyDisabled: boolean
   private currentTween: gsap.core.Tween | null = null
 
@@ -32,29 +28,14 @@ export class CameraController {
     this.camera = camera
     this.controls = controls
 
-    // Track user's manual positions
-    // Use final camera position from config
-    const endPos = getFinalCameraPosition()
-    const endTarget = new THREE.Vector3(0, 0, 0)
-    this.lastManualPosition = endPos
-    this.lastManualTarget = endTarget
-
-    // Animation state
     this.isAnimating = false
-    this.currentAnimationId = null
     this.originalControlsEnabled = controls.enabled
-    this.originalEnableDamping = controls.enableDamping
     this.controlsTemporarilyDisabled = false
 
     // Bind methods
-    this.handleControlsChange = this.handleControlsChange.bind(this)
     this.handleControlsStart = this.handleControlsStart.bind(this)
-    this.handleControlsEnd = this.handleControlsEnd.bind(this)
 
-    // Listen for manual camera movements
-    this.controls.addEventListener("change", this.handleControlsChange)
     this.controls.addEventListener("start", this.handleControlsStart)
-    this.controls.addEventListener("end", this.handleControlsEnd)
   }
 
   private ensureSafeEndPose(
@@ -91,23 +72,6 @@ export class CameraController {
     }
   }
 
-  // Handle when user stops manual control
-  handleControlsEnd() {
-    // Update manual position when user finishes controlling
-    if (!this.isAnimating) {
-      this.lastManualPosition.copy(this.camera.position)
-      this.lastManualTarget.copy(this.controls.target)
-    }
-  }
-
-  // Track manual camera movements (only when not animating)
-  handleControlsChange() {
-    if (!this.isAnimating) {
-      this.lastManualPosition.copy(this.camera.position)
-      this.lastManualTarget.copy(this.controls.target)
-    }
-  }
-
   // Animate camera to focus on a specific position with panel-aware positioning and proper text orientation
   focusOn(
     targetPosition: THREE.Vector3,
@@ -119,10 +83,6 @@ export class CameraController {
   ) {
     // Stop any existing animation first
     this.stopAnimation()
-
-    // Store current position before animating
-    this.lastManualPosition.copy(this.camera.position)
-    this.lastManualTarget.copy(this.controls.target)
 
     // TODO: Use isPanelOpen for panel-aware camera positioning
     // Currently unused but reserved for future panel positioning logic
@@ -152,9 +112,7 @@ export class CameraController {
 
     // Temporarily disable controls to avoid fighting during animation
     this.originalControlsEnabled = this.controls.enabled
-    this.originalEnableDamping = this.controls.enableDamping
     this.controls.enabled = false
-    this.controls.enableDamping = false
     this.controlsTemporarilyDisabled = true
     this.isAnimating = true
 
@@ -172,13 +130,12 @@ export class CameraController {
           // Simple lerp for position and target
           this.camera.position.lerpVectors(startPosition, endPosition, t)
           this.controls.target.lerpVectors(startTarget, endTarget, t)
+          this.controls.update()
         },
         onComplete: () => {
           this.isAnimating = false
-          this.currentAnimationId = null
           if (this.controlsTemporarilyDisabled) {
             this.controls.enabled = this.originalControlsEnabled
-            this.controls.enableDamping = this.originalEnableDamping
             this.controlsTemporarilyDisabled = false
           }
           this.controls.update()
@@ -191,59 +148,6 @@ export class CameraController {
     this.isAnimating = true
     this.currentTween = tween
     return "camera-focus-gsap"
-  }
-
-  // Intro camera animation
-  playIntroAnimation(onComplete?: () => void, finalTarget?: THREE.Vector3) {
-    this.stopAnimation()
-
-    const startPos = this.camera.position.clone()
-    const endPos = getFinalCameraPosition()
-    const endTarget = finalTarget?.clone() || new THREE.Vector3(0, 0, 0)
-
-    // Start with the camera looking at the origin, then smoothly transition to the liver center
-    const startTarget = new THREE.Vector3(0, 0, 0)
-    const duration = SceneConfig.camera.animationDuration
-
-    this.isAnimating = true
-    const tween = gsap.to(
-      { t: 0 },
-      {
-        t: 1,
-        duration: duration / 1000,
-        ease: "power2.inOut",
-        onUpdate: () => {
-          if (this.currentTween !== tween || !this.isAnimating) return
-          const t = (tween.targets()[0] as { t: number }).t
-
-          const tempCameraPos = new THREE.Vector3().lerpVectors(
-            startPos,
-            endPos,
-            t,
-          )
-          const tempTargetPos = new THREE.Vector3().lerpVectors(
-            startTarget,
-            endTarget,
-            t,
-          )
-
-          this.camera.position.copy(tempCameraPos)
-          this.controls.target.copy(tempTargetPos)
-          this.controls.update()
-        },
-        onComplete: () => {
-          if (this.currentTween !== tween) return
-          this.isAnimating = false
-          this.currentTween = null
-          this.lastManualPosition.copy(endPos)
-          this.lastManualTarget.copy(endTarget)
-          if (onComplete) onComplete()
-        },
-      },
-    )
-    this.currentTween = tween
-    this.currentAnimationId = "camera-intro-gsap"
-    return "camera-intro-gsap"
   }
 
   // Reset camera and model to default positions
@@ -260,9 +164,6 @@ export class CameraController {
     const endPosition = getFinalCameraPosition()
     const endTarget =
       liverModel?.getLiverCenter().clone() || new THREE.Vector3(0, 0, 0)
-
-    this.lastManualPosition.copy(endPosition)
-    this.lastManualTarget.copy(endTarget)
 
     let modelAnimation: ((t: number) => void) | null = null
 
@@ -345,7 +246,6 @@ export class CameraController {
       },
     )
     this.currentTween = tween
-    this.currentAnimationId = "camera-reset-gsap"
     return "camera-reset-gsap"
   }
 
@@ -362,9 +262,6 @@ export class CameraController {
     const endPosition = target
       .clone()
       .add(direction.multiplyScalar(targetDistance))
-
-    this.lastManualPosition.copy(endPosition)
-    this.lastManualTarget.copy(target)
 
     this.isAnimating = true
     const tween = gsap.to(
@@ -395,7 +292,6 @@ export class CameraController {
       },
     )
     this.currentTween = tween
-    this.currentAnimationId = "camera-pullback-gsap"
     return "camera-pullback-gsap"
   }
 
@@ -406,12 +302,10 @@ export class CameraController {
       this.currentTween = null
     }
     this.isAnimating = false
-    this.currentAnimationId = null
 
     // Always restore controls state if we temporarily disabled them
     if (this.controlsTemporarilyDisabled) {
       this.controls.enabled = this.originalControlsEnabled
-      this.controls.enableDamping = this.originalEnableDamping
       this.controlsTemporarilyDisabled = false
     }
 
@@ -419,21 +313,9 @@ export class CameraController {
     this.controls.update()
   }
 
-  // Get current animation ID for external checks
-  getCurrentAnimationId(): string | null {
-    return this.currentAnimationId
-  }
-
-  // Check if currently animating
-  isCurrentlyAnimating(): boolean {
-    return this.isAnimating
-  }
-
   // Cleanup
   dispose() {
-    this.controls.removeEventListener("change", this.handleControlsChange)
     this.controls.removeEventListener("start", this.handleControlsStart)
-    this.controls.removeEventListener("end", this.handleControlsEnd)
     this.stopAnimation()
   }
 }

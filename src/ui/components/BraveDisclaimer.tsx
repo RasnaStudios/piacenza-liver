@@ -54,9 +54,11 @@ export function BraveDisclaimer() {
 
     // Since shield detection is unreliable, just show for all Brave users
     // but make it less intrusive by showing after a delay
-    setTimeout(() => {
+    const timeoutId = window.setTimeout(() => {
       setShowModal(true)
     }, 2000)
+
+    return () => clearTimeout(timeoutId)
   }, [])
 
   const handleDismiss = () => {

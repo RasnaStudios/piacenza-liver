@@ -24,6 +24,7 @@ export interface InteractionCallbacks {
   onModifierKeyChange: (isPressed: boolean) => void
   onReset: () => void
   onViewChange: () => void
+  onRenderRequired: () => void
 }
 
 export class InteractionManager {
@@ -83,6 +84,7 @@ export class InteractionManager {
   private boundHandleTouchMove: (event: TouchEvent) => void
   private boundHandleTouchEnd: (event: TouchEvent) => void
   private boundHandleDoubleClick: (event: MouseEvent) => void
+  private boundHandleWheel: (event: WheelEvent) => void
 
   constructor(
     renderer: THREE.WebGLRenderer,
@@ -111,6 +113,7 @@ export class InteractionManager {
     this.boundHandleTouchMove = this.handleTouchMove.bind(this)
     this.boundHandleTouchEnd = this.handleTouchEnd.bind(this)
     this.boundHandleDoubleClick = this.handleDoubleClick.bind(this)
+    this.boundHandleWheel = this.handleWheel.bind(this)
 
     this.setupEventListeners()
   }
@@ -137,7 +140,7 @@ export class InteractionManager {
     })
 
     // Wheel event
-    domElement.addEventListener("wheel", this.handleWheel.bind(this), {
+    domElement.addEventListener("wheel", this.boundHandleWheel, {
       passive: true,
     })
 
@@ -149,10 +152,7 @@ export class InteractionManager {
   }
 
   private updateMode() {
-    const shouldBeInNavigationMode =
-      this.isShiftPressed ||
-      this.isRotatingModel ||
-      (this.isShiftPressed && this.isMetaPressed)
+    const shouldBeInNavigationMode = this.isShiftPressed || this.isRotatingModel
 
     const newMode = shouldBeInNavigationMode
       ? InteractionManagerMode.ModelNavigation
@@ -182,6 +182,23 @@ export class InteractionManager {
   private _rotQY = new THREE.Quaternion()
   private _rotQX = new THREE.Quaternion()
   private _rotCombined = new THREE.Quaternion()
+  private hasRotationPivot = false
+  private modelRotationNotified = false
+
+  private beginModelRotation(): void {
+    const liverObject = this.liverModel.getObject()
+    if (!liverObject) return
+
+    liverObject.updateMatrixWorld(false)
+    this._rotBox.makeEmpty().setFromObject(liverObject)
+    this._rotBox.getCenter(this._rotCenter)
+    this.hasRotationPivot = true
+    this.modelRotationNotified = false
+  }
+
+  private endModelRotation(): void {
+    this.hasRotationPivot = false
+  }
 
   private rotateModelAroundCenter(
     deltaX: number,
@@ -194,8 +211,9 @@ export class InteractionManager {
     liverObject.updateMatrixWorld(false)
     this.camera.updateMatrixWorld(false)
 
-    this._rotBox.makeEmpty().setFromObject(liverObject)
-    this._rotBox.getCenter(this._rotCenter)
+    if (!this.hasRotationPivot) {
+      this.beginModelRotation()
+    }
 
     liverObject.getWorldPosition(this._rotWorldPos)
     this._rotOffset.copy(this._rotWorldPos).sub(this._rotCenter)
@@ -217,7 +235,11 @@ export class InteractionManager {
 
     liverObject.position.add(this._rotOffset)
     liverObject.updateMatrixWorld(true)
-    this.callbacks.onModelRotate()
+    this.callbacks.onRenderRequired()
+    if (!this.modelRotationNotified) {
+      this.modelRotationNotified = true
+      this.callbacks.onModelRotate()
+    }
   }
 
   private hasMovedBeyondThreshold(
@@ -240,6 +262,7 @@ export class InteractionManager {
     // Check if Shift is pressed for model rotation
     if (this.isShiftPressed) {
       this.isRotatingModel = true
+      this.beginModelRotation()
       this.controls.enabled = false // Disable camera controls
       this.updateMode()
       event.preventDefault()
@@ -250,6 +273,7 @@ export class InteractionManager {
     if (!this.interactionEnabled) return
     if (this.isRotatingModel) {
       this.isRotatingModel = false
+      this.endModelRotation()
       this.controls.enabled = true // Re-enable camera controls
       // If we moved during rotation, mark that we shouldn't process clicks
       if (this.hasMovedDuringRotation) {
@@ -407,6 +431,7 @@ export class InteractionManager {
       modifierChanged = true
       if (this.isRotatingModel) {
         this.isRotatingModel = false
+        this.endModelRotation()
         this.controls.enabled = true
       }
     }
@@ -564,6 +589,7 @@ export class InteractionManager {
     if (event.touches.length === 3) {
       // 3-finger touch for model rotation
       this.isThreeFingerTouch = true
+      this.beginModelRotation()
       this.isMultiTouch = false
       const touch = event.touches[0] // Use first touch as reference
       this.lastThreeFingerPosition = { x: touch.clientX, y: touch.clientY }
@@ -666,6 +692,7 @@ export class InteractionManager {
     // Reset 3-finger touch state
     if (this.isThreeFingerTouch) {
       this.isThreeFingerTouch = false
+      this.endModelRotation()
       this.lastThreeFingerPosition = null
       this.touchStartPosition = null
       this.touchMovedDuringTouch = false
@@ -774,12 +801,12 @@ export class InteractionManager {
     }
   }
 
-  public isCurrentlyPanningOrRotating(): boolean {
-    return this.isPanningOrRotating
-  }
-
   public setInitialCameraDistance(distance: number) {
     this.initialCameraDistance = distance
+  }
+
+  public updateCallbacks(callbacks: InteractionCallbacks) {
+    this.callbacks = callbacks
   }
 
   public setIntroAnimationMode(enabled: boolean) {
@@ -795,6 +822,7 @@ export class InteractionManager {
     if (!enabled) {
       this.isPanningOrRotating = false
       this.isRotatingModel = false
+      this.endModelRotation()
       this.isShiftPressed = false
       this.isMetaPressed = false
       this.mouseDownPosition = null
@@ -934,7 +962,7 @@ export class InteractionManager {
     domElement.removeEventListener("touchend", this.boundHandleTouchEnd)
 
     // Wheel event
-    domElement.removeEventListener("wheel", this.handleWheel.bind(this))
+    domElement.removeEventListener("wheel", this.boundHandleWheel)
 
     // Keyboard and control events
     window.removeEventListener("keydown", this.boundHandleKeyDown)
