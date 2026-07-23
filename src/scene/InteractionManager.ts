@@ -896,7 +896,7 @@ export class InteractionManager {
 
   private performHoverRaycast(clientX: number, clientY: number) {
     if (!this.hoverEnabled || !this.interactionEnabled) return
-    if (!this.liverModel.getMaskTexture()) return
+    if (!this.liverModel.hasMaskIds()) return
 
     // Disable hover highlighting in model navigation mode
     if (this.currentMode === InteractionManagerMode.ModelNavigation) {

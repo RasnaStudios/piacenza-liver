@@ -25,8 +25,12 @@ const inscriptionPoseWriter = {
           res.end("Pose writer is disabled")
           return
         }
-        const address = req.socket.remoteAddress
-        if (address !== "::1" && address !== "127.0.0.1") {
+        const address = req.socket.remoteAddress ?? ""
+        const isLocalhost =
+          address === "::1" ||
+          address === "127.0.0.1" ||
+          address === "::ffff:127.0.0.1"
+        if (!isLocalhost) {
           res.statusCode = 403
           res.end("Pose writer only accepts localhost requests")
           return
@@ -34,9 +38,11 @@ const inscriptionPoseWriter = {
 
         try {
           let body = ""
+          let bodyBytes = 0
           let bodyTooLarge = false
           req.on("data", (chunk: Buffer) => {
-            if (body.length + chunk.length > 16 * 1024) {
+            bodyBytes += chunk.length
+            if (bodyBytes > 16 * 1024) {
               bodyTooLarge = true
               return
             }
