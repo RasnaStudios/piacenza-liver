@@ -14,6 +14,10 @@ export const useOrientation = () => {
     }
 
     const handleOrientationChange = () => {
+      for (const id of timeoutIds) {
+        clearTimeout(id)
+      }
+      timeoutIds.length = 0
       // Multiple timeouts to catch different timing scenarios
       timeoutIds.push(window.setTimeout(updateOrientation, 0))
       timeoutIds.push(window.setTimeout(updateOrientation, 100))
