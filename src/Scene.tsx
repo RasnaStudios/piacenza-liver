@@ -70,7 +70,6 @@ function PiacenzaLiverScene({
   const [hoveredSection, setHoveredSection] = useState<HoveredSection | null>(
     null,
   )
-  const [isInteracting, setIsInteracting] = useState(false)
   const [isSceneReady, setIsSceneReady] = useState(false)
   const [isIntroTransitioning, setIsIntroTransitioning] = useState(false)
   const [immediateMousePosition, setImmediateMousePosition] = useState({
@@ -107,17 +106,15 @@ function PiacenzaLiverScene({
 
   // Animation frame ref
   const animationIdRef = useRef<number | null>(null)
-
-  // Timeout refs to prevent panel re-opening after reset
-  const panelTimeoutRef = useRef<number | null>(null)
+  const renderRequestedRef = useRef(true)
 
   // Click debouncing to prevent rapid clicks
   const lastClickTimeRef = useRef<number>(0)
   const clickDebounceDelay = 300 // 300ms debounce
-  const introTimeoutRef = useRef<number | null>(null)
   const initialAnimationTriggeredRef = useRef<boolean>(false)
   const initialCameraDistanceRef = useRef<number | null>(null)
   const initialCameraTargetRef = useRef<THREE.Vector3 | null>(null)
+  const hashNavigationTimeoutRef = useRef<number | null>(null)
 
   const getIntroPose = useCallback(() => {
     const aspect = window.innerWidth / window.innerHeight
@@ -190,13 +187,6 @@ function PiacenzaLiverScene({
       }
 
       setHoveredSection(section)
-      if (liverModelRef.current) {
-        if (section?.id) {
-          liverModelRef.current.setHoveredInscription(section.id)
-        } else {
-          liverModelRef.current.setHoveredInscription(0)
-        }
-      }
     },
     [interactionMode],
   )
@@ -262,16 +252,6 @@ function PiacenzaLiverScene({
   const handleReset = useCallback(() => {
     if (!cameraControllerRef.current) return
 
-    // Clear any pending panel timeout to prevent re-opening after reset
-    if (panelTimeoutRef.current) {
-      clearTimeout(panelTimeoutRef.current)
-      panelTimeoutRef.current = null
-    }
-    if (introTimeoutRef.current) {
-      clearTimeout(introTimeoutRef.current)
-      introTimeoutRef.current = null
-    }
-
     if (interactionManagerRef.current) {
       interactionManagerRef.current.setIntroAnimationMode(true)
     }
@@ -294,7 +274,6 @@ function PiacenzaLiverScene({
     setSelectedInscription(null)
     setInteractionMode(InteractionMode.ThreeD)
     setTitleVisible(true)
-    setIsInteracting(false)
     setHasViewChanged(false)
     clearInscriptionHash()
     if (interactionManagerRef.current) {
@@ -305,17 +284,11 @@ function PiacenzaLiverScene({
   const handleReturnToIntro = useCallback(() => {
     if (!cameraControllerRef.current || !cameraRef.current) return
 
-    if (introTimeoutRef.current) {
-      clearTimeout(introTimeoutRef.current)
-      introTimeoutRef.current = null
-    }
-
     setSelectedInscription(null)
     setInteractionMode(InteractionMode.About)
     setTitleVisible(true)
     setHasInteracted(false)
     setIsIntroTransitioning(false)
-    setIsInteracting(false)
     setHasViewChanged(false)
     clearInscriptionHash()
     setAboutHash()
@@ -450,10 +423,6 @@ function PiacenzaLiverScene({
           undefined,
           modelMatrix,
         )
-        // Clear any existing timeout before setting a new one
-        if (panelTimeoutRef.current) {
-          clearTimeout(panelTimeoutRef.current)
-        }
       }
     },
     [
@@ -534,8 +503,6 @@ function PiacenzaLiverScene({
     if (liverModelRef.current) {
       liverModelRef.current.setHoveredInscription(0)
     }
-
-    setIsInteracting(false)
   }, [setInteractionMode, isSmallScreen, isPortrait])
 
   const handleZoomDetected = useCallback(() => {
@@ -578,28 +545,13 @@ function PiacenzaLiverScene({
   useEffect(() => {
     const container = containerRef.current
     if (container) {
-      if (isInteracting) {
-        container.classList.add("interacting")
-      } else {
-        container.classList.remove("interacting")
-      }
-
-      // Add or remove interacted class based on state
       if (hasInteracted) {
         container.classList.add("interacted")
       } else {
         container.classList.remove("interacted")
       }
     }
-  }, [isInteracting, hasInteracted])
-
-  useEffect(() => {
-    const handleResize = () => {
-      setViewportKey((current) => current + 1)
-    }
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+  }, [hasInteracted])
 
   useEffect(() => {
     if (!cameraRef.current || !controlsRef.current) return
@@ -714,12 +666,11 @@ function PiacenzaLiverScene({
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
     container.appendChild(renderer.domElement)
     rendererRef.current = renderer
-    // Expose just the renderer for the offline profiler (scripts/profiler.html).
-    // We deliberately do NOT expose the THREE namespace itself — that would
-    // defeat the bundler's tree-shaking and re-add ~200KB of unused modules.
-    ;(
-      window as unknown as { __threeRenderer?: THREE.WebGLRenderer }
-    ).__threeRenderer = renderer
+    if (import.meta.env.DEV) {
+      ;(
+        window as unknown as { __threeRenderer?: THREE.WebGLRenderer }
+      ).__threeRenderer = renderer
+    }
     const controls = new OrbitControls(camera, renderer.domElement)
     controls.enableDamping = false
     controls.maxPolarAngle = Math.PI
@@ -767,8 +718,16 @@ function PiacenzaLiverScene({
     cameraControllerRef.current = cameraController
 
     try {
-      const liverModel = new LiverModel(scene, setLoadingProgress)
+      const liverModel = new LiverModel(scene, setLoadingProgress, () => {
+        setErrorMsg(
+          "The 3D model could not be loaded. Please refresh the page or try again later.",
+        )
+        setIsLoading(false)
+      })
       liverModelRef.current = liverModel
+      liverModel.setOnRenderRequired(() => {
+        renderRequestedRef.current = true
+      })
     } catch (e: unknown) {
       console.error("Failed to initialize LiverModel:", e)
       setErrorMsg(
@@ -809,6 +768,8 @@ function PiacenzaLiverScene({
       camera.aspect = width / height
       camera.updateProjectionMatrix()
       renderer.setSize(width, height)
+      setViewportKey((current) => current + 1)
+      renderRequestedRef.current = true
     }
     window.addEventListener("resize", handleResize)
 
@@ -832,13 +793,14 @@ function PiacenzaLiverScene({
       const dt = now - lastFrameTime
       lastFrameTime = now
 
-      controls.update()
-
-      // Detect movement (controls.update mutates camera when damping is active)
+      // OrbitControls applies user input directly, and camera animations call
+      // update themselves. With damping disabled, no per-frame update is needed.
       const moved =
         prevCamPos.distanceToSquared(camera.position) > 1e-8 ||
         prevTarget.distanceToSquared(controls.target) > 1e-8 ||
         prevCamQuat.angleTo(camera.quaternion) > 1e-5
+      const renderRequested = renderRequestedRef.current
+      renderRequestedRef.current = false
       if (moved) {
         prevCamPos.copy(camera.position)
         prevCamQuat.copy(camera.quaternion)
@@ -848,10 +810,14 @@ function PiacenzaLiverScene({
         staticFrames++
       }
 
-      // Particles: real fixed-rate update at ~30fps via dt accumulator.
+      // Particles animate only while the scene is actively rendering.
       particleAccumulator += dt
       let particlesUpdated = false
-      if (particleAccumulator >= 33 && particleRefs.current.particles) {
+      if (
+        (moved || renderRequested || staticFrames < 30) &&
+        particleAccumulator >= 33 &&
+        particleRefs.current.particles
+      ) {
         particleAccumulator = 0
         const {
           particlePositions,
@@ -921,11 +887,8 @@ function PiacenzaLiverScene({
           t * (cameraFillIntensity - cameraFillIntensityClose)
       }
 
-      // On-demand rendering: skip the render call when nothing visible has
-      // changed. We still draw at least every other frame for the first 30
-      // idle frames (covers any animation tails — gsap etc), then we render
-      // only on real change or particle update.
-      const needsRender = moved || particlesUpdated || staticFrames < 30
+      const needsRender =
+        moved || renderRequested || particlesUpdated || staticFrames < 30
       if (needsRender) {
         renderer.render(scene, camera)
       }
@@ -937,15 +900,14 @@ function PiacenzaLiverScene({
         cancelAnimationFrame(animationIdRef.current)
       }
 
-      // Clear any pending panel timeout
-      if (panelTimeoutRef.current) {
-        clearTimeout(panelTimeoutRef.current)
-        panelTimeoutRef.current = null
-      }
-      if (introTimeoutRef.current) {
-        clearTimeout(introTimeoutRef.current)
-        introTimeoutRef.current = null
-      }
+      renderer.domElement.removeEventListener(
+        "webglcontextlost",
+        handleContextLoss,
+      )
+      renderer.domElement.removeEventListener(
+        "webglcontextrestored",
+        handleContextRestore,
+      )
 
       // Clear mouse move timeout
       if (mouseMoveTimeoutRef.current) {
@@ -956,11 +918,26 @@ function PiacenzaLiverScene({
       cameraController?.dispose()
       liverModelRef.current?.dispose()
       interactionManagerRef.current?.dispose()
+      controls.dispose()
+
+      cameraControllerRef.current = null
+      liverModelRef.current = null
+      interactionManagerRef.current = null
+      controlsRef.current = null
+      cameraRef.current = null
+      rendererRef.current = null
+      sceneRef.current = null
+      cameraFillLightRef.current = null
+      cameraFillTargetRef.current = null
 
       renderer.dispose()
       scene.clear()
 
       window.removeEventListener("resize", handleResize)
+      if (import.meta.env.DEV) {
+        delete (window as unknown as { __threeRenderer?: THREE.WebGLRenderer })
+          .__threeRenderer
+      }
 
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement)
@@ -969,45 +946,56 @@ function PiacenzaLiverScene({
   }, [setIsLoading, setLoadingProgress])
   useEffect(() => {
     if (
-      rendererRef.current &&
-      cameraRef.current &&
-      controlsRef.current &&
-      liverModelRef.current
+      !isSceneReady ||
+      !rendererRef.current ||
+      !cameraRef.current ||
+      !controlsRef.current ||
+      !liverModelRef.current
     ) {
-      if (interactionManagerRef.current) {
-        interactionManagerRef.current.dispose()
-      }
-
-      const interactionManager = new InteractionManager(
-        rendererRef.current,
-        cameraRef.current,
-        controlsRef.current,
-        liverModelRef.current,
-        liverInscriptions,
-        {
-          onInscriptionClick: handleInscriptionClick,
-          onBackgroundClick: handleBackgroundClick,
-          onMarkerHover: handleMarkerHover,
-          onZoomDetected: handleZoomDetected,
-          onModelRotate: handleModelRotate,
-          onMouseMove: handleMouseMove,
-          onModifierKeyChange: handleModifierKeyChange,
-          onReset: handleReset,
-          onViewChange: handleViewChange,
-        },
-      )
-      interactionManager.setInteractionEnabled(
-        interactionMode === InteractionMode.ThreeD ||
-          interactionMode === InteractionMode.Inscription,
-      )
-      interactionManager.setHoverEnabled(
-        interactionMode === InteractionMode.ThreeD ||
-          interactionMode === InteractionMode.Inscription,
-      )
-      interactionManager.setClickEnabled(true)
-      interactionManagerRef.current = interactionManager
+      return
     }
+
+    const callbacks = {
+      onInscriptionClick: handleInscriptionClick,
+      onBackgroundClick: handleBackgroundClick,
+      onMarkerHover: handleMarkerHover,
+      onZoomDetected: handleZoomDetected,
+      onModelRotate: handleModelRotate,
+      onMouseMove: handleMouseMove,
+      onModifierKeyChange: handleModifierKeyChange,
+      onReset: handleReset,
+      onViewChange: handleViewChange,
+      onRenderRequired: () => {
+        renderRequestedRef.current = true
+      },
+    }
+
+    const isInteractive =
+      interactionMode === InteractionMode.ThreeD ||
+      interactionMode === InteractionMode.Inscription
+
+    if (interactionManagerRef.current) {
+      interactionManagerRef.current.updateCallbacks(callbacks)
+      interactionManagerRef.current.setInteractionEnabled(isInteractive)
+      interactionManagerRef.current.setHoverEnabled(isInteractive)
+      interactionManagerRef.current.setClickEnabled(true)
+      return
+    }
+
+    const interactionManager = new InteractionManager(
+      rendererRef.current,
+      cameraRef.current,
+      controlsRef.current,
+      liverModelRef.current,
+      liverInscriptions,
+      callbacks,
+    )
+    interactionManager.setInteractionEnabled(isInteractive)
+    interactionManager.setHoverEnabled(isInteractive)
+    interactionManager.setClickEnabled(true)
+    interactionManagerRef.current = interactionManager
   }, [
+    isSceneReady,
     handleInscriptionClick,
     handleBackgroundClick,
     handleMarkerHover,
@@ -1089,13 +1077,17 @@ function PiacenzaLiverScene({
           liverModelRef.current.getModelMatrix() || new THREE.Matrix4()
 
         // Use a small delay to ensure state updates are processed
-        setTimeout(() => {
+        if (hashNavigationTimeoutRef.current) {
+          clearTimeout(hashNavigationTimeoutRef.current)
+        }
+        hashNavigationTimeoutRef.current = window.setTimeout(() => {
           handleInscriptionClick({
             inscriptionId,
             cameraLocalPosition: inscription.cameraPosition,
             cameraLocalTarget: inscription.cameraTarget,
             modelMatrix,
           })
+          hashNavigationTimeoutRef.current = null
         }, 100)
       }
     }
@@ -1110,7 +1102,13 @@ function PiacenzaLiverScene({
       handleHashNavigation()
     }
     window.addEventListener("hashchange", handleHashChange)
-    return () => window.removeEventListener("hashchange", handleHashChange)
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange)
+      if (hashNavigationTimeoutRef.current) {
+        clearTimeout(hashNavigationTimeoutRef.current)
+        hashNavigationTimeoutRef.current = null
+      }
+    }
   }, [
     isSceneReady,
     hasInteracted,

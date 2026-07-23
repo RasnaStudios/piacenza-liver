@@ -14,7 +14,6 @@ function HomePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [hasInteracted, setHasInteracted] = useState(false)
   const [isTitleVisible, setIsTitleVisible] = useState(true)
-  const [showLoadingUI, _setShowLoadingUI] = useState(true)
 
   return (
     <>
@@ -32,7 +31,7 @@ function HomePage() {
       <LoadingScreen
         progress={loadingProgress}
         isLoading={isLoading}
-        showLoadingUI={showLoadingUI}
+        showLoadingUI={true}
       />
       <SeoContent />
     </>

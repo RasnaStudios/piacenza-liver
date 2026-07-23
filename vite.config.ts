@@ -1,62 +1,90 @@
 import fs from "node:fs"
+import type { IncomingMessage, ServerResponse } from "node:http"
 import path from "node:path"
 import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
+import { type Connect, defineConfig, type ViteDevServer } from "vite"
 import { VitePWA } from "vite-plugin-pwa"
 
 const LIVER_DATA_PATH = path.resolve("src/scene/LiverData.ts")
 
 const inscriptionPoseWriter = {
   name: "inscription-pose-writer",
-  apply: "serve",
-  configureServer(server) {
-    server.middlewares.use(async (req, res, next) => {
-      if (req.method !== "POST" || req.url !== "/__inscription_pose") {
-        return next()
-      }
-
-      try {
-        let body = ""
-        req.on("data", (chunk) => {
-          body += chunk
-        })
-        await new Promise<void>((resolve) => req.on("end", () => resolve()))
-        const parsed = JSON.parse(body || "{}")
-        const id = Number(parsed.id)
-        if (!Number.isFinite(id) || id <= 0) {
-          res.statusCode = 400
-          res.end("Invalid inscription id")
+  apply: "serve" as const,
+  configureServer(server: ViteDevServer) {
+    server.middlewares.use(
+      async (
+        req: IncomingMessage,
+        res: ServerResponse,
+        next: Connect.NextFunction,
+      ) => {
+        if (req.method !== "POST" || req.url !== "/__inscription_pose") {
+          return next()
+        }
+        if (process.env.VITE_ENABLE_POSE_WRITER !== "true") {
+          res.statusCode = 403
+          res.end("Pose writer is disabled")
           return
         }
-        const pos = parsed.cameraPosition || {}
-        const tgt = parsed.cameraTarget || {}
-        const formatNum = (n: number) =>
-          Number.isFinite(n) ? Number(n).toFixed(3) : "0"
-        const replacementPos = `new THREE.Vector3(${formatNum(pos.x)}, ${formatNum(pos.y)}, ${formatNum(pos.z)})`
-        const replacementTgt = `new THREE.Vector3(${formatNum(tgt.x)}, ${formatNum(tgt.y)}, ${formatNum(tgt.z)})`
-
-        const src = fs.readFileSync(LIVER_DATA_PATH, "utf8")
-        const regex = new RegExp(
-          `(id:\\s*${id}[\\s\\S]*?cameraPosition:\\s*)new THREE\\.Vector3\\([^)]+\\)([\\s\\S]*?cameraTarget:\\s*)new THREE\\.Vector3\\([^)]+\\)`,
-        )
-        if (!regex.test(src)) {
-          res.statusCode = 404
-          res.end(`Inscription ${id} not found in LiverData.ts`)
+        const address = req.socket.remoteAddress
+        if (address !== "::1" && address !== "127.0.0.1") {
+          res.statusCode = 403
+          res.end("Pose writer only accepts localhost requests")
           return
         }
-        const updated = src.replace(
-          regex,
-          `$1${replacementPos}$2${replacementTgt}`,
-        )
-        fs.writeFileSync(LIVER_DATA_PATH, updated, "utf8")
-        res.statusCode = 200
-        res.end("ok")
-      } catch (err) {
-        console.error("Failed to update LiverData.ts via dev API:", err)
-        res.statusCode = 500
-        res.end("Failed to update LiverData.ts")
-      }
-    })
+
+        try {
+          let body = ""
+          let bodyTooLarge = false
+          req.on("data", (chunk: Buffer) => {
+            if (body.length + chunk.length > 16 * 1024) {
+              bodyTooLarge = true
+              return
+            }
+            body += chunk.toString()
+          })
+          await new Promise<void>((resolve) => req.on("end", () => resolve()))
+          if (bodyTooLarge) {
+            res.statusCode = 413
+            res.end("Request body too large")
+            return
+          }
+          const parsed = JSON.parse(body || "{}")
+          const id = Number(parsed.id)
+          if (!Number.isFinite(id) || id <= 0) {
+            res.statusCode = 400
+            res.end("Invalid inscription id")
+            return
+          }
+          const pos = parsed.cameraPosition || {}
+          const tgt = parsed.cameraTarget || {}
+          const formatNum = (n: number) =>
+            Number.isFinite(n) ? Number(n).toFixed(3) : "0"
+          const replacementPos = `new THREE.Vector3(${formatNum(pos.x)}, ${formatNum(pos.y)}, ${formatNum(pos.z)})`
+          const replacementTgt = `new THREE.Vector3(${formatNum(tgt.x)}, ${formatNum(tgt.y)}, ${formatNum(tgt.z)})`
+
+          const src = fs.readFileSync(LIVER_DATA_PATH, "utf8")
+          const regex = new RegExp(
+            `(id:\\s*${id}[\\s\\S]*?cameraPosition:\\s*)new THREE\\.Vector3\\([^)]+\\)([\\s\\S]*?cameraTarget:\\s*)new THREE\\.Vector3\\([^)]+\\)`,
+          )
+          if (!regex.test(src)) {
+            res.statusCode = 404
+            res.end(`Inscription ${id} not found in LiverData.ts`)
+            return
+          }
+          const updated = src.replace(
+            regex,
+            `$1${replacementPos}$2${replacementTgt}`,
+          )
+          fs.writeFileSync(LIVER_DATA_PATH, updated, "utf8")
+          res.statusCode = 200
+          res.end("ok")
+        } catch (err) {
+          console.error("Failed to update LiverData.ts via dev API:", err)
+          res.statusCode = 500
+          res.end("Failed to update LiverData.ts")
+        }
+      },
+    )
   },
 }
 
