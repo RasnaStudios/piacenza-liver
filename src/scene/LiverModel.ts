@@ -50,9 +50,9 @@ export class LiverModel {
 
   private onModelReady?: () => void
   private atlasTexture: THREE.Texture | null = null
-  private selectedMaterial: THREE.MeshStandardMaterial | null = null
+  private selectedMaterial: THREE.MeshBasicMaterial | null = null
   private selectedMesh: THREE.Mesh | null = null
-  private hoveredMaterial: THREE.MeshStandardMaterial | null = null
+  private hoveredMaterial: THREE.MeshBasicMaterial | null = null
   private hoveredMesh: THREE.Mesh | null = null
   private atlasCols = 1
   private atlasRows = 1
@@ -375,8 +375,10 @@ export class LiverModel {
       baseMaterial.shadowSide = THREE.FrontSide
 
       // Create separate materials for selected and hovered states
+      // Unlit overlay materials — color + alphaMap only; no PBR lighting cost
+      // on the extra 44k-tri hover/selection passes.
       const createHighlightMaterial = () =>
-        new THREE.MeshStandardMaterial({
+        new THREE.MeshBasicMaterial({
           color: new THREE.Color(0xffc107),
           transparent: true,
           opacity: 0.0,
@@ -540,7 +542,7 @@ export class LiverModel {
   }
 
   private updateHighlight(
-    material: THREE.MeshStandardMaterial | null,
+    material: THREE.MeshBasicMaterial | null,
     overlayMesh: THREE.Mesh | null,
     inscriptionId: number,
     opacity: number,
@@ -608,7 +610,7 @@ export class LiverModel {
 
   private applyHighlightToMaterial(
     inscriptionId: number,
-    material: THREE.MeshStandardMaterial,
+    material: THREE.MeshBasicMaterial,
     opacity: number,
   ) {
     // Remap incoming id if configured
