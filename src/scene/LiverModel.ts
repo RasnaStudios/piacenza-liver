@@ -517,10 +517,8 @@ export class LiverModel {
     return this.object
   }
 
-  getMaskTexture() {
-    // Truthy presence check for hover raycasting; the buffer itself is used
-    // by getInscriptionAtUV.
-    return this.maskIds
+  hasMaskIds() {
+    return this.maskIds != null
   }
 
   setHoveredInscription(inscriptionId: number) {
@@ -674,6 +672,8 @@ export class LiverModel {
   }
 
   dispose() {
+    this.stopPulseAnimation()
+
     // Use Three.js traverse to dispose of all meshes and materials
     const disposeObject = (obj: THREE.Object3D | null) => {
       if (!obj) return
@@ -721,12 +721,17 @@ export class LiverModel {
     this.maskHeight = 0
   }
 
+  private pulseTimeoutIds: number[] = []
+  private pulseTweens: gsap.core.Tween[] = []
+  private pulseOverlays: THREE.Mesh[] = []
+
   // Pulse animation - only runs once on initial load
   pulseAllInscriptions() {
     if (!this.mesh || !this.hoveredMaterial) return
 
+    this.stopPulseAnimation()
+
     const inscriptions = liverInscriptions.slice()
-    const overlays: THREE.Mesh[] = []
     const config = SceneConfig.pulse
 
     // Use desktop animation for all devices
@@ -737,25 +742,28 @@ export class LiverModel {
       this.onRenderRequired?.()
     }
 
+    const removeOverlay = (overlay: THREE.Mesh) => {
+      const overlayIndex = this.pulseOverlays.indexOf(overlay)
+      if (overlayIndex >= 0) this.pulseOverlays.splice(overlayIndex, 1)
+      ;(overlay.parent || this.scene).remove(overlay)
+      if (Array.isArray(overlay.material)) {
+        overlay.material.forEach((mat) => {
+          mat.dispose()
+        })
+      } else {
+        overlay.material.dispose()
+      }
+    }
+
     const addNext = () => {
       if (index >= inscriptions.length) {
         return
       }
 
       // Limit concurrent meshes to prevent performance issues
-      if (overlays.length >= maxConcurrentMeshes) {
-        // Remove oldest overlay
-        const oldestOverlay = overlays.shift()
-        if (oldestOverlay) {
-          ;(oldestOverlay.parent || this.scene).remove(oldestOverlay)
-          if (Array.isArray(oldestOverlay.material)) {
-            oldestOverlay.material.forEach((mat) => {
-              mat.dispose()
-            })
-          } else {
-            oldestOverlay.material.dispose()
-          }
-        }
+      if (this.pulseOverlays.length >= maxConcurrentMeshes) {
+        const oldestOverlay = this.pulseOverlays[0]
+        if (oldestOverlay) removeOverlay(oldestOverlay)
       }
 
       // Create overlay for current inscription
@@ -775,29 +783,53 @@ export class LiverModel {
       mesh.scale.copy(this.mesh.scale)
 
       ;(this.mesh?.parent || this.scene).add(mesh)
-      overlays.push(mesh)
+      this.pulseOverlays.push(mesh)
       requestPulseRender()
 
       // Fade out this inscription after TRAIL_DURATION
-      setTimeout(() => {
-        gsap.to(material, {
+      const fadeTimeoutId = window.setTimeout(() => {
+        const tween = gsap.to(material, {
           opacity: 0,
           duration: config.individualFadeDuration,
           ease: "power2.in",
           onUpdate: requestPulseRender,
           onComplete: () => {
-            ;(mesh.parent || this.scene).remove(mesh)
-            material.dispose()
+            removeOverlay(mesh)
             requestPulseRender()
           },
         })
+        this.pulseTweens.push(tween)
       }, config.trailDuration)
+      this.pulseTimeoutIds.push(fadeTimeoutId)
 
       // Move to next inscription
-      setTimeout(addNext, config.trailSpeed)
+      const nextTimeoutId = window.setTimeout(addNext, config.trailSpeed)
+      this.pulseTimeoutIds.push(nextTimeoutId)
       index++
     }
 
     addNext()
+  }
+
+  private stopPulseAnimation() {
+    for (const id of this.pulseTimeoutIds) {
+      clearTimeout(id)
+    }
+    this.pulseTimeoutIds = []
+    for (const tween of this.pulseTweens) {
+      tween.kill()
+    }
+    this.pulseTweens = []
+    for (const overlay of [...this.pulseOverlays]) {
+      ;(overlay.parent || this.scene).remove(overlay)
+      if (Array.isArray(overlay.material)) {
+        overlay.material.forEach((mat) => {
+          mat.dispose()
+        })
+      } else {
+        overlay.material.dispose()
+      }
+    }
+    this.pulseOverlays = []
   }
 }
