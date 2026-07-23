@@ -14,15 +14,6 @@ export interface HoveredSection {
 }
 
 /**
- * Represents mouse position and interaction state
- */
-export interface MousePosition {
-  x: number
-  y: number
-  isOverCanvas?: boolean
-}
-
-/**
  * Represents a click payload for inscription interactions
  */
 export interface InscriptionClickPayload {
