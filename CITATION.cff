@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below. To refer to the bronze artifact itself, use its sigla ET Pa 4.2 (Rix, Etruskische Texte, 1991) or TLE 719."
+type: software
+title: "The Piacenza Liver: an interactive scholarly visualization"
+abstract: >-
+  Interactive 3D visualization of the Etruscan bronze Liver of Piacenza
+  (late 2nd to early 1st century BCE) presenting all 42 inscriptions with
+  transcriptions in Etruscan script, deity mappings, cosmological zones and
+  interpretive notes. The 3D model is an artist's reconstruction, not a scan
+  of the bronze.
+authors:
+  - family-names: Andraghetti
+    given-names: Lorenzo
+    orcid: "https://orcid.org/0009-0009-2171-7610"
+  - family-names: Tampieri
+    given-names: Luca
+license: MIT
+url: "https://piacenzaliver.com"
+repository-code: "https://github.com/RasnaStudios/piacenza-liver"
+keywords:
+  - Piacenza Liver
+  - Etruscan
+  - Etruscan inscriptions
+  - hepatoscopy
+  - archaeology
+  - digital humanities
+  - 3D visualization

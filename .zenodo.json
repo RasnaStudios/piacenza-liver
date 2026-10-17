@@ -1,0 +1,31 @@
+{
+  "title": "The Piacenza Liver: an interactive scholarly visualization",
+  "upload_type": "software",
+  "description": "<p>Interactive 3D visualization of the Etruscan bronze Liver of Piacenza (late 2nd to early 1st century BCE) presenting all 42 inscriptions with transcriptions in Etruscan script, deity mappings, cosmological zones and interpretive notes. Live site: <a href=\"https://piacenzaliver.com\">piacenzaliver.com</a>.</p><p>The 3D model is an artist's reconstruction by Luca Tampieri, not a scan of the bronze. The artifact itself is catalogued as ET Pa 4.2 (Rix, Etruskische Texte, 1991) and TLE 719.</p>",
+  "creators": [
+    {
+      "name": "Andraghetti, Lorenzo",
+      "orcid": "0009-0009-2171-7610"
+    },
+    {
+      "name": "Tampieri, Luca"
+    }
+  ],
+  "license": "MIT",
+  "keywords": [
+    "Piacenza Liver",
+    "Etruscan",
+    "Etruscan inscriptions",
+    "hepatoscopy",
+    "archaeology",
+    "digital humanities",
+    "3D visualization"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://piacenzaliver.com",
+      "relation": "isDocumentedBy",
+      "resource_type": "other"
+    }
+  ]
+}
