@@ -12,6 +12,13 @@ import { SceneConfig } from "../config/SceneConfig"
 import type { AtlasMeta, AtlasTweak } from "../types"
 import { getInscriptionGroup, liverInscriptions } from "./LiverData"
 
+interface SelectionSlot {
+  mesh: THREE.Mesh
+  material: THREE.MeshBasicMaterial
+  id: number
+  tween: gsap.core.Tween | null
+}
+
 export class LiverModel {
   private scene: THREE.Scene
   private mesh: THREE.Mesh | null = null
@@ -50,8 +57,7 @@ export class LiverModel {
 
   private onModelReady?: () => void
   private atlasTexture: THREE.Texture | null = null
-  private selectedMaterial: THREE.MeshBasicMaterial | null = null
-  private selectedMesh: THREE.Mesh | null = null
+  private selectionSlots: SelectionSlot[] = []
   private hoveredMaterial: THREE.MeshBasicMaterial | null = null
   private hoveredMesh: THREE.Mesh | null = null
   private atlasCols = 1
@@ -389,7 +395,6 @@ export class LiverModel {
           depthTest: true,
         })
 
-      this.selectedMaterial = createHighlightMaterial()
       this.hoveredMaterial = createHighlightMaterial()
 
       // Load OBJ geometry
@@ -449,9 +454,17 @@ export class LiverModel {
             return overlayMesh
           }
 
-          // Create and add selected overlay mesh
-          if (!this.selectedMesh && this.selectedMaterial) {
-            this.selectedMesh = createOverlayMesh(this.selectedMaterial, 1)
+          // Two mask overlays allow selection changes to cross-fade.
+          if (!this.selectionSlots.length) {
+            this.selectionSlots = Array.from({ length: 2 }, () => {
+              const material = createHighlightMaterial()
+              return {
+                material,
+                mesh: createOverlayMesh(material, 1),
+                id: 0,
+                tween: null,
+              }
+            })
           }
 
           // Create and add hovered overlay mesh
@@ -530,10 +543,14 @@ export class LiverModel {
     this.onRenderRequired?.()
   }
 
-  setSelectedInscription(inscriptionId: number) {
+  setSelectedInscription(
+    inscriptionId: number,
+    fadeMs = SceneConfig.highlight.fadeMs,
+  ) {
     if (this.currentSelectedId === inscriptionId) return
     this.currentSelectedId = inscriptionId
-    this.updateSelectedHighlight()
+    this.fadeSelection(inscriptionId, fadeMs)
+    this.updateHoveredHighlight()
     this.onRenderRequired?.()
   }
 
@@ -562,13 +579,49 @@ export class LiverModel {
     if (overlayMesh) overlayMesh.visible = true
   }
 
-  private updateSelectedHighlight() {
-    this.updateHighlight(
-      this.selectedMaterial,
-      this.selectedMesh,
-      this.currentSelectedId,
-      SceneConfig.highlight.selectedOpacity,
-    )
+  // Bind the mask once per selection, then animate only material opacity.
+  private fadeSelection(id: number, fadeMs: number) {
+    if (!this.selectionSlots.length) return
+    let target: SelectionSlot | undefined
+    if (id) {
+      target =
+        this.selectionSlots.find((slot) => slot.id === id) ??
+        this.selectionSlots.reduce((a, b) =>
+          a.material.opacity <= b.material.opacity ? a : b,
+        )
+      if (target.id !== id) {
+        target.tween?.kill()
+        this.applyHighlightToMaterial(id, target.material, 0)
+        target.id = id
+      }
+      target.mesh.visible = true
+    }
+    for (const slot of this.selectionSlots) {
+      slot.tween?.kill()
+      const opacity =
+        slot === target ? SceneConfig.highlight.selectedOpacity : 0
+      const done = () => {
+        slot.tween = null
+        if (!opacity) {
+          slot.mesh.visible = false
+          slot.id = 0
+        }
+        this.onRenderRequired?.()
+      }
+      if (fadeMs <= 0) {
+        slot.material.opacity = opacity
+        done()
+      } else {
+        slot.tween = gsap.to(slot.material, {
+          opacity,
+          duration: fadeMs / 1000,
+          ease: "sine.inOut",
+          onUpdate: () => this.onRenderRequired?.(),
+          onComplete: done,
+        })
+      }
+    }
+    this.onRenderRequired?.()
   }
 
   private updateHoveredHighlight() {
@@ -675,6 +728,7 @@ export class LiverModel {
 
   dispose() {
     this.stopPulseAnimation()
+    for (const slot of this.selectionSlots) slot.tween?.kill()
 
     // Use Three.js traverse to dispose of all meshes and materials
     const disposeObject = (obj: THREE.Object3D | null) => {
@@ -699,15 +753,13 @@ export class LiverModel {
 
     // Clean up all objects using traverse
     disposeObject(this.object)
-    disposeObject(this.selectedMesh)
     disposeObject(this.hoveredMesh)
 
     // Clean up remaining resources
     this.mesh = null
     this.object = null
-    this.selectedMesh = null
     this.hoveredMesh = null
-    this.selectedMaterial = null
+    this.selectionSlots = []
     this.hoveredMaterial = null
     this.atlasTexture?.dispose()
     this.atlasTexture = null

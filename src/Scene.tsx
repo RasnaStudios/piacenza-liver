@@ -8,7 +8,9 @@ import * as THREE from "three"
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js"
 // Core 3D logic
 import { CameraController } from "./camera/Controller"
+import { getFitDistance } from "./camera/fitToViewport"
 import { getIntroPose } from "./camera/introPose"
+import { Screensaver } from "./camera/Screensaver"
 import { SceneConfig } from "./config/SceneConfig"
 // Hooks
 import { useOrientation } from "./hooks/useOrientation"
@@ -971,6 +973,99 @@ function PiacenzaLiverScene({
     handleModelRotate,
     interactionMode,
   ])
+
+  const screensaverHandlersRef = useRef({
+    onStart: () => {},
+    onHighlight: (_id: number, _fadeMs: number) => {},
+    onStop: () => {},
+  })
+  screensaverHandlersRef.current = {
+    onStart: () => {
+      cameraControllerRef.current?.stopAnimation()
+      interactionManagerRef.current?.setIntroAnimationMode(true)
+      liverModelRef.current?.setSelectedInscription(0)
+      liverModelRef.current?.setHoveredInscription(0)
+      setHoveredSection(null)
+      setSelectedInscription(null)
+      setHasInteracted(true)
+      setIsIntroTransitioning(false)
+      setInteractionMode(InteractionMode.ThreeD)
+      setTitleVisible(true)
+      setHasViewChanged(false)
+    },
+    onHighlight: (id, fadeMs) => {
+      liverModelRef.current?.setSelectedInscription(id, fadeMs)
+      setTitleVisible(id === 0)
+    },
+    onStop: () => {
+      interactionManagerRef.current?.setIntroAnimationMode(false)
+      handleReset()
+    },
+  }
+
+  useEffect(() => {
+    const camera = cameraRef.current
+    const controls = controlsRef.current
+    if (!isSceneReady || !camera || !controls) return
+
+    const { position, rotation } = SceneConfig.model
+    const restPose = {
+      position: position.clone(),
+      quaternion: new THREE.Quaternion().setFromEuler(
+        new THREE.Euler(rotation.x, rotation.y, rotation.z),
+      ),
+    }
+    const { pivotPointId, tour } = SceneConfig.screensaver
+    const model = liverModelRef.current?.getObject()
+    if (!model) return
+    // Cache the rest-space centre and sphere before the model starts spinning.
+    model.updateMatrixWorld(true)
+    const sphere = new THREE.Box3()
+      .setFromObject(model)
+      .getBoundingSphere(new THREE.Sphere())
+    const center = model.worldToLocal(sphere.center.clone())
+    const screensaver = new Screensaver(
+      {
+        camera,
+        controls,
+        restPose,
+        getModel: () => liverModelRef.current?.getObject() ?? null,
+        getPivot: () => {
+          const point = liverInscriptions.find((p) => p.id === pivotPointId)
+          if (point) return point.cameraTarget.clone()
+          return center.clone()
+        },
+        getFitDistance: () => getFitDistance(camera, sphere),
+        getPoints: () => {
+          const ids =
+            tour.pointIds === "all"
+              ? liverInscriptions.map((p) => p.id)
+              : tour.pointIds
+          return ids.flatMap((id) => {
+            const point = liverInscriptions.find((p) => p.id === id)
+            if (!point) return []
+            return {
+              id,
+              target: point.cameraTarget.clone(),
+              position: getScaledCameraPosition(
+                point.cameraPosition,
+                point.cameraTarget,
+              ),
+            }
+          })
+        },
+        onStart: () => screensaverHandlersRef.current.onStart(),
+        onHighlight: (id, fadeMs) =>
+          screensaverHandlersRef.current.onHighlight(id, fadeMs),
+        onStop: () => screensaverHandlersRef.current.onStop(),
+        onFrame: () => {
+          renderRequestedRef.current = true
+        },
+      },
+      SceneConfig.screensaver,
+    )
+    return () => screensaver.dispose()
+  }, [isSceneReady, getScaledCameraPosition])
 
   // Clear hovered inscription when mouse enters panel area
   useEffect(() => {

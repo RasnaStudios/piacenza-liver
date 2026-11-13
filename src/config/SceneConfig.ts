@@ -76,6 +76,50 @@ export const SceneConfig = {
     alphaCutoff: 0.03, // Higher values = crisper highlight edges (less dilution)
     selectedOpacity: 0.3,
     hoveredOpacity: 0.2,
+    fadeMs: 600, // Cross-fade whenever selection changes
+  },
+
+  // Slow idle overview and inscription tour. Override idle time with ?idle=SECONDS.
+  screensaver: {
+    enabled: true,
+    idleSeconds: 300,
+    pointerMoveThresholdPx: 4,
+    wakeInputGuardMs: 1000,
+    // Interest point the spin axis passes through; null uses the model center
+    pivotPointId: null as number | null,
+    loop: true,
+    // Blend from the current view into the screensaver
+    enterMs: 6000,
+    // Camera move from one view (wide view or point) to the next
+    transitionMs: 9000,
+    spin: {
+      // Model-space axis the object spins around (through the pivot)
+      axis: [0, 1, 0] as [number, number, number],
+      secondsPerRevolution: 240,
+      direction: 1 as 1 | -1, // 1 counterclockwise as seen from the camera, -1 clockwise
+      rampUpMs: 8000, // time to reach full speed from rest
+    },
+    overview: {
+      durationSeconds: 90,
+      // Camera tilt away from the spin axis (degrees), oscillating between min and max
+      tiltDeg: { min: 12, max: 22 },
+      tiltCycles: 1,
+      // Side of the object the camera leans toward (degrees around the spin axis)
+      // Lean toward the default camera side to avoid crossing the camera-up pole.
+      tiltAzimuthDeg: 98,
+      // Distance from the pivot as a multiple of the distance that fits the whole object on screen
+      distance: { near: 0.85, far: 1.0 },
+      zoomCycles: 1,
+    },
+    tour: {
+      pointIds: "all" as "all" | number[],
+      // Time on each point, including the camera move toward it
+      secondsPerPoint: 4,
+      highlightFadeMs: 3000,
+      transitionMs: 3000,
+      holdAfterTransitionMs: 1000,
+      maxDegreesPerSecond: 12,
+    },
   },
 
   // Pulse animation configuration

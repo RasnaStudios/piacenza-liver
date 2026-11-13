@@ -165,6 +165,16 @@ export class CameraController {
     const endTarget =
       liverModel?.getLiverCenter().clone() || new THREE.Vector3(0, 0, 0)
 
+    const startCameraOrientation = this.camera.quaternion.clone()
+    const endCameraOrientation = new THREE.Quaternion().setFromRotationMatrix(
+      new THREE.Matrix4().lookAt(
+        endPosition,
+        endTarget,
+        new THREE.Vector3(0, 1, 0),
+      ),
+    )
+    const cameraOrientation = new THREE.Quaternion()
+
     let modelAnimation: ((t: number) => void) | null = null
 
     if (liverModel) {
@@ -229,7 +239,12 @@ export class CameraController {
           )
           this.camera.position.copy(tempCameraPos)
           this.controls.target.copy(tempTargetPos)
-          this.camera.up.set(0, 1, 0)
+          cameraOrientation.slerpQuaternions(
+            startCameraOrientation,
+            endCameraOrientation,
+            t,
+          )
+          this.camera.up.set(0, 1, 0).applyQuaternion(cameraOrientation)
           this.camera.lookAt(tempTargetPos)
           this.controls.update()
 
@@ -241,6 +256,8 @@ export class CameraController {
           if (this.currentTween !== tween) return
           this.isAnimating = false
           this.currentTween = null
+          this.camera.up.set(0, 1, 0)
+          this.controls.update()
           if (onComplete) onComplete()
         },
       },
